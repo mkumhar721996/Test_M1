@@ -1,0 +1,9 @@
+{
+  "name": "test-m1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node --test \"test/*.test.js\""
+  }
+}
