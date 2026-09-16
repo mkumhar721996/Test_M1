@@ -6,15 +6,31 @@ summary: |
   evaluation, assemble the complete result payload the UI consumes (AC2-AC6), including
   empty-result and multi-line-sum-and-sort behavior. The repository currently has no
   application code or build tooling at all (only a design-system asset folder and the
-  approved design prototype), so this plan also bootstraps the minimal TypeScript +
-  Vitest scaffolding needed to write and run the failing tests first.
+  approved design prototype), so this plan also bootstraps the minimal TypeScript
+  scaffolding needed to write and run the failing tests first.
+
+  DEVIATION (implementation pass): the plan originally specified Vitest as the test
+  runner. The sandbox's npm registry access is blocked (`npm install` returns HTTP 403
+  Forbidden from the outbound proxy for every package, verified on two separate
+  passes), so no npm dependency — including `typescript` and `vitest` — can be
+  installed. The implementation instead uses Node.js's built-in test runner
+  (`node --experimental-strip-types --test`), which ships with Node itself and
+  requires zero installed dependencies, while still writing real TypeScript source
+  and running a real project test framework. `package_dependencies` below is retained
+  for traceability of original intent but was not actually installable; see the
+  updated dependency entries and `package.json`'s `engines` field for the resulting
+  constraint.
 
 scope:
   - description: |
       Bootstrap a minimal TypeScript project skeleton so the engine module can be
       written and tested. Add `package.json` (name, `"type": "module"`, `test` script
-      running `vitest run`) and a `tsconfig.json` (strict mode, ES2022 target/module).
-      No production code goes here — this is purely enabling infrastructure.
+      running `node --experimental-strip-types --test src/**/*.test.ts`, and an
+      `engines.node` constraint documenting the `--experimental-strip-types`
+      requirement) and a `tsconfig.json` (strict mode, ES2022 target/module). No
+      production code goes here — this is purely enabling infrastructure. (Originally
+      planned as Vitest; changed per the DEVIATION note above because the sandbox
+      cannot reach the npm registry.)
     files:
       - package.json
       - tsconfig.json
@@ -238,18 +254,16 @@ assumptions_or_open_questions:
     functions do not perform range/bounds validation on them.
 
 package_dependencies:
-  - name: typescript
-    version: "^5.5.0"
+  - name: (none — see DEVIATION note)
+    version: n/a
     ecosystem: npm
     rationale: |
-      No build/type tooling exists in the repo yet; the engine module and its tests are
-      written in TypeScript per the stack assumption above.
-  - name: vitest
-    version: "^2.0.0"
-    ecosystem: npm
-    rationale: |
-      No test runner exists in the repo yet; Vitest is used to write and run the
-      failing-test-first suite for `payout.ts` and `spinResult.ts`.
+      Originally planned: `typescript@^5.5.0` and `vitest@^2.0.0`, for type tooling and
+      the failing-test-first suite for `payout.ts` and `spinResult.ts`. Neither was
+      installable: the sandbox's npm registry access returns HTTP 403 Forbidden for
+      every package. The implementation instead relies solely on Node.js's built-in
+      `--experimental-strip-types` and `--test` capabilities (Node >=22.6.0, declared
+      via `engines` in `package.json`), adding zero npm dependencies.
 
 notes: |
   Implementation order (strict TDD): scaffold tooling first (nothing to test without
