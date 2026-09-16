@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "_toolchain": "This sandbox has no network access to the npm registry (verified: even already-installed packages 403). The plan called for TypeScript + Vite + Vitest + jsdom, but none of that is installable here, so this deliberately uses only Node 22 built-ins instead: node --test as the runner, plain .js ES modules (no bundler needed, loads natively in both Node and browsers), and scripts/dev-server.js (node:http) in place of a vite dev server. Revisit this once the toolchain can actually be installed.",
   "scripts": {
-    "test": "node --test src",
+    "test": "node --test 'src/**/*.test.js' 'scripts/**/*.test.js'",
     "dev": "node scripts/dev-server.js"
   }
 }
