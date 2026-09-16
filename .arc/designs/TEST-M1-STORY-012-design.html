@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-012 — Zero-Balance Recovery via Play Again</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
+  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #ffffff; /** Default page background. */
+  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
+  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /* Page-specific layout only — all colors/spacing/type come from design tokens. */
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+
+  /* ---------- Reviewer bar (meta chrome, not part of the product) ---------- */
+  .reviewer-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-family: var(--font-family-base);
+  }
+  .reviewer-bar button {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-bg);
+    background: transparent;
+    color: var(--color-bg);
+    cursor: pointer;
+  }
+  .reviewer-bar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .reviewer-bar-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    flex: 1;
+  }
+  .reviewer-bar-label small {
+    display: block;
+    font-weight: var(--font-weight-regular);
+    opacity: 0.75;
+  }
+
+  /* ---------- Product app nav (host game chrome) ---------- */
+  .app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .app-nav .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+  .app-nav nav {
+    display: flex;
+    gap: var(--space-4);
+  }
+  .app-nav nav a {
+    color: var(--color-primary-fg);
+    text-decoration: none;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  .screen[hidden] { display: none; }
+
+  .screen-heading {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .screen-subheading {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .game-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-4);
+  }
+  @media (max-width: 720px) {
+    .game-layout { grid-template-columns: 1fr; }
+  }
+
+  .canvas-panel {
+    position: relative;
+  }
+
+  .canvas-session-badge {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .reel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    max-width: 260px;
+    margin: var(--space-3) auto var(--space-4);
+  }
+  .reel-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .reel-cell.is-spinning {
+    animation: reel-pulse 0.4s ease-in-out infinite alternate;
+  }
+  @keyframes reel-pulse {
+    from { opacity: 1; }
+    to { opacity: 0.35; }
+  }
+
+  .spin-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .status-banner {
+    min-height: calc(var(--font-size-sm) * var(--line-height-base) + var(--space-3) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-3);
+  }
+  .status-banner:empty::before {
+    content: "Session status updates will appear here.";
+    color: var(--color-fg-muted);
+  }
+
+  .play-again-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+  .play-again-wrap[hidden] { display: none; }
+  .play-again-wrap p {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    text-align: center;
+  }
+  .btn-play-again {
+    font-size: var(--font-size-lg);
+    padding: var(--space-3) var(--space-4);
+  }
+  .btn-play-again:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .stat-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .stat-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .stat-value {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .stat-value.is-zero {
+    color: var(--color-fg);
+  }
+
+  .history-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .reviewer-note {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .reviewer-note strong { color: var(--color-fg); }
+  .reviewer-note ul { margin: var(--space-2) 0 0; padding-left: var(--space-4); }
+  .reviewer-note li { margin-bottom: var(--space-1); }
+
+  .demo-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-top: var(--space-3);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+  <!-- Reviewer bar: canonical prev/next + screen label scaffold (present on every design prototype). -->
+  <header class="reviewer-bar">
+    <button type="button" id="prevScreenBtn" aria-label="Previous screen">&lsaquo; Prev</button>
+    <div class="reviewer-bar-label" id="screenLabel" aria-live="off"></div>
+    <button type="button" id="nextScreenBtn" aria-label="Next screen">Next &rsaquo;</button>
+  </header>
+
+  <!-- Application nav: represents the host slot-game product's persistent chrome.
+       Not in scope for this story — included only so the Play Again flow reads
+       in its real product context. -->
+  <div class="app-nav">
+    <div class="brand">Neon Reels</div>
+    <nav aria-label="Game navigation">
+      <a href="#" tabindex="-1">Lobby</a>
+      <a href="#" tabindex="-1">Promotions</a>
+      <a href="#" tabindex="-1">Cashier</a>
+    </nav>
+  </div>
+
+  <main>
+
+    <!--
+      Screen 1: Active Session (baseline)
+      Purpose: establish the game's normal visual language — balance comfortably above the
+      minimum bet, spin controls enabled, no Play Again affordance. Provides context for the
+      two states that follow. Not itself bound to an acceptance criterion.
+    -->
+    <section class="screen" data-screen-index="0" data-screen-name="Active Session (baseline)">
+      <h1 class="screen-heading">Active Session</h1>
+      <p class="screen-subheading">Baseline state — balance comfortably above the 10-credit minimum bet.</p>
+
+      <div class="game-layout">
+        <div class="card canvas-panel">
+          <span class="canvas-session-badge">Canvas instance #A93F1</span>
+          <div class="reel-grid" aria-hidden="true">
+            <div class="reel-cell">🍒</div><div class="reel-cell">🔔</div><div class="reel-cell">⭐</div>
+            <div class="reel-cell">7️⃣</div><div class="reel-cell">💎</div><div class="reel-cell">🍋</div>
+            <div class="reel-cell">🍒</div><div class="reel-cell">⭐</div><div class="reel-cell">🔔</div>
+          </div>
+          <div class="status-banner" role="status" aria-live="polite"></div>
+          <div class="spin-controls">
+            <button type="button" class="btn btn-secondary" disabled>Bet −</button>
+            <button type="button" class="btn btn-primary">Spin</button>
+            <button type="button" class="btn btn-secondary" disabled>Bet +</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Session Stats</h2>
+          <ul class="stat-list">
+            <li class="stat-row"><span class="stat-label">Balance</span><span class="stat-value">340 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Current Bet</span><span class="stat-value">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Win Total</span><span class="stat-value">185 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Spin History</span>
+              <span class="history-chips">
+                <span class="chip">+25</span><span class="chip">−10</span><span class="chip">−10</span><span class="chip">+40</span><span class="chip">−10</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      Screen 2: Minimum Bet Boundary
+      AC: 3 — GIVEN balance is exactly 10 (the minimum bet) WHEN balance is updated
+      THEN the Play Again button is NOT displayed. Static reference state, reachable
+      directly via the reviewer bar with no clicks required.
+    -->
+    <section class="screen" data-screen-index="1" data-screen-name="Minimum Bet Boundary (AC 3)" hidden>
+      <h1 class="screen-heading">Minimum Bet Boundary</h1>
+      <p class="screen-subheading">Balance is exactly 10 credits — the minimum bet. Play Again must not render, and spin controls stay enabled.</p>
+
+      <div class="game-layout">
+        <div class="card canvas-panel">
+          <span class="canvas-session-badge">Canvas instance #A93F1</span>
+          <div class="reel-grid" aria-hidden="true">
+            <div class="reel-cell">🍋</div><div class="reel-cell">🍒</div><div class="reel-cell">🔔</div>
+            <div class="reel-cell">⭐</div><div class="reel-cell">7️⃣</div><div class="reel-cell">💎</div>
+            <div class="reel-cell">🔔</div><div class="reel-cell">🍒</div><div class="reel-cell">⭐</div>
+          </div>
+          <!-- State: balance-at-minimum — no Play Again affordance present at this threshold. -->
+          <div class="status-banner" role="status" aria-live="polite"></div>
+          <div class="spin-controls">
+            <button type="button" class="btn btn-secondary">Bet −</button>
+            <button type="button" class="btn btn-primary">Spin</button>
+            <button type="button" class="btn btn-secondary">Bet +</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Session Stats</h2>
+          <ul class="stat-list">
+            <li class="stat-row"><span class="stat-label">Balance</span><span class="stat-value">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Current Bet</span><span class="stat-value">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Win Total</span><span class="stat-value">60 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Spin History</span>
+              <span class="history-chips">
+                <span class="chip">−10</span><span class="chip">−10</span><span class="chip">+70</span><span class="chip">−10</span><span class="chip">−10</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reviewer-note">
+        <strong>Reviewer note (AC 3):</strong> at exactly 10 credits the player can still afford
+        one more spin, so no recovery affordance is shown and controls remain enabled. See
+        Screen 3 to watch the balance drop below this threshold and the Play Again button appear.
+      </div>
+    </section>
+
+    <!--
+      Screen 3: Zero-Balance Recovery (interactive)
+      AC: 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+      Flow simulated with setTimeout (no backend): player spins from a 10-credit balance,
+      loses the bet, balance hits 0 → Play Again renders and receives focus automatically,
+      spin controls disable. Activating Play Again immediately disables the button, then
+      after a short simulated reinit delay resets balance to 1,000, clears ancillary session
+      state, re-enables spin controls, and announces both changes via a role="status" region —
+      all without a page reload or destroying the canvas panel (see the unchanged canvas
+      instance badge before/after).
+    -->
+    <section class="screen" data-screen-index="2" data-screen-name="Zero-Balance Recovery (interactive)" hidden>
+      <h1 class="screen-heading">Zero-Balance Recovery</h1>
+      <p class="screen-subheading">Interactive — use the controls below to bust the balance, then trigger Play Again.</p>
+
+      <div class="game-layout">
+        <div class="card canvas-panel">
+          <span class="canvas-session-badge" id="canvasBadge">Canvas instance #A93F1</span>
+
+          <div class="reel-grid" id="reelGrid" aria-hidden="true">
+            <div class="reel-cell">🍒</div><div class="reel-cell">🔔</div><div class="reel-cell">⭐</div>
+            <div class="reel-cell">7️⃣</div><div class="reel-cell">💎</div><div class="reel-cell">🍋</div>
+            <div class="reel-cell">🍒</div><div class="reel-cell">⭐</div><div class="reel-cell">🔔</div>
+          </div>
+
+          <!-- AC 10: role=status/aria-live region announcing the balance reset and controls re-enable. -->
+          <div class="status-banner" id="liveRegion" role="status" aria-live="polite"></div>
+
+          <!-- AC 1, 12, 13: Play Again renders only at zero balance, disables immediately on
+               activation (before the reset completes), and stays disabled/hidden so a repeat
+               activation cannot trigger a second reset. -->
+          <div class="play-again-wrap" id="playAgainWrap" hidden>
+            <p>Your balance has reached 0 credits.</p>
+            <button type="button" class="btn btn-primary btn-play-again" id="playAgainBtn">Play Again</button>
+          </div>
+
+          <!-- AC 2, 5: spin controls disable at zero balance, re-enable once recovery completes. -->
+          <div class="spin-controls">
+            <button type="button" class="btn btn-secondary" id="betDownBtn">Bet −</button>
+            <button type="button" class="btn btn-primary" id="spinBtn">Spin (bet 10)</button>
+            <button type="button" class="btn btn-secondary" id="betUpBtn">Bet +</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Session Stats</h2>
+          <ul class="stat-list">
+            <li class="stat-row"><span class="stat-label">Balance</span><span class="stat-value" id="balanceValue">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Current Bet</span><span class="stat-value" id="betValue">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Last Bet</span><span class="stat-value" id="lastBetValue">10 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Win Total</span><span class="stat-value" id="winTotalValue">45 credits</span></li>
+            <li class="stat-row"><span class="stat-label">Spin History</span>
+              <span class="history-chips" id="historyChips">
+                <span class="chip">−10</span><span class="chip">+55</span><span class="chip">−10</span><span class="chip">−10</span><span class="chip">+30</span>
+              </span>
+            </li>
+          </ul>
+
+          <div class="demo-actions">
+            <button type="button" class="btn btn-secondary" id="restartDemoBtn">↺ Restart this demo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="reviewer-note">
+        <strong>How to review this flow:</strong>
+        <ul>
+          <li>Balance starts at 10 credits with controls enabled and no Play Again button (AC 3).</li>
+          <li>Click <em>Spin (bet 10)</em> to lose the bet. Balance drops to 0: spin controls
+            disable and Play Again appears and is <strong>automatically focused</strong> (AC 1, 2, 9) —
+            confirm with Tab/Shift+Tab that focus lands there.</li>
+          <li>Activate Play Again with a click, or via keyboard (Tab to it, then Enter/Space) (AC 8).
+            It disables immediately, before the balance changes (AC 12) — try activating it again
+            while disabled to confirm no second reset fires (AC 13).</li>
+          <li>After the simulated reinit, balance resets to 1,000, Last Bet/Spin History/Win Total
+            return to defaults (AC 4, 11), spin controls re-enable (AC 5), and the status region
+            above announces both changes (AC 10) — all with no page reload and the same canvas
+            instance badge as before (AC 6, 7).</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      // ---------- Reviewer bar: canonical prev/next screen navigation ----------
+      var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+      var current = 0;
+
+      function renderReviewerBar() {
+        screens.forEach(function (s, i) { s.hidden = i !== current; });
+        var label = document.getElementById('screenLabel');
+        var name = screens[current].getAttribute('data-screen-name');
+        label.innerHTML = 'Screen ' + (current + 1) + ' of ' + screens.length + '<small>' + name + '</small>';
+        document.getElementById('prevScreenBtn').disabled = current === 0;
+        document.getElementById('nextScreenBtn').disabled = current === screens.length - 1;
+      }
+
+      document.getElementById('prevScreenBtn').addEventListener('click', function () {
+        if (current > 0) { current--; renderReviewerBar(); }
+      });
+      document.getElementById('nextScreenBtn').addEventListener('click', function () {
+        if (current < screens.length - 1) { current++; renderReviewerBar(); }
+      });
+
+      renderReviewerBar();
+
+      // ---------- Screen 3: Zero-Balance Recovery simulation ----------
+      var MIN_BET = 10;
+      var DEFAULT_BALANCE = 1000;
+
+      // Inline fixture data — no backend, no persistence.
+      var state = {
+        balance: 10,
+        bet: 10,
+        lastBet: 10,
+        winTotal: 45,
+        history: ['−10', '+55', '−10', '−10', '+30']
+      };
+
+      var els = {
+        balance: document.getElementById('balanceValue'),
+        bet: document.getElementById('betValue'),
+        lastBet: document.getElementById('lastBetValue'),
+        winTotal: document.getElementById('winTotalValue'),
+        history: document.getElementById('historyChips'),
+        playAgainWrap: document.getElementById('playAgainWrap'),
+        playAgainBtn: document.getElementById('playAgainBtn'),
+        spinBtn: document.getElementById('spinBtn'),
+        betDownBtn: document.getElementById('betDownBtn'),
+        betUpBtn: document.getElementById('betUpBtn'),
+        liveRegion: document.getElementById('liveRegion'),
+        reelGrid: document.getElementById('reelGrid')
+      };
+
+      function renderStats() {
+        els.balance.textContent = state.balance + ' credits';
+        els.bet.textContent = state.bet + ' credits';
+        els.lastBet.textContent = state.lastBet === null ? '—' : state.lastBet + ' credits';
+        els.winTotal.textContent = state.winTotal + ' credits';
+        els.history.innerHTML = state.history.length
+          ? state.history.map(function (h) { return '<span class="chip">' + h + '</span>'; }).join('')
+          : '<span class="chip">No spins recorded yet</span>';
+      }
+
+      function setControlsEnabled(enabled) {
+        els.spinBtn.disabled = !enabled;
+        els.betDownBtn.disabled = !enabled;
+        els.betUpBtn.disabled = !enabled;
+      }
+
+      function updatePlayAgainVisibility() {
+        // AC 3 / AC 1: only render Play Again once balance has fallen below the minimum bet.
+        var shouldShow = state.balance < MIN_BET;
+        if (shouldShow) {
+          els.playAgainWrap.hidden = false;
+          els.playAgainBtn.disabled = false;
+          setControlsEnabled(false); // AC 2
+          // AC 9: move keyboard focus to Play Again the moment it appears.
+          els.playAgainBtn.focus();
+        } else {
+          els.playAgainWrap.hidden = true;
+        }
+      }
+
+      // State: idle — initial render before any spin.
+      renderStats();
+
+      els.spinBtn.addEventListener('click', function () {
+        if (els.spinBtn.disabled) return;
+        setControlsEnabled(false);
+        els.reelGrid.querySelectorAll('.reel-cell').forEach(function (c) { c.classList.add('is-spinning'); });
+        els.liveRegion.textContent = '';
+
+        // State: spinning — simulated spin result resolution.
+        setTimeout(function () {
+          els.reelGrid.querySelectorAll('.reel-cell').forEach(function (c) { c.classList.remove('is-spinning'); });
+          // Fixture spin outcome: a loss that consumes the full remaining balance.
+          var wager = Math.min(state.bet, state.balance);
+          state.balance -= wager;
+          state.lastBet = wager;
+          state.history.unshift('−' + wager);
+          state.history = state.history.slice(0, 5);
+          renderStats();
+
+          if (state.balance >= MIN_BET) {
+            setControlsEnabled(true);
+          }
+          // State: zero-balance — spin result applied, evaluate Play Again visibility.
+          updatePlayAgainVisibility();
+        }, 700);
+      });
+
+      els.playAgainBtn.addEventListener('click', function () {
+        // AC 12 / AC 13: disable immediately, before the reset completes, so a second
+        // activation (e.g. a fast double-click or repeated Enter) cannot fire again.
+        if (els.playAgainBtn.disabled) return;
+        els.playAgainBtn.disabled = true;
+        els.playAgainBtn.textContent = 'Resetting…';
+
+        // State: resetting — simulated session reinitialisation (no page reload, AC 6).
+        setTimeout(function () {
+          // AC 4, 11: balance and ancillary session state return to defaults.
+          state.balance = DEFAULT_BALANCE;
+          state.bet = 10;
+          state.lastBet = null;
+          state.winTotal = 0;
+          state.history = [];
+          renderStats();
+
+          // AC 5: spin controls re-enable.
+          setControlsEnabled(true);
+
+          // State: recovered — Play Again hides again until the next zero-balance event.
+          els.playAgainWrap.hidden = true;
+          els.playAgainBtn.disabled = false;
+          els.playAgainBtn.textContent = 'Play Again';
+
+          // AC 10: announce both the balance reset and the controls re-enable together.
+          els.liveRegion.textContent = 'Balance reset to 1,000 credits. Spin controls re-enabled.';
+
+          // AC 7: canvas instance badge is untouched — same DOM node, no remount.
+          els.spinBtn.focus();
+        }, 600);
+      });
+
+      document.getElementById('restartDemoBtn').addEventListener('click', function () {
+        state.balance = 10;
+        state.bet = 10;
+        state.lastBet = 10;
+        state.winTotal = 45;
+        state.history = ['−10', '+55', '−10', '−10', '+30'];
+        renderStats();
+        setControlsEnabled(true);
+        els.playAgainWrap.hidden = true;
+        els.playAgainBtn.disabled = false;
+        els.playAgainBtn.textContent = 'Play Again';
+        els.liveRegion.textContent = '';
+      });
+    })();
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
