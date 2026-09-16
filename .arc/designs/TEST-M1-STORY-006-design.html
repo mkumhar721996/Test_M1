@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-006 · Payout calculation and result payload</title>
+
+<!-- Shared design system (do not inline — link only, per guidelines) -->
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
+  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #ffffff; /** Default page background. */
+  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
+  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<style>
+  /* Page-specific styles. Built exclusively from design tokens — no hardcoded colors/fonts. */
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding-bottom: var(--space-4);
+  }
+
+  /* ---------- Reviewer bar (canonical scaffold, always present) ---------- */
+  .reviewer-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-family: var(--font-family-base);
+  }
+  .reviewer-bar .reviewer-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    text-align: center;
+  }
+  .reviewer-bar .reviewer-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+  }
+  .reviewer-bar .reviewer-sub {
+    font-size: var(--font-size-sm);
+    opacity: 0.75;
+  }
+  .reviewer-bar button {
+    background: transparent;
+    color: var(--color-bg);
+    border: 1px solid var(--color-bg);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .reviewer-bar button:hover { opacity: 0.85; }
+  .reviewer-bar button:disabled { opacity: 0.35; cursor: default; }
+
+  /* ---------- App nav (project-appropriate; see comment in body) ---------- */
+  .app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+  }
+  .app-nav .crumb {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .app-nav .crumb strong { color: var(--color-fg); }
+
+  .page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .u-stack-2 > * + * { margin-top: var(--space-2); }
+
+  /* Bet level control */
+  .bet-level-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .bet-chip {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    cursor: pointer;
+  }
+  .bet-chip.is-active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+
+  /* Seed / reel stop readouts */
+  .kv-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+  .kv-row .k { color: var(--color-fg-muted); }
+  .kv-row .v {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--color-fg);
+  }
+  .stop-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .stop-chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: var(--font-size-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 2px var(--space-2);
+  }
+
+  /* Reel grid */
+  .reel-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-2);
+  }
+  .reel-cell {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+  .reel-cell.is-win {
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+    border: 2px solid var(--color-primary);
+  }
+  .reel-cell .line-badge {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    border-radius: 999px;
+    font-size: 10px;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+  }
+  .reel-cell.is-bar { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+  .reel-grid-caption {
+    margin-top: var(--space-2);
+  }
+
+  /* Spin control */
+  .spin-btn { width: 100%; }
+  .spin-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .is-hidden { display: none !important; }
+
+  /* Payload code panel */
+  .payload-panel {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: var(--font-size-sm);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    overflow-x: auto;
+    line-height: var(--line-height-base);
+    white-space: pre;
+  }
+  .payload-panel .tok-key { opacity: 0.6; }
+  .payload-panel .tok-str { }
+  .payload-panel .tok-num { font-weight: var(--font-weight-bold); }
+
+  /* Winning lines table */
+  table.lines-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  table.lines-table th,
+  table.lines-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  table.lines-table th {
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+  }
+  table.lines-table td.num,
+  table.lines-table th.num { text-align: right; }
+  table.lines-table tfoot td {
+    border-bottom: none;
+    border-top: 2px solid var(--color-border);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .empty-state {
+    padding: var(--space-4);
+    text-align: center;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .order-note {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .order-note code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--color-fg);
+  }
+
+  .total-banner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .total-banner .label { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .total-banner .amount { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); }
+
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 1px 6px;
+    margin-left: var(--space-2);
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+  <!--
+    Reviewer bar: canonical scaffold, always present.
+    Prev/Next cycle through the three fixture scenarios that together cover
+    every acceptance-criteria state for TEST-M1-STORY-006. Screen label updates live.
+  -->
+  <div class="reviewer-bar">
+    <button type="button" id="prevBtn" aria-label="Previous scenario">‹ Prev</button>
+    <div class="reviewer-meta">
+      <div class="reviewer-title" id="reviewerTitle">Scenario 1 of 3 — Multiple winning lines</div>
+      <div class="reviewer-sub">TEST-M1-STORY-006 · Payout calculation and result payload</div>
+    </div>
+    <button type="button" id="nextBtn" aria-label="Next scenario">Next ›</button>
+  </div>
+
+  <!--
+    App nav: this story has no end-user-facing screen of its own — the payout engine
+    output is consumed by the spin UI elsewhere in the product. This prototype is framed
+    as the internal QA/dev "Spin Result Inspector" used to verify calculation + payload
+    assembly, so a persistent product sidebar/nav is intentionally omitted in favor of a
+    lightweight breadcrumb identifying where this tool sits.
+  -->
+  <div class="app-nav">
+    <div class="crumb">Slot Engine <strong>›</strong> Payout &amp; Result Payload <strong>›</strong> Spin Result Inspector</div>
+    <div class="crumb" id="scenarioPill"></div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Spin Result Inspector</h1>
+      <p class="u-text-sm u-text-muted">
+        Triggers a spin against fixed fixture data and shows the assembled result payload —
+        seed, reel stops, winning lines (base payout × bet level), and total credits won.
+        Use <strong>Prev / Next</strong> above to review each scenario, and the bet level
+        control to see payout recalculate live.
+      </p>
+    </div>
+
+    <div class="layout">
+      <!-- ============ LEFT: Spin input + reel grid ============ -->
+      <div class="u-stack-2">
+
+        <div class="card">
+          <h3 class="card-title">Bet level<span class="ac-tag">AC1</span></h3>
+          <p class="card-body u-text-sm">Credit award recalculates as base payout × bet level.</p>
+          <div class="bet-level-row u-p-1" id="betLevelRow" style="padding-left:0;"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Spin input</h3>
+          <div class="u-stack">
+            <div class="kv-row"><span class="k">Seed</span><span class="v" id="seedValue"></span></div>
+            <div>
+              <div class="kv-row" style="margin-bottom: var(--space-1);"><span class="k">Reel stop indices</span></div>
+              <div class="stop-chips" id="stopChips"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Reel grid</h3>
+          <div class="reel-grid" id="reelGrid"></div>
+          <p class="u-text-sm u-text-muted reel-grid-caption" id="reelGridCaption"></p>
+        </div>
+
+        <div class="card">
+          <button type="button" class="btn btn-primary spin-btn" id="spinBtn">Simulate spin</button>
+          <div class="spin-status u-p-1" style="padding-left:0; margin-top: var(--space-2);">
+            <!-- State: idle -->
+            <span id="statusIdle">Ready to spin.</span>
+            <!-- State: spinning -->
+            <span id="statusSpinning" class="is-hidden"><span class="spinner"></span> Spinning reels…</span>
+            <!-- State: revealed -->
+            <span id="statusRevealed" class="is-hidden">Result payload assembled below.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ RIGHT: Result payload + winning lines ============ -->
+      <div class="u-stack-2">
+
+        <div id="resultsIdlePlaceholder" class="card">
+          <h3 class="card-title">Result payload</h3>
+          <p class="card-body">Click <strong>Simulate spin</strong> to assemble the result payload for this scenario.</p>
+        </div>
+
+        <div id="resultsRevealed" class="is-hidden u-stack-2">
+
+          <div class="card">
+            <h3 class="card-title">Result payload<span class="ac-tag">AC2</span></h3>
+            <div class="payload-panel" id="payloadPanel"></div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">
+              Winning lines
+              <span class="ac-tag">AC3</span><span class="ac-tag">AC6</span>
+            </h3>
+            <p class="card-body u-text-sm" id="orderNoteWrap"></p>
+            <table class="lines-table">
+              <thead>
+                <tr>
+                  <th>Pay-line</th>
+                  <th>Symbol combination</th>
+                  <th class="num">Base payout</th>
+                  <th class="num">Bet level</th>
+                  <th class="num">Credit award</th>
+                </tr>
+              </thead>
+              <tbody id="linesTableBody"></tbody>
+            </table>
+            <div id="linesEmptyState" class="empty-state is-hidden">
+              No winning lines on this spin — winning-lines list is empty.
+            </div>
+          </div>
+
+          <div class="total-banner">
+            <span class="label" id="totalLabel">Total credits won<span class="ac-tag">AC4</span><span class="ac-tag">AC5</span></span>
+            <span class="amount" id="totalAmount"></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ---------------------------------------------------------------------
+  // Inline fixture data. Nothing here is computed by a real payout engine —
+  // this prototype only simulates the UI/interaction of reviewing a result.
+  // ---------------------------------------------------------------------
+  var SYMBOL_GLYPH = {
+    CHERRY: '🍒', LEMON: '🍋', BELL: '🔔', STAR: '⭐', SEVEN: '7️⃣', BAR: 'BAR'
+  };
+
+  var scenarios = [
+    {
+      name: 'Multiple winning lines',
+      seed: '7f3a9c21-4b6e-4d10-9e2a-51c8d6f0a933',
+      reelStops: [12, 45, 3, 27, 8],
+      defaultBetLevel: 3,
+      grid: [
+        ['STAR', 'STAR', 'STAR', 'LEMON', 'BAR'],
+        ['BELL', 'BELL', 'BELL', 'BELL', 'CHERRY'],
+        ['SEVEN', 'SEVEN', 'SEVEN', 'SEVEN', 'SEVEN']
+      ],
+      // Raw order lines were resolved in during evaluation (left deliberately
+      // out of ascending order to demonstrate the payload's sort step, AC6).
+      rawEvaluationOrder: [7, 2, 9],
+      winningLines: [
+        { lineIndex: 7, symbol: 'BELL', count: 4, basePayout: 40, cells: [[1,0],[1,1],[1,2],[1,3]] },
+        { lineIndex: 2, symbol: 'STAR', count: 3, basePayout: 25, cells: [[0,0],[0,1],[0,2]] },
+        { lineIndex: 9, symbol: 'SEVEN', count: 5, basePayout: 100, cells: [[2,0],[2,1],[2,2],[2,3],[2,4]] }
+      ]
+    },
+    {
+      name: 'Single winning line',
+      seed: 'b2e6f8a0-1c4d-4a9b-8e3f-6a2d9c0b7e15',
+      reelStops: [30, 2, 19, 44, 6],
+      defaultBetLevel: 2,
+      grid: [
+        ['BAR', 'LEMON', 'BELL', 'STAR', 'BAR'],
+        ['CHERRY', 'CHERRY', 'CHERRY', 'BELL', 'STAR'],
+        ['LEMON', 'BAR', 'SEVEN', 'LEMON', 'BELL']
+      ],
+      rawEvaluationOrder: [4],
+      winningLines: [
+        { lineIndex: 4, symbol: 'CHERRY', count: 3, basePayout: 10, cells: [[1,0],[1,1],[1,2]] }
+      ]
+    },
+    {
+      name: 'No winning lines',
+      seed: 'd4a1c7e2-9f5b-4e8a-b3d6-2f7a8c1e4b90',
+      reelStops: [17, 33, 5, 41, 22],
+      defaultBetLevel: 5,
+      grid: [
+        ['BAR', 'LEMON', 'BELL', 'STAR', 'CHERRY'],
+        ['SEVEN', 'BAR', 'LEMON', 'BELL', 'STAR'],
+        ['CHERRY', 'SEVEN', 'BAR', 'LEMON', 'BELL']
+      ],
+      rawEvaluationOrder: [],
+      winningLines: []
+    }
+  ];
+
+  var BET_LEVELS = [1, 2, 3, 5, 10];
+
+  var state = {
+    scenarioIndex: 0,
+    betLevel: scenarios[0].defaultBetLevel,
+    phase: 'idle' // idle | spinning | revealed
+  };
+
+  function currentScenario() { return scenarios[state.scenarioIndex]; }
+
+  function sortedWinningLines(scenario) {
+    return scenario.winningLines.slice().sort(function (a, b) {
+      return a.lineIndex - b.lineIndex;
+    });
+  }
+
+  function creditAward(basePayout, betLevel) {
+    return basePayout * betLevel;
+  }
+
+  function totalCredits(scenario, betLevel) {
+    return scenario.winningLines.reduce(function (sum, line) {
+      return sum + creditAward(line.basePayout, betLevel);
+    }, 0);
+  }
+
+  function cellIsWinning(scenario, row, col) {
+    for (var i = 0; i < scenario.winningLines.length; i++) {
+      var cells = scenario.winningLines[i].cells;
+      for (var j = 0; j < cells.length; j++) {
+        if (cells[j][0] === row && cells[j][1] === col) return scenario.winningLines[i].lineIndex;
+      }
+    }
+    return null;
+  }
+
+  function renderBetLevels() {
+    var row = document.getElementById('betLevelRow');
+    row.innerHTML = '';
+    BET_LEVELS.forEach(function (lvl) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'bet-chip' + (lvl === state.betLevel ? ' is-active' : '');
+      chip.textContent = lvl + '×';
+      chip.addEventListener('click', function () {
+        state.betLevel = lvl;
+        renderBetLevels();
+        if (state.phase === 'revealed') renderResults();
+      });
+      row.appendChild(chip);
+    });
+  }
+
+  function renderInputs() {
+    var scenario = currentScenario();
+    document.getElementById('seedValue').textContent = scenario.seed;
+
+    var stopChips = document.getElementById('stopChips');
+    stopChips.innerHTML = '';
+    scenario.reelStops.forEach(function (stop, i) {
+      var chip = document.createElement('span');
+      chip.className = 'stop-chip';
+      chip.textContent = 'reel ' + (i + 1) + ': ' + stop;
+      stopChips.appendChild(chip);
+    });
+
+    var grid = document.getElementById('reelGrid');
+    grid.innerHTML = '';
+    scenario.grid.forEach(function (row, r) {
+      row.forEach(function (symbol, c) {
+        var cell = document.createElement('div');
+        var lineIdx = cellIsWinning(scenario, r, c);
+        cell.className = 'reel-cell' + (lineIdx !== null ? ' is-win' : '') + (symbol === 'BAR' ? ' is-bar' : '');
+        cell.textContent = SYMBOL_GLYPH[symbol];
+        if (lineIdx !== null) {
+          var badge = document.createElement('span');
+          badge.className = 'line-badge';
+          badge.textContent = lineIdx;
+          cell.appendChild(badge);
+        }
+        grid.appendChild(cell);
+      });
+    });
+
+    var caption = document.getElementById('reelGridCaption');
+    caption.textContent = scenario.winningLines.length
+      ? 'Highlighted cells + badges mark the winning pay-line indices.'
+      : 'No matching pay-lines on this grid.';
+  }
+
+  function renderPayload() {
+    var scenario = currentScenario();
+    var sorted = sortedWinningLines(scenario);
+    var total = totalCredits(scenario, state.betLevel);
+
+    var linesJson = sorted.map(function (line) {
+      return '    {\n' +
+        '      <span class="tok-key">lineIndex</span>: <span class="tok-num">' + line.lineIndex + '</span>,\n' +
+        '      <span class="tok-key">basePayout</span>: <span class="tok-num">' + line.basePayout + '</span>,\n' +
+        '      <span class="tok-key">betLevel</span>: <span class="tok-num">' + state.betLevel + '</span>,\n' +
+        '      <span class="tok-key">creditAward</span>: <span class="tok-num">' + creditAward(line.basePayout, state.betLevel) + '</span>\n' +
+        '    }';
+    }).join(',\n');
+
+    var html =
+      '{\n' +
+      '  <span class="tok-key">seed</span>: "<span class="tok-str">' + scenario.seed + '</span>",\n' +
+      '  <span class="tok-key">reelStops</span>: [<span class="tok-num">' + scenario.reelStops.join(', ') + '</span>],\n' +
+      '  <span class="tok-key">winningLines</span>: [' + (sorted.length ? '\n' + linesJson + '\n  ' : '') + '],\n' +
+      '  <span class="tok-key">totalCreditsWon</span>: <span class="tok-num">' + total + '</span>\n' +
+      '}';
+
+    document.getElementById('payloadPanel').innerHTML = html;
+  }
+
+  function renderLinesTable() {
+    var scenario = currentScenario();
+    var sorted = sortedWinningLines(scenario);
+    var tbody = document.getElementById('linesTableBody');
+    tbody.innerHTML = '';
+
+    var orderNote = document.getElementById('orderNoteWrap');
+    if (scenario.rawEvaluationOrder.length > 1) {
+      orderNote.innerHTML =
+        'Evaluated win-check order: <code>' + scenario.rawEvaluationOrder.join(', ') + '</code> ' +
+        '&mdash; payload sorts ascending by pay-line index before assembly: <code>' +
+        sorted.map(function (l) { return l.lineIndex; }).join(', ') + '</code>.';
+      orderNote.classList.remove('is-hidden');
+    } else {
+      orderNote.innerHTML = '';
+    }
+
+    if (!sorted.length) {
+      document.querySelector('table.lines-table').classList.add('is-hidden');
+      document.getElementById('linesEmptyState').classList.remove('is-hidden');
+    } else {
+      document.querySelector('table.lines-table').classList.remove('is-hidden');
+      document.getElementById('linesEmptyState').classList.add('is-hidden');
+
+      sorted.forEach(function (line) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>Line ' + line.lineIndex + '</td>' +
+          '<td>' + SYMBOL_GLYPH[line.symbol] + ' × ' + line.count + ' (' + line.symbol + ')</td>' +
+          '<td class="num">' + line.basePayout + '</td>' +
+          '<td class="num">' + state.betLevel + '×</td>' +
+          '<td class="num">' + creditAward(line.basePayout, state.betLevel) + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('totalAmount').textContent = totalCredits(scenario, state.betLevel) + ' credits';
+  }
+
+  function renderResults() {
+    renderPayload();
+    renderLinesTable();
+  }
+
+  function setPhase(phase) {
+    state.phase = phase;
+    document.getElementById('statusIdle').classList.toggle('is-hidden', phase !== 'idle');
+    document.getElementById('statusSpinning').classList.toggle('is-hidden', phase !== 'spinning');
+    document.getElementById('statusRevealed').classList.toggle('is-hidden', phase !== 'revealed');
+    document.getElementById('resultsIdlePlaceholder').classList.toggle('is-hidden', phase === 'revealed');
+    document.getElementById('resultsRevealed').classList.toggle('is-hidden', phase !== 'revealed');
+    document.getElementById('spinBtn').disabled = (phase === 'spinning');
+  }
+
+  function renderScenarioChrome() {
+    var scenario = currentScenario();
+    document.getElementById('reviewerTitle').textContent =
+      'Scenario ' + (state.scenarioIndex + 1) + ' of ' + scenarios.length + ' — ' + scenario.name;
+    document.getElementById('scenarioPill').textContent = scenario.name;
+    document.getElementById('prevBtn').disabled = state.scenarioIndex === 0;
+    document.getElementById('nextBtn').disabled = state.scenarioIndex === scenarios.length - 1;
+  }
+
+  function goToScenario(index) {
+    state.scenarioIndex = index;
+    state.betLevel = currentScenario().defaultBetLevel;
+    renderScenarioChrome();
+    renderBetLevels();
+    renderInputs();
+    setPhase('idle');
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function () {
+    if (state.scenarioIndex > 0) goToScenario(state.scenarioIndex - 1);
+  });
+  document.getElementById('nextBtn').addEventListener('click', function () {
+    if (state.scenarioIndex < scenarios.length - 1) goToScenario(state.scenarioIndex + 1);
+  });
+
+  document.getElementById('spinBtn').addEventListener('click', function () {
+    setPhase('spinning');
+    // Simulated interaction only — no live spin engine behind this prototype.
+    setTimeout(function () {
+      renderResults();
+      setPhase('revealed');
+    }, 700);
+  });
+
+  // Initial render
+  renderScenarioChrome();
+  renderBetLevels();
+  renderInputs();
+  setPhase('idle');
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
