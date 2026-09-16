@@ -2,22 +2,38 @@ summary: |
   This repo currently has no application code at all — only the design-system token/CSS
   scaffold from TEST-M1-CHORE-002 (no package.json, no bundler, no test runner, no src/ or
   index.html). TEST-M1-STORY-007 is the first story of the Player Wallet & Betting epic, so
-  this plan bootstraps a minimal client-only app (Vite + vanilla JS + Vitest/jsdom) alongside
-  the actual feature: a session-scoped wallet that starts every page load at 1,000 credits,
-  is displayed with no login/registration/account UI, and can be spent via a minimal
-  place-bet action, all driven test-first. Because the wallet lives only in an in-memory JS
-  module (no localStorage/cookies/backend call), a browser reload naturally re-initialises it
-  to 1,000 — that "reset on reload" behavior is verified by re-running the same init routine
-  against a fresh DOM rather than by adding any explicit reset/clear code.
+  this plan bootstraps a minimal client-only app alongside the actual feature: a
+  session-scoped wallet that starts every page load at 1,000 credits, is displayed with no
+  login/registration/account UI, and can be spent via a minimal place-bet action, all driven
+  test-first. Because the wallet lives only in an in-memory JS module (no localStorage/cookies/
+  backend call), a browser reload naturally re-initialises it to 1,000 — that "reset on
+  reload" behavior is verified by re-running the same init routine against a fresh DOM rather
+  than by adding any explicit reset/clear code.
+
+  IMPLEMENTATION NOTE (post-plan divergence): the plan below originally specified
+  Vite + Vitest + jsdom. During implementation, the sandbox's npm registry access was blocked
+  (the proxy returns HTTP 403 for `registry.npmjs.org`, confirmed via both `npm install` and a
+  direct `curl` through the proxy, with no package cached anywhere on disk), so none of those
+  three packages could be installed. The implementation instead uses only what ships with
+  Node 22 out of the box: `node --test` as the test runner (see `package.json`'s `test`
+  script) and a small hand-rolled DOM test double at `test/support/fakeDocument.js` (built on
+  Node's native `EventTarget`/`Event` globals) standing in for jsdom. `npm run dev` uses a
+  ~25-line dependency-free static file server (`scripts/dev-server.mjs`) instead of Vite. This
+  keeps `package.json` dependency-free and the story shippable without network access; the
+  `package_dependencies` list and `vite.config.js` reference below are retained for history but
+  were not applied — see the updated scope/tests notes inline.
 
 scope:
   - description: |
-      Bootstrap the app project (none exists yet): `package.json`, `vite.config.js` (test
-      environment set to `jsdom`), and a `.gitignore` for `node_modules`. Wires up `npm test`
-      (vitest) and `npm run dev` (vite) as the project's first scripts.
+      Bootstrap the app project (none exists yet): `package.json` and a `.gitignore` for
+      `node_modules`. Wires up `npm test` (`node --test "test/*.test.js"`, Node's built-in
+      runner) and `npm run dev` (`scripts/dev-server.mjs`, a dependency-free static file
+      server) as the project's first scripts. No `vite.config.js` is created — see the
+      IMPLEMENTATION NOTE in the summary above for why Vite/Vitest/jsdom were dropped in
+      favor of zero-install, Node-native tooling.
     files:
       - package.json
-      - vite.config.js
+      - scripts/dev-server.mjs
       - .gitignore
     rationale: |
       No build/test tooling exists in the repo yet; every later scope item needs a place to
@@ -67,11 +83,13 @@ scope:
       browser a real entry point.
 
   - description: |
-      Add `test/wallet.test.js` and `test/main.test.js` (vitest, jsdom environment) covering
-      the four acceptance criteria end to end against the rendered DOM shell.
+      Add `test/wallet.test.js` and `test/main.test.js` (Node's built-in `node:test` runner,
+      using the `test/support/fakeDocument.js` DOM double in place of jsdom) covering the
+      four acceptance criteria end to end against the rendered DOM shell.
     files:
       - test/wallet.test.js
       - test/main.test.js
+      - test/support/fakeDocument.js
     rationale: |
       Test-first: these are written and run failing before `wallet.js`/`main.js`/`index.html`
       exist, then made to pass with the minimal code above.
@@ -139,22 +157,27 @@ assumptions_or_open_questions:
   - "No application code, package.json, or test runner exists in the repo yet, so this plan includes bootstrapping the project itself rather than assuming an existing app shell to extend."
   - "Treated the wallet as in-memory JS state with zero persistence (no localStorage/sessionStorage/cookies/backend) as the mechanism for AC3 — the story doesn't say this explicitly, but it's the minimal way to satisfy \"reload resets to 1,000\" without adding an explicit clear/reset feature."
   - "AC2's 'place a bet' is scoped to a minimal validated balance deduction (src/wallet.js placeBet) — spin resolution, payouts, and crediting winnings are separate stories under the Player Wallet & Betting epic and are out of scope here."
-  - "Chose Vite + vanilla JS + Vitest/jsdom as the stack since nothing in the repo currently dictates a framework; this keeps the app aligned with the plain HTML/CSS-custom-properties style already used by design-system/style-guide.html."
+  - "Originally chose Vite + vanilla JS + Vitest/jsdom as the stack since nothing in the repo currently dictates a framework; this keeps the app aligned with the plain HTML/CSS-custom-properties style already used by design-system/style-guide.html. Implemented instead with vanilla JS + Node's built-in test runner + a hand-rolled DOM double, because the sandbox has no npm registry access (see IMPLEMENTATION NOTE above) — the app itself remains framework-free either way."
   - "index.html is the real game entry, distinct from design-system/style-guide.html, but reuses the same tokens.css/prototype-utils.css links for visual consistency."
 
 package_dependencies:
+  # None. The plan originally called for vite/vitest/jsdom (see below for the original
+  # rationale), but the sandbox has no npm registry access (proxy returns HTTP 403 for
+  # registry.npmjs.org; confirmed via `npm install` and `curl`, with nothing cached on disk).
+  # The implementation adds zero runtime/dev dependencies and relies only on Node 22 built-ins
+  # (`node --test`, native `EventTarget`/`Event`, `node:http`/`node:fs`).
   - name: vite
     version: ^5.4.0
     ecosystem: npm
-    rationale: Dev server and bundler for the game's HTML/JS entry point; nothing in the repo currently provides one.
+    rationale: "NOT INSTALLED (blocked npm registry access). Originally: dev server and bundler for the game's HTML/JS entry point; replaced by scripts/dev-server.mjs."
   - name: vitest
     version: ^2.1.0
     ecosystem: npm
-    rationale: Test runner for the test-first wallet/DOM tests; no test framework exists in the repo yet.
+    rationale: "NOT INSTALLED (blocked npm registry access). Originally: test runner for the test-first wallet/DOM tests; replaced by Node's built-in `node --test`."
   - name: jsdom
     version: ^25.0.0
     ecosystem: npm
-    rationale: DOM environment for vitest so test/main.test.js can render #balance/#bet-form and dispatch events without a real browser.
+    rationale: "NOT INSTALLED (blocked npm registry access). Originally: DOM environment for vitest; replaced by test/support/fakeDocument.js, a minimal DOM double built on Node's native EventTarget/Event."
 
 notes: |
   Base commit for this work item is `08c828a` (post TEST-M1-CHORE-002 design-system bootstrap);
