@@ -10,18 +10,28 @@ export function initGame(doc = document) {
 
   const balanceDisplay = doc.createElement('p');
   balanceDisplay.id = 'balance';
+  balanceDisplay.className = 'u-text-lg';
   root.appendChild(balanceDisplay);
 
   const form = doc.createElement('form');
   form.id = 'bet-form';
+  form.className = 'u-stack';
+
+  const amountLabel = doc.createElement('label');
+  amountLabel.setAttribute('for', 'bet-amount');
+  amountLabel.className = 'label';
+  amountLabel.textContent = 'Bet amount';
+  form.appendChild(amountLabel);
 
   const amountInput = doc.createElement('input');
   amountInput.id = 'bet-amount';
   amountInput.type = 'number';
+  amountInput.className = 'input';
   form.appendChild(amountInput);
 
   const submitButton = doc.createElement('button');
   submitButton.type = 'submit';
+  submitButton.className = 'btn btn-primary';
   submitButton.textContent = 'Place bet';
   form.appendChild(submitButton);
 
