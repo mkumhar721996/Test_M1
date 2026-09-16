@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Test M1</title>
+<link rel="stylesheet" href="design-system/tokens.css" />
+<link rel="stylesheet" href="design-system/prototype-utils.css" />
+<style>
+  body {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: var(--space-4);
+    font-family: var(--font-family-base);
+    color: var(--color-fg);
+    background: var(--color-bg);
+  }
+  #balance {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+  #bet-form {
+    display: flex;
+    gap: var(--space-2);
+  }
+  #bet-amount {
+    border: 1px solid var(--input-default-border);
+    border-radius: var(--input-default-radius);
+    padding: var(--space-2);
+  }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/entry.js"></script>
+</body>
+</html>
