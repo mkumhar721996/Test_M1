@@ -14,7 +14,14 @@ const contentTypes = {
 
 export function createApp() {
   return async (req, res) => {
-    const requestPath = req.url === '/' ? '/index.html' : decodeURIComponent(req.url);
+    let requestPath;
+    try {
+      requestPath = req.url === '/' ? '/index.html' : decodeURIComponent(req.url);
+    } catch {
+      res.writeHead(400);
+      res.end('Bad request');
+      return;
+    }
     const resolved = resolve(join(root, requestPath));
     const rel = relative(root, resolved);
 

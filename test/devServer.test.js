@@ -34,3 +34,9 @@ test('blocks encoded path traversal outside the project root', async () => {
   const { status } = await request(app, '/%2e%2e/%2e%2e/%2e%2e/etc/passwd');
   assert.equal(status, 403);
 });
+
+test('returns 400 instead of crashing on malformed percent-encoding', async () => {
+  const app = createApp();
+  const { status } = await request(app, '/%');
+  assert.equal(status, 400);
+});

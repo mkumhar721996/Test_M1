@@ -37,6 +37,12 @@ export function initGame(doc = document) {
 
   root.appendChild(form);
 
+  const errorDisplay = doc.createElement('div');
+  errorDisplay.id = 'bet-error';
+  errorDisplay.setAttribute('role', 'alert');
+  errorDisplay.setAttribute('aria-live', 'assertive');
+  root.appendChild(errorDisplay);
+
   function render() {
     balanceDisplay.textContent = `Balance: ${formatBalance(wallet.balance)} credits`;
   }
@@ -44,9 +50,15 @@ export function initGame(doc = document) {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const amount = Number(amountInput.value);
-    const updated = placeBet(wallet, amount);
-    wallet.balance = updated.balance;
-    render();
+    try {
+      const updated = placeBet(wallet, amount);
+      wallet.balance = updated.balance;
+      errorDisplay.textContent = '';
+      render();
+    } catch (error) {
+      console.error('Bet placement failed', { amount, balance: wallet.balance, error: error.message });
+      errorDisplay.textContent = error.message;
+    }
   });
 
   render();

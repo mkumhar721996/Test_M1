@@ -23,3 +23,8 @@ test('placeBet rejects a non-positive bet amount', () => {
   const wallet = createWallet();
   assert.throws(() => placeBet(wallet, 0), /Invalid bet amount/);
 });
+
+test('placeBet rejects a NaN bet amount instead of corrupting the balance', () => {
+  const wallet = createWallet();
+  assert.throws(() => placeBet(wallet, NaN), /Invalid bet amount/);
+});

@@ -5,7 +5,7 @@ export function createWallet(startingBalance = STARTING_BALANCE) {
 }
 
 export function placeBet(wallet, amount) {
-  if (amount <= 0 || amount > wallet.balance) {
+  if (!Number.isFinite(amount) || amount <= 0 || amount > wallet.balance) {
     throw new Error('Invalid bet amount');
   }
   return { balance: wallet.balance - amount };

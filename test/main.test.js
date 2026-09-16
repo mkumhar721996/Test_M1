@@ -41,3 +41,25 @@ test('AC4: shows no login, registration, or account UI', () => {
   assert.equal(doc.querySelector('input[type="password"]'), null);
   assert.doesNotMatch(doc.body.textContent.toLowerCase(), /log ?in|sign ?up|register|account/);
 });
+
+test('an invalid bet does not throw and announces an accessible error instead', () => {
+  const doc = createFakeDocument();
+  const wallet = initGame(doc);
+  assert.doesNotThrow(() => submitBet(doc, 5000));
+  assert.equal(wallet.balance, 1000);
+  const errorDisplay = doc.querySelector('#bet-error');
+  assert.match(errorDisplay.textContent, /Invalid bet amount/);
+  assert.equal(errorDisplay.getAttribute('role'), 'alert');
+  assert.equal(errorDisplay.getAttribute('aria-live'), 'assertive');
+});
+
+test('a valid bet after a failed one clears the previous error message', () => {
+  const doc = createFakeDocument();
+  const wallet = initGame(doc);
+  submitBet(doc, 5000);
+  assert.match(doc.querySelector('#bet-error').textContent, /Invalid bet amount/);
+
+  submitBet(doc, 100);
+  assert.equal(wallet.balance, 900);
+  assert.equal(doc.querySelector('#bet-error').textContent, '');
+});
