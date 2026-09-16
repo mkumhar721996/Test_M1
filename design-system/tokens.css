@@ -1,0 +1,41 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
+  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #ffffff; /** Default page background. */
+  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
+  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
