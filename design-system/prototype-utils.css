@@ -112,6 +112,16 @@
   font-weight: var(--font-weight-regular);
 }
 
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chip.is-active {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+}
+
 /* Form controls */
 .input {
   display: block;
