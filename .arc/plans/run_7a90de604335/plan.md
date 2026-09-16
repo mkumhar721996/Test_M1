@@ -140,11 +140,13 @@ assumptions_or_open_questions:
   - "Balance is rendered as a plain integer string (e.g. \"125\") with no currency symbol or locale formatting, consistent with the epic description calling it an in-session 'play-money' balance rather than real currency."
   - "The spin button's disabled/enabled lifecycle before/during a spin (i.e. disabling it when a spin starts) belongs to the bet-placement story; this story only owns re-enabling it after the winnings credit + display update, per AC3's literal wording ('before the next spin can be initiated')."
   - "Vitest is chosen as the test runner because it requires no additional config for plain ESM JS and is currently the lightest-weight standard choice for a from-scratch Node project; no existing convention in the repo dictates a runner."
+  - "DEVIATION FROM PLAN: the implementation uses Node's built-in `node:test` runner (via `node --test`) instead of the vitest@^2.1.0 devDependency specified above. `npm install vitest` fails in the execution environment with a 403 Forbidden from the npm registry (no network access to install any new package), so vitest could not actually be installed. `node:test`/`node:assert/strict` ship with the installed Node 22 runtime with zero external dependencies, satisfy the same test-first requirement, and `npm test` (`node --test`) runs and passes all suites. If a future story needs vitest-specific features (snapshot testing, jsdom environment, etc.) and registry access is restored, the test files would need to be migrated from `node:test`/`node:assert` syntax to `describe/it/expect`."
 package_dependencies:
   - name: vitest
     version: "^2.1.0"
     ecosystem: npm
     rationale: "No test runner exists anywhere in the repo yet; Vitest is needed as the devDependency to write and run the failing tests this plan specifies."
+    status: "NOT INSTALLED — see assumptions_or_open_questions deviation note. `node --test` (built-in, zero dependencies) is used instead because the execution environment has no npm registry access."
 notes: |
   This is a greenfield story: `design-system/` currently contains only CSS tokens and a static
   HTML style guide (no JS/TS application code, no `package.json`). This plan introduces the
