@@ -1,9 +1,10 @@
-import { createGameState } from './state/gameState.js';
-import { createBetState } from './state/betState.js';
-import { createPaytableController } from './components/paytable/Paytable.js';
-import { createPaytableControl } from './components/paytableControl/PaytableControl.js';
+import { createGameState } from './state/gameState.ts';
+import { createBetState } from './state/betState.ts';
+import { createPaytableController } from './components/paytable/Paytable.ts';
+import { createPaytableControl } from './components/paytableControl/PaytableControl.ts';
+import type { EngineConfig } from './state/engineConfig.ts';
 
-const engineConfig = {
+const engineConfig: EngineConfig = {
   symbols: [
     { id: 'seven', name: 'Seven', payoutPerLine: { 3: 50, 4: 200, 5: 1000 } },
     { id: 'bell', name: 'Bell', payoutPerLine: { 3: 20, 4: 80, 5: 300 } },
@@ -22,8 +23,8 @@ const engineConfig = {
 const gameState = createGameState('idle');
 const betState = createBetState([0.1, 0.25, 0.5, 1, 2]);
 
-const app = document.getElementById('app');
-const mountPoint = document.getElementById('paytable-mount');
+const app = document.getElementById('app') as HTMLElement;
+const mountPoint = document.getElementById('paytable-mount') as HTMLElement;
 
 const controller = createPaytableController({ config: engineConfig, gameState, betState, mountPoint });
 const control = createPaytableControl({

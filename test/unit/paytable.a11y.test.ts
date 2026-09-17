@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { installDom } from '../helpers/domShim.js';
-import { createGameState } from '../../src/state/gameState.js';
-import { createBetState } from '../../src/state/betState.js';
-import { createPaytableController } from '../../src/components/paytable/Paytable.js';
+import { installDom } from '../helpers/domShim.ts';
+import { createGameState } from '../../src/state/gameState.ts';
+import { createBetState } from '../../src/state/betState.ts';
+import { createPaytableController } from '../../src/components/paytable/Paytable.ts';
 
 const fullConfig = {
   symbols: [{ id: 'bell', name: 'Bell', payoutPerLine: { 3: 5 } }],

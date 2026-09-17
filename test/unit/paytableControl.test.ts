@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { installDom, fireClick } from '../helpers/domShim.js';
-import { createGameState } from '../../src/state/gameState.js';
-import { createPaytableControl } from '../../src/components/paytableControl/PaytableControl.js';
+import { installDom, fireClick } from '../helpers/domShim.ts';
+import { createGameState } from '../../src/state/gameState.ts';
+import { createPaytableControl } from '../../src/components/paytableControl/PaytableControl.ts';
 
 test('the control is enabled and native button while idle, and opens on click (AC7)', () => {
   installDom();

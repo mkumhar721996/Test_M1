@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createBetState } from '../../src/state/betState.js';
+import { createBetState } from '../../src/state/betState.ts';
 
 test('createBetState defaults to the first level', () => {
   const betState = createBetState([0.1, 0.5, 1]);

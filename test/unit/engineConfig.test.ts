@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadEngineConfig, scalePayout } from '../../src/state/engineConfig.js';
+import { loadEngineConfig, scalePayout } from '../../src/state/engineConfig.ts';
 
 const validRaw = {
   symbols: [

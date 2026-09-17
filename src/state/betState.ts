@@ -1,4 +1,10 @@
-export function createBetState(levels, initialIndex = 0) {
+export interface BetState {
+  getBetPerLine(): number;
+  getLevelIndex(): number;
+  setLevel(index: number): void;
+}
+
+export function createBetState(levels: number[], initialIndex = 0): BetState {
   if (!Array.isArray(levels) || levels.length === 0) {
     throw new Error('createBetState requires a non-empty array of bet levels');
   }

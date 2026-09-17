@@ -1,9 +1,27 @@
-import { loadEngineConfig, scalePayout } from '../../state/engineConfig.js';
+import { loadEngineConfig, scalePayout } from '../../state/engineConfig.ts';
+import type { EngineConfig } from '../../state/engineConfig.ts';
+import type { GameState } from '../../state/gameState.ts';
+import type { BetState } from '../../state/betState.ts';
 
 const ERROR_MESSAGE = 'Paytable is currently unavailable.';
 
-function lineCountsFor(symbols) {
-  const counts = new Set();
+export interface PaytableController {
+  open(trigger: HTMLElement): void;
+  close(): void;
+  isOpen(): boolean;
+  dismissError(): void;
+  getFocusableElements(): HTMLElement[];
+}
+
+export interface PaytableControllerDeps {
+  config: unknown;
+  gameState: GameState;
+  betState: BetState;
+  mountPoint: HTMLElement;
+}
+
+function lineCountsFor(symbols: EngineConfig['symbols']): number[] {
+  const counts = new Set<number>();
   for (const symbol of symbols) {
     for (const count of Object.keys(symbol.payoutPerLine)) {
       counts.add(Number(count));
@@ -12,7 +30,7 @@ function lineCountsFor(symbols) {
   return Array.from(counts).sort((a, b) => a - b);
 }
 
-function buildErrorSection(onDismiss) {
+function buildErrorSection(onDismiss: () => void): { section: HTMLElement; focusableElements: HTMLElement[] } {
   const section = document.createElement('div');
   section.setAttribute('role', 'alert');
   section.setAttribute('data-testid', 'paytable-error');
@@ -34,9 +52,12 @@ function buildErrorSection(onDismiss) {
   return { section, focusableElements: [dismissButton] };
 }
 
-function buildTableSection(config, betState) {
+function buildTableSection(
+  config: EngineConfig,
+  betState: BetState,
+): { section: HTMLElement; focusableElements: HTMLElement[] } {
   const counts = lineCountsFor(config.symbols);
-  const focusableElements = [];
+  const focusableElements: HTMLElement[] = [];
 
   const table = document.createElement('table');
   table.setAttribute('data-testid', 'paytable-table');
@@ -108,16 +129,16 @@ function buildTableSection(config, betState) {
   return { section: wrapper, focusableElements };
 }
 
-export function createPaytableController({ config, gameState, betState, mountPoint }) {
-  let dialog = null;
-  let trigger = null;
-  let focusableElements = [];
+export function createPaytableController({ config, gameState, betState, mountPoint }: PaytableControllerDeps): PaytableController {
+  let dialog: HTMLElement | null = null;
+  let trigger: HTMLElement | null = null;
+  let focusableElements: HTMLElement[] = [];
   let errorDismissed = false;
-  let keydownHandler = null;
+  let keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
-  function trapFocus(event) {
+  function trapFocus(event: KeyboardEvent) {
     if (event.key !== 'Tab' || focusableElements.length === 0) return;
-    const currentIndex = focusableElements.indexOf(document.activeElement);
+    const currentIndex = focusableElements.indexOf(document.activeElement as HTMLElement);
 
     event.preventDefault();
     if (event.shiftKey) {
@@ -180,10 +201,10 @@ export function createPaytableController({ config, gameState, betState, mountPoi
     mountPoint.appendChild(dialog);
 
     keydownHandler = trapFocus;
-    dialog.addEventListener('keydown', keydownHandler);
+    dialog.addEventListener('keydown', keydownHandler as EventListener);
   }
 
-  function open(triggerElement) {
+  function open(triggerElement: HTMLElement) {
     if (gameState.getStatus() !== 'idle') return;
     errorDismissed = false;
     trigger = triggerElement;
@@ -193,7 +214,7 @@ export function createPaytableController({ config, gameState, betState, mountPoi
 
   function close() {
     if (!dialog) return;
-    if (keydownHandler) dialog.removeEventListener('keydown', keydownHandler);
+    if (keydownHandler) dialog.removeEventListener('keydown', keydownHandler as EventListener);
     mountPoint.textContent = '';
     dialog = null;
     focusableElements = [];

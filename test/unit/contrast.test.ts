@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { contrastRatio } from '../../src/utils/contrast.js';
+import { contrastRatio } from '../../src/utils/contrast.ts';
 import tokens from '../../design-system/tokens.json' with { type: 'json' };
 
 test('color-fg on color-bg (used for paytable body text) clears 4.5:1', () => {

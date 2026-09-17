@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createGameState } from '../../src/state/gameState.js';
+import { createGameState } from '../../src/state/gameState.ts';
 
 test('createGameState defaults to idle', () => {
   const gameState = createGameState();
