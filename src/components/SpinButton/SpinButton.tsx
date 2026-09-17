@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { DisabledReason } from '../../game-controls/useGameControls';
 
 export interface SpinButtonProps {
@@ -6,9 +7,9 @@ export interface SpinButtonProps {
 }
 
 const INSUFFICIENT_BALANCE_MESSAGE = 'Insufficient balance';
-const DESCRIPTION_ID = 'spin-button-insufficient-balance';
 
 export function SpinButton({ disabledReason, onSpin }: SpinButtonProps) {
+  const descriptionId = useId();
   const isDisabled = disabledReason !== null;
   const isInsufficientBalance = disabledReason === 'insufficient-balance';
 
@@ -18,7 +19,7 @@ export function SpinButton({ disabledReason, onSpin }: SpinButtonProps) {
         type="button"
         className={`btn btn-primary${isDisabled ? ' btn-disabled' : ''}`}
         aria-disabled={isDisabled}
-        aria-describedby={isInsufficientBalance ? DESCRIPTION_ID : undefined}
+        aria-describedby={isInsufficientBalance ? descriptionId : undefined}
         title={isInsufficientBalance ? INSUFFICIENT_BALANCE_MESSAGE : undefined}
         onClick={() => {
           if (!isDisabled) {
@@ -29,7 +30,7 @@ export function SpinButton({ disabledReason, onSpin }: SpinButtonProps) {
         Spin
       </button>
       {isInsufficientBalance && (
-        <span id={DESCRIPTION_ID} className="u-visually-hidden">
+        <span id={descriptionId} className="u-visually-hidden">
           {INSUFFICIENT_BALANCE_MESSAGE}
         </span>
       )}

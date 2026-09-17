@@ -10,10 +10,19 @@ describe('useGameControls', () => {
     expect(result.current.state.disabledReason).toBeNull();
   });
 
-  it('disables spin for an unaffordable initial bet', () => {
+  it('snaps an unaffordable initial bet down to the highest affordable option', () => {
     const { result } = renderHook(() =>
       useGameControls({ walletBalance: 10, betOptions: [10, 25, 50], initialBet: 25 })
     );
+    expect(result.current.state.betAmount).toBe(10);
+    expect(result.current.state.disabledReason).toBeNull();
+  });
+
+  it('keeps the initial bet (and the insufficient-balance state) when no bet option is affordable', () => {
+    const { result } = renderHook(() =>
+      useGameControls({ walletBalance: 5, betOptions: [10, 25, 50], initialBet: 25 })
+    );
+    expect(result.current.state.betAmount).toBe(25);
     expect(result.current.state.disabledReason).toBe('insufficient-balance');
   });
 

@@ -26,8 +26,16 @@ export interface GameControls {
   actions: GameControlsActions;
 }
 
+function resolveInitialBet(config: GameControlsConfig): number {
+  if (config.initialBet <= config.walletBalance) {
+    return config.initialBet;
+  }
+  const affordableOptions = config.betOptions.filter((amount) => amount <= config.walletBalance);
+  return affordableOptions.length > 0 ? Math.max(...affordableOptions) : config.initialBet;
+}
+
 export function useGameControls(config: GameControlsConfig): GameControls {
-  const [betAmount, setBetAmount] = useState(config.initialBet);
+  const [betAmount, setBetAmount] = useState(() => resolveInitialBet(config));
   const [spinStatus, setSpinStatus] = useState<SpinStatus>('idle');
 
   const disabledReason: DisabledReason =

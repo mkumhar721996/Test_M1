@@ -19,12 +19,12 @@ describe('SpinControls', () => {
     expect(screen.queryByText('Insufficient balance')).not.toBeInTheDocument();
   });
 
-  it('disables the spin button and shows the tooltip when the bet exceeds the balance', () => {
+  it('disables the spin button and shows the tooltip when no bet option is affordable', () => {
     render(
       <SpinControls
-        walletBalance={40}
+        walletBalance={5}
         betOptions={[10, 25, 50]}
-        initialBet={50}
+        initialBet={10}
         onSpinRequested={vi.fn()}
       />
     );
