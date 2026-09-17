@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Slot Game</title>
+    <link rel="stylesheet" href="design-system/tokens.css" />
+    <link rel="stylesheet" href="src/game/reels.css" />
+  </head>
+  <body>
+    <main>
+      <div id="reel-grid" class="reel-grid"></div>
+      <button id="spin-button" type="button">Spin</button>
+    </main>
+    <script type="module">
+      import { SpinController } from './src/game/spinController.js';
+      import { renderGrid } from './src/game/render.js';
+
+      const container = document.getElementById('reel-grid');
+      const spinButton = document.getElementById('spin-button');
+      const controller = new SpinController({ reelCount: 3 });
+
+      function requestEngineSpin() {
+        return fetch('/api/spin', { method: 'POST' }).then((res) => res.json());
+      }
+
+      function render() {
+        renderGrid(container, {
+          reelStates: controller.getReelStates(),
+          finalSymbols: controller.getFinalSymbols(),
+        });
+      }
+
+      spinButton.addEventListener('click', async () => {
+        spinButton.disabled = true;
+        const spinPromise = controller.startSpin(requestEngineSpin);
+        render();
+        await spinPromise;
+        render();
+        spinButton.disabled = false;
+      });
+
+      render();
+    </script>
+  </body>
+</html>

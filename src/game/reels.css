@@ -1,0 +1,32 @@
+@keyframes reel-scroll {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 100%;
+  }
+}
+
+.reel-grid {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+}
+
+.reel--spinning {
+  animation: reel-scroll 0.4s linear infinite;
+}
+
+.reel-cell {
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  text-align: center;
+}
