@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-020 — Loading &amp; In-Progress States</title>
+
+<!-- Shared project design system (linked, not inlined — do not fork these files) -->
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
+  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #ffffff; /** Default page background. */
+  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
+  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<style>
+  /*
+    TEST-M1-STORY-020: Loading & In-Progress States
+    -----------------------------------------------
+    Standalone visual prototype for stakeholder review. No live game/network logic —
+    all loading and spin timing below is simulated with setTimeout against fixture data.
+
+    Screens/states covered (cycle with the reviewer bar Prev/Next, or use the in-page
+    controls to trigger the same transitions live):
+      1. Initial Load  — AC1, AC2, AC6, AC7, AC8
+      2. Idle / Ready  — AC3, AC4
+      3. Spin In Progress — AC5, AC6
+    A "Preview at 360px" toggle in the reviewer bar exercises AC7/AC8 directly.
+
+    No component-scoped token exists yet in design-system/tokens.json for a spinner or
+    progress indicator, so the indicator below is composed from base tokens
+    (color-primary, color-border, radius-lg, space-*). If this pattern recurs across
+    stories it's worth promoting to a "loading.*" token alias.
+  */
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--color-surface);
+  }
+
+  /* ---------- Reviewer bar (always present; canonical prev/next + screen label) ---------- */
+  .reviewer-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .reviewer-bar strong {
+    font-size: var(--font-size-md);
+  }
+  .reviewer-bar .reviewer-spacer { flex: 1 1 auto; }
+  .reviewer-bar button {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-bg);
+    background: transparent;
+    color: var(--color-bg);
+    cursor: pointer;
+  }
+  .reviewer-bar button:hover { background: rgba(255,255,255,0.12); }
+  .reviewer-bar button[aria-pressed="true"] {
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+  #screen-label { font-weight: var(--font-weight-bold); }
+
+  /* ---------- Project nav ---------- */
+  /* This is a TEST-M1 story (not ARC-*), so the arc platform sidebar does not apply.
+     Using a minimal, game-appropriate top nav instead, matching the standalone game page
+     this control lives on. */
+  .game-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-family: var(--font-family-base);
+  }
+  .game-nav__brand {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.02em;
+  }
+  .game-nav__spacer { flex: 1 1 auto; }
+  .game-nav .chip {
+    background: rgba(255,255,255,0.12);
+    color: var(--color-bg);
+  }
+
+  /* ---------- Page shell ---------- */
+  main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  /* Device frame toggled by the reviewer bar's "Preview at 360px" control (AC7/AC8) */
+  .device-frame {
+    margin: 0 auto;
+    transition: width 0.15s ease;
+  }
+  .device-frame.is-360 {
+    width: 360px;
+    overflow-x: hidden;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
+  }
+  .device-frame.is-360 main {
+    padding: var(--space-2);
+    max-width: 100%;
+  }
+
+  /* ---------- Game viewport ---------- */
+  .game-frame {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .reel {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 1.75rem;
+  }
+
+  /* ---------- Loading overlay (Initial Load state) ---------- */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    background: rgba(248, 250, 252, 0.96); /* var(--color-surface) with transparency for scrim */
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+    text-align: center;
+  }
+  [data-game-state="loading"] .loading-overlay {
+    display: flex;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 4px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    animation: spin 0.8s linear infinite;
+  }
+  .spinner--sm {
+    width: 20px;
+    height: 20px;
+    border-width: 3px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 2.4s; }
+  }
+
+  .loading-status p {
+    margin: 0;
+    font-family: var(--font-family-base);
+  }
+
+  .progress-track {
+    width: 100%;
+    max-width: 220px;
+    height: 8px;
+    border-radius: var(--radius-lg);
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-primary);
+    border-radius: var(--radius-lg);
+    transition: width 0.25s ease;
+  }
+
+  /* ---------- Spin in-progress indicator (distinct from idle) ---------- */
+  .spin-badge {
+    position: absolute;
+    top: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    box-shadow: var(--shadow-sm);
+  }
+  [data-game-state="spinning"] .spin-badge {
+    display: flex;
+  }
+  .spinner--on-dark {
+    border-color: rgba(255,255,255,0.35);
+    border-top-color: var(--color-bg);
+  }
+
+  [data-game-state="spinning"] .reel {
+    border-color: var(--color-primary);
+  }
+
+  /* ---------- Idle result caption ---------- */
+  .result-caption {
+    display: none;
+    margin: 0 0 var(--space-3) 0;
+  }
+  [data-game-state="idle"].has-result .result-caption {
+    display: block;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+  .controls:disabled {
+    opacity: 0.5;
+  }
+  .bet-stepper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1);
+  }
+  .bet-stepper button {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .bet-stepper span {
+    min-width: 56px;
+    text-align: center;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .spin-btn {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .state-note {
+    margin-top: var(--space-3);
+  }
+
+  footer.dev-controls {
+    max-width: 480px;
+    margin: var(--space-4) auto;
+    padding: var(--space-4);
+  }
+  footer.dev-controls .btn { margin-right: var(--space-2); margin-top: var(--space-2); }
+</style>
+</head>
+<body class="u-surface">
+
+  <!-- Reviewer bar: fixed scaffold, present on every screen. Prev/Next cycles the three
+       named states; the 360px toggle is an independent reviewer aid for AC7/AC8. -->
+  <div class="reviewer-bar">
+    <strong>TEST-M1-STORY-020</strong>
+    <span>Loading &amp; In-Progress States</span>
+    <span class="reviewer-spacer"></span>
+    <span id="screen-label">Screen 1 of 3: Initial Load</span>
+    <button type="button" id="prev-btn" onclick="goToScreen(-1)">&larr; Prev</button>
+    <button type="button" id="next-btn" onclick="goToScreen(1)">Next &rarr;</button>
+    <button type="button" id="viewport-toggle" aria-pressed="false" onclick="toggle360()">Preview at 360px</button>
+  </div>
+
+  <div class="device-frame" id="device-frame">
+
+    <!-- Project-appropriate nav: minimal top bar for the standalone game page (not an
+         arc-platform sidebar; this work item is outside the ARC-* namespace). -->
+    <nav class="game-nav">
+      <span class="game-nav__brand">Fortune Reels</span>
+      <span class="game-nav__spacer"></span>
+      <span class="chip">Balance: $1,240.00</span>
+    </nav>
+
+    <main>
+
+      <!--
+        Screen: Game frame — single element whose data-game-state attribute drives which
+        overlay/indicator is visible. This mirrors how a real implementation would toggle
+        a single state machine (loading | idle | spinning) rather than routing between
+        separate pages.
+      -->
+      <div class="card game-frame" id="game-frame" data-game-state="loading">
+
+        <!-- State: loading — AC1 spinner/progress shown, AC2 controls disabled below,
+             AC6 status communicated via role="status", AC7/AC8 verified via 360px toggle -->
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="loading-status" role="status" aria-live="polite">
+            <p class="u-text-md"><strong>Loading game assets…</strong></p>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="u-text-sm u-text-muted" id="progress-text">0%</p>
+          </div>
+        </div>
+
+        <!-- State: spinning — AC5 in-progress indicator, distinct from idle; AC6 status -->
+        <div class="spin-badge" id="spin-badge" role="status" aria-live="polite">
+          <span class="spinner spinner--sm spinner--on-dark" aria-hidden="true"></span>
+          <span>Spinning…</span>
+        </div>
+
+        <p class="result-caption u-text-sm u-text-muted" id="result-caption">Last spin: 🍋 🍋 ⭐ — no win</p>
+
+        <div class="reels" aria-hidden="true">
+          <div class="reel">🍒</div>
+          <div class="reel">🍋</div>
+          <div class="reel">7️⃣</div>
+          <div class="reel">⭐</div>
+          <div class="reel">💎</div>
+          <div class="reel">🔔</div>
+          <div class="reel">🍒</div>
+          <div class="reel">⭐</div>
+          <div class="reel">🍋</div>
+        </div>
+
+        <!-- Game controls: fully non-interactive during loading (AC2) and during a spin,
+             so a bet can't be changed mid-request. -->
+        <fieldset class="controls" id="controls">
+          <div class="bet-stepper">
+            <button type="button" aria-label="Decrease bet" tabindex="-1">&minus;</button>
+            <span>$1.00</span>
+            <button type="button" aria-label="Increase bet" tabindex="-1">&plus;</button>
+          </div>
+          <button type="button" class="btn btn-primary spin-btn" id="spin-btn" onclick="startSpin()">
+            <span class="spin-btn__spinner" id="spin-btn-spinner" style="display:none;">
+              <span class="spinner spinner--sm spinner--on-dark" aria-hidden="true"></span>
+            </span>
+            <span id="spin-btn-label">Spin</span>
+          </button>
+        </fieldset>
+
+        <p class="u-text-sm u-text-muted state-note" id="state-note">
+          Assets are loading. The spinner and progress bar are visible and every control below is disabled.
+        </p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Dev/reviewer-only controls for driving the simulated transitions directly.
+       Not part of the visual design; purely to make every AC-relevant state reachable
+       without waiting out the simulated timers. -->
+  <footer class="dev-controls card">
+    <h3 class="card-title">Reviewer shortcuts</h3>
+    <p class="card-body">Jump straight to a state (mirrors the reviewer bar Prev/Next):</p>
+    <button type="button" class="btn btn-secondary" onclick="setScreen(0)">1. Initial Load</button>
+    <button type="button" class="btn btn-secondary" onclick="setScreen(1)">2. Idle / Ready</button>
+    <button type="button" class="btn btn-secondary" onclick="setScreen(2)">3. Spin In Progress</button>
+  </footer>
+
+  <script>
+    var SCREENS = ['loading', 'idle', 'spinning'];
+    var SCREEN_LABELS = ['Initial Load', 'Idle / Ready', 'Spin In Progress'];
+    var current = 0;
+    var epoch = 0; // invalidates stale setTimeout callbacks after navigating away
+
+    var gameFrame = document.getElementById('game-frame');
+    var controls = document.getElementById('controls');
+    var stateNote = document.getElementById('state-note');
+    var progressFill = document.getElementById('progress-fill');
+    var progressText = document.getElementById('progress-text');
+    var spinBtn = document.getElementById('spin-btn');
+    var spinBtnLabel = document.getElementById('spin-btn-label');
+    var spinBtnSpinner = document.getElementById('spin-btn-spinner');
+
+    function setScreen(index) {
+      epoch++;
+      current = (index + SCREENS.length) % SCREENS.length;
+      var state = SCREENS[current];
+      gameFrame.setAttribute('data-game-state', state);
+      document.getElementById('screen-label').textContent =
+        'Screen ' + (current + 1) + ' of ' + SCREENS.length + ': ' + SCREEN_LABELS[current];
+
+      if (state === 'loading') {
+        controls.disabled = true;
+        stateNote.textContent = 'Assets are loading. The spinner and progress bar are visible and every control below is disabled.';
+        runLoadingSimulation(epoch);
+      } else if (state === 'idle') {
+        controls.disabled = false;
+        spinBtnLabel.textContent = 'Spin';
+        spinBtnSpinner.style.display = 'none';
+        stateNote.textContent = 'Load complete. The game is idle and every control is interactive. Press Spin to simulate a spin request.';
+      } else if (state === 'spinning') {
+        controls.disabled = true;
+        spinBtnLabel.textContent = 'Spinning…';
+        spinBtnSpinner.style.display = 'inline-flex';
+        stateNote.textContent = 'A spin request is in flight. Controls are disabled and the "Spinning…" badge is shown until the result returns.';
+      }
+    }
+
+    function runLoadingSimulation(myEpoch) {
+      var pct = 0;
+      progressFill.style.width = '0%';
+      progressText.textContent = '0%';
+
+      function tick() {
+        if (myEpoch !== epoch) return; // reviewer navigated away; stop this run
+        pct += 20;
+        if (pct > 100) pct = 100;
+        progressFill.style.width = pct + '%';
+        progressText.textContent = pct + '%';
+        if (pct < 100) {
+          setTimeout(tick, 350);
+        } else {
+          setTimeout(function () {
+            if (myEpoch !== epoch) return;
+            setScreen(1); // load complete -> idle (AC3, AC4)
+          }, 400);
+        }
+      }
+      setTimeout(tick, 350);
+    }
+
+    function startSpin() {
+      if (SCREENS[current] !== 'idle') return;
+      setScreen(2);
+      var myEpoch = epoch;
+      setTimeout(function () {
+        if (myEpoch !== epoch) return;
+        gameFrame.classList.add('has-result');
+        document.getElementById('result-caption').textContent = 'Last spin: 🍒 ⭐ 💎 — no win';
+        setScreen(1); // spin result returned -> back to idle (distinct from spinning)
+      }, 1800);
+    }
+
+    function goToScreen(delta) {
+      setScreen(current + delta);
+    }
+
+    function toggle360() {
+      var frame = document.getElementById('device-frame');
+      var btn = document.getElementById('viewport-toggle');
+      var isOn = frame.classList.toggle('is-360');
+      btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+    }
+
+    // Initial state on load
+    setScreen(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
