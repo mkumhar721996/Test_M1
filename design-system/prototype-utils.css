@@ -138,3 +138,18 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-fg);
 }
+
+.btn-disabled {
+  background: var(--color-border);
+  color: var(--color-fg-muted);
+  cursor: not-allowed;
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
