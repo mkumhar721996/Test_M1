@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-016 — Win-Line Celebrations</title>
+
+<!-- Design system (project tokens + utility/component classes). Never inlined. -->
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
+  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #ffffff; /** Default page background. */
+  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
+  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<style>
+  /*
+    Page-specific styles. Every color/spacing/type value below resolves to a
+    design-system token via var(...), or is derived from one via color-mix()/calc().
+    The token catalog (tokens.json) has no game-specific "win"/"success" color yet,
+    so celebration emphasis reuses --color-primary at varying opacity rather than
+    introducing a new hardcoded hex value. Flagged again in the summary for the
+    design-system owner.
+  */
+
+  body {
+    margin: 0;
+    padding-top: 56px; /* reviewer bar height */
+  }
+
+  /* Reviewer bar (always present; canonical prev/next + screen label) */
+  .reviewer-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 0 var(--space-4);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    z-index: 100;
+  }
+  .reviewer-bar .reviewer-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    text-align: center;
+    flex: 1;
+  }
+  .reviewer-bar .reviewer-label small {
+    display: block;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+  .reviewer-bar button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* In-game HUD (nav for this project: see comment above <header> below) */
+  .game-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .game-hud .game-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .game-hud .hud-chips {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  .screen[hidden] { display: none; }
+
+  .screen-heading {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .screen-desc {
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .screen-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .game-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* Reel grid */
+  .reel-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 64px);
+    grid-auto-rows: 64px;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .reel-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  }
+  .reel-cell.is-win {
+    border-color: var(--color-primary);
+    animation: win-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes win-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primary) 42%, transparent); }
+  }
+  .reel-cell.is-spinning {
+    opacity: 0.5;
+    animation: reel-spin 0.16s linear infinite;
+  }
+  @keyframes reel-spin {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+  }
+  .payline-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  .payline-overlay polyline {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+    opacity: 0.85;
+  }
+  .payline-overlay polyline.payline-secondary {
+    stroke-dasharray: 7 6;
+  }
+
+  /* Win banner (AC2: win amount displayed clearly) */
+  .win-banner {
+    width: 100%;
+    max-width: 384px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 2px solid var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 7%, var(--color-bg));
+  }
+  .win-banner[hidden] { display: none; }
+  .win-banner .win-label {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .win-banner .win-amount {
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    font-size: calc(var(--font-size-lg) * 1.5);
+    color: var(--color-primary);
+    margin: var(--space-1) 0;
+  }
+  .win-banner .win-lines {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .payload-preview {
+    width: 100%;
+    max-width: 384px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: pre-wrap;
+  }
+
+  .checklist {
+    width: 100%;
+    max-width: 384px;
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .checklist li {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+  .checklist li.done {
+    color: var(--color-fg);
+    font-weight: var(--font-weight-bold);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+</style>
+</head>
+<body class="u-surface">
+
+  <!-- Reviewer bar: canonical prev/next + screen label, always present -->
+  <div class="reviewer-bar">
+    <button class="btn btn-secondary" id="prev-btn" onclick="goToScreen(currentScreen - 1)">‹ Prev</button>
+    <span class="reviewer-label" id="reviewer-label">
+      Screen 1 of 5
+      <small>Idle — Ready to Spin</small>
+    </span>
+    <button class="btn btn-secondary" id="next-btn" onclick="goToScreen(currentScreen + 1)">Next ›</button>
+  </div>
+
+  <!--
+    Nav: TEST-M1-STORY-016 is a game feature, not an ARC-* console screen, so there is
+    no arc sidebar here. The project-appropriate "nav" is the in-game HUD below
+    (title + balance/bet readout) that would surround the reel grid in the real game.
+  -->
+  <header class="game-hud">
+    <p class="game-title">🎰 Golden Reels</p>
+    <div class="hud-chips">
+      <span class="chip">Balance $482.00</span>
+      <span class="chip">Bet $2.50</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================================================================
+         Screen 1 — Idle / Ready to Spin
+         State: idle (no engine result payload yet)
+         Establishes the baseline the game must return to after a
+         celebration completes (supports AC6). Click "Spin" to simulate
+         the engine returning a no-win payload once the reels settle,
+         which also demonstrates AC3/AC4 inline.
+    ================================================================= -->
+    <section class="screen" data-screen-index="0" id="screen-1">
+      <h2 class="screen-heading">1 · Idle — Ready to Spin</h2>
+      <p class="screen-desc u-text-sm u-text-muted">
+        No engine result payload has been received yet. No highlights, no win display.
+      </p>
+      <div class="screen-body">
+        <div class="game-controls">
+          <span class="chip" id="s1-state-chip">Game state: idle (no result yet)</span>
+          <button class="btn btn-primary" id="s1-spin-btn">Spin</button>
+        </div>
+        <div class="reel-grid" id="s1-grid">
+          <svg class="payline-overlay" id="s1-lines" width="384" height="240" viewBox="0 0 384 240"></svg>
+        </div>
+        <div class="win-banner card" id="s1-banner" hidden></div>
+        <p class="u-text-sm u-text-muted">
+          Click Spin to simulate the reels settling with a "no win" result payload.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         Screen 2 — Result: No Win
+         State: reels at rest, engine payload { winningLines: [], totalWin: 0 }
+         Satisfies AC3 (no highlights shown) and AC4 (no win-amount display shown).
+    ================================================================= -->
+    <section class="screen" data-screen-index="1" id="screen-2" hidden>
+      <h2 class="screen-heading">2 · Result: No Win</h2>
+      <p class="screen-desc u-text-sm u-text-muted">
+        AC3 &amp; AC4 — the payload's <code>winningLines</code> array is empty, so the
+        grid renders with zero highlights and the win-amount UI never mounts.
+      </p>
+      <div class="screen-body">
+        <div class="game-controls">
+          <span class="chip" id="s2-state-chip">Game state: idle</span>
+          <button class="btn btn-primary" id="s2-spin-btn">Spin Again</button>
+        </div>
+        <div class="reel-grid" id="s2-grid">
+          <svg class="payline-overlay" id="s2-lines" width="384" height="240" viewBox="0 0 384 240"></svg>
+        </div>
+        <div class="win-banner card" id="s2-banner" hidden></div>
+        <pre class="payload-preview" id="s2-payload"></pre>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         Screen 3 — Result: Single-Line Win
+         State: reels at rest, engine payload has one winning line
+         (Middle Row, symbol 7️⃣, $12.50). Satisfies AC1 (line highlighted
+         on the grid) and AC2 (win amount displayed clearly). "Spin Again"
+         demonstrates AC5 (highlights clear) and AC6 (returns to idle).
+    ================================================================= -->
+    <section class="screen" data-screen-index="2" id="screen-3" hidden>
+      <h2 class="screen-heading">3 · Result: Single-Line Win</h2>
+      <p class="screen-desc u-text-sm u-text-muted">
+        AC1 &amp; AC2 — the Middle Row payline is traced and its cells glow;
+        the total win is displayed prominently below the grid.
+      </p>
+      <div class="screen-body">
+        <div class="game-controls">
+          <span class="chip" id="s3-state-chip">Game state: celebrating</span>
+          <button class="btn btn-primary" id="s3-spin-btn">Spin Again</button>
+        </div>
+        <div class="reel-grid" id="s3-grid">
+          <svg class="payline-overlay" id="s3-lines" width="384" height="240" viewBox="0 0 384 240"></svg>
+        </div>
+        <div class="win-banner card" id="s3-banner" hidden></div>
+        <pre class="payload-preview" id="s3-payload"></pre>
+        <p class="u-text-sm u-text-muted">
+          Click "Spin Again" to watch AC5/AC6: highlights and the win banner clear
+          immediately, then the game settles back into idle.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         Screen 4 — Result: Multi-Line Win
+         State: reels at rest, engine payload has two winning lines
+         (Top Row 🔔 $5.00, Bottom Row 💎 $15.00). Satisfies AC1 (every
+         winning line highlighted simultaneously, not just the first)
+         and AC2 (combined win amount + per-line breakdown).
+    ================================================================= -->
+    <section class="screen" data-screen-index="3" id="screen-4" hidden>
+      <h2 class="screen-heading">4 · Result: Multi-Line Win</h2>
+      <p class="screen-desc u-text-sm u-text-muted">
+        AC1 &amp; AC2 — two paylines win at once. Both are traced (solid vs. dashed,
+        since the token set has no second accent color yet) and both are itemized
+        under the combined total.
+      </p>
+      <div class="screen-body">
+        <div class="game-controls">
+          <span class="chip" id="s4-state-chip">Game state: celebrating</span>
+          <button class="btn btn-primary" id="s4-spin-btn">Spin Again</button>
+        </div>
+        <div class="reel-grid" id="s4-grid">
+          <svg class="payline-overlay" id="s4-lines" width="384" height="240" viewBox="0 0 384 240"></svg>
+        </div>
+        <div class="win-banner card" id="s4-banner" hidden></div>
+        <pre class="payload-preview" id="s4-payload"></pre>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         Screen 5 — New Spin → Idle (highlights cleared)
+         State: starts "celebrating" (multi-line win already on screen),
+         then spotlights the exact transition AC5/AC6 describe. A checklist
+         ticks off each step live as the timeout sequence runs.
+    ================================================================= -->
+    <section class="screen" data-screen-index="4" id="screen-5" hidden>
+      <h2 class="screen-heading">5 · New Spin → Idle</h2>
+      <p class="screen-desc u-text-sm u-text-muted">
+        AC5 &amp; AC6, isolated — press "New Spin" and watch the checklist below
+        confirm each step of the transition out of the celebration.
+      </p>
+      <div class="screen-body">
+        <div class="game-controls">
+          <span class="chip" id="s5-state-chip">Game state: celebrating</span>
+          <button class="btn btn-primary" id="s5-spin-btn">New Spin</button>
+        </div>
+        <div class="reel-grid" id="s5-grid">
+          <svg class="payline-overlay" id="s5-lines" width="384" height="240" viewBox="0 0 384 240"></svg>
+        </div>
+        <div class="win-banner card" id="s5-banner" hidden></div>
+        <ul class="checklist" id="s5-checklist">
+          <li data-step="clear">Win highlights and win-amount display cleared (AC5)</li>
+          <li data-step="idle">Game returned to idle state (AC6)</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ---- Inline fixture data (simulated engine result payloads) ----
+    const fixtures = {
+      idle: {
+        rows: [
+          ['🍇', '🍋', '💎', '🍒', '⭐'],
+          ['🔔', '🍇', '7️⃣', '🍋', '🍒'],
+          ['⭐', '💎', '🍇', '🔔', '🍋'],
+        ],
+        result: null,
+      },
+      noWin: {
+        rows: [
+          ['🍒', '🔔', '⭐', '🍇', '💎'],
+          ['🍋', '🍒', '🔔', '⭐', '7️⃣'],
+          ['💎', '🍇', '🍒', '🔔', '⭐'],
+        ],
+        result: { winningLines: [], totalWin: 0 },
+      },
+      singleWin: {
+        rows: [
+          ['🍒', '🔔', '⭐', '🍇', '💎'],
+          ['7️⃣', '7️⃣', '7️⃣', '7️⃣', '7️⃣'],
+          ['💎', '🍇', '🍒', '🔔', '⭐'],
+        ],
+        result: {
+          winningLines: [
+            { id: 'line-2', name: 'Middle Row', symbol: '7️⃣', amount: 12.5,
+              positions: [[0,1],[1,1],[2,1],[3,1],[4,1]] },
+          ],
+          totalWin: 12.5,
+        },
+      },
+      multiWin: {
+        rows: [
+          ['🔔', '🔔', '🔔', '🔔', '🔔'],
+          ['🍒', '⭐', '🍇', '🍋', '💎'],
+          ['💎', '💎', '💎', '💎', '💎'],
+        ],
+        result: {
+          winningLines: [
+            { id: 'line-1', name: 'Top Row', symbol: '🔔', amount: 5.0,
+              positions: [[0,0],[1,0],[2,0],[3,0],[4,0]] },
+            { id: 'line-3', name: 'Bottom Row', symbol: '💎', amount: 15.0,
+              positions: [[0,2],[1,2],[2,2],[3,2],[4,2]] },
+          ],
+          totalWin: 20.0,
+        },
+      },
+      idlePostSpin: {
+        rows: [
+          ['⭐', '🍇', '🍋', '💎', '🔔'],
+          ['🍒', '💎', '🍇', '🍒', '🍋'],
+          ['🍋', '🔔', '⭐', '🍇', '💎'],
+        ],
+        result: { winningLines: [], totalWin: 0 },
+      },
+    };
+
+    // ---- Grid / payline rendering ----
+    const CELL = 64, GAP = 8, PAD = 16;
+    function cellCenter(col, row) {
+      return { x: PAD + col * (CELL + GAP) + CELL / 2, y: PAD + row * (CELL + GAP) + CELL / 2 };
+    }
+
+    function renderGrid(gridEl, rows) {
+      gridEl.querySelectorAll('.reel-cell').forEach(el => el.remove());
+      const svg = gridEl.querySelector('.payline-overlay');
+      rows.forEach((rowSymbols, r) => {
+        rowSymbols.forEach((symbol, c) => {
+          const cell = document.createElement('div');
+          cell.className = 'reel-cell';
+          cell.dataset.col = c;
+          cell.dataset.row = r;
+          cell.textContent = symbol;
+          gridEl.insertBefore(cell, svg);
+        });
+      });
+    }
+
+    function applyWinLines(gridEl, svgEl, winningLines) {
+      svgEl.innerHTML = '';
+      winningLines.forEach((line, idx) => {
+        const points = line.positions.map(([c, r]) => {
+          const { x, y } = cellCenter(c, r);
+          return `${x},${y}`;
+        }).join(' ');
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        poly.setAttribute('points', points);
+        if (idx > 0) poly.classList.add('payline-secondary');
+        svgEl.appendChild(poly);
+        line.positions.forEach(([c, r]) => {
+          const cell = gridEl.querySelector(`.reel-cell[data-col="${c}"][data-row="${r}"]`);
+          if (cell) cell.classList.add('is-win');
+        });
+      });
+    }
+
+    function clearWinLines(gridEl, svgEl) {
+      gridEl.querySelectorAll('.reel-cell.is-win').forEach(el => el.classList.remove('is-win'));
+      svgEl.innerHTML = '';
+    }
+
+    function showBanner(bannerEl, result) {
+      const chips = result.winningLines
+        .map(l => `<span class="chip">${l.name} — $${l.amount.toFixed(2)}</span>`)
+        .join('');
+      bannerEl.innerHTML = `
+        <p class="win-label u-text-sm u-text-muted" style="margin:0;">Total Win</p>
+        <p class="win-amount">$${result.totalWin.toFixed(2)}</p>
+        <div class="win-lines">${chips}</div>
+      `;
+      bannerEl.hidden = false;
+    }
+
+    function hideBanner(bannerEl) {
+      bannerEl.hidden = true;
+      bannerEl.innerHTML = '';
+    }
+
+    // ---- Per-screen wiring ----
+    function initScreen(prefix, initialKey, spinTargetKey) {
+      const grid = document.getElementById(`${prefix}-grid`);
+      const svg = document.getElementById(`${prefix}-lines`);
+      const banner = document.getElementById(`${prefix}-banner`);
+      const chip = document.getElementById(`${prefix}-state-chip`);
+      const btn = document.getElementById(`${prefix}-spin-btn`);
+      const payloadEl = document.getElementById(`${prefix}-payload`);
+      const checklist = document.getElementById(`${prefix}-checklist`);
+
+      function apply(key) {
+        const fx = fixtures[key];
+        renderGrid(grid, fx.rows);
+        if (fx.result && fx.result.winningLines.length) {
+          applyWinLines(grid, svg, fx.result.winningLines);
+          showBanner(banner, fx.result);
+          chip.textContent = 'Game state: celebrating';
+        } else {
+          clearWinLines(grid, svg);
+          hideBanner(banner);
+          chip.textContent = fx.result === null ? 'Game state: idle (no result yet)' : 'Game state: idle';
+        }
+        if (payloadEl) payloadEl.textContent = JSON.stringify(fx.result, null, 2);
+      }
+
+      btn.addEventListener('click', () => {
+        btn.disabled = true;
+        // AC5: highlights + win display clear as soon as the new spin is initiated
+        clearWinLines(grid, svg);
+        hideBanner(banner);
+        chip.textContent = 'Game state: spinning';
+        grid.querySelectorAll('.reel-cell').forEach(c => c.classList.add('is-spinning'));
+        if (checklist) checklist.querySelector('[data-step="clear"]').classList.add('done');
+
+        setTimeout(() => {
+          grid.querySelectorAll('.reel-cell').forEach(c => c.classList.remove('is-spinning'));
+          apply(spinTargetKey);
+          btn.disabled = false;
+          // AC6: reels have settled with no result -> idle
+          if (checklist) checklist.querySelector('[data-step="idle"]').classList.add('done');
+        }, 900);
+      });
+
+      apply(initialKey);
+    }
+
+    initScreen('s1', 'idle', 'noWin');
+    initScreen('s2', 'noWin', 'noWin');
+    initScreen('s3', 'singleWin', 'idlePostSpin');
+    initScreen('s4', 'multiWin', 'idlePostSpin');
+    initScreen('s5', 'multiWin', 'idlePostSpin');
+
+    // ---- Reviewer bar navigation ----
+    const screens = [
+      { id: 'screen-1', label: 'Idle — Ready to Spin' },
+      { id: 'screen-2', label: 'Result: No Win' },
+      { id: 'screen-3', label: 'Result: Single-Line Win' },
+      { id: 'screen-4', label: 'Result: Multi-Line Win' },
+      { id: 'screen-5', label: 'New Spin → Idle' },
+    ];
+    let currentScreen = 0;
+
+    function goToScreen(index) {
+      if (index < 0 || index >= screens.length) return;
+      document.getElementById(screens[currentScreen].id).hidden = true;
+      currentScreen = index;
+      document.getElementById(screens[currentScreen].id).hidden = false;
+      document.getElementById('reviewer-label').innerHTML =
+        `Screen ${currentScreen + 1} of ${screens.length}<small>${screens[currentScreen].label}</small>`;
+      document.getElementById('prev-btn').disabled = currentScreen === 0;
+      document.getElementById('next-btn').disabled = currentScreen === screens.length - 1;
+    }
+
+    goToScreen(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
