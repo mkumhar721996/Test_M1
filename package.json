@@ -1,0 +1,10 @@
+{
+  "name": "test-m1-paytable",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/unit/",
+    "serve": "python3 -m http.server 4173"
+  }
+}
