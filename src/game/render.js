@@ -1,3 +1,5 @@
+const SPIN_PLACEHOLDER_SYMBOLS = ['?', '?', '?'];
+
 export function renderGrid(container, state) {
   container.innerHTML = '';
 
@@ -8,6 +10,16 @@ export function renderGrid(container, state) {
 
     if (reelState === 'spinning') {
       reelEl.classList.add('reel--spinning');
+
+      const stripEl = document.createElement('div');
+      stripEl.classList.add('reel-strip');
+      [...SPIN_PLACEHOLDER_SYMBOLS, ...SPIN_PLACEHOLDER_SYMBOLS].forEach((symbol) => {
+        const placeholderEl = document.createElement('div');
+        placeholderEl.classList.add('reel-cell', 'reel-cell--placeholder');
+        placeholderEl.textContent = symbol;
+        stripEl.appendChild(placeholderEl);
+      });
+      reelEl.appendChild(stripEl);
     }
 
     const symbols = state.finalSymbols[reelIndex];

@@ -9,7 +9,19 @@ describe('renderGrid while spinning', () => {
     renderGrid(container, { reelStates: ['spinning', 'spinning', 'spinning'], finalSymbols: [null, null, null] });
 
     const reelEls = [...container.querySelectorAll('[data-reel]')];
+    expect(reelEls).toHaveLength(3);
     expect(reelEls.every((el) => el.classList.contains('reel--spinning'))).toBe(true);
+  });
+
+  it('renders a non-empty scrolling strip inside each reel so the animation is visible', () => {
+    document.body.innerHTML = '<div id="grid"></div>';
+    const container = document.getElementById('grid');
+
+    renderGrid(container, { reelStates: ['spinning', 'spinning', 'spinning'], finalSymbols: [null, null, null] });
+
+    const strips = [...container.querySelectorAll('.reel-strip')];
+    expect(strips).toHaveLength(3);
+    expect(strips.every((strip) => strip.children.length > 0)).toBe(true);
   });
 });
 

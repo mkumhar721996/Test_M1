@@ -32,11 +32,16 @@
 
       spinButton.addEventListener('click', async () => {
         spinButton.disabled = true;
-        const spinPromise = controller.startSpin(requestEngineSpin);
-        render();
-        await spinPromise;
-        render();
-        spinButton.disabled = false;
+        try {
+          const spinPromise = controller.startSpin(requestEngineSpin);
+          render();
+          await spinPromise;
+        } catch (err) {
+          console.error('Spin failed:', err);
+        } finally {
+          render();
+          spinButton.disabled = false;
+        }
       });
 
       render();
