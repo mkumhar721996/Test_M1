@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-023 — Optimistic Locking for Concurrent Updates</title>
+
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #3b82f6; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<!--
+  Design-system gap note for the reviewer (do not action in this file — tokens.json /
+  style-guide.html are owned by sdlc.design-system-bootstrap, not this story):
+
+  tokens.json currently defines only one accent color (color-primary, blue) and no
+  color-danger / color-success / color-warning tokens, and no monospace font token.
+  Per UI Guidelines §3, status must never be color-only anyway, so every state below is
+  built from icon + label + structural emphasis (border weight, background contrast) and
+  would look identical once semantic color tokens exist to layer on top. The one token-less
+  spot is code/JSON snippets, which fall back to the standard system monospace stack since
+  font-family-base is a proportional font and no font-mono token exists yet.
+-->
+<style>
+  /* Page-specific layout only — every color/spacing/radius value below is a token reference. */
+
+  body {
+    font-family: var(--font-family-base);
+  }
+
+  .app-shell {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .breadcrumb {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+  }
+
+  .breadcrumb strong {
+    color: var(--color-fg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .version-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+  }
+
+  .version-chip code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--color-fg);
+  }
+
+  .field-group {
+    margin-bottom: var(--space-4);
+  }
+
+  textarea.input {
+    min-height: 88px;
+    resize: vertical;
+    font-family: var(--font-family-base);
+  }
+
+  select.input {
+    appearance: auto;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-danger-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--button-primary-radius);
+    cursor: pointer;
+  }
+
+  .actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+    background: var(--color-surface);
+  }
+
+  .banner-icon {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+
+  .banner-title {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .banner-body {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .banner-strong {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--color-fg);
+  }
+
+  .banner-success {
+    border-color: var(--color-primary);
+  }
+
+  .code-block {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: var(--font-size-sm);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  .code-block .k { color: var(--color-fg); }
+
+  details.api-panel {
+    margin-top: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  details.api-panel > summary {
+    cursor: pointer;
+    padding: var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    list-style: none;
+  }
+
+  details.api-panel > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details.api-panel > summary::before {
+    content: "▸ ";
+    color: var(--color-primary);
+  }
+
+  details.api-panel[open] > summary::before {
+    content: "▾ ";
+  }
+
+  .api-panel-body {
+    padding: 0 var(--space-3) var(--space-3) var(--space-3);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 720px) {
+    .api-panel-body {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .api-panel-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-1) 0;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .callers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 720px) {
+    .callers-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .caller-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .caller-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .outcome-slot {
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+  }
+
+  .outcome-placeholder {
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 720px) {
+    .legend {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .legend-item {
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .legend-item h4 {
+    margin: 0 0 var(--space-1) 0;
+    font-size: var(--font-size-md);
+  }
+
+  .legend-item p {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .fade-in {
+    animation: fadeIn 200ms ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in { animation: none; }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: TEST-M1 has no arc platform chrome. This is a standalone Task detail page
+     within a lightweight "Tasks" app; navigation is a single breadcrumb in the topbar
+     (Tasks / TASK-482), repeated identically on every screen below for a consistent
+     mental map per UI Guidelines §7. -->
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;color:var(--color-fg-muted)">TEST-M1-STORY-023</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: editing -->
+<!--
+  Screen: Task Detail — Editing
+  Notes:
+    - Baseline happy-path screen. The version chip shows the token the client currently
+      holds (tok_9c2f10); this is what "GIVEN a Task with a current version token that has
+      not been modified" (AC1) looks like before a write.
+    - "Save changes" simulates a successful update: AC1 (write with a fresh token succeeds)
+      and AC7 (the success response carries a new version token, shown replacing the chip).
+    - The collapsible API panel is included on every screen so a reviewer can verify the
+      exact wire contract (status code, error code, version token field) alongside the
+      visual state, since this story is fundamentally about an API contract.
+-->
+<div class="screen" data-name="Task Detail — Editing">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip" id="s1-version-chip">
+        <span aria-hidden="true">🔖</span> Version <code>tok_9c2f10</code>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Migrate billing export to async queue</h3>
+      <p class="card-body u-text-sm" style="margin-bottom: var(--space-4);">Last updated 8m ago by Priya Natarajan</p>
+
+      <div class="field-group">
+        <label class="label" for="s1-title">Title</label>
+        <input class="input" id="s1-title" type="text" value="Migrate billing export to async queue" />
+      </div>
+
+      <div class="field-group">
+        <label class="label" for="s1-desc">Description</label>
+        <textarea class="input" id="s1-desc">Move the nightly billing export job off the request thread and onto the async worker queue so large exports stop timing out.</textarea>
+      </div>
+
+      <div class="field-group" style="max-width: 260px;">
+        <label class="label" for="s1-status">Status</label>
+        <select class="input" id="s1-status">
+          <option>To do</option>
+          <option selected>In progress</option>
+          <option>Blocked</option>
+          <option>Done</option>
+        </select>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn btn-primary" id="s1-save-btn" onclick="simulateSave1()">Save changes</button>
+        <button class="btn-danger-outline" onclick="show('Delete Task — Version Token Contract')">Delete task…</button>
+      </div>
+
+      <div id="s1-result" style="margin-top: var(--space-4);"></div>
+    </div>
+
+    <details class="api-panel">
+      <summary>API activity</summary>
+      <div class="api-panel-body">
+        <div>
+          <p class="api-panel-label">Request — PATCH /tasks/TASK-482</p>
+          <pre class="code-block">{
+  <span class="k">"title"</span>: "Migrate billing export to async queue",
+  <span class="k">"status"</span>: "In progress",
+  <span class="k">"expected_version"</span>: <span id="s1-req-version">"tok_9c2f10"</span>
+}</pre>
+        </div>
+        <div>
+          <p class="api-panel-label">Response</p>
+          <pre class="code-block" id="s1-response">200 OK
+{
+  <span class="k">"id"</span>: "TASK-482",
+  <span class="k">"version"</span>: "tok_9c2f10"
+}</pre>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- State: conflict -->
+<!--
+  Screen: Update Conflict — Stale Version Rejected
+  Notes:
+    - Simulates the story's core case: another caller (Jordan) saved a change to this Task
+      after the current user loaded it, so the token the form is holding (tok_9c2f10) is
+      now stale.
+    - Clicking "Save changes" issues the update anyway with the stale token, demonstrating
+      AC2 (409, structured error with code + message + the Task's current version token)
+      and AC3 (the banner explicitly confirms nothing on the Task changed — the user's own
+      unsaved edits in the form are also left exactly as typed, per Forms §6 "preserve the
+      user's input on error").
+    - Conflict is signalled with an icon + bold label + heavier border, never color alone
+      (UI Guidelines §3), since this design system has no dedicated error color token yet.
+-->
+<div class="screen" data-name="Update Conflict — Stale Version Rejected">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip">
+        <span aria-hidden="true">🔖</span> Your copy: <code>tok_9c2f10</code>
+      </div>
+    </div>
+
+    <div class="banner">
+      <span class="banner-icon" aria-hidden="true">ℹ</span>
+      <div>
+        <p class="banner-title">Heads up</p>
+        <p class="banner-body">Jordan Kim updated this task 12 seconds ago, after you opened it. Your edits below haven't been sent yet.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Migrate billing export to async queue</h3>
+
+      <div class="field-group">
+        <label class="label" for="s2-title">Title</label>
+        <input class="input" id="s2-title" type="text" value="Migrate billing export to async queue (batched)" />
+      </div>
+
+      <div class="field-group">
+        <label class="label" for="s2-desc">Description</label>
+        <textarea class="input" id="s2-desc">Move the nightly billing export job off the request thread and onto the async worker queue so large exports stop timing out. Batch in groups of 500.</textarea>
+      </div>
+
+      <div class="field-group" style="max-width: 260px;">
+        <label class="label" for="s2-status">Status</label>
+        <select class="input" id="s2-status">
+          <option>To do</option>
+          <option selected>In progress</option>
+          <option>Blocked</option>
+          <option>Done</option>
+        </select>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn btn-primary" id="s2-save-btn" onclick="simulateConflict()">Save changes</button>
+      </div>
+
+      <div id="s2-result" style="margin-top: var(--space-4);"></div>
+    </div>
+
+    <details class="api-panel">
+      <summary>API activity</summary>
+      <div class="api-panel-body">
+        <div>
+          <p class="api-panel-label">Request — PATCH /tasks/TASK-482</p>
+          <pre class="code-block">{
+  <span class="k">"title"</span>: "Migrate billing export to async queue (batched)",
+  <span class="k">"status"</span>: "In progress",
+  <span class="k">"expected_version"</span>: "tok_9c2f10"
+}</pre>
+        </div>
+        <div>
+          <p class="api-panel-label">Response</p>
+          <pre class="code-block" id="s2-response">Not sent yet — click "Save changes"</pre>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- State: resolved -->
+<!--
+  Screen: Resolved — Reload &amp; Resubmit
+  Notes:
+    - Picks up right after the conflict on the previous screen. "Reload latest version"
+      fetches the Task's current state and current token (tok_9d51e2), while the user's own
+      unsaved Title/Description edits are kept in the form rather than discarded.
+    - Resubmitting with the fresh token now succeeds, satisfying AC4 ("re-reads the Task and
+      resubmits with the current version token THEN the update succeeds") and again shows
+      the new version token per AC7.
+-->
+<div class="screen" data-name="Resolved — Reload &amp; Resubmit">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip" id="s3-version-chip">
+        <span aria-hidden="true">🔖</span> Your copy: <code>tok_9c2f10</code> (stale)
+      </div>
+    </div>
+
+    <div class="banner banner-strong">
+      <span class="banner-icon" aria-hidden="true">⚠</span>
+      <div>
+        <p class="banner-title">409 · CONFLICT_VERSION_MISMATCH</p>
+        <p class="banner-body">This task was updated after you loaded it. Nothing was changed. Reload the latest version, then save again.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Migrate billing export to async queue</h3>
+
+      <div class="field-group">
+        <label class="label" for="s3-title">Title</label>
+        <input class="input" id="s3-title" type="text" value="Migrate billing export to async queue (batched)" />
+      </div>
+
+      <div class="field-group">
+        <label class="label" for="s3-desc">Description</label>
+        <textarea class="input" id="s3-desc">Move the nightly billing export job off the request thread and onto the async worker queue so large exports stop timing out. Batch in groups of 500.</textarea>
+      </div>
+
+      <div class="field-group" style="max-width: 260px;">
+        <label class="label" for="s3-status">Status</label>
+        <select class="input" id="s3-status" disabled>
+          <option>Blocked</option>
+        </select>
+        <p class="u-text-sm u-text-muted" id="s3-status-note" style="margin-top: var(--space-1);">Jordan set this to "Blocked" — reload to see it.</p>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn btn-secondary" id="s3-reload-btn" onclick="simulateReload()">Reload latest version</button>
+        <button class="btn btn-primary" id="s3-save-btn" onclick="simulateResubmit()" disabled>Save changes</button>
+      </div>
+
+      <div id="s3-result" style="margin-top: var(--space-4);"></div>
+    </div>
+
+    <details class="api-panel">
+      <summary>API activity</summary>
+      <div class="api-panel-body">
+        <div>
+          <p class="api-panel-label">Latest request</p>
+          <pre class="code-block" id="s3-request">GET /tasks/TASK-482
+(not sent yet)</pre>
+        </div>
+        <div>
+          <p class="api-panel-label">Latest response</p>
+          <pre class="code-block" id="s3-response">—</pre>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- State: race -->
+<!--
+  Screen: Concurrent Callers — Only One Wins
+  Notes:
+    - Two callers (A and B) have both loaded TASK-482 at version tok_a10f77 and both submit
+      an update using that same token at effectively the same time.
+    - "Simulate simultaneous submit" fires both requests together. Exactly one is accepted
+      and returns a new version token (AC5, AC7); the other is rejected with the same 409
+      conflict shape used elsewhere (AC6). Which caller wins is illustrative only — the
+      guarantee under test is "exactly one succeeds," not a specific ordering.
+-->
+<div class="screen" data-name="Concurrent Callers — Only One Wins">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip">
+        <span aria-hidden="true">🔖</span> Shared starting version: <code>tok_a10f77</code>
+      </div>
+    </div>
+
+    <p class="u-text-sm u-text-muted" style="margin-bottom: var(--space-4); max-width: 68ch;">
+      Both callers loaded the task at the same version and are about to submit different
+      changes using that same token.
+    </p>
+
+    <div class="callers-grid">
+      <div class="card caller-card">
+        <span class="caller-label"><span aria-hidden="true">🅰️</span> Caller A</span>
+        <p class="u-text-sm u-text-muted" style="margin:0;">Sets status to "Done"</p>
+        <div class="code-block" style="font-size: var(--font-size-sm);">expected_version: "tok_a10f77"</div>
+        <div class="outcome-slot" id="race-a-outcome"><span class="outcome-placeholder">Waiting to submit…</span></div>
+      </div>
+      <div class="card caller-card">
+        <span class="caller-label"><span aria-hidden="true">🅱️</span> Caller B</span>
+        <p class="u-text-sm u-text-muted" style="margin:0;">Reassigns to Marcus Webb</p>
+        <div class="code-block" style="font-size: var(--font-size-sm);">expected_version: "tok_a10f77"</div>
+        <div class="outcome-slot" id="race-b-outcome"><span class="outcome-placeholder">Waiting to submit…</span></div>
+      </div>
+    </div>
+
+    <div class="actions-row" style="margin-top: var(--space-4);">
+      <button class="btn btn-primary" id="race-btn" onclick="simulateRace()">Simulate simultaneous submit</button>
+      <button class="btn btn-secondary" id="race-reset-btn" onclick="resetRace()" style="display:none;">Reset scenario</button>
+    </div>
+  </div>
+</div>
+
+<!-- State: delete-conflict -->
+<!--
+  Screen: Delete Task — Version Token Contract
+  Notes:
+    - Confirms the delete's version-token contract mirrors update's, per the story's
+      "update or delete" wording across AC1–AC6, using one scenario toggle instead of two
+      near-duplicate screens.
+    - Scenario "Token still current" + Delete: succeeds and returns to the list (AC1 applied
+      to delete).
+    - Scenario "Modified by another user" (default) + Delete: stale token is rejected with
+      the same 409 shape (code, message, current version) as the update case, and the
+      confirmation stays open with the task un-deleted (AC2, AC3, AC6 applied to delete).
+-->
+<div class="screen" data-name="Delete Task — Version Token Contract">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip">
+        <span aria-hidden="true">🔖</span> Your copy: <code>tok_9c2f10</code>
+      </div>
+    </div>
+
+    <div class="card" style="max-width: 480px; margin-bottom: var(--space-4);">
+      <p class="label" style="margin-bottom: var(--space-2);">Scenario</p>
+      <div class="actions-row">
+        <label class="u-text-sm" style="display:inline-flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="delete-scenario" value="conflict" checked onchange="deleteScenario='conflict'; resetDeleteScreen();" />
+          Modified by another user since load
+        </label>
+        <label class="u-text-sm" style="display:inline-flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="delete-scenario" value="current" onchange="deleteScenario='current'; resetDeleteScreen();" />
+          Token still current
+        </label>
+      </div>
+    </div>
+
+    <div class="card" style="max-width: 480px;">
+      <h3 class="card-title">Delete "Migrate billing export to async queue"?</h3>
+      <p class="card-body">This can't be undone. Task TASK-482 and its history will be permanently removed.</p>
+
+      <div id="delete-result" style="margin: var(--space-4) 0;"></div>
+
+      <div class="actions-row">
+        <button class="btn-danger-outline" id="delete-btn" onclick="simulateDelete()">Delete task</button>
+        <button class="btn btn-secondary" onclick="show('Task Detail — Editing')">Cancel</button>
+      </div>
+    </div>
+
+    <details class="api-panel">
+      <summary>API activity</summary>
+      <div class="api-panel-body">
+        <div>
+          <p class="api-panel-label">Request — DELETE /tasks/TASK-482</p>
+          <pre class="code-block">{
+  <span class="k">"expected_version"</span>: "tok_9c2f10"
+}</pre>
+        </div>
+        <div>
+          <p class="api-panel-label">Response</p>
+          <pre class="code-block" id="delete-response">Not sent yet — click "Delete task"</pre>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- State: missing-token -->
+<!--
+  Screen: Missing Version Token — Rejected
+  Notes:
+    - Represents a caller (e.g. an older API client) that omits the version token entirely,
+      as distinct from submitting a stale one.
+    - "Send request" rejects with a structured 400 VERSION_TOKEN_REQUIRED error, and the
+      legend below explicitly contrasts it with the 409 CONFLICT_VERSION_MISMATCH used on
+      the earlier screens so a reviewer can confirm the two error shapes are distinguishable
+      (AC8: "distinct from the stale-token conflict error").
+-->
+<div class="screen" data-name="Missing Version Token — Rejected">
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="breadcrumb">Tasks / <strong>TASK-482</strong></div>
+      <div class="version-chip">
+        <span aria-hidden="true">🔖</span> Current version: <code>tok_9c2f10</code>
+      </div>
+    </div>
+
+    <p class="u-text-sm u-text-muted" style="margin-bottom: var(--space-4); max-width: 68ch;">
+      This client is sending an update without an <code>expected_version</code> field —
+      simulating an older or misconfigured caller.
+    </p>
+
+    <div class="card">
+      <p class="api-panel-label">Request — PATCH /tasks/TASK-482</p>
+      <pre class="code-block">{
+  <span class="k">"status"</span>: "Done"
+}</pre>
+
+      <div class="actions-row" style="margin-top: var(--space-4);">
+        <button class="btn btn-primary" id="missing-token-btn" onclick="simulateMissingToken()">Send request</button>
+      </div>
+
+      <div id="missing-token-result" style="margin-top: var(--space-4);"></div>
+    </div>
+
+    <div class="legend" style="margin-top: var(--space-4);">
+      <div class="legend-item">
+        <h4>400 · VERSION_TOKEN_REQUIRED</h4>
+        <p>No token was supplied at all. The caller must re-read the task to obtain one before writing.</p>
+      </div>
+      <div class="legend-item">
+        <h4>409 · CONFLICT_VERSION_MISMATCH</h4>
+        <p>A token was supplied, but the task has changed since it was issued (see the earlier conflict screens).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#screens -->
+
+<script>
+// Fixture data — no network calls; every transition below is a setTimeout-simulated
+// response using inline JSON, per UI Guidelines §11.
+const FIXTURES = {
+  task: {
+    id: "TASK-482",
+    title: "Migrate billing export to async queue"
+  }
+};
+
+function setLoading(btn, label) {
+  btn.dataset.originalText = btn.textContent;
+  btn.textContent = label;
+  btn.disabled = true;
+}
+
+function clearLoading(btn) {
+  btn.textContent = btn.dataset.originalText;
+  btn.disabled = false;
+}
+
+// Screen 1 — happy path save
+function simulateSave1() {
+  const btn = document.getElementById('s1-save-btn');
+  setLoading(btn, 'Saving…');
+  setTimeout(() => {
+    clearLoading(btn);
+    document.getElementById('s1-version-chip').innerHTML =
+      '<span aria-hidden="true">🔖</span> Version <code>tok_9c2f11</code>';
+    document.getElementById('s1-req-version').textContent = '"tok_9c2f10"';
+    document.getElementById('s1-response').innerHTML =
+      '200 OK\n{\n  <span class="k">"id"</span>: "TASK-482",\n  <span class="k">"version"</span>: "tok_9c2f11"\n}';
+    document.getElementById('s1-result').innerHTML =
+      '<div class="banner banner-success fade-in"><span class="banner-icon" aria-hidden="true">✓</span>' +
+      '<div><p class="banner-title">Saved</p>' +
+      '<p class="banner-body">Task updated. New version token <code>tok_9c2f11</code> is ready for your next write.</p></div></div>';
+  }, 300);
+}
+
+// Screen 2 — conflict on stale save
+function simulateConflict() {
+  const btn = document.getElementById('s2-save-btn');
+  setLoading(btn, 'Saving…');
+  setTimeout(() => {
+    clearLoading(btn);
+    document.getElementById('s2-response').innerHTML =
+      '409 Conflict\n{\n  <span class="k">"error_code"</span>: "CONFLICT_VERSION_MISMATCH",\n  <span class="k">"message"</span>: "This task was updated after your version token was issued.",\n  <span class="k">"current_version"</span>: "tok_9d51e2"\n}';
+    document.getElementById('s2-result').innerHTML =
+      '<div class="banner banner-strong fade-in"><span class="banner-icon" aria-hidden="true">⚠</span>' +
+      '<div><p class="banner-title">409 · CONFLICT_VERSION_MISMATCH</p>' +
+      '<p class="banner-body">This task was updated after you loaded it. <strong>Nothing was changed</strong> — your edits above are still exactly as you typed them. Current version is <code>tok_9d51e2</code>.</p>' +
+      '<button class="btn btn-secondary" style="margin-top: var(--space-3);" onclick="show(\'Resolved — Reload &amp; Resubmit\')">Reload latest version</button></div></div>';
+  }, 300);
+}
+
+// Screen 3 — reload then resubmit
+function simulateReload() {
+  const btn = document.getElementById('s3-reload-btn');
+  setLoading(btn, 'Reloading…');
+  document.getElementById('s3-request').textContent = 'GET /tasks/TASK-482';
+  setTimeout(() => {
+    clearLoading(btn);
+    btn.disabled = true;
+    document.getElementById('s3-version-chip').innerHTML =
+      '<span aria-hidden="true">🔖</span> Your copy: <code>tok_9d51e2</code> (current)';
+    document.getElementById('s3-status').removeAttribute('disabled');
+    document.getElementById('s3-status').innerHTML = '<option selected>Blocked</option><option>In progress</option><option>Done</option>';
+    document.getElementById('s3-status-note').textContent = 'Reloaded — your Title and Description edits above were kept.';
+    document.getElementById('s3-response').textContent =
+      '200 OK\n{ "id": "TASK-482", "status": "Blocked", "version": "tok_9d51e2" }';
+    document.getElementById('s3-save-btn').disabled = false;
+  }, 300);
+}
+
+function simulateResubmit() {
+  const btn = document.getElementById('s3-save-btn');
+  setLoading(btn, 'Saving…');
+  setTimeout(() => {
+    clearLoading(btn);
+    document.getElementById('s3-version-chip').innerHTML =
+      '<span aria-hidden="true">🔖</span> Version <code>tok_9d51e3</code>';
+    document.getElementById('s3-response').textContent =
+      '200 OK\n{ "id": "TASK-482", "version": "tok_9d51e3" }';
+    document.getElementById('s3-result').innerHTML =
+      '<div class="banner banner-success fade-in"><span class="banner-icon" aria-hidden="true">✓</span>' +
+      '<div><p class="banner-title">Saved</p>' +
+      '<p class="banner-body">Update succeeded with the current token. New version token <code>tok_9d51e3</code> issued.</p></div></div>';
+  }, 300);
+}
+
+// Screen 4 — concurrent race, exactly one winner
+function simulateRace() {
+  const btn = document.getElementById('race-btn');
+  setLoading(btn, 'Submitting both…');
+  document.getElementById('race-a-outcome').innerHTML = '<span class="outcome-placeholder">Submitting…</span>';
+  document.getElementById('race-b-outcome').innerHTML = '<span class="outcome-placeholder">Submitting…</span>';
+  setTimeout(() => {
+    clearLoading(btn);
+    document.getElementById('race-a-outcome').innerHTML =
+      '<div class="banner banner-success fade-in" style="margin:0;"><span class="banner-icon" aria-hidden="true">✓</span>' +
+      '<div><p class="banner-title">200 OK</p><p class="banner-body">Accepted. New version <code>tok_a10f78</code>.</p></div></div>';
+    document.getElementById('race-b-outcome').innerHTML =
+      '<div class="banner banner-strong fade-in" style="margin:0;"><span class="banner-icon" aria-hidden="true">⚠</span>' +
+      '<div><p class="banner-title">409 · CONFLICT_VERSION_MISMATCH</p><p class="banner-body">Rejected. Current version is now <code>tok_a10f78</code>.</p></div></div>';
+    document.getElementById('race-reset-btn').style.display = 'inline-flex';
+    btn.style.display = 'none';
+  }, 350);
+}
+
+function resetRace() {
+  document.getElementById('race-a-outcome').innerHTML = '<span class="outcome-placeholder">Waiting to submit…</span>';
+  document.getElementById('race-b-outcome').innerHTML = '<span class="outcome-placeholder">Waiting to submit…</span>';
+  document.getElementById('race-reset-btn').style.display = 'none';
+  document.getElementById('race-btn').style.display = 'inline-flex';
+}
+
+// Delete screen — same version-token contract as update, toggled by scenario
+let deleteScenario = 'conflict';
+
+function resetDeleteScreen() {
+  document.getElementById('delete-result').innerHTML = '';
+  document.getElementById('delete-response').textContent = 'Not sent yet — click "Delete task"';
+  const btn = document.getElementById('delete-btn');
+  btn.disabled = false;
+  btn.textContent = 'Delete task';
+}
+
+function simulateDelete() {
+  const btn = document.getElementById('delete-btn');
+  setLoading(btn, 'Deleting…');
+  setTimeout(() => {
+    if (deleteScenario === 'current') {
+      document.getElementById('delete-response').innerHTML =
+        '200 OK\n{\n  <span class="k">"id"</span>: "TASK-482",\n  <span class="k">"deleted"</span>: true\n}';
+      document.getElementById('delete-result').innerHTML =
+        '<div class="banner banner-success fade-in"><span class="banner-icon" aria-hidden="true">✓</span>' +
+        '<div><p class="banner-title">Deleted</p>' +
+        '<p class="banner-body">Task TASK-482 was deleted using its current version token.</p></div></div>';
+      btn.textContent = 'Deleted';
+      btn.disabled = true;
+    } else {
+      clearLoading(btn);
+      document.getElementById('delete-response').innerHTML =
+        '409 Conflict\n{\n  <span class="k">"error_code"</span>: "CONFLICT_VERSION_MISMATCH",\n  <span class="k">"message"</span>: "This task was updated after your version token was issued.",\n  <span class="k">"current_version"</span>: "tok_9d51e2"\n}';
+      document.getElementById('delete-result').innerHTML =
+        '<div class="banner banner-strong fade-in"><span class="banner-icon" aria-hidden="true">⚠</span>' +
+        '<div><p class="banner-title">409 · CONFLICT_VERSION_MISMATCH</p>' +
+        '<p class="banner-body">This task was updated after you loaded it. The delete was <strong>not</strong> applied. Current version is <code>tok_9d51e2</code>.</p>' +
+        '<button class="btn btn-secondary" style="margin-top: var(--space-3);" onclick="show(\'Task Detail — Editing\')">Reload task</button></div></div>';
+    }
+  }, 300);
+}
+
+// Missing-token screen — distinct 400 error
+function simulateMissingToken() {
+  const btn = document.getElementById('missing-token-btn');
+  setLoading(btn, 'Sending…');
+  setTimeout(() => {
+    clearLoading(btn);
+    document.getElementById('missing-token-result').innerHTML =
+      '<div class="banner banner-strong fade-in"><span class="banner-icon" aria-hidden="true">✕</span>' +
+      '<div><p class="banner-title">400 · VERSION_TOKEN_REQUIRED</p>' +
+      '<p class="banner-body">A version token is required to update this task. Re-read the task to get its current version, then retry.</p>' +
+      '<pre class="code-block" style="margin-top: var(--space-2);">400 Bad Request\n{\n  <span class="k">"error_code"</span>: "VERSION_TOKEN_REQUIRED",\n  <span class="k">"message"</span>: "A version token is required to update this task."\n}</pre></div></div>';
+  }, 300);
+}
+
+// Reviewer bar wiring
+const screens = Array.from(document.querySelectorAll('.screen'));
+let cur = 0;
+function showIndex(i) {
+  cur = Math.max(0, Math.min(screens.length - 1, i));
+  screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+  document.getElementById('screen-label').textContent =
+    `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  window.scrollTo(0, 0);
+}
+function show(name) {
+  const i = screens.findIndex(s => s.dataset.name === name);
+  if (i !== -1) showIndex(i);
+}
+document.getElementById('prev-btn').onclick = () => showIndex(cur - 1);
+document.getElementById('next-btn').onclick = () => showIndex(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') showIndex(cur + 1);
+  if (e.key === 'ArrowLeft') showIndex(cur - 1);
+});
+showIndex(0);
+</script>
+
+<style>
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    min-height: 32px;
+  }
+</style>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
