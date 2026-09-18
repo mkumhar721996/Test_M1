@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="arc-dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-001 — Login UI flow for Amazon website</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #3b82f6; /** Brand/primary action color. */
+  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<!--
+  Design system gap noted for reviewers:
+  tokens.json / tokens.css currently define no semantic "error"/"danger" color
+  (only color-fg, color-fg-muted, color-bg, color-surface, color-primary,
+  color-primary-fg, color-border). Error states below are therefore built with
+  an icon (⚠) + bold label + text, using only existing tokens (color-fg,
+  color-border, color-surface), per guideline §3 ("never encode meaning in
+  color alone") — this also sidesteps needing a color that doesn't exist yet.
+  If sign-off wants a red/danger accent, that token should be added to the
+  design system first (out of scope for this prototype).
+-->
+<style>
+  /* App nav: standalone consumer-facing page — no app chrome/sidebar.
+     Amazon's own login page has no persistent nav; only a lightweight
+     logo header + footer links, reproduced below. */
+
+  body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-header {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .login-logo {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    letter-spacing: 0.02em;
+  }
+
+  .login-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .login-card h1 {
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .field-error {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  .input-invalid {
+    border-color: var(--color-fg);
+    border-width: 2px;
+  }
+
+  .form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    margin-bottom: var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-fg);
+    border-radius: var(--input-default-radius);
+  }
+
+  .form-alert-icon {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+
+  .form-alert-body p {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+
+  .form-alert-body strong {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-md);
+  }
+
+  .form-field {
+    margin-bottom: var(--space-3);
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-4) 0;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .login-footer {
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .login-footer p {
+    margin: 0 0 var(--space-2) 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .secondary-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .secondary-links a,
+  .create-account-link {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .secondary-links a:hover,
+  .create-account-link:hover {
+    text-decoration: underline;
+  }
+
+  .disabled-note {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    cursor: not-allowed;
+    color: var(--color-fg-muted);
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary-fg);
+    border-top-color: transparent;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation: none; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .redirect-card {
+    text-align: center;
+  }
+
+  .redirect-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .helper-text {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-3) 0 0 0;
+  }
+
+  .helper-text code {
+    color: var(--color-fg);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-001</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<script>
+  // Inline fixture data — the only "valid" account for this prototype.
+  // No real authentication occurs; this simulates the AC3/AC5 branching.
+  window.__FIXTURE_ACCOUNT__ = {
+    email: "sarah.chen@example.com",
+    password: "Amzn#2024!"
+  };
+</script>
+
+<div id="screens">
+
+  <!-- State: default (page load) -->
+  <!--
+    Screen: Login — Default
+    Notes:
+      - Satisfies AC1: email/username field, password field, submit action
+        all present on page load, no errors shown.
+      - "Keep me signed in" and "Forgot password?" are shown for visual
+        completeness of a real Amazon-style login page, but both are
+        non-functional here — session persistence and password reset are
+        explicitly out of scope for this story (see acceptance criteria).
+      - "Create your Amazon account" link is shown but disabled/inert —
+        sign-up is out of scope for this story.
+  -->
+  <div class="screen" data-name="Login — Default">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card">
+        <h1 class="card-title">Sign in</h1>
+
+        <form id="login-form-1" novalidate>
+          <div class="form-field">
+            <label class="label" for="email-1">Email or mobile phone number</label>
+            <input class="input" id="email-1" name="email" type="text" autocomplete="username" />
+          </div>
+
+          <div class="form-field" style="margin-bottom: var(--space-2);">
+            <label class="label" for="password-1">Password</label>
+            <input class="input" id="password-1" name="password" type="password" autocomplete="current-password" />
+          </div>
+
+          <p class="helper-text" style="margin-top:0;margin-bottom:var(--space-3);">
+            <a href="#" class="create-account-link" onclick="return false;" aria-disabled="true">Forgot password?</a>
+          </p>
+
+          <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+
+          <p class="helper-text">
+            Try it: <code>sarah.chen@example.com</code> / <code>Amzn#2024!</code> for a successful sign-in,
+            or any other value to see the invalid-credentials state.
+          </p>
+        </form>
+
+        <div class="divider">New to Amazon?</div>
+        <a href="#" class="create-account-link" style="display:block;text-align:center;" onclick="return false;" aria-disabled="true">
+          Create your Amazon account
+        </a>
+      </div>
+    </main>
+    <footer class="login-footer">
+      <div class="secondary-links">
+        <a href="#" onclick="return false;">Conditions of Use</a>
+        <a href="#" onclick="return false;">Privacy Notice</a>
+        <a href="#" onclick="return false;">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- State: validation-error -->
+  <!--
+    Screen: Login — Empty field validation
+    Notes:
+      - Satisfies AC2: submitting with email and/or password left empty
+        shows an inline, field-specific validation error and preserves
+        whatever the user had typed in the other field.
+      - Errors are communicated via icon + bold text + a red-toned border,
+        not color alone (guideline §3).
+      - This screen pre-renders the "submitted with both fields empty"
+        case; the live form (screen 1) demonstrates single-field cases
+        interactively.
+  -->
+  <div class="screen" data-name="Login — Validation Error">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card">
+        <h1 class="card-title">Sign in</h1>
+
+        <div class="form-field">
+          <label class="label" for="email-2">Email or mobile phone number</label>
+          <input class="input input-invalid" id="email-2" type="text" value="" aria-invalid="true" aria-describedby="email-2-error" />
+          <div class="field-error" id="email-2-error">
+            <span aria-hidden="true">⚠</span>
+            <span>Enter your email or mobile phone number.</span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="label" for="password-2">Password</label>
+          <input class="input input-invalid" id="password-2" type="password" value="" aria-invalid="true" aria-describedby="password-2-error" />
+          <div class="field-error" id="password-2-error">
+            <span aria-hidden="true">⚠</span>
+            <span>Enter your password.</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" onclick="show(2)">Sign in</button>
+      </div>
+    </main>
+    <footer class="login-footer">
+      <div class="secondary-links">
+        <a href="#" onclick="return false;">Conditions of Use</a>
+        <a href="#" onclick="return false;">Privacy Notice</a>
+        <a href="#" onclick="return false;">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- State: invalid-credentials -->
+  <!--
+    Screen: Login — Invalid credentials
+    Notes:
+      - Satisfies AC3 and AC4: a non-matching email/password combination
+        produces a form-level "invalid credentials" alert, the user's
+        email input is preserved, the password field is cleared (standard
+        security practice), and the user stays on the login page (no
+        navigation occurs).
+      - The alert sits above the form fields, matching where Amazon's own
+        login error banner appears, so it's the first thing announced to
+        screen readers via the form landmark.
+  -->
+  <div class="screen" data-name="Login — Invalid Credentials">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card">
+        <h1 class="card-title">Sign in</h1>
+
+        <div class="form-alert" role="alert">
+          <span class="form-alert-icon" aria-hidden="true">⚠</span>
+          <div class="form-alert-body">
+            <strong>There was a problem</strong>
+            <p>We cannot find an account with that email address and password combination. Please try again.</p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="label" for="email-3">Email or mobile phone number</label>
+          <input class="input" id="email-3" type="text" value="wrong.user@example.com" />
+        </div>
+
+        <div class="form-field" style="margin-bottom: var(--space-2);">
+          <label class="label" for="password-3">Password</label>
+          <input class="input" id="password-3" type="password" value="" placeholder="" />
+        </div>
+
+        <p class="helper-text" style="margin-top:0;margin-bottom:var(--space-3);">
+          <a href="#" class="create-account-link" onclick="return false;" aria-disabled="true">Forgot password?</a>
+        </p>
+
+        <button type="button" class="btn btn-primary btn-block" onclick="show(3)">Sign in</button>
+      </div>
+    </main>
+    <footer class="login-footer">
+      <div class="secondary-links">
+        <a href="#" onclick="return false;">Conditions of Use</a>
+        <a href="#" onclick="return false;">Privacy Notice</a>
+        <a href="#" onclick="return false;">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- State: authenticating -->
+  <!--
+    Screen: Login — Authenticating (loading)
+    Notes:
+      - Transient state shown for ~300ms after a valid submit, satisfying
+        guideline §4 (visible feedback + disabled/labelled submit button
+        while pending, no double-submits).
+      - Reachable live from screen 1 by submitting the fixture credentials;
+        included as its own reviewer-bar stop so it can be inspected
+        without racing the timeout.
+  -->
+  <div class="screen" data-name="Login — Authenticating">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card">
+        <h1 class="card-title">Sign in</h1>
+
+        <div class="form-field">
+          <label class="label" for="email-4">Email or mobile phone number</label>
+          <input class="input" id="email-4" type="text" value="sarah.chen@example.com" disabled />
+        </div>
+
+        <div class="form-field" style="margin-bottom: var(--space-2);">
+          <label class="label" for="password-4">Password</label>
+          <input class="input" id="password-4" type="password" value="••••••••••" disabled />
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" disabled aria-busy="true">
+          <span class="spinner" aria-hidden="true"></span>
+          Signing in…
+        </button>
+      </div>
+    </main>
+    <footer class="login-footer">
+      <div class="secondary-links">
+        <a href="#" onclick="return false;">Conditions of Use</a>
+        <a href="#" onclick="return false;">Privacy Notice</a>
+        <a href="#" onclick="return false;">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- State: success-redirect -->
+  <!--
+    Screen: Login — Success / Redirect
+    Notes:
+      - Satisfies AC5: valid credentials lead to a confirmation moment
+        followed by navigation away from the login page (simulated here
+        as a redirect to an "Account" landing screen, since account/session
+        pages are out of scope for this story).
+      - Kept brief (~600ms) per guideline §10 (purposeful motion only).
+  -->
+  <div class="screen" data-name="Login — Success / Redirecting">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card redirect-card">
+        <div class="redirect-icon" aria-hidden="true">✓</div>
+        <h1 class="card-title">Signed in</h1>
+        <p class="card-body">Welcome back, Sarah. Redirecting you to your account…</p>
+      </div>
+    </main>
+    <footer class="login-footer">
+      <div class="secondary-links">
+        <a href="#" onclick="return false;">Conditions of Use</a>
+        <a href="#" onclick="return false;">Privacy Notice</a>
+        <a href="#" onclick="return false;">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- State: post-login-landing -->
+  <!--
+    Screen: Account — Post-login landing (destination of redirect)
+    Notes:
+      - Demonstrates the "redirected away from the login page" outcome
+        of AC5 concretely — this is a placeholder destination; the real
+        post-login landing page is out of scope for this story.
+  -->
+  <div class="screen" data-name="Account — Landing (post-redirect)">
+    <header class="login-header">
+      <span class="login-logo">amazon<span style="color:var(--color-primary)">.</span></span>
+    </header>
+    <main class="login-main">
+      <div class="login-card card">
+        <h1 class="card-title">Your Account</h1>
+        <p class="card-body">
+          You're signed in as <strong style="color:var(--color-fg)">sarah.chen@example.com</strong>.
+        </p>
+        <p class="helper-text">
+          This landing page is a placeholder to show that navigation away from
+          Sign in occurred. Account/order management UI is a separate work item.
+        </p>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<script>
+  // ---- Reviewer bar wiring ----
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !isTypingTarget(e.target)) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !isTypingTarget(e.target)) show(cur - 1);
+  });
+  function isTypingTarget(el) {
+    return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA');
+  }
+
+  // ---- Live interaction on screen 1: real client-side validation +
+  //      simulated auth against the single fixture account. ----
+  const form1 = document.getElementById('login-form-1');
+  form1.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('email-1').value.trim();
+    const password = document.getElementById('password-1').value;
+
+    if (!email || !password) {
+      // Jump to the pre-built validation-error screen for a clear,
+      // reviewable stop rather than mutating screen 1 in place.
+      show(1);
+      return;
+    }
+
+    const fixture = window.__FIXTURE_ACCOUNT__;
+    if (email !== fixture.email || password !== fixture.password) {
+      show(2);
+      return;
+    }
+
+    // Valid credentials: show the authenticating state, then redirect.
+    show(3);
+    setTimeout(() => {
+      show(4);
+      setTimeout(() => show(5), 600);
+    }, 350);
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
