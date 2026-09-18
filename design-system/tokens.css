@@ -3,13 +3,13 @@
  */
 
 :root {
-  --color-fg: #1a1a1a; /** Default body text color on light backgrounds. Paired with color-bg it clears WCAG AA (16.1:1). */
-  --color-fg-muted: #4b5563; /** Secondary/muted text, e.g. helper copy and captions. */
-  --color-bg: #ffffff; /** Default page background. */
-  --color-surface: #f8fafc; /** Slightly recessed surface used behind cards and chips. */
-  --color-primary: #2563eb; /** Brand/primary action color. */
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #3b82f6; /** Brand/primary action color. */
   --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
-  --color-border: #d1d5db; /** Default hairline border for cards, inputs, and dividers. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
   --space-1: 4px; /** Smallest spacing increment. */
   --space-2: 8px;
   --space-3: 12px;
@@ -24,7 +24,7 @@
   --font-weight-regular: 400;
   --font-weight-bold: 700;
   --line-height-base: 1.5;
-  --shadow-sm: 0px 1px 3px 0px rgb(10.196% 10.196% 10.196% / 0.08); /** Resting elevation shadow for cards. */
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
   --button-primary-background: var(--color-primary);
   --button-primary-foreground: var(--color-primary-fg);
   --button-primary-radius: var(--radius-md);
