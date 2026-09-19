@@ -1,0 +1,39 @@
+@keyframes reel-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.reel-grid {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+}
+
+.reel-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.reel--spinning .reel-strip {
+  animation: reel-scroll 0.5s linear infinite;
+}
+
+.reel-cell {
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  text-align: center;
+}
