@@ -1,0 +1,2 @@
+package_install_commands:
+  npm: "npm install {name}@{version}"
