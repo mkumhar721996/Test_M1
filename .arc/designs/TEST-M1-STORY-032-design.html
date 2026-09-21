@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-032 — Edit Expense via Modal Form</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /*
+    Page-specific styles. Every value below is composed from the tokens
+    shipped in tokens.css — no hardcoded colors, fonts, radii, or spacing.
+
+    Token gap found while building this prototype: the design system has no
+    semantic "danger"/"error" color token (only color-fg, color-fg-muted,
+    color-bg, color-surface, color-primary, color-border). Per UI guideline
+    §3 ("never encode meaning in color alone"), inline validation errors
+    below use an icon (⚠) + bold text label + a left border accent in
+    color-primary as the visual flag — color is never the only signal, so
+    this is AA-safe, but a future design-system pass should consider adding
+    a dedicated color-danger token so errors don't have to borrow the brand
+    accent color.
+  */
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  /* ---- Top bar (app nav) ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .topbar-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .topbar-meta {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .page-header h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  /* ---- Expense list: table on wide viewports ---- */
+  .expense-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    overflow: hidden;
+  }
+  .expense-table caption {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    padding: var(--space-3) var(--space-4) 0 var(--space-4);
+  }
+  .expense-table th,
+  .expense-table td {
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table th {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    background: var(--color-bg);
+  }
+  .expense-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .expense-table td.amount {
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+  }
+  .expense-table td.actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .row-updated {
+    animation: rowFlash 900ms ease-out;
+  }
+  @keyframes rowFlash {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .row-updated { animation: none; }
+  }
+
+  /* ---- Mobile: collapse table to cards below 640px ---- */
+  @media (max-width: 640px) {
+    .expense-table thead { display: none; }
+    .expense-table, .expense-table tbody, .expense-table tr, .expense-table td {
+      display: block;
+      width: 100%;
+    }
+    .expense-table tr {
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-3) var(--space-4);
+    }
+    .expense-table tbody tr:last-child {
+      border-bottom: none;
+    }
+    .expense-table td {
+      border-bottom: none;
+      padding: var(--space-1) 0;
+    }
+    .expense-table td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: var(--font-size-sm);
+      color: var(--color-fg-muted);
+      font-weight: var(--font-weight-bold);
+    }
+    .expense-table td.actions {
+      text-align: left;
+      margin-top: var(--space-2);
+    }
+  }
+
+  /* ---- Buttons: small variant + touch target ---- */
+  .btn {
+    min-height: 44px;
+  }
+  .btn-sm {
+    min-height: 44px;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  /* ---- Modal ---- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    z-index: 1000;
+  }
+  .modal-overlay[hidden] {
+    display: none;
+  }
+  .modal-panel {
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100dvh - var(--space-4) * 2);
+    overflow-y: auto;
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4);
+  }
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+  .modal-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    cursor: pointer;
+    padding: var(--space-1);
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: var(--radius-sm);
+  }
+  .modal-close:hover,
+  .modal-close:focus-visible {
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  .field-group {
+    margin-bottom: var(--space-3);
+  }
+  .field-required::after {
+    content: " *";
+    color: var(--color-fg-muted);
+  }
+  .field-error {
+    display: none;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    padding-left: var(--space-2);
+    border-left: 3px solid var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-group.is-invalid .field-error {
+    display: flex;
+  }
+  .field-group.is-invalid .input {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+  .amount-input-wrap {
+    position: relative;
+  }
+  .amount-input-wrap .amount-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    pointer-events: none;
+  }
+  .amount-input-wrap .input {
+    padding-left: calc(var(--space-3) * 2 + 6px);
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  /* ---- Toast ---- */
+  #toast {
+    position: fixed;
+    bottom: var(--space-4);
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    z-index: 1100;
+    max-width: calc(100vw - var(--space-4) * 2);
+  }
+  #toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #toast { transition: none; }
+  }
+  #toast .toast-icon {
+    color: var(--color-primary);
+  }
+
+  /* ---- Reference screen (static state gallery) ---- */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+  .ref-card-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-2) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .ref-note {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-top: var(--space-2);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-032</span>
+  <button id="prev-btn" style="background:transparent;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;min-height:32px">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:transparent;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;min-height:32px">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<!-- App nav: simple top bar — app wordmark + record count only.
+     This is a single-view expense tracker (list + modal); there is no
+     sidebar or additional navigation in scope for this story. -->
+<div class="topbar">
+  <p class="topbar-title">Expense Tracker</p>
+  <span class="topbar-meta" id="topbar-count">6 expenses</span>
+</div>
+
+<div id="screens">
+
+  <!-- Screen: Expense List (live demo)
+       Notes:
+         - "Edit" on any row opens the modal pre-populated with that row's
+           current amount, date, category, and description (AC1).
+         - Clearing Amount/Date or leaving Category unselected and submitting
+           keeps the modal open and shows an inline error below that field
+           (AC2). Fix the field and submit again to see it clear.
+         - Submitting with all required fields valid closes the modal (AC3),
+           writes the updated record to localStorage (AC4 — this prototype
+           does perform a real localStorage write since it's a pure
+           client-side simulation, no network calls), and the list reflects
+           the new values immediately with a brief highlight (AC5).
+         - Cancel, the × button, backdrop click, or Esc all discard edits:
+           the record and the list are left exactly as they were (AC6, AC7).
+         - Amounts are always rendered as USD with a $ and two decimals,
+           both before and after an edit (AC8).
+         - Data resets to the fixture defaults if you clear this browser's
+           localStorage for this page.
+  -->
+  <div class="screen" data-name="Expense List (live demo)">
+    <div class="page">
+      <div class="page-header">
+        <h2>Recent expenses</h2>
+        <span class="topbar-meta">Click "Edit" on any row to open the modal form</span>
+      </div>
+
+      <table class="expense-table" id="expense-table">
+        <caption class="visually-hidden">Expense records with edit actions</caption>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Category</th>
+            <th scope="col">Description</th>
+            <th scope="col">Amount</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="expense-tbody">
+          <!-- rows rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Screen: Edit Modal — state reference (static gallery)
+       Notes:
+         - This screen is a non-interactive reference so a reviewer can see
+           the three key modal states side by side without performing the
+           steps. The live, clickable version of all three states lives on
+           the "Expense List (live demo)" screen.
+  -->
+  <div class="screen" data-name="Edit Modal — state reference">
+    <div class="page">
+      <div class="page-header">
+        <h2>Edit modal — state reference</h2>
+      </div>
+      <div class="ref-grid">
+
+        <!-- State: modal-prefilled -->
+        <div>
+          <p class="ref-card-label">Opened via "Edit" (AC1)</p>
+          <div class="card" style="padding: var(--space-4);">
+            <p class="modal-title" style="margin-bottom: var(--space-3);">Edit expense</p>
+            <div class="field-group">
+              <label class="label">Amount<span aria-hidden="true"> *</span></label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix">$</span>
+                <input class="input" value="1200.00" disabled />
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="label">Date<span aria-hidden="true"> *</span></label>
+              <input class="input" value="2026-09-02" disabled />
+            </div>
+            <div class="field-group">
+              <label class="label">Category<span aria-hidden="true"> *</span></label>
+              <input class="input" value="Software &amp; Subscriptions" disabled />
+            </div>
+          </div>
+          <p class="ref-note">All four fields (amount, date, category, description) load with the record's current values.</p>
+        </div>
+
+        <!-- State: validation-error -->
+        <div>
+          <p class="ref-card-label">Required field cleared + submitted (AC2)</p>
+          <div class="card" style="padding: var(--space-4);">
+            <p class="modal-title" style="margin-bottom: var(--space-3);">Edit expense</p>
+            <div class="field-group is-invalid">
+              <label class="label">Amount<span aria-hidden="true"> *</span></label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix">$</span>
+                <input class="input" value="" disabled />
+              </div>
+              <p class="field-error"><span aria-hidden="true">⚠</span> Amount is required.</p>
+            </div>
+            <div class="field-group">
+              <label class="label">Date<span aria-hidden="true"> *</span></label>
+              <input class="input" value="2026-09-02" disabled />
+            </div>
+            <div class="field-group is-invalid">
+              <label class="label">Category<span aria-hidden="true"> *</span></label>
+              <input class="input" value="Select a category" disabled />
+              <p class="field-error"><span aria-hidden="true">⚠</span> Select a category.</p>
+            </div>
+          </div>
+          <p class="ref-note">The modal stays open; each invalid required field gets its own inline error directly beneath it.</p>
+        </div>
+
+        <!-- State: saved-and-list-updated -->
+        <div>
+          <p class="ref-card-label">Valid submit → saved (AC3, AC4, AC5, AC8)</p>
+          <table class="expense-table" style="margin-bottom: var(--space-2);">
+            <tbody>
+              <tr class="row-updated">
+                <td data-label="Date">2026-09-02</td>
+                <td data-label="Category">Software &amp; Subscriptions</td>
+                <td data-label="Description">Figma annual seats</td>
+                <td class="amount" data-label="Amount">$1,450.00</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="display:flex;align-items:center;gap:var(--space-2);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);">
+            <span aria-hidden="true" style="color:var(--color-primary)">✓</span>
+            <span class="u-text-sm">Expense updated and saved.</span>
+          </div>
+          <p class="ref-note">Modal closes, the row updates in place (briefly highlighted), the record persists to localStorage, and the amount renders as USD with two decimals.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal markup (shared by the live demo screen; hidden by default) -->
+<div class="modal-overlay" id="modal-overlay" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal-panel">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">Edit expense</h3>
+      <button type="button" class="modal-close" id="modal-close" aria-label="Close dialog">✕</button>
+    </div>
+
+    <form id="edit-form" novalidate>
+      <div class="field-group" id="group-amount">
+        <label class="label field-required" for="field-amount">Amount</label>
+        <div class="amount-input-wrap">
+          <span class="amount-prefix" aria-hidden="true">$</span>
+          <input
+            class="input"
+            id="field-amount"
+            name="amount"
+            type="number"
+            step="0.01"
+            min="0"
+            inputmode="decimal"
+            aria-required="true"
+            aria-describedby="error-amount"
+          />
+        </div>
+        <p class="field-error" id="error-amount" role="alert"></p>
+      </div>
+
+      <div class="field-group" id="group-date">
+        <label class="label field-required" for="field-date">Date</label>
+        <input
+          class="input"
+          id="field-date"
+          name="date"
+          type="date"
+          aria-required="true"
+          aria-describedby="error-date"
+        />
+        <p class="field-error" id="error-date" role="alert"></p>
+      </div>
+
+      <div class="field-group" id="group-category">
+        <label class="label field-required" for="field-category">Category</label>
+        <select
+          class="input"
+          id="field-category"
+          name="category"
+          aria-required="true"
+          aria-describedby="error-category"
+        >
+          <option value="">Select a category</option>
+          <option value="Travel">Travel</option>
+          <option value="Meals & Entertainment">Meals &amp; Entertainment</option>
+          <option value="Software & Subscriptions">Software &amp; Subscriptions</option>
+          <option value="Office Supplies">Office Supplies</option>
+          <option value="Client Services">Client Services</option>
+          <option value="Other">Other</option>
+        </select>
+        <p class="field-error" id="error-category" role="alert"></p>
+      </div>
+
+      <div class="field-group" id="group-description">
+        <label class="label" for="field-description">Description</label>
+        <textarea
+          class="input"
+          id="field-description"
+          name="description"
+          rows="2"
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btn-save">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite">
+  <span class="toast-icon" aria-hidden="true">✓</span>
+  <span id="toast-message"></span>
+</div>
+
+<script>
+  // ---- Fixture data -------------------------------------------------
+  const STORAGE_KEY = 'test-m1-story-032-expenses';
+
+  const DEFAULT_EXPENSES = [
+    { id: 'exp-1', amount: 482.50, date: '2026-08-14', category: 'Travel', description: 'Flight to Austin — client kickoff' },
+    { id: 'exp-2', amount: 96.40, date: '2026-08-22', category: 'Meals & Entertainment', description: 'Team lunch — Q3 planning' },
+    { id: 'exp-3', amount: 1200.00, date: '2026-09-02', category: 'Software & Subscriptions', description: 'Figma annual seats' },
+    { id: 'exp-4', amount: 54.99, date: '2026-09-05', category: 'Office Supplies', description: 'Printer paper & toner' },
+    { id: 'exp-5', amount: 38.20, date: '2026-09-10', category: 'Travel', description: 'Uber rides — conference' },
+    { id: 'exp-6', amount: 149.00, date: '2026-09-15', category: 'Software & Subscriptions', description: 'Zoom Pro renewal' },
+  ];
+
+  function loadExpenses() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* fall through to defaults */ }
+    return DEFAULT_EXPENSES.map(e => ({ ...e }));
+  }
+
+  function persistExpenses(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  let expenses = loadExpenses();
+  let editingId = null;
+  let lastFocusedEl = null;
+
+  const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+  function formatUSD(amount) {
+    return currencyFormatter.format(Number(amount) || 0);
+  }
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  // ---- List rendering -------------------------------------------------
+  const tbody = document.getElementById('expense-tbody');
+  const topbarCount = document.getElementById('topbar-count');
+
+  function renderList(highlightId) {
+    tbody.innerHTML = '';
+    expenses.forEach(exp => {
+      const tr = document.createElement('tr');
+      if (highlightId && exp.id === highlightId) tr.classList.add('row-updated');
+      tr.innerHTML = `
+        <td data-label="Date">${formatDateDisplay(exp.date)}</td>
+        <td data-label="Category">${escapeHtml(exp.category)}</td>
+        <td data-label="Description">${escapeHtml(exp.description || '—')}</td>
+        <td class="amount" data-label="Amount">${formatUSD(exp.amount)}</td>
+        <td class="actions" data-label="">
+          <button type="button" class="btn btn-secondary btn-sm" data-edit-id="${exp.id}">Edit</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    topbarCount.textContent = `${expenses.length} expense${expenses.length === 1 ? '' : 's'}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-edit-id]');
+    if (!btn) return;
+    openModal(btn.dataset.editId, btn);
+  });
+
+  // ---- Modal -------------------------------------------------
+  const overlay = document.getElementById('modal-overlay');
+  const form = document.getElementById('edit-form');
+  const fieldAmount = document.getElementById('field-amount');
+  const fieldDate = document.getElementById('field-date');
+  const fieldCategory = document.getElementById('field-category');
+  const fieldDescription = document.getElementById('field-description');
+  const btnSave = document.getElementById('btn-save');
+  const btnCancel = document.getElementById('btn-cancel');
+  const btnClose = document.getElementById('modal-close');
+
+  function openModal(id, triggerEl) {
+    const exp = expenses.find(e => e.id === id);
+    if (!exp) return;
+    editingId = id;
+    lastFocusedEl = triggerEl || null;
+
+    fieldAmount.value = exp.amount.toFixed(2);
+    fieldDate.value = exp.date;
+    fieldCategory.value = exp.category;
+    fieldDescription.value = exp.description || '';
+
+    clearAllErrors();
+    overlay.hidden = false;
+    fieldAmount.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function closeModal() {
+    overlay.hidden = true;
+    editingId = null;
+    clearAllErrors();
+    document.removeEventListener('keydown', onKeydown);
+    if (lastFocusedEl) lastFocusedEl.focus();
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal(); // AC6/AC7: dismiss discards edits, list stays unchanged
+    }
+  }
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal(); // backdrop click = dismiss
+  });
+  btnClose.addEventListener('click', closeModal);
+  btnCancel.addEventListener('click', closeModal);
+
+  function setFieldError(groupId, errorId, message) {
+    const group = document.getElementById(groupId);
+    const error = document.getElementById(errorId);
+    if (message) {
+      group.classList.add('is-invalid');
+      error.textContent = message;
+    } else {
+      group.classList.remove('is-invalid');
+      error.textContent = '';
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError('group-amount', 'error-amount', '');
+    setFieldError('group-date', 'error-date', '');
+    setFieldError('group-category', 'error-category', '');
+  }
+
+  function validate() {
+    let firstInvalid = null;
+    let valid = true;
+
+    if (fieldAmount.value.trim() === '') {
+      setFieldError('group-amount', 'error-amount', 'Amount is required.');
+      firstInvalid = firstInvalid || fieldAmount;
+      valid = false;
+    } else if (Number(fieldAmount.value) <= 0) {
+      setFieldError('group-amount', 'error-amount', 'Enter an amount greater than $0.00.');
+      firstInvalid = firstInvalid || fieldAmount;
+      valid = false;
+    } else {
+      setFieldError('group-amount', 'error-amount', '');
+    }
+
+    if (fieldDate.value.trim() === '') {
+      setFieldError('group-date', 'error-date', 'Date is required.');
+      firstInvalid = firstInvalid || fieldDate;
+      valid = false;
+    } else {
+      setFieldError('group-date', 'error-date', '');
+    }
+
+    if (fieldCategory.value.trim() === '') {
+      setFieldError('group-category', 'error-category', 'Select a category.');
+      firstInvalid = firstInvalid || fieldCategory;
+      valid = false;
+    } else {
+      setFieldError('group-category', 'error-category', '');
+    }
+
+    if (!valid && firstInvalid) firstInvalid.focus();
+    return valid;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!validate()) return; // AC2: modal stays open, inline errors shown
+
+    // Simulate save latency; disable + relabel submit button while pending (UI guideline §4).
+    btnSave.disabled = true;
+    btnSave.textContent = 'Saving…';
+    btnCancel.disabled = true;
+
+    setTimeout(() => {
+      const exp = expenses.find(e => e.id === editingId);
+      exp.amount = Number(fieldAmount.value);
+      exp.date = fieldDate.value;
+      exp.category = fieldCategory.value;
+      exp.description = fieldDescription.value.trim();
+
+      persistExpenses(expenses); // AC4: persisted to localStorage
+      renderList(exp.id);        // AC5: list reflects updated values immediately, AC8: USD formatting
+
+      btnSave.disabled = false;
+      btnSave.textContent = 'Save changes';
+      btnCancel.disabled = false;
+
+      closeModal(); // AC3: modal closes on valid submit
+      showToast('Expense updated and saved.');
+    }, 300);
+  });
+
+  // ---- Toast -------------------------------------------------
+  const toast = document.getElementById('toast');
+  const toastMessage = document.getElementById('toast-message');
+  let toastTimer = null;
+
+  function showToast(message) {
+    toastMessage.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2500);
+  }
+
+  // ---- Reviewer bar -------------------------------------------------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (overlay.hidden) {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    }
+  });
+
+  renderList();
+  show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
