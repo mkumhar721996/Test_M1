@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-001 — Login UI flow for Amazon website</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<!--
+  Design notes for reviewers:
+  - Product owner feedback (2026-09-21): "create design in yellow colour".
+    This project's design system already defines color-primary as yellow (#eab308,
+    hex confirmed in design-system/tokens.json / tokens.css), so this revision leans
+    into that token everywhere an accent/brand color is called for: the wordmark,
+    the primary "Sign in" button, focus rings, the signed-in avatar chip, and the
+    accent bar on alerts. No new colors were introduced — everything below still
+    resolves to var(--color-*) tokens, per guideline §0.
+-->
+<style>
+  body {
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  #screens { padding-bottom: var(--space-4); }
+
+  /* ---- Site header (both screens) ---- */
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .wordmark {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    letter-spacing: 0.02em;
+  }
+  .site-header nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  /* ---- Login screen layout ---- */
+  .login-shell {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4);
+  }
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+  }
+  .login-card h1 {
+    margin: 0 0 var(--space-2) 0;
+  }
+  .field-group {
+    margin-top: var(--space-3);
+  }
+  .field-error {
+    display: none;
+    margin-top: var(--space-1);
+    align-items: flex-start;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error.is-visible { display: flex; }
+  .field-group .input[aria-invalid="true"] {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
+  .banner-error {
+    display: none;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    margin-bottom: var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+  }
+  .banner-error.is-visible { display: flex; }
+  .banner-error .icon { font-size: var(--font-size-lg); line-height: 1; }
+  .banner-error strong { color: var(--color-fg); }
+  .banner-error p { margin: var(--space-1) 0 0 0; color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+  .login-card .btn { width: 100%; min-height: 44px; }
+
+  .login-card .input { min-height: 44px; box-sizing: border-box; }
+
+  .legal-note {
+    margin-top: var(--space-3);
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  /* ---- Reviewer shortcuts ---- */
+  .reviewer-shortcuts {
+    max-width: 400px;
+    width: 100%;
+    margin: var(--space-4) auto 0 auto;
+    padding: var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+  .reviewer-shortcuts .btn { min-height: 44px; }
+  .shortcut-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  .shortcut-row .btn { flex: 1 1 160px; }
+
+  /* ---- Account (post-login) screen ---- */
+  .account-shell {
+    padding: var(--space-4);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .account-greeting-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    font-weight: var(--font-weight-bold);
+  }
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .redirect-toast {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .redirect-toast.is-visible { display: flex; }
+
+  @media (max-width: 480px) {
+    .shortcut-row .btn { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-001</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;padding:var(--space-1) var(--space-2)">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;padding:var(--space-1) var(--space-2)">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<!-- App nav: top bar — Wordmark only pre-login; wordmark + account greeting + Returns & Orders + Cart post-login. No sidebar (this is a consumer storefront, not the arc platform). -->
+
+<div id="screens">
+
+  <!--
+    Screen: Login
+    Notes:
+      - AC1: email/username field, password field, and a submit action are always visible on load.
+      - AC2: submitting with either field empty shows an inline, field-specific validation
+        message (red-free — communicated via icon + bold text + border, not color alone) and
+        keeps whatever the user already typed in the other field.
+      - AC3 / AC4: submitting a well-formed but unrecognized email/password pair shows a
+        banner error above the form and leaves the user on this screen. The button briefly
+        reads "Signing in…" (disabled) while the mock 350ms "network" check runs, per the
+        loading-feedback guideline.
+      - AC5: submitting the fixture's valid credentials shows a brief "Redirecting…" toast,
+        then the prototype navigates to the "Your Account" screen — simulating leaving the
+        login page. Reachable via the reviewer bar too, but the real trigger is a successful
+        submit.
+      - "Reviewer shortcuts" below the card are prototype-only affordances (clearly boxed
+        and labeled) that pre-fill and submit the form so a reviewer can see every state with
+        a single click, without needing to type.
+  -->
+  <div class="screen" data-name="Login">
+    <!-- State: interactive — default / empty-field-validation / invalid-credentials / submitting -->
+    <header class="site-header">
+      <span class="wordmark">amazon</span>
+    </header>
+
+    <div class="login-shell">
+      <div>
+        <div class="card login-card">
+          <h1 class="card-title u-text-lg">Sign in</h1>
+          <p class="card-body u-text-sm">Access your account to view orders, manage your cart, and more.</p>
+
+          <div id="banner-error" class="banner-error" role="alert" aria-live="assertive" tabindex="-1">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <strong class="u-text-sm">Sign-in problem</strong>
+              <p id="banner-error-text">The email/username or password you entered is incorrect.</p>
+            </div>
+          </div>
+
+          <div id="redirect-toast-login" class="redirect-toast" role="status" aria-live="polite">
+            <span aria-hidden="true">✓</span>
+            <span>Signed in — redirecting to your account…</span>
+          </div>
+
+          <form id="login-form" novalidate>
+            <div class="field-group">
+              <label class="label" for="login-email">Email or username</label>
+              <input class="input" type="text" id="login-email" name="email" autocomplete="username" aria-describedby="email-error" />
+              <div id="email-error" class="field-error" role="alert">
+                <span aria-hidden="true">⚠</span>
+                <span>Enter your email or username.</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="label" for="login-password">Password</label>
+              <input class="input" type="password" id="login-password" name="password" autocomplete="current-password" aria-describedby="password-error" />
+              <div id="password-error" class="field-error" role="alert">
+                <span aria-hidden="true">⚠</span>
+                <span>Enter your password.</span>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <button type="submit" id="submit-btn" class="btn btn-primary">Sign in</button>
+            </div>
+          </form>
+
+          <p class="legal-note">By signing in, you agree to Amazon's Conditions of Use and Privacy Notice.</p>
+        </div>
+
+        <div class="reviewer-shortcuts">
+          <p class="u-text-sm" style="margin:0;font-weight:700;">Reviewer shortcuts</p>
+          <p class="u-text-sm u-text-muted" style="margin:var(--space-1) 0 0 0;">Prototype-only — simulate a submission without typing.</p>
+          <div class="shortcut-row">
+            <button type="button" class="btn btn-secondary" id="demo-empty">Submit empty (AC2)</button>
+            <button type="button" class="btn btn-secondary" id="demo-invalid">Submit invalid (AC3/AC4)</button>
+            <button type="button" class="btn btn-secondary" id="demo-valid">Submit valid (AC5)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Screen: Your Account
+    Notes:
+      - Destination the prototype navigates to after a successful login (AC5): the user has
+        left the login page entirely.
+      - "Sign out" loops back to the Login screen and resets the form, purely so reviewers can
+        replay the flow — it is not itself an acceptance criterion.
+  -->
+  <div class="screen" data-name="Your Account">
+    <!-- State: success (post-login landing page) -->
+    <header class="site-header">
+      <span class="wordmark">amazon</span>
+      <nav>
+        <span class="u-text-sm" style="display:flex;align-items:center;gap:var(--space-2);">
+          <span class="account-greeting-chip" aria-hidden="true">A</span>
+          Hello, Avery
+        </span>
+        <span class="chip">Returns &amp; Orders</span>
+        <span class="chip">Cart</span>
+        <button type="button" class="btn btn-secondary" id="sign-out-btn">Sign out</button>
+      </nav>
+    </header>
+
+    <div class="account-shell">
+      <div class="redirect-toast is-visible" role="status">
+        <span aria-hidden="true">✓</span>
+        <span>You're signed in as avery.chen@example.com.</span>
+      </div>
+      <h1 class="u-text-lg">Your Account</h1>
+      <p class="u-text-md u-text-muted">This is the page a user lands on after a successful sign-in — outside the scope of this story is everything else on it, shown here only to make the redirect concrete.</p>
+
+      <div class="tile-grid">
+        <div class="card">
+          <h2 class="card-title u-text-md">Your Orders</h2>
+          <p class="card-body u-text-sm">Track, return, or buy things again.</p>
+        </div>
+        <div class="card">
+          <h2 class="card-title u-text-md">Your Lists</h2>
+          <p class="card-body u-text-sm">Wishlists and saved items.</p>
+        </div>
+        <div class="card">
+          <h2 class="card-title u-text-md">Login &amp; Security</h2>
+          <p class="card-body u-text-sm">Manage your name, email, and password.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Inline fixture data — the only "valid account" this prototype recognizes.
+  const VALID_ACCOUNT = { email: "avery.chen@example.com", password: "Sunshine!42" };
+
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ---- Login form behaviour (mocked; no real network calls) ----
+  const form = document.getElementById('login-form');
+  const emailInput = document.getElementById('login-email');
+  const passwordInput = document.getElementById('login-password');
+  const emailError = document.getElementById('email-error');
+  const passwordError = document.getElementById('password-error');
+  const bannerError = document.getElementById('banner-error');
+  const submitBtn = document.getElementById('submit-btn');
+  const redirectToast = document.getElementById('redirect-toast-login');
+
+  function clearErrors() {
+    emailError.classList.remove('is-visible');
+    passwordError.classList.remove('is-visible');
+    bannerError.classList.remove('is-visible');
+    emailInput.removeAttribute('aria-invalid');
+    passwordInput.removeAttribute('aria-invalid');
+  }
+
+  function submitLogin(email, password) {
+    clearErrors();
+    redirectToast.classList.remove('is-visible');
+
+    let hasFieldError = false;
+    if (!email.trim()) {
+      emailError.classList.add('is-visible');
+      emailInput.setAttribute('aria-invalid', 'true');
+      hasFieldError = true;
+    }
+    if (!password) {
+      passwordError.classList.add('is-visible');
+      passwordInput.setAttribute('aria-invalid', 'true');
+      hasFieldError = true;
+    }
+    if (hasFieldError) {
+      (emailError.classList.contains('is-visible') ? emailInput : passwordInput).focus();
+      return;
+    }
+
+    // Simulate a network round-trip.
+    submitBtn.disabled = true;
+    submitBtn.setAttribute('aria-busy', 'true');
+    submitBtn.textContent = 'Signing in…';
+
+    setTimeout(() => {
+      const isValid = email.trim() === VALID_ACCOUNT.email && password === VALID_ACCOUNT.password;
+
+      if (!isValid) {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
+        submitBtn.textContent = 'Sign in';
+        bannerError.classList.add('is-visible');
+        bannerError.focus();
+        return;
+      }
+
+      redirectToast.classList.add('is-visible');
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
+        submitBtn.textContent = 'Sign in';
+        show(1); // navigate away from the login screen
+      }, 500);
+    }, 350);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitLogin(emailInput.value, passwordInput.value);
+  });
+
+  // ---- Reviewer shortcuts ----
+  document.getElementById('demo-empty').addEventListener('click', () => {
+    emailInput.value = '';
+    passwordInput.value = '';
+    submitLogin('', '');
+  });
+  document.getElementById('demo-invalid').addEventListener('click', () => {
+    emailInput.value = 'wrong.person@example.com';
+    passwordInput.value = 'not-the-right-password';
+    submitLogin(emailInput.value, passwordInput.value);
+  });
+  document.getElementById('demo-valid').addEventListener('click', () => {
+    emailInput.value = VALID_ACCOUNT.email;
+    passwordInput.value = VALID_ACCOUNT.password;
+    submitLogin(emailInput.value, passwordInput.value);
+  });
+
+  document.getElementById('sign-out-btn').addEventListener('click', () => {
+    clearErrors();
+    redirectToast.classList.remove('is-visible');
+    emailInput.value = '';
+    passwordInput.value = '';
+    show(0);
+  });
+
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
