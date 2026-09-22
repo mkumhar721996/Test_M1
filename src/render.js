@@ -1,9 +1,12 @@
 import { formatCurrency, formatDate } from './format.js';
 
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function formatCount(n) {
@@ -30,7 +33,7 @@ function rowHTML(e) {
       <span class="chip"><span class="sr-only">Category:</span> ${escapeHtml(e.category)}</span>
     </div>
     <p class="expense-description"><span class="sr-only">Description:</span> ${escapeHtml(e.description)}</p>
-    <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="${e.date}">${formatDate(e.date)}</time></div>
+    <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="${escapeHtml(e.date)}">${formatDate(e.date)}</time></div>
   </li>`;
 }
 

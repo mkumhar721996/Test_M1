@@ -52,3 +52,12 @@ test('escapes user-entered category and description to avoid HTML injection', ()
   expect(document.querySelector('.expense-row').querySelector('img')).toBeNull();
   expect(document.querySelector('.expense-description').textContent).toContain('<img src=x onerror=alert(1)>');
 });
+
+test('escapes a malicious date value to prevent attribute injection', () => {
+  document.body.innerHTML = '<div id="app"></div>';
+  renderExpenseList(document.getElementById('app'), [
+    { amount: 1, date: '2026-09-17" onclick="alert(1)', category: 'Transport', description: 'x' },
+  ]);
+  const time = document.querySelector('time');
+  expect(time.hasAttribute('onclick')).toBe(false);
+});

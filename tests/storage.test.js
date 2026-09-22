@@ -12,11 +12,18 @@ test('returns an empty array when stored data is not valid JSON', () => {
   expect(loadExpenses()).toEqual([]);
 });
 
-test('returns the stored array preserving order', () => {
+test('returns the stored array preserving order when no addedAt is present', () => {
   const expenses = [
     { amount: 2, date: '2026-09-17', category: 'Utilities', description: 'B' },
     { amount: 1, date: '2026-09-10', category: 'Transport', description: 'A' },
   ];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
   expect(loadExpenses()).toEqual(expenses);
+});
+
+test('returns expenses sorted by addedAt descending regardless of storage order', () => {
+  const older = { amount: 1, date: '2026-09-10', category: 'Transport', description: 'A', addedAt: 100 };
+  const newer = { amount: 2, date: '2026-09-17', category: 'Utilities', description: 'B', addedAt: 200 };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([older, newer]));
+  expect(loadExpenses()).toEqual([newer, older]);
 });
