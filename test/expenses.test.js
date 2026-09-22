@@ -94,6 +94,34 @@ describe('Edit Expense via Modal Form', () => {
     expect(row.querySelector('.col-amount').textContent).toBe('$9.00');
   });
 
+  test('cancelling while a save is in flight does not persist the change or show a success toast', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '999.99';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    document.getElementById('modal-cancel-btn').click();
+    jest.advanceTimersByTime(350);
+
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_001').amount).toBe(482.5);
+    expect(document.getElementById('toast-message').textContent).not.toMatch(/^Expense updated$/);
+  });
+
+  test('cancelling and editing a different record before the first save completes does not cross-apply values', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '999.99';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    document.getElementById('modal-cancel-btn').click();
+
+    document.querySelector('[data-edit-id="exp_002"]').click();
+    document.getElementById('field-amount').value = '10.00';
+    jest.advanceTimersByTime(350);
+
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_001').amount).toBe(482.5);
+    expect(document.getElementById('field-amount').value).toBe('10.00');
+    expect(document.getElementById('modal-wrap').hidden).toBe(false);
+  });
+
   test('a localStorage failure on save keeps the modal open, re-enables the save button, and shows an error toast', () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';

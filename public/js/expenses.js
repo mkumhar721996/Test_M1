@@ -11,7 +11,9 @@ function loadExpenses() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) { /* ignore malformed storage */ }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
+  } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
   return INITIAL_EXPENSES.map((e) => ({ ...e }));
 }
 
@@ -183,31 +185,35 @@ function initExpensesApp(doc = document) {
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving…';
 
+    const targetId = editingId;
+
     setTimeout(() => {
-      const idx = expenses.findIndex((e) => e.id === editingId);
-      if (idx !== -1) {
-        const updated = {
-          ...expenses[idx],
-          amount: Math.round(parseFloat(amountRaw) * 100) / 100,
-          date: dateValue,
-          category: categoryValue,
-          description: fieldDescription.value.trim(),
-        };
-        try {
-          persistExpenses([
-            ...expenses.slice(0, idx),
-            updated,
-            ...expenses.slice(idx + 1),
-          ]);
-        } catch (err) {
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Save changes';
-          showToast('Expense could not be saved — please try again');
-          return;
-        }
-        expenses[idx] = updated;
-        lastUpdatedId = expenses[idx].id;
+      if (editingId !== targetId) return;
+
+      const idx = expenses.findIndex((e) => e.id === targetId);
+      if (idx === -1) return;
+
+      const updated = {
+        ...expenses[idx],
+        amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+        date: dateValue,
+        category: categoryValue,
+        description: fieldDescription.value.trim(),
+      };
+      try {
+        persistExpenses([
+          ...expenses.slice(0, idx),
+          updated,
+          ...expenses.slice(idx + 1),
+        ]);
+      } catch (err) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save changes';
+        showToast('Expense could not be saved — please try again');
+        return;
       }
+      expenses[idx] = updated;
+      lastUpdatedId = expenses[idx].id;
       closeModal();
       renderList();
       showToast('Expense updated');
