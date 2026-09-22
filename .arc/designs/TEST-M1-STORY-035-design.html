@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-035 — Register New Employee</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<!--
+  TEST-M1-STORY-035 — Register New Employee
+  Design-system gap note: tokens.json/tokens.css define no semantic
+  error/success/warning color tokens (only color-fg, color-fg-muted,
+  color-bg, color-surface, color-primary/-fg, color-border). Per guideline
+  §3 "never encode meaning in color alone", error/success states below are
+  built from icon + label + border-weight, using color-primary (the only
+  accent available) as the sole accent color for both invalid-field
+  outlines and the success Employee ID chip. Recommend the design system
+  add color-danger / color-success tokens so error and success states can
+  be visually distinguished from each other and from generic emphasis.
+-->
+<style>
+  /* App nav: top bar — Employee Directory · Register Employee */
+
+  body.u-surface {
+    min-height: 100dvh;
+  }
+
+  .app-nav {
+    position: sticky;
+    top: 46px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .app-nav__brand {
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+
+  .app-nav__links {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .app-nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+
+  .app-nav__link:hover,
+  .app-nav__link:focus-visible {
+    color: var(--color-fg);
+    border-color: var(--color-border);
+  }
+
+  .app-nav__link.is-active {
+    color: var(--color-primary-fg);
+    background: var(--color-primary);
+  }
+
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: var(--space-4);
+    padding-bottom: 64px;
+  }
+
+  .page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0;
+    max-width: 65ch;
+  }
+
+  /* Directory table */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  table.directory {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+
+  table.directory th,
+  table.directory td {
+    text-align: left;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  table.directory th {
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-surface);
+  }
+
+  table.directory tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  table.directory tbody tr.is-new {
+    animation: highlight-row 2.4s ease-out;
+  }
+
+  @keyframes highlight-row {
+    0% { background: color-mix(in srgb, var(--color-primary) 22%, transparent); }
+    100% { background: transparent; }
+  }
+
+  .id-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    background: var(--chip-default-background);
+    color: var(--chip-default-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .muted-dash {
+    color: var(--color-fg-muted);
+  }
+
+  /* Form layout */
+  .helper-box {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .helper-box__label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .helper-box__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover,
+  .btn-ghost:focus-visible {
+    border-color: var(--color-primary);
+  }
+
+  form.reg-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  fieldset.form-group {
+    grid-column: 1 / -1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+  }
+
+  fieldset.form-group legend {
+    padding: 0 var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .field.span-2 {
+    grid-column: 1 / -1;
+  }
+
+  .field .required-mark {
+    color: var(--color-primary);
+  }
+
+  .field-help {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+
+  .field-error {
+    display: none;
+    align-items: flex-start;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    border-left: 3px solid var(--color-primary);
+    padding: var(--space-1) var(--space-2);
+    margin: var(--space-1) 0 0 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .field-error.is-visible {
+    display: flex;
+  }
+
+  .field.has-error .input,
+  .field.has-error select.input {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+
+  .banner {
+    display: none;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+    margin-bottom: var(--space-4);
+    grid-column: 1 / -1;
+  }
+
+  .banner.is-visible {
+    display: flex;
+  }
+
+  .banner__icon {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+
+  .banner__title {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .banner__body {
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  .upload-field {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .upload-field.has-error {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+
+  .upload-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .upload-preview {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    padding: var(--space-2);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .upload-preview.is-visible {
+    display: flex;
+  }
+
+  .upload-preview img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+  }
+
+  .upload-preview__name {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    overflow-wrap: anywhere;
+  }
+
+  .upload-preview__remove {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    cursor: pointer;
+    font-size: var(--font-size-md);
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .upload-preview__remove:hover,
+  .upload-preview__remove:focus-visible {
+    color: var(--color-fg);
+  }
+
+  .demo-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .demo-link {
+    background: none;
+    border: none;
+    padding: var(--space-1) 0;
+    min-height: 44px;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .demo-link:hover,
+  .demo-link:focus-visible {
+    color: var(--color-fg);
+  }
+
+  .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+  }
+
+  .btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid color-mix(in srgb, var(--color-primary-fg) 30%, transparent);
+    border-top-color: var(--color-primary-fg);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 1.6s; }
+    table.directory tbody tr.is-new { animation: none; }
+  }
+
+  /* Success view */
+  .success-card {
+    display: none;
+  }
+
+  .success-card.is-visible {
+    display: block;
+  }
+
+  .success-card .card {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+    font-size: 28px;
+    margin: 0 auto var(--space-3) auto;
+  }
+
+  .success-id-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin: var(--space-2) 0 var(--space-4) 0;
+  }
+
+  .summary-list {
+    text-align: left;
+    list-style: none;
+    margin: 0 0 var(--space-4) 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .summary-list li {
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .summary-list li span.k {
+    display: block;
+    color: var(--color-fg-muted);
+  }
+
+  .summary-list li span.v {
+    color: var(--color-fg);
+  }
+
+  .success-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .form-view.is-hidden {
+    display: none;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    transform: translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
+  }
+
+  #toast.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #toast { transition: none; }
+  }
+
+  @media (max-width: 640px) {
+    form.reg-form,
+    fieldset.form-group {
+      grid-template-columns: 1fr;
+    }
+    .summary-list {
+      grid-template-columns: 1fr;
+    }
+    .page-header {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-035</span>
+    <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;min-height:44px;padding:0 8px">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+    <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;min-height:44px;padding:0 8px">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- App nav -->
+  <div class="app-nav">
+    <span class="app-nav__brand">Acme HR</span>
+    <div class="app-nav__links">
+      <button type="button" class="app-nav__link" data-nav-target="0">Employee Directory</button>
+      <button type="button" class="app-nav__link" data-nav-target="1">Register Employee</button>
+    </div>
+  </div>
+
+  <div id="screens">
+
+    <!-- Screen: Employee Directory
+         Notes:
+           - Read-only list of employees already on file, seeded so the
+             Register screen has real duplicate-email data to test against
+             (EMP00003 / john@co.com — see AC4, AC11).
+           - Employee ID column uses the auto-generated EMPnnnnn format
+             (AC2). IDs are unique and sequential across the fixture (AC3).
+           - Optional fields left blank at registration render as an em
+             dash rather than empty space, so "blank vs provided" is
+             legible (supports AC5/AC6).
+           - After a successful registration on the Register screen, the
+             new row appears here at the bottom with the next sequential
+             ID and a brief highlight animation — demonstrating that the
+             record was actually created (AC1) with the ID format/
+             uniqueness guarantees (AC2, AC3).
+    -->
+    <div class="screen" data-name="Employee Directory">
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Employee directory</h1>
+            <p class="page-subtitle">All employees currently on file. Employee IDs are assigned automatically and never reused.</p>
+          </div>
+          <button type="button" class="btn btn-primary" data-nav-target="1">+ Register new employee</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="directory">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Joining date</th>
+                <th>Date of birth</th>
+                <th>Photo</th>
+                <th>ID proof</th>
+              </tr>
+            </thead>
+            <tbody id="directory-body">
+              <!-- rows rendered by renderDirectory() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Register New Employee
+         Notes:
+           - States (all reachable by interacting with the real form below —
+             this is a working client-side simulation, not a static mock):
+               empty            → form freshly opened, all fields blank
+               required-error   → submit with a required field blank (AC7)
+               format-error     → invalid email / mobile format (AC8)
+               file-type-error  → wrong file type for Photo/ID proof (AC9)
+               file-size-error  → oversized Photo/ID proof file (AC10)
+               duplicate-email  → email already on file, case/whitespace
+                                   insensitive match (AC4, AC11)
+               submitting       → valid form, brief simulated latency,
+                                   submit button disabled + labelled (no
+                                   double-submit)
+               success          → new record created with generated
+                                   Employee ID; shows exactly which
+                                   optional fields were captured (AC1, 2,
+                                   3, 5, 6)
+           - "Prototype helper" box is dev/reviewer-only scaffolding to
+             reach each state quickly without hunting for real oversized
+             files — it is not part of the production UI and is styled
+             with a dashed border to signal that.
+           - Employee ID generation and the atomic/sequential guarantee
+             under concurrent submissions (AC12) are server-side
+             behaviors; this prototype shows the resulting ID format and
+             uniqueness (by incrementing a shared counter) but cannot
+             demonstrate true request concurrency in a static file.
+    -->
+    <div class="screen" data-name="Register New Employee">
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Register new employee</h1>
+            <p class="page-subtitle">Fields marked <span class="required-mark">*</span> are required. An Employee ID is generated automatically once the record is saved.</p>
+          </div>
+        </div>
+
+        <div class="helper-box">
+          <span class="helper-box__label">Prototype helper (not part of production UI) — jump straight to a state for review</span>
+          <div class="helper-box__actions">
+            <button type="button" class="btn-ghost" id="helper-fill-valid">Fill valid sample</button>
+            <button type="button" class="btn-ghost" id="helper-fill-duplicate">Fill duplicate-email example</button>
+            <button type="button" class="btn-ghost" id="helper-clear">Clear form</button>
+          </div>
+        </div>
+
+        <div id="register-form-view" class="form-view">
+          <form class="reg-form" id="reg-form" novalidate>
+
+            <div class="banner" id="banner-required" role="alert">
+              <span class="banner__icon" aria-hidden="true">⚠</span>
+              <div>
+                <p class="banner__title">Some required fields need attention</p>
+                <p class="banner__body">Fix the fields highlighted below, then submit again.</p>
+              </div>
+            </div>
+
+            <div class="banner" id="banner-duplicate" role="alert">
+              <span class="banner__icon" aria-hidden="true">⚠</span>
+              <div>
+                <p class="banner__title">Duplicate email</p>
+                <p class="banner__body" id="banner-duplicate-body">An employee with this email is already on file. Registration blocked — use a different email address.</p>
+              </div>
+            </div>
+
+            <fieldset class="form-group">
+              <legend>Personal details</legend>
+
+              <div class="field" id="field-first-name">
+                <label class="label" for="first-name">First name <span class="required-mark">*</span></label>
+                <input class="input" type="text" id="first-name" name="firstName" autocomplete="given-name" />
+                <p class="field-error" id="err-first-name" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+
+              <div class="field" id="field-last-name">
+                <label class="label" for="last-name">Last name <span class="required-mark">*</span></label>
+                <input class="input" type="text" id="last-name" name="lastName" autocomplete="family-name" />
+                <p class="field-error" id="err-last-name" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+
+              <div class="field" id="field-dob">
+                <label class="label" for="dob">Date of birth <span class="u-text-muted">(optional)</span></label>
+                <input class="input" type="date" id="dob" name="dob" />
+                <p class="field-help">Leave blank if not provided — the record will still be created (AC5).</p>
+              </div>
+
+              <div class="field">
+                <!-- spacer to keep the two-column grid balanced -->
+              </div>
+
+              <div class="field span-2" id="field-photo">
+                <label class="label" for="photo">Photo <span class="u-text-muted">(optional, JPG or PNG, max 2MB)</span></label>
+                <div class="upload-field" id="upload-field-photo">
+                  <div class="upload-row">
+                    <input class="input" style="width:auto;flex:1;min-width:200px" type="file" id="photo" name="photo" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+                  </div>
+                  <div class="upload-preview" id="preview-photo">
+                    <img id="preview-photo-img" alt="" />
+                    <span class="upload-preview__name" id="preview-photo-name"></span>
+                    <button type="button" class="upload-preview__remove" id="remove-photo" aria-label="Remove photo">✕</button>
+                  </div>
+                  <p class="field-error" id="err-photo" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+                  <div class="demo-links">
+                    <button type="button" class="demo-link" data-sim="photo-type">Try invalid file type</button>
+                    <button type="button" class="demo-link" data-sim="photo-size">Try oversized file (3.4MB)</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field span-2" id="field-id-proof">
+                <label class="label" for="id-proof">ID proof <span class="u-text-muted">(optional, PDF, JPG or PNG, max 5MB)</span></label>
+                <div class="upload-field" id="upload-field-id-proof">
+                  <div class="upload-row">
+                    <input class="input" style="width:auto;flex:1;min-width:200px" type="file" id="id-proof" name="idProof" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                  </div>
+                  <div class="upload-preview" id="preview-id-proof">
+                    <span class="upload-preview__name" id="preview-id-proof-name"></span>
+                    <button type="button" class="upload-preview__remove" id="remove-id-proof" aria-label="Remove ID proof">✕</button>
+                  </div>
+                  <p class="field-error" id="err-id-proof" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+                  <div class="demo-links">
+                    <button type="button" class="demo-link" data-sim="idproof-type">Try invalid file type</button>
+                    <button type="button" class="demo-link" data-sim="idproof-size">Try oversized file (6.1MB)</button>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>Contact details</legend>
+
+              <div class="field" id="field-email">
+                <label class="label" for="email">Email <span class="required-mark">*</span></label>
+                <input class="input" type="email" id="email" name="email" autocomplete="email" placeholder="name@company.com" />
+                <p class="field-error" id="err-email" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+
+              <div class="field" id="field-mobile">
+                <label class="label" for="mobile">Mobile number <span class="required-mark">*</span></label>
+                <input class="input" type="tel" id="mobile" name="mobile" inputmode="numeric" placeholder="9876543210" />
+                <p class="field-help">10 digits, no spaces or dashes.</p>
+                <p class="field-error" id="err-mobile" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>Employment details</legend>
+
+              <div class="field" id="field-department">
+                <label class="label" for="department">Department <span class="required-mark">*</span></label>
+                <select class="input" id="department" name="department">
+                  <option value="">Select department</option>
+                  <option>Engineering</option>
+                  <option>Sales</option>
+                  <option>Marketing</option>
+                  <option>Finance</option>
+                  <option>HR</option>
+                  <option>Operations</option>
+                  <option>IT</option>
+                  <option>Customer Support</option>
+                  <option>Legal</option>
+                </select>
+                <p class="field-error" id="err-department" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+
+              <div class="field" id="field-designation">
+                <label class="label" for="designation">Designation <span class="required-mark">*</span></label>
+                <input class="input" type="text" id="designation" name="designation" list="designation-list" placeholder="e.g. Software Engineer" />
+                <datalist id="designation-list">
+                  <option value="Software Engineer"></option>
+                  <option value="Senior Software Engineer"></option>
+                  <option value="Sales Executive"></option>
+                  <option value="Sales Manager"></option>
+                  <option value="Accountant"></option>
+                  <option value="Finance Manager"></option>
+                  <option value="HR Executive"></option>
+                  <option value="HR Manager"></option>
+                  <option value="Operations Manager"></option>
+                  <option value="Marketing Executive"></option>
+                  <option value="IT Support Engineer"></option>
+                  <option value="Customer Support Associate"></option>
+                  <option value="Legal Counsel"></option>
+                </datalist>
+                <p class="field-error" id="err-designation" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+
+              <div class="field" id="field-joining-date">
+                <label class="label" for="joining-date">Joining date <span class="required-mark">*</span></label>
+                <input class="input" type="date" id="joining-date" name="joiningDate" />
+                <p class="field-error" id="err-joining-date" role="alert"><span aria-hidden="true">⚠</span><span></span></p>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="btn-reset">Clear</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit">Register employee</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="success-card" id="register-success-view">
+          <div class="card">
+            <div class="success-icon" aria-hidden="true">✓</div>
+            <h2 class="card-title">Employee registered successfully</h2>
+            <p class="card-body">A new employee record has been created and added to the directory.</p>
+            <div class="success-id-chip" id="success-id-chip">EMP00006</div>
+            <ul class="summary-list" id="success-summary">
+              <!-- populated on submit -->
+            </ul>
+            <div class="success-actions">
+              <button type="button" class="btn btn-secondary" id="btn-register-another">Register another employee</button>
+              <button type="button" class="btn btn-primary" data-nav-target="0">View employee directory</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ---- Fixture data (inline JSON, no network calls) ----
+  var employees = [
+    { id: 'EMP00001', firstName: 'Priya', lastName: 'Sharma', email: 'priya.sharma@acmecorp.com', mobile: '9876543210', department: 'Engineering', designation: 'Software Engineer', joiningDate: '2023-01-15', dob: '1996-04-12', photo: 'priya_photo.jpg', idProof: 'priya_aadhaar.pdf' },
+    { id: 'EMP00002', firstName: 'Rahul', lastName: 'Verma', email: 'rahul.verma@acmecorp.com', mobile: '9123456780', department: 'Sales', designation: 'Sales Executive', joiningDate: '2023-03-01', dob: '', photo: '', idProof: '' },
+    { id: 'EMP00003', firstName: 'John', lastName: 'Kumar', email: 'john@co.com', mobile: '9988776655', department: 'Finance', designation: 'Accountant', joiningDate: '2022-11-20', dob: '', photo: 'john_photo.png', idProof: '' },
+    { id: 'EMP00004', firstName: 'Aisha', lastName: 'Khan', email: 'aisha.khan@acmecorp.com', mobile: '9012345678', department: 'HR', designation: 'HR Executive', joiningDate: '2024-02-10', dob: '1998-07-30', photo: '', idProof: 'aisha_passport.pdf' },
+    { id: 'EMP00005', firstName: 'Vikram', lastName: 'Singh', email: 'vikram.singh@acmecorp.com', mobile: '9765432109', department: 'Operations', designation: 'Operations Manager', joiningDate: '2021-06-05', dob: '', photo: '', idProof: '' }
+  ];
+  var nextIdNumber = 6;
+
+  function nextEmployeeId() {
+    var id = 'EMP' + String(nextIdNumber).padStart(5, '0');
+    nextIdNumber += 1;
+    return id;
+  }
+
+  function normalizeEmail(email) {
+    return (email || '').trim().toLowerCase();
+  }
+
+  function formatDate(iso) {
+    if (!iso) return null;
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // ---- Directory rendering ----
+  function renderDirectory(highlightId) {
+    var body = document.getElementById('directory-body');
+    body.innerHTML = '';
+    employees.forEach(function (emp) {
+      var tr = document.createElement('tr');
+      if (highlightId && emp.id === highlightId) tr.className = 'is-new';
+      tr.innerHTML =
+        '<td><span class="id-chip">' + emp.id + '</span></td>' +
+        '<td>' + emp.firstName + ' ' + emp.lastName + '</td>' +
+        '<td>' + emp.email + '</td>' +
+        '<td>' + emp.mobile + '</td>' +
+        '<td>' + emp.department + '</td>' +
+        '<td>' + emp.designation + '</td>' +
+        '<td>' + formatDate(emp.joiningDate) + '</td>' +
+        '<td>' + (emp.dob ? formatDate(emp.dob) : '<span class="muted-dash">—</span>') + '</td>' +
+        '<td>' + (emp.photo ? '✓' : '<span class="muted-dash">—</span>') + '</td>' +
+        '<td>' + (emp.idProof ? '✓' : '<span class="muted-dash">—</span>') + '</td>';
+      body.appendChild(tr);
+    });
+  }
+  renderDirectory();
+
+  // ---- Toast ----
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('is-visible');
+    }, 4000);
+  }
+
+  // ---- Field error helpers ----
+  function setFieldError(fieldId, errId, message) {
+    var field = document.getElementById(fieldId);
+    var err = document.getElementById(errId);
+    if (message) {
+      field.classList.add('has-error');
+      err.querySelector('span:last-child').textContent = message;
+      err.classList.add('is-visible');
+    } else {
+      field.classList.remove('has-error');
+      err.classList.remove('is-visible');
+    }
+  }
+
+  function clearAllErrors() {
+    ['first-name', 'last-name', 'email', 'mobile', 'department', 'designation', 'joining-date', 'photo', 'id-proof'].forEach(function (key) {
+      setFieldError('field-' + key, 'err-' + key, null);
+    });
+    document.getElementById('upload-field-photo').classList.remove('has-error');
+    document.getElementById('upload-field-id-proof').classList.remove('has-error');
+    document.getElementById('banner-required').classList.remove('is-visible');
+    document.getElementById('banner-duplicate').classList.remove('is-visible');
+  }
+
+  // ---- File upload validation (AC9, AC10) ----
+  var photoState = { name: '', size: 0, valid: false };
+  var idProofState = { name: '', size: 0, valid: false };
+
+  function humanSize(bytes) {
+    return (bytes / (1024 * 1024)).toFixed(1) + 'MB';
+  }
+
+  function handlePhotoFile(file) {
+    var uploadField = document.getElementById('upload-field-photo');
+    var allowed = ['image/jpeg', 'image/png'];
+    if (!allowed.includes(file.type)) {
+      setFieldError('field-photo', 'err-photo', 'Photo must be a JPG or PNG file. "' + file.name + '" was rejected.');
+      uploadField.classList.add('has-error');
+      photoState = { name: '', size: 0, valid: false };
+      document.getElementById('photo').value = '';
+      document.getElementById('preview-photo').classList.remove('is-visible');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setFieldError('field-photo', 'err-photo', 'Photo exceeds the maximum size of 2MB (file is ' + humanSize(file.size) + ').');
+      uploadField.classList.add('has-error');
+      photoState = { name: '', size: 0, valid: false };
+      document.getElementById('photo').value = '';
+      document.getElementById('preview-photo').classList.remove('is-visible');
+      return;
+    }
+    setFieldError('field-photo', 'err-photo', null);
+    uploadField.classList.remove('has-error');
+    photoState = { name: file.name, size: file.size, valid: true };
+    var preview = document.getElementById('preview-photo');
+    var img = document.getElementById('preview-photo-img');
+    try { img.src = URL.createObjectURL(file); } catch (e) { img.removeAttribute('src'); }
+    document.getElementById('preview-photo-name').textContent = file.name + ' (' + humanSize(file.size) + ')';
+    preview.classList.add('is-visible');
+    showToast('✓ Photo uploaded — ' + file.name);
+  }
+
+  function handleIdProofFile(file) {
+    var uploadField = document.getElementById('upload-field-id-proof');
+    var allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!allowed.includes(file.type)) {
+      setFieldError('field-id-proof', 'err-id-proof', 'ID proof must be a PDF, JPG, or PNG file. "' + file.name + '" was rejected.');
+      uploadField.classList.add('has-error');
+      idProofState = { name: '', size: 0, valid: false };
+      document.getElementById('id-proof').value = '';
+      document.getElementById('preview-id-proof').classList.remove('is-visible');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFieldError('field-id-proof', 'err-id-proof', 'ID proof exceeds the maximum size of 5MB (file is ' + humanSize(file.size) + ').');
+      uploadField.classList.add('has-error');
+      idProofState = { name: '', size: 0, valid: false };
+      document.getElementById('id-proof').value = '';
+      document.getElementById('preview-id-proof').classList.remove('is-visible');
+      return;
+    }
+    setFieldError('field-id-proof', 'err-id-proof', null);
+    uploadField.classList.remove('has-error');
+    idProofState = { name: file.name, size: file.size, valid: true };
+    document.getElementById('preview-id-proof-name').textContent = file.name + ' (' + humanSize(file.size) + ')';
+    document.getElementById('preview-id-proof').classList.add('is-visible');
+    showToast('✓ ID proof uploaded — ' + file.name);
+  }
+
+  document.getElementById('photo').addEventListener('change', function (e) {
+    if (e.target.files && e.target.files[0]) handlePhotoFile(e.target.files[0]);
+  });
+  document.getElementById('id-proof').addEventListener('change', function (e) {
+    if (e.target.files && e.target.files[0]) handleIdProofFile(e.target.files[0]);
+  });
+  document.getElementById('remove-photo').addEventListener('click', function () {
+    photoState = { name: '', size: 0, valid: false };
+    document.getElementById('photo').value = '';
+    document.getElementById('preview-photo').classList.remove('is-visible');
+  });
+  document.getElementById('remove-id-proof').addEventListener('click', function () {
+    idProofState = { name: '', size: 0, valid: false };
+    document.getElementById('id-proof').value = '';
+    document.getElementById('preview-id-proof').classList.remove('is-visible');
+  });
+
+  // Prototype-only "simulate a bad file" helpers (AC9, AC10) — a reviewer
+  // cannot easily source a real 6MB PDF, so these fabricate a File-like
+  // object with the right type/size to trigger the same validation path.
+  document.querySelectorAll('[data-sim]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var kind = btn.getAttribute('data-sim');
+      if (kind === 'photo-type') handlePhotoFile({ name: 'employee-scan.pdf', type: 'application/pdf', size: 400 * 1024 });
+      if (kind === 'photo-size') handlePhotoFile({ name: 'employee-photo-highres.jpg', type: 'image/jpeg', size: 3.4 * 1024 * 1024 });
+      if (kind === 'idproof-type') handleIdProofFile({ name: 'aadhaar-card.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', size: 200 * 1024 });
+      if (kind === 'idproof-size') handleIdProofFile({ name: 'passport-scan.pdf', type: 'application/pdf', size: 6.1 * 1024 * 1024 });
+    });
+  });
+
+  // ---- Form validation + submit (AC1, 2, 3, 4, 5, 6, 7, 8, 11) ----
+  var form = document.getElementById('reg-form');
+  var submitBtn = document.getElementById('btn-submit');
+
+  var today = new Date().toISOString().slice(0, 10);
+  document.getElementById('joining-date').setAttribute('max', today);
+  document.getElementById('dob').setAttribute('max', today);
+
+  function fieldLabel(key) {
+    return {
+      'first-name': 'First name', 'last-name': 'Last name', email: 'Email',
+      mobile: 'Mobile number', department: 'Department', designation: 'Designation',
+      'joining-date': 'Joining date'
+    }[key];
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    var values = {
+      firstName: document.getElementById('first-name').value.trim(),
+      lastName: document.getElementById('last-name').value.trim(),
+      email: document.getElementById('email').value,
+      mobile: document.getElementById('mobile').value.trim(),
+      department: document.getElementById('department').value,
+      designation: document.getElementById('designation').value.trim(),
+      joiningDate: document.getElementById('joining-date').value,
+      dob: document.getElementById('dob').value
+    };
+
+    var requiredMissing = [];
+    if (!values.firstName) requiredMissing.push('first-name');
+    if (!values.lastName) requiredMissing.push('last-name');
+    if (!values.email.trim()) requiredMissing.push('email');
+    if (!values.mobile) requiredMissing.push('mobile');
+    if (!values.department) requiredMissing.push('department');
+    if (!values.designation) requiredMissing.push('designation');
+    if (!values.joiningDate) requiredMissing.push('joining-date');
+
+    requiredMissing.forEach(function (key) {
+      setFieldError('field-' + key, 'err-' + key, fieldLabel(key) + ' is required.');
+    });
+
+    var formatErrors = false;
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (values.email.trim() && !requiredMissing.includes('email')) {
+      if (!emailRegex.test(values.email.trim())) {
+        setFieldError('field-email', 'err-email', 'Enter a valid email address, e.g. name@company.com.');
+        formatErrors = true;
+      }
+    }
+    if (values.mobile && !requiredMissing.includes('mobile')) {
+      if (!/^\d{10}$/.test(values.mobile)) {
+        setFieldError('field-mobile', 'err-mobile', 'Mobile number must be exactly 10 numeric digits.');
+        formatErrors = true;
+      }
+    }
+
+    if (requiredMissing.length > 0 || formatErrors) {
+      document.getElementById('banner-required').classList.add('is-visible');
+      var firstBadKey = requiredMissing[0] || (formatErrors ? (document.getElementById('field-email').classList.contains('has-error') ? 'email' : 'mobile') : null);
+      if (firstBadKey) document.getElementById(firstBadKey).focus();
+      return;
+    }
+
+    // Duplicate email check — case-insensitive, whitespace-trimmed (AC4, AC11)
+    var normalized = normalizeEmail(values.email);
+    var duplicate = employees.find(function (emp) { return normalizeEmail(emp.email) === normalized; });
+    if (duplicate) {
+      setFieldError('field-email', 'err-email', 'This email is already registered.');
+      document.getElementById('banner-duplicate-body').textContent =
+        'An employee with this email is already on file (Employee ID: ' + duplicate.id + ', ' + duplicate.firstName + ' ' + duplicate.lastName + '). Registration blocked — use a different email address.';
+      document.getElementById('banner-duplicate').classList.add('is-visible');
+      document.getElementById('email').focus();
+      return;
+    }
+
+    // All valid — simulate submit latency, then create the record.
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Registering…';
+
+    setTimeout(function () {
+      var newId = nextEmployeeId();
+      var record = {
+        id: newId,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email.trim(),
+        mobile: values.mobile,
+        department: values.department,
+        designation: values.designation,
+        joiningDate: values.joiningDate,
+        dob: values.dob || '',
+        photo: photoState.valid ? photoState.name : '',
+        idProof: idProofState.valid ? idProofState.name : ''
+      };
+      employees.push(record);
+      renderDirectory(newId);
+
+      document.getElementById('success-id-chip').textContent = newId;
+      var summary = document.getElementById('success-summary');
+      summary.innerHTML =
+        li('Name', record.firstName + ' ' + record.lastName) +
+        li('Email', record.email) +
+        li('Mobile', record.mobile) +
+        li('Department', record.department) +
+        li('Designation', record.designation) +
+        li('Joining date', formatDate(record.joiningDate)) +
+        li('Date of birth', record.dob ? formatDate(record.dob) : 'Not provided') +
+        li('Photo', record.photo || 'Not provided') +
+        li('ID proof', record.idProof || 'Not provided');
+
+      document.getElementById('register-form-view').classList.add('is-hidden');
+      document.getElementById('register-success-view').classList.add('is-visible');
+      showToast('✓ Employee registered — ' + newId);
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Register employee';
+    }, 600);
+  });
+
+  function li(k, v) {
+    return '<li><span class="k">' + k + '</span><span class="v">' + v + '</span></li>';
+  }
+
+  function resetForm() {
+    form.reset();
+    clearAllErrors();
+    photoState = { name: '', size: 0, valid: false };
+    idProofState = { name: '', size: 0, valid: false };
+    document.getElementById('preview-photo').classList.remove('is-visible');
+    document.getElementById('preview-id-proof').classList.remove('is-visible');
+    document.getElementById('upload-field-photo').classList.remove('has-error');
+    document.getElementById('upload-field-id-proof').classList.remove('has-error');
+  }
+
+  document.getElementById('btn-reset').addEventListener('click', resetForm);
+  document.getElementById('btn-register-another').addEventListener('click', function () {
+    resetForm();
+    document.getElementById('register-success-view').classList.remove('is-visible');
+    document.getElementById('register-form-view').classList.remove('is-hidden');
+  });
+
+  // ---- Demo helpers (prototype-only, not production UI) ----
+  document.getElementById('helper-fill-valid').addEventListener('click', function () {
+    resetForm();
+    document.getElementById('first-name').value = 'Meera';
+    document.getElementById('last-name').value = 'Nair';
+    document.getElementById('email').value = 'meera.nair@acmecorp.com';
+    document.getElementById('mobile').value = '9845123670';
+    document.getElementById('department').value = 'IT';
+    document.getElementById('designation').value = 'IT Support Engineer';
+    document.getElementById('joining-date').value = today;
+  });
+  document.getElementById('helper-fill-duplicate').addEventListener('click', function () {
+    resetForm();
+    document.getElementById('first-name').value = 'Jonathan';
+    document.getElementById('last-name').value = 'Kumar';
+    document.getElementById('email').value = '  John@Co.com  ';
+    document.getElementById('mobile').value = '9090909090';
+    document.getElementById('department').value = 'Finance';
+    document.getElementById('designation').value = 'Senior Accountant';
+    document.getElementById('joining-date').value = today;
+  });
+  document.getElementById('helper-clear').addEventListener('click', resetForm);
+
+  // ---- Reviewer bar + app nav (shared screen switching) ----
+  var screens = Array.from(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+    document.getElementById('screen-label').textContent = (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+    document.querySelectorAll('.app-nav__link').forEach(function (link) {
+      link.classList.toggle('is-active', Number(link.dataset.navTarget) === cur);
+    });
+    window.scrollTo({ top: 0 });
+  }
+  document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+  document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  document.querySelectorAll('[data-nav-target]').forEach(function (el) {
+    el.addEventListener('click', function () { show(Number(el.dataset.navTarget)); });
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
