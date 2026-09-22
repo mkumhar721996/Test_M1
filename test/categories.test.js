@@ -1,6 +1,12 @@
 const request = require('supertest');
 const app = require('../src/server');
 const expenseStore = require('../src/expenses/store');
+const categoryStore = require('../src/categories/store');
+
+beforeEach(() => {
+  categoryStore.reset();
+  expenseStore.reset();
+});
 
 test('POST /categories creates a category with a unique name', async () => {
   const res = await request(app).post('/categories').send({ name: 'Travel' });

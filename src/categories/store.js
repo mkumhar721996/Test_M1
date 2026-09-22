@@ -34,6 +34,10 @@ function deleteCategory(id) {
   return categories.delete(id);
 }
 
+function reset() {
+  categories.clear();
+}
+
 module.exports = {
   listCategories,
   getCategory,
@@ -41,4 +45,5 @@ module.exports = {
   createCategory,
   renameCategory,
   deleteCategory,
+  reset,
 };

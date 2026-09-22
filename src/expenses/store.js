@@ -31,10 +31,15 @@ function reassignCategory(fromCategoryId, toCategoryId) {
   return count;
 }
 
+function reset() {
+  expenses.clear();
+}
+
 module.exports = {
   createExpense,
   listExpenses,
   countByCategory,
   countUncategorised,
   reassignCategory,
+  reset,
 };

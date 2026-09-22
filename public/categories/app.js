@@ -27,6 +27,8 @@
   var toast = document.getElementById('toast');
   var pendingDeleteId = null;
 
+  var NETWORK_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+
   function categoryLabel(count) {
     return count + ' expense' + (count === 1 ? '' : 's');
   }
@@ -137,6 +139,9 @@
         showToast('"' + result.body.name + '" created.');
         return loadCategories();
       })
+      .catch(function () {
+        showFieldError(createError, NETWORK_ERROR_MESSAGE);
+      })
       .finally(function () {
         createSaving = false;
         setButtonSaving(createSubmit, false, 'Create category');
@@ -221,6 +226,9 @@
           showToast('"' + currentName + '" renamed to "' + result.body.name + '".');
           return loadCategories();
         })
+        .catch(function () {
+          showFieldError(errorEl, NETWORK_ERROR_MESSAGE);
+        })
         .finally(function () {
           saving = false;
           setButtonSaving(saveBtn, false, 'Save');
@@ -304,6 +312,9 @@
         showToast('"' + cat.name + '" deleted.'); // AC6/AC10
         return loadCategories();
       })
+      .catch(function () {
+        showToast(NETWORK_ERROR_MESSAGE);
+      })
       .finally(function () {
         deleteSaving = false;
         setButtonSaving(simpleConfirm, false, 'Delete category');
@@ -364,6 +375,9 @@
         pendingDeleteId = null;
         showToast(message);
         return loadCategories();
+      })
+      .catch(function () {
+        showToast(NETWORK_ERROR_MESSAGE);
       })
       .finally(function () {
         deleteSaving = false;

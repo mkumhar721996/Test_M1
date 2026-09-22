@@ -104,6 +104,110 @@ test('shows an inline error for a case-insensitive duplicate on rename', async (
   );
 });
 
+test('shows an inline error when the create request fails due to a network error', async () => {
+  global.fetch = jest
+    .fn()
+    .mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ categories: [], uncategorisedCount: 0 }),
+    })
+    .mockRejectedValueOnce(new Error('network down'));
+  loadPage();
+  await flushPromises();
+  document.getElementById('create-input').value = 'Travel';
+  document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+  await flushPromises();
+  const error = document.getElementById('create-error');
+  expect(error.hidden).toBe(false);
+  expect(error.querySelector('span:last-child').textContent).toBe(
+    'Something went wrong. Please try again.'
+  );
+  expect(document.getElementById('create-submit').disabled).toBe(false);
+});
+
+test('shows an inline error when the rename request fails due to a network error', async () => {
+  global.fetch = jest
+    .fn()
+    .mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          categories: [{ id: 'c1', name: 'Rent', expenseCount: 0 }],
+          uncategorisedCount: 0,
+        }),
+    })
+    .mockRejectedValueOnce(new Error('network down'));
+  loadPage();
+  await flushPromises();
+
+  const row = document.querySelector('.category-row[data-id="c1"]');
+  row.querySelector('[data-action="rename"]').click();
+  row.querySelector('input').value = 'Rentals';
+  row.querySelector('[data-action="save-rename"]').click();
+  await flushPromises();
+
+  const error = row.querySelector('.field-error');
+  expect(error.hidden).toBe(false);
+  expect(error.querySelector('span:last-child').textContent).toBe(
+    'Something went wrong. Please try again.'
+  );
+});
+
+test('shows an error toast and keeps the dialog open when a no-expense delete fails due to a network error', async () => {
+  global.fetch = jest
+    .fn()
+    .mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          categories: [{ id: 'c1', name: 'Office Supplies', expenseCount: 0 }],
+          uncategorisedCount: 0,
+        }),
+    })
+    .mockRejectedValueOnce(new Error('network down'));
+  loadPage();
+  await flushPromises();
+
+  const row = document.querySelector('.category-row[data-id="c1"]');
+  row.querySelector('[data-action="delete"]').click();
+  document.getElementById('delete-simple-confirm').click();
+  await flushPromises();
+
+  const toast = document.getElementById('toast');
+  expect(toast.hidden).toBe(false);
+  expect(toast.textContent).toBe('Something went wrong. Please try again.');
+  expect(document.getElementById('delete-simple-backdrop').hidden).toBe(false);
+});
+
+test('shows an error toast and keeps the dialog open when a reassign delete fails due to a network error', async () => {
+  global.fetch = jest
+    .fn()
+    .mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          categories: [
+            { id: 'c1', name: 'Groceries', expenseCount: 2 },
+            { id: 'c2', name: 'Food', expenseCount: 0 },
+          ],
+          uncategorisedCount: 0,
+        }),
+    })
+    .mockRejectedValueOnce(new Error('network down'));
+  loadPage();
+  await flushPromises();
+
+  const row = document.querySelector('.category-row[data-id="c1"]');
+  row.querySelector('[data-action="delete"]').click();
+  document.getElementById('delete-reassign-confirm').click();
+  await flushPromises();
+
+  const toast = document.getElementById('toast');
+  expect(toast.hidden).toBe(false);
+  expect(toast.textContent).toBe('Something went wrong. Please try again.');
+  expect(document.getElementById('delete-reassign-backdrop').hidden).toBe(false);
+});
+
 test('shows a spinner and disables the button while creating', async () => {
   let resolveCreate;
   global.fetch = jest
