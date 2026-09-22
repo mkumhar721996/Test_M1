@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-038 — Category Spend Limit and Inline Warning</title>
+
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<!-- App nav: left sidebar — Employees · Categories · Reports · Settings (Categories is active for this story) -->
+
+<!--
+  Design-system gap note for reviewers:
+  tokens.json / tokens.css define only one accent color (color-primary, yellow) and no
+  dedicated warning/danger/success tokens. Per UI guideline §3 ("never encode meaning in
+  color alone"), the inline warning below is built from color-primary + a warning icon +
+  an explicit text label ("At limit" / "Over limit"), never color alone. If this project
+  later adds a semantic --color-danger token, the .spend-warning class is the only place
+  that would need updating.
+-->
+
+<style>
+  body {
+    margin: 0;
+  }
+
+  .app-shell {
+    display: flex;
+    min-height: 100dvh;
+  }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .sidebar-brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .nav-item {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+  }
+
+  .nav-item[aria-current="page"] {
+    background: var(--color-bg);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-4);
+    max-width: 760px;
+  }
+
+  @media (max-width: 640px) {
+    .app-shell { flex-direction: column; }
+    .sidebar {
+      width: auto;
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .main { max-width: none; }
+  }
+
+  .page-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .category-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .category-card {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--card-default-border);
+  }
+
+  .category-card.is-warning {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .category-row-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .category-name {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  .category-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
+  }
+
+  .spend-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    font-family: var(--font-family-base);
+  }
+
+  .spend-figure {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  .spend-limit-of {
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+  }
+
+  .spend-no-limit {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+
+  .spend-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .spend-warning svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .category-card.is-warning .spend-figure {
+    color: var(--color-primary);
+  }
+
+  .edit-limit-form {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .form-row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .form-field {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .field-error svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .input.has-error {
+    border-color: var(--color-primary);
+    outline: 2px solid transparent;
+  }
+
+  .remove-confirm-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .confirm-text {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .link-btn {
+    background: none;
+    border: none;
+    padding: var(--space-2);
+    min-height: 44px;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: var(--space-4);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    z-index: 20000;
+  }
+
+  .toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast { transition: none; }
+  }
+
+  .ledger-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+
+  .ledger-table th,
+  .ledger-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+  }
+
+  .ledger-table td.amount,
+  .ledger-table th.amount {
+    text-align: right;
+  }
+
+  .ledger-table tr.is-pending td {
+    color: var(--color-primary);
+    font-style: italic;
+  }
+
+  .pending-note {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .skeleton-block {
+    height: 72px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-bg) 37%, var(--color-surface) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-block { animation: none; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-038</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;padding:8px;min-height:44px">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;padding:8px;min-height:44px">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: category-management -->
+<!--
+  Screen: Category Management
+  Notes:
+    - "Set limit" opens an inline form on the category card; Save/Cancel, no page navigation.
+    - Rejected values (empty, zero, negative, non-numeric) show an inline message under the
+      field and preserve whatever the user typed; the previous saved limit (if any) is untouched.
+    - Categories with no limit show only the total spend figure — no limit value, no warning
+      (Travel below). This is the default/never-set state, distinct from "limit removed".
+    - Categories with a limit show "$spend of $limit limit" in default styling while under
+      limit (Software & Subscriptions), and switch to the warning treatment — icon + color +
+      "At limit"/"Over limit" label — once spend reaches or exceeds the limit (Office Supplies,
+      Client Entertainment).
+    - "Remove limit" is a two-step inline confirm (click once to arm, click again to confirm)
+      rather than a modal, since removing a limit is low-consequence and easily re-set.
+-->
+<div class="screen" data-name="Category Management">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <p class="sidebar-brand">Test_M1</p>
+      <a class="nav-item" href="#">Employees</a>
+      <a class="nav-item" href="#" aria-current="page">Categories</a>
+      <a class="nav-item" href="#">Reports</a>
+      <a class="nav-item" href="#">Settings</a>
+    </nav>
+    <main class="main">
+      <h1 class="page-title">Categories</h1>
+      <p class="page-subtitle">Set an optional all-time spend limit per category. Categories reaching or exceeding their limit are flagged inline.</p>
+      <div class="category-list" id="category-list"></div>
+    </main>
+  </div>
+  <div id="toast-1" class="toast" role="status" aria-live="polite"></div>
+</div>
+
+<!-- State: refresh-and-live-data -->
+<!--
+  Screen: Refresh & Live Data
+  Notes:
+    - Demonstrates AC7/AC8: the spend figure and warning state are derived from the full
+      expense ledger, and only reflect newly recorded expenses once the view is
+      refreshed/reloaded (not live-pushed while the screen is open).
+    - "Record expense elsewhere" simulates another part of the app (e.g. an expense
+      submission) adding a new ledger line; it intentionally does NOT change the header
+      total yet, and surfaces a note that a refresh is needed.
+    - "Refresh view" simulates a navigation/reload: shows a skeleton, then recomputes the
+      total spend and warning state from the full ledger (old + new expenses).
+-->
+<div class="screen" data-name="Refresh &amp; Live Data">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <p class="sidebar-brand">Test_M1</p>
+      <a class="nav-item" href="#">Employees</a>
+      <a class="nav-item" href="#" aria-current="page">Categories</a>
+      <a class="nav-item" href="#">Reports</a>
+      <a class="nav-item" href="#">Settings</a>
+    </nav>
+    <main class="main">
+      <h1 class="page-title">Team Meals</h1>
+      <p class="page-subtitle">Category detail — spend limit and expense ledger.</p>
+
+      <div class="card" id="refresh-card">
+        <div class="category-row-head">
+          <h2 class="category-name">Team Meals</h2>
+          <button class="btn btn-secondary btn-sm" id="refresh-btn" type="button">Refresh view</button>
+        </div>
+        <div class="spend-line" id="refresh-spend-line"></div>
+        <table class="ledger-table" aria-label="Team Meals expense ledger">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col" class="amount">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body"></tbody>
+        </table>
+        <div id="pending-note-slot"></div>
+        <div class="form-row" style="margin-top: var(--space-4);">
+          <button class="btn btn-primary btn-sm" id="record-expense-btn" type="button">+ Record expense elsewhere ($120.00)</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div id="toast-2" class="toast" role="status" aria-live="polite"></div>
+</div>
+
+</div>
+
+<script>
+  // ---- Fixture data -------------------------------------------------------
+  var categories = [
+    { id: 'travel', name: 'Travel', expenses: [420, 380, 380], limit: null },
+    { id: 'software', name: 'Software & Subscriptions', expenses: [299, 199.50, 244], limit: 1000 },
+    { id: 'office', name: 'Office Supplies', expenses: [120, 148], limit: 268 },
+    { id: 'entertainment', name: 'Client Entertainment', expenses: [640, 600], limit: 1200 }
+  ];
+
+  var uiState = {}; // per-category id: { mode: 'idle' | 'editing' | 'confirm-remove', errorMsg, draft }
+  categories.forEach(function (c) { uiState[c.id] = { mode: 'idle', errorMsg: null, draft: '' }; });
+
+  function currency(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function totalSpend(cat) {
+    return cat.expenses.reduce(function (sum, v) { return sum + v; }, 0);
+  }
+
+  function warningIcon() {
+    return '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 15 14.5H1L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.2v3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="11.7" r="0.9" fill="currentColor"/></svg>';
+  }
+
+  // ---- Validation (AC3) ---------------------------------------------------
+  function validateLimitInput(raw) {
+    var trimmed = (raw || '').trim();
+    if (trimmed === '') {
+      return 'Enter a spend limit to save.';
+    }
+    var n = Number(trimmed);
+    if (Number.isNaN(n)) {
+      return 'Enter a valid number, e.g. 500.';
+    }
+    if (n <= 0) {
+      return 'Spend limit must be greater than $0.';
+    }
+    return null;
+  }
+
+  // ---- Rendering: Category Management screen ------------------------------
+  function renderCategoryList() {
+    var list = document.getElementById('category-list');
+    if (!list) return;
+    list.innerHTML = categories.map(renderCategoryCard).join('');
+
+    categories.forEach(function (cat) {
+      var state = uiState[cat.id];
+
+      var setBtn = document.getElementById('set-limit-' + cat.id);
+      if (setBtn) setBtn.addEventListener('click', function () { openEditor(cat.id); });
+
+      var editBtn = document.getElementById('edit-limit-' + cat.id);
+      if (editBtn) editBtn.addEventListener('click', function () { openEditor(cat.id); });
+
+      var removeBtn = document.getElementById('remove-limit-' + cat.id);
+      if (removeBtn) removeBtn.addEventListener('click', function () { armRemove(cat.id); });
+
+      var confirmRemoveBtn = document.getElementById('confirm-remove-' + cat.id);
+      if (confirmRemoveBtn) confirmRemoveBtn.addEventListener('click', function () { doRemove(cat.id); });
+
+      var cancelRemoveBtn = document.getElementById('cancel-remove-' + cat.id);
+      if (cancelRemoveBtn) cancelRemoveBtn.addEventListener('click', function () { cancelRemove(cat.id); });
+
+      var saveBtn = document.getElementById('save-limit-' + cat.id);
+      if (saveBtn) saveBtn.addEventListener('click', function () { saveLimit(cat.id); });
+
+      var cancelBtn = document.getElementById('cancel-limit-' + cat.id);
+      if (cancelBtn) cancelBtn.addEventListener('click', function () { closeEditor(cat.id); });
+
+      var input = document.getElementById('limit-input-' + cat.id);
+      if (input) {
+        input.addEventListener('input', function (e) { state.draft = e.target.value; });
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); saveLimit(cat.id); }
+        });
+      }
+    });
+  }
+
+  function renderCategoryCard(cat) {
+    var state = uiState[cat.id];
+    var spend = totalSpend(cat);
+    var hasLimit = cat.limit !== null && cat.limit !== undefined;
+    var isWarning = hasLimit && spend >= cat.limit;
+    var cardClasses = 'card category-card' + (isWarning ? ' is-warning' : '');
+
+    var spendLineHtml;
+    if (!hasLimit) {
+      // AC1: no limit set -> no limit value or warning shown.
+      spendLineHtml =
+        '<span class="spend-figure">' + currency(spend) + '</span>' +
+        '<span class="spend-no-limit">No spend limit set</span>';
+    } else if (isWarning) {
+      // AC5: at/over limit -> icon + color + label, never color alone.
+      var label = spend > cat.limit ? 'Over limit' : 'At limit';
+      spendLineHtml =
+        '<span class="spend-figure">' + currency(spend) + '</span>' +
+        '<span class="spend-limit-of">of ' + currency(cat.limit) + ' limit</span>' +
+        '<span class="spend-warning">' + warningIcon() + label + '</span>';
+    } else {
+      // AC2 + AC4: limit set, under limit -> default styling, spend + limit shown together.
+      spendLineHtml =
+        '<span class="spend-figure">' + currency(spend) + '</span>' +
+        '<span class="spend-limit-of">of ' + currency(cat.limit) + ' limit</span>';
+    }
+
+    var actionsHtml = '';
+    if (state.mode !== 'editing') {
+      if (!hasLimit) {
+        actionsHtml = '<button class="btn btn-secondary btn-sm" id="set-limit-' + cat.id + '" type="button">Set limit</button>';
+      } else if (state.mode === 'confirm-remove') {
+        actionsHtml =
+          '<div class="remove-confirm-row">' +
+            '<span class="confirm-text">Remove this spend limit?</span>' +
+            '<button class="btn btn-primary btn-sm" id="confirm-remove-' + cat.id + '" type="button">Confirm remove</button>' +
+            '<button class="link-btn" id="cancel-remove-' + cat.id + '" type="button">Cancel</button>' +
+          '</div>';
+      } else {
+        actionsHtml =
+          '<button class="btn btn-secondary btn-sm" id="edit-limit-' + cat.id + '" type="button">Edit limit</button>' +
+          '<button class="link-btn" id="remove-limit-' + cat.id + '" type="button">Remove limit</button>';
+      }
+    }
+
+    var editorHtml = '';
+    if (state.mode === 'editing') {
+      var errorHtml = state.errorMsg
+        ? '<div class="field-error" role="alert">' + warningIcon() + state.errorMsg + '</div>'
+        : '';
+      editorHtml =
+        '<div class="edit-limit-form">' +
+          '<div class="form-row">' +
+            '<div class="form-field">' +
+              '<label class="label" for="limit-input-' + cat.id + '">Spend limit ($)</label>' +
+              '<input class="input' + (state.errorMsg ? ' has-error' : '') + '" ' +
+                'id="limit-input-' + cat.id + '" type="text" inputmode="decimal" ' +
+                'placeholder="e.g. 500" value="' + escapeAttr(state.draft) + '" ' +
+                (state.errorMsg ? 'aria-invalid="true" aria-describedby="limit-error-' + cat.id + '"' : '') + ' />' +
+              (state.errorMsg ? '<div id="limit-error-' + cat.id + '">' + errorHtml + '</div>' : '') +
+            '</div>' +
+            '<button class="btn btn-primary btn-sm" id="save-limit-' + cat.id + '" type="button">Save</button>' +
+            '<button class="btn btn-secondary btn-sm" id="cancel-limit-' + cat.id + '" type="button">Cancel</button>' +
+          '</div>' +
+        '</div>';
+    }
+
+    return (
+      '<div class="' + cardClasses + '">' +
+        '<div class="category-row-head">' +
+          '<h3 class="category-name">' + cat.name + '</h3>' +
+          '<div class="category-actions">' + actionsHtml + '</div>' +
+        '</div>' +
+        '<div class="spend-line">' + spendLineHtml + '</div>' +
+        editorHtml +
+      '</div>'
+    );
+  }
+
+  function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  }
+
+  function openEditor(id) {
+    var state = uiState[id];
+    var cat = categories.filter(function (c) { return c.id === id; })[0];
+    state.mode = 'editing';
+    state.errorMsg = null;
+    state.draft = (cat.limit !== null && cat.limit !== undefined) ? String(cat.limit) : '';
+    renderCategoryList();
+    var input = document.getElementById('limit-input-' + id);
+    if (input) input.focus();
+  }
+
+  function closeEditor(id) {
+    var state = uiState[id];
+    state.mode = 'idle';
+    state.errorMsg = null;
+    state.draft = '';
+    renderCategoryList();
+  }
+
+  function saveLimit(id) {
+    var state = uiState[id];
+    var input = document.getElementById('limit-input-' + id);
+    var raw = input ? input.value : state.draft;
+    var error = validateLimitInput(raw);
+
+    if (error) {
+      // AC3: reject invalid input, show inline message, preserve what the user typed.
+      state.errorMsg = error;
+      state.draft = raw;
+      renderCategoryList();
+      var el = document.getElementById('limit-input-' + id);
+      if (el) el.focus();
+      return;
+    }
+
+    var cat = categories.filter(function (c) { return c.id === id; })[0];
+    var saveBtn = document.getElementById('save-limit-' + id);
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+
+    setTimeout(function () {
+      // AC2: valid positive number -> stored and shown alongside current total spend.
+      cat.limit = Number(raw);
+      state.mode = 'idle';
+      state.errorMsg = null;
+      state.draft = '';
+      renderCategoryList();
+      showToast('toast-1', 'Spend limit saved for ' + cat.name + '.');
+    }, 300);
+  }
+
+  function armRemove(id) {
+    uiState[id].mode = 'confirm-remove';
+    renderCategoryList();
+  }
+
+  function cancelRemove(id) {
+    uiState[id].mode = 'idle';
+    renderCategoryList();
+  }
+
+  function doRemove(id) {
+    var cat = categories.filter(function (c) { return c.id === id; })[0];
+    var btn = document.getElementById('confirm-remove-' + id);
+    if (btn) { btn.disabled = true; btn.textContent = 'Removing…'; }
+
+    setTimeout(function () {
+      // AC6: limit and any warning indicator no longer shown once removed.
+      cat.limit = null;
+      uiState[id].mode = 'idle';
+      renderCategoryList();
+      showToast('toast-1', 'Spend limit removed for ' + cat.name + '.');
+    }, 300);
+  }
+
+  function showToast(elId, message) {
+    var toast = document.getElementById(elId);
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () {
+      toast.classList.remove('is-visible');
+    }, 2600);
+  }
+
+  // ---- Rendering: Refresh & Live Data screen -------------------------------
+  var ledger = {
+    limit: 300,
+    committed: [
+      { date: 'Sep 12', desc: 'Client lunch — Acme Co.', amount: 85 },
+      { date: 'Sep 16', desc: 'Team standup breakfast', amount: 62 },
+      { date: 'Sep 19', desc: 'Offsite dinner', amount: 63 }
+    ],
+    pending: null // { date, desc, amount } once "recorded elsewhere"
+  };
+
+  function committedTotal() {
+    return ledger.committed.reduce(function (sum, e) { return sum + e.amount; }, 0);
+  }
+
+  function renderRefreshScreen() {
+    renderRefreshSpendLine(committedTotal());
+    renderLedgerRows(false);
+    renderPendingNote();
+  }
+
+  function renderRefreshSpendLine(spend) {
+    var line = document.getElementById('refresh-spend-line');
+    if (!line) return;
+    var isWarning = spend >= ledger.limit;
+    var card = document.getElementById('refresh-card');
+    if (card) card.classList.toggle('is-warning', isWarning);
+
+    if (isWarning) {
+      var label = spend > ledger.limit ? 'Over limit' : 'At limit';
+      line.innerHTML =
+        '<span class="spend-figure">' + currency(spend) + '</span>' +
+        '<span class="spend-limit-of">of ' + currency(ledger.limit) + ' limit</span>' +
+        '<span class="spend-warning">' + warningIcon() + label + '</span>';
+    } else {
+      line.innerHTML =
+        '<span class="spend-figure">' + currency(spend) + '</span>' +
+        '<span class="spend-limit-of">of ' + currency(ledger.limit) + ' limit</span>';
+    }
+  }
+
+  function renderLedgerRows(includePending) {
+    var body = document.getElementById('ledger-body');
+    if (!body) return;
+    var rows = ledger.committed.map(function (e) {
+      return '<tr><td>' + e.date + '</td><td>' + e.desc + '</td><td class="amount">' + currency(e.amount) + '</td></tr>';
+    });
+    if (includePending && ledger.pending) {
+      rows.push(
+        '<tr class="is-pending"><td>' + ledger.pending.date + '</td><td>' + ledger.pending.desc + ' (pending refresh)</td><td class="amount">' + currency(ledger.pending.amount) + '</td></tr>'
+      );
+    }
+    body.innerHTML = rows.join('');
+  }
+
+  function renderPendingNote() {
+    var slot = document.getElementById('pending-note-slot');
+    if (!slot) return;
+    if (ledger.pending) {
+      slot.innerHTML =
+        '<div class="pending-note">' + warningIcon() +
+        '1 new expense was recorded elsewhere. Total spend and the limit warning will update once this view is refreshed.' +
+        '</div>';
+    } else {
+      slot.innerHTML = '';
+    }
+  }
+
+  function recordExpenseElsewhere() {
+    var recordBtn = document.getElementById('record-expense-btn');
+    if (ledger.pending || (recordBtn && recordBtn.disabled)) return;
+    ledger.pending = { date: 'Sep 22', desc: 'Client dinner — new lead', amount: 120 };
+    if (recordBtn) recordBtn.disabled = true;
+    renderPendingNote();
+    showToast('toast-2', 'Expense recorded. Total spend on this view is unchanged until refreshed.');
+  }
+
+  function refreshCategoryView() {
+    var refreshBtn = document.getElementById('refresh-btn');
+    var recordBtn = document.getElementById('record-expense-btn');
+    if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = 'Refreshing…'; }
+
+    var line = document.getElementById('refresh-spend-line');
+    if (line) line.innerHTML = '<div class="skeleton-block" style="width:100%"></div>';
+
+    setTimeout(function () {
+      // AC7 + AC8: on refresh, spend total and warning state reflect all recorded
+      // expenses, including ones added elsewhere since the view was last loaded.
+      if (ledger.pending) {
+        ledger.committed.push(ledger.pending);
+        ledger.pending = null;
+      }
+      renderRefreshSpendLine(committedTotal());
+      renderLedgerRows(false);
+      renderPendingNote();
+      if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = 'Refresh view'; }
+      if (recordBtn) { recordBtn.disabled = false; }
+      showToast('toast-2', 'View refreshed with the latest expenses.');
+    }, 450);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderCategoryList();
+    renderRefreshScreen();
+    var recordBtn = document.getElementById('record-expense-btn');
+    if (recordBtn) recordBtn.addEventListener('click', recordExpenseElsewhere);
+    var refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) refreshBtn.addEventListener('click', refreshCategoryView);
+  });
+
+  // ---- Reviewer bar navigation ---------------------------------------------
+  var screens = Array.from(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+    document.getElementById('screen-label').textContent =
+      (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+  }
+  document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+  document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
