@@ -44,8 +44,8 @@ export function initLoginForm(doc = document, win = window) {
     submitBtn.setAttribute('aria-busy', 'true');
     submitBtn.textContent = 'Signing in…';
 
-    win.setTimeout(() => {
-      const isValid = checkCredentials({ email, password });
+    win.setTimeout(async () => {
+      const isValid = await checkCredentials({ email, password });
 
       if (!isValid) {
         submitBtn.disabled = false;

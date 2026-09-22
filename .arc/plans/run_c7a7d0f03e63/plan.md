@@ -86,7 +86,9 @@ scope:
       Pure, framework-free validation and credential-check logic, mirroring the prototype's inline
       script (design lines 507, 546-556, 568) so the same fixture and copy ship:
       ```js
-      export const VALID_ACCOUNT = { email: 'avery.chen@example.com', password: 'test-password' };
+      // Password is never stored or compared in plaintext, only its SHA-256 digest.
+      const VALID_ACCOUNT_EMAIL = 'avery.chen@example.com';
+      const VALID_PASSWORD_DIGEST = 'c638833f69bbfb3c267afa0a74434812436b8f08a81fd263c6be6871de4f1265';
 
       export function validate({ email, password }) {
         return {
@@ -95,8 +97,9 @@ scope:
         };
       }
 
-      export function checkCredentials({ email, password }) {
-        return email.trim() === VALID_ACCOUNT.email && password === VALID_ACCOUNT.password;
+      export async function checkCredentials({ email, password }) {
+        const digest = await sha256Hex(password);
+        return email.trim() === VALID_ACCOUNT_EMAIL && digest === VALID_PASSWORD_DIGEST;
       }
       ```
     files:
@@ -105,7 +108,8 @@ scope:
       Separating pure validation/credential logic from DOM wiring lets the empty-field (AC2) and
       invalid-credentials (AC3) checks be unit-tested directly, and keeps the hardcoded fixture (the
       only "valid account" this story recognizes, since real auth/session/backend work is
-      explicitly out of scope) in one obvious place.
+      explicitly out of scope) in one obvious place. Comparing a SHA-256 digest instead of the raw
+      password avoids ever holding a plaintext credential in source, even for this stub fixture.
   - description: |
       DOM wiring for the form: submit handling, showing/clearing field errors and the banner error,
       the mocked "network" delay, and the redirect. Mirrors the prototype's `submitLogin` (design

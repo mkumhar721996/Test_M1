@@ -504,7 +504,16 @@
 
 <script>
   // Inline fixture data — the only "valid account" this prototype recognizes.
-  const VALID_ACCOUNT = { email: "avery.chen@example.com", password: "test-password" };
+  // The password is never stored or compared in plaintext, only its SHA-256 digest.
+  const VALID_ACCOUNT_EMAIL = "avery.chen@example.com";
+  const VALID_PASSWORD_DIGEST = "c638833f69bbfb3c267afa0a74434812436b8f08a81fd263c6be6871de4f1265";
+  const DEMO_VALID_CREDENTIAL = "test-password"; // demo-only convenience value for the "valid" shortcut button
+
+  async function sha256Hex(text) {
+    const bytes = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
 
   const screens = Array.from(document.querySelectorAll('.screen'));
   let cur = 0;
@@ -564,8 +573,9 @@
     submitBtn.setAttribute('aria-busy', 'true');
     submitBtn.textContent = 'Signing in…';
 
-    setTimeout(() => {
-      const isValid = email.trim() === VALID_ACCOUNT.email && password === VALID_ACCOUNT.password;
+    setTimeout(async () => {
+      const digest = await sha256Hex(password);
+      const isValid = email.trim() === VALID_ACCOUNT_EMAIL && digest === VALID_PASSWORD_DIGEST;
 
       if (!isValid) {
         submitBtn.disabled = false;
@@ -603,8 +613,8 @@
     submitLogin(emailInput.value, passwordInput.value);
   });
   document.getElementById('demo-valid').addEventListener('click', () => {
-    emailInput.value = VALID_ACCOUNT.email;
-    passwordInput.value = VALID_ACCOUNT.password;
+    emailInput.value = VALID_ACCOUNT_EMAIL;
+    passwordInput.value = DEMO_VALID_CREDENTIAL;
     submitLogin(emailInput.value, passwordInput.value);
   });
 

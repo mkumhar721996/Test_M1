@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { fireEvent } from '@testing-library/dom';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { initLoginForm } from '../login-form.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -44,18 +44,20 @@ describe('AC2: empty-field validation', () => {
   });
 });
 
-describe('AC3/AC4: invalid credentials', () => {
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+// Credential checks hash the password via the real (async, thread-pooled) Web Crypto API, so
+// these tests wait on real timers rather than faking them — fake timers only control
+// setTimeout/setInterval and can't deterministically wait on that native async digest.
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
+describe('AC3/AC4: invalid credentials', () => {
   it('shows an invalid-credentials banner error', async () => {
-    vi.useFakeTimers();
     initLoginForm(document, window);
     document.getElementById('login-email').value = 'wrong.person@example.com';
     document.getElementById('login-password').value = 'not-the-right-password';
     fireEvent.submit(document.getElementById('login-form'));
-    await vi.advanceTimersByTimeAsync(350);
+    await wait(500);
 
     expect(document.getElementById('banner-error').classList.contains('is-visible')).toBe(true);
     expect(document.getElementById('banner-error-text').textContent).toBe(
@@ -64,33 +66,27 @@ describe('AC3/AC4: invalid credentials', () => {
   });
 
   it('keeps the user on the login page (no redirect)', async () => {
-    vi.useFakeTimers();
     const assign = vi.fn();
     const win = { setTimeout: window.setTimeout.bind(window), location: { assign } };
     initLoginForm(document, win);
     document.getElementById('login-email').value = 'wrong.person@example.com';
     document.getElementById('login-password').value = 'not-the-right-password';
     fireEvent.submit(document.getElementById('login-form'));
-    await vi.advanceTimersByTimeAsync(1000);
+    await wait(1000);
 
     expect(assign).not.toHaveBeenCalled();
   });
 });
 
 describe('AC5: valid credentials redirect', () => {
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('redirects away from the login page', async () => {
-    vi.useFakeTimers();
     const assign = vi.fn();
     const win = { setTimeout: window.setTimeout.bind(window), location: { assign } };
     initLoginForm(document, win);
     document.getElementById('login-email').value = 'avery.chen@example.com';
     document.getElementById('login-password').value = 'test-password';
     fireEvent.submit(document.getElementById('login-form'));
-    await vi.advanceTimersByTimeAsync(850);
+    await wait(1000);
 
     expect(assign).toHaveBeenCalledWith('/account/index.html');
   });
