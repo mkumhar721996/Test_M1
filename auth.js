@@ -1,4 +1,4 @@
-export const VALID_ACCOUNT = { email: 'avery.chen@example.com', password: 'Sunshine!42' };
+export const VALID_ACCOUNT = { email: 'avery.chen@example.com', password: 'test-password' };
 
 export function validate({ email, password }) {
   return {
