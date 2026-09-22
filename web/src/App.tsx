@@ -9,9 +9,16 @@ export function App() {
   const [view, setView] = useState<View>('directory');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newlyCreatedId, setNewlyCreatedId] = useState<string | null>(null);
+  const [directoryError, setDirectoryError] = useState<string | null>(null);
 
   useEffect(() => {
-    listEmployees().then(setEmployees).catch(() => {});
+    listEmployees()
+      .then(setEmployees)
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load the employee directory:', err);
+        setDirectoryError('Failed to load the employee directory. Please refresh the page to try again.');
+      });
   }, []);
 
   function handleRegistered(employee: Employee) {
@@ -42,7 +49,22 @@ export function App() {
       </div>
 
       {view === 'directory' ? (
-        <EmployeeDirectory employees={employees} newlyCreatedId={newlyCreatedId} />
+        <>
+          {directoryError && (
+            <div className="page">
+              <div className="banner is-visible" role="alert">
+                <span className="banner__icon" aria-hidden="true">
+                  ⚠
+                </span>
+                <div>
+                  <p className="banner__title">Couldn't load the employee directory</p>
+                  <p className="banner__body">{directoryError}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <EmployeeDirectory employees={employees} newlyCreatedId={newlyCreatedId} />
+        </>
       ) : (
         <RegisterEmployee onRegistered={handleRegistered} />
       )}
