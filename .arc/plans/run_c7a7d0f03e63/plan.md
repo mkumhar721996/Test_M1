@@ -86,7 +86,7 @@ scope:
       Pure, framework-free validation and credential-check logic, mirroring the prototype's inline
       script (design lines 507, 546-556, 568) so the same fixture and copy ship:
       ```js
-      export const VALID_ACCOUNT = { email: 'avery.chen@example.com', password: 'Sunshine!42' };
+      export const VALID_ACCOUNT = { email: 'avery.chen@example.com', password: 'test-password' };
 
       export function validate({ email, password }) {
         return {
@@ -190,11 +190,11 @@ tests:
     field's value is preserved). After `initLoginForm(document, window)`, fill only the password,
     leave email empty, then `fireEvent.submit(document.getElementById('login-form'))`:
     ```js
-    document.getElementById('login-password').value = 'Sunshine!42';
+    document.getElementById('login-password').value = 'test-password';
     fireEvent.submit(document.getElementById('login-form'));
     expect(document.getElementById('email-error').classList.contains('is-visible')).toBe(true);
     expect(document.getElementById('password-error').classList.contains('is-visible')).toBe(false);
-    expect(document.getElementById('login-password').value).toBe('Sunshine!42');
+    expect(document.getElementById('login-password').value).toBe('test-password');
     ```
     Mirror this with password empty / email filled to cover the other half of the AC.
   - |
@@ -228,7 +228,7 @@ tests:
     ```js
     const assignSpy = vi.spyOn(window.location, 'assign').mockImplementation(() => {});
     document.getElementById('login-email').value = 'avery.chen@example.com';
-    document.getElementById('login-password').value = 'Sunshine!42';
+    document.getElementById('login-password').value = 'test-password';
     fireEvent.submit(document.getElementById('login-form'));
     await vi.advanceTimersByTimeAsync(850);
     expect(assignSpy).toHaveBeenCalledWith('/account/index.html');
@@ -256,7 +256,7 @@ assumptions_or_open_questions:
     for the reviewer: if literal pixel parity with that second screen is wanted regardless of scope,
     say so and this plan will build it in full instead.
   - |
-    Kept the prototype's hardcoded fixture account (`avery.chen@example.com` / `Sunshine!42`) as
+    Kept the prototype's hardcoded fixture account (`avery.chen@example.com` / `test-password`) as
     the only "valid" login in `auth.js`, since real authentication/backend integration is out of
     scope for this story.
   - |
