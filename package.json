@@ -6,8 +6,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "express": "^4.22.3",
-    "jest-environment-jsdom": "^29.7.0"
+    "express": "^4.22.3"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",

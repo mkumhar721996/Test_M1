@@ -186,14 +186,26 @@ function initExpensesApp(doc = document) {
     setTimeout(() => {
       const idx = expenses.findIndex((e) => e.id === editingId);
       if (idx !== -1) {
-        expenses[idx] = {
+        const updated = {
           ...expenses[idx],
           amount: Math.round(parseFloat(amountRaw) * 100) / 100,
           date: dateValue,
           category: categoryValue,
           description: fieldDescription.value.trim(),
         };
-        persistExpenses(expenses);
+        try {
+          persistExpenses([
+            ...expenses.slice(0, idx),
+            updated,
+            ...expenses.slice(idx + 1),
+          ]);
+        } catch (err) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save changes';
+          showToast('Expense could not be saved — please try again');
+          return;
+        }
+        expenses[idx] = updated;
         lastUpdatedId = expenses[idx].id;
       }
       closeModal();

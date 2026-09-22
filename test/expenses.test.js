@@ -93,4 +93,24 @@ describe('Edit Expense via Modal Form', () => {
     const row = document.querySelector('[data-edit-id="exp_003"]').closest('tr');
     expect(row.querySelector('.col-amount').textContent).toBe('$9.00');
   });
+
+  test('a localStorage failure on save keeps the modal open, re-enables the save button, and shows an error toast', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '512.50';
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+
+    expect(document.getElementById('modal-wrap').hidden).toBe(false);
+    const saveBtn = document.getElementById('modal-save-btn');
+    expect(saveBtn.disabled).toBe(false);
+    expect(saveBtn.textContent).toBe('Save changes');
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toMatch(/could not be saved/i);
+
+    setItemSpy.mockRestore();
+  });
 });
