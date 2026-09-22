@@ -1,9 +1,19 @@
 import type { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
 import { DuplicateEmailError, ValidationError } from '../errors';
 
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof ValidationError) {
     res.status(400).json({ error: 'VALIDATION_ERROR', fieldErrors: err.fieldErrors });
+    return;
+  }
+
+  if (err instanceof multer.MulterError) {
+    const field = err.field ?? 'file';
+    res.status(400).json({
+      error: 'VALIDATION_ERROR',
+      fieldErrors: { [field]: 'The selected file exceeds the maximum allowed upload size.' },
+    });
     return;
   }
 

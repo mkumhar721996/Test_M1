@@ -96,8 +96,9 @@ export function RegisterEmployee({ onRegistered }: { onRegistered: (employee: Em
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [idProofFile, setIdProofFile] = useState<File | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [banner, setBanner] = useState<'none' | 'required' | 'duplicate'>('none');
+  const [banner, setBanner] = useState<'none' | 'required' | 'duplicate' | 'error'>('none');
   const [duplicateMessage, setDuplicateMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<Employee | null>(null);
 
@@ -151,6 +152,7 @@ export function RegisterEmployee({ onRegistered }: { onRegistered: (employee: Em
     setFieldErrors({});
     setBanner('none');
     setDuplicateMessage('');
+    setErrorMessage('');
     if (photoInputRef.current) photoInputRef.current.value = '';
     if (idProofInputRef.current) idProofInputRef.current.value = '';
   }
@@ -199,6 +201,11 @@ export function RegisterEmployee({ onRegistered }: { onRegistered: (employee: Em
         setDuplicateMessage(err.message);
         setBanner('duplicate');
         document.getElementById('email')?.focus();
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('Failed to register employee:', err);
+        setErrorMessage('Failed to register employee. Please check your connection and try again.');
+        setBanner('error');
       }
     } finally {
       setSubmitting(false);
@@ -319,6 +326,18 @@ export function RegisterEmployee({ onRegistered }: { onRegistered: (employee: Em
             <div>
               <p className="banner__title">Duplicate email</p>
               <p className="banner__body">{duplicateMessage}</p>
+            </div>
+          </div>
+        )}
+
+        {banner === 'error' && (
+          <div className="banner is-visible" role="alert">
+            <span className="banner__icon" aria-hidden="true">
+              ⚠
+            </span>
+            <div>
+              <p className="banner__title">Registration failed</p>
+              <p className="banner__body">{errorMessage}</p>
             </div>
           </div>
         )}

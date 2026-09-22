@@ -4,7 +4,15 @@ import { EmployeeRepository } from '../repository/employeeRepository';
 import { registerEmployee } from '../services/employeeService';
 import type { RegisterEmployeeInput, UploadedFileMeta } from '../types/employee';
 
-const upload = multer({ storage: multer.memoryStorage() });
+// Hard ceiling above the largest real limit (ID proof, 5MB) enforced in fileValidation.ts.
+// Rejects grossly oversized uploads at the multer layer, before they are fully buffered
+// into memory, rather than relying solely on post-buffering validation.
+const MULTER_MAX_FILE_BYTES = 10 * 1024 * 1024;
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MULTER_MAX_FILE_BYTES },
+});
 
 function toFileMeta(file: Express.Multer.File | undefined): UploadedFileMeta | undefined {
   if (!file) return undefined;

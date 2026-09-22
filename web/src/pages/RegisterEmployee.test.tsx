@@ -97,6 +97,16 @@ describe('RegisterEmployee', () => {
     expect(screen.getByText(/already on file \(Employee ID: EMP00003/)).toBeInTheDocument();
   });
 
+  it('shows a generic error banner and re-enables the form when the API call fails unexpectedly', async () => {
+    mockCreateEmployee.mockRejectedValueOnce(new Error('Network error'));
+    render(<RegisterEmployee onRegistered={() => {}} />);
+    await fillValidRequiredFields();
+    await userEvent.click(screen.getByRole('button', { name: /register employee/i }));
+
+    expect(await screen.findByText(/Failed to register employee/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /register employee/i })).not.toBeDisabled();
+  });
+
   it('AC1/AC5: creates the record when optional fields are left blank and shows the success view', async () => {
     mockCreateEmployee.mockResolvedValueOnce({
       id: 'EMP00006',

@@ -75,6 +75,17 @@ describe('POST /api/employees', () => {
     expect(res.body.idProof).toBeNull();
   });
 
+  it('security: rejects an upload exceeding the hard multer size cap without a 500 or unbounded memory read', async () => {
+    const app = createApp();
+    const oversized = Buffer.alloc(11 * 1024 * 1024, 1);
+    const res = await request(app)
+      .post('/api/employees')
+      .field(validFields())
+      .attach('idProof', oversized, { filename: 'huge.pdf', contentType: 'application/pdf' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('VALIDATION_ERROR');
+  });
+
   it('AC9: rejects an invalid photo file type at the HTTP layer', async () => {
     const app = createApp();
     const res = await request(app)
