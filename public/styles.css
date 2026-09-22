@@ -1,0 +1,222 @@
+body {
+  margin: 0;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-4);
+  max-width: 720px;
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.page-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.btn {
+  min-height: 44px;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Expense list ---------- */
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.expense-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+@media (min-width: 640px) {
+  .expense-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.expense-row-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.expense-desc {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  overflow-wrap: anywhere;
+}
+
+.expense-row-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+@media (min-width: 640px) {
+  .expense-row-meta { justify-content: flex-end; }
+}
+
+.expense-amount {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  white-space: nowrap;
+}
+
+.list-summary {
+  margin: 0 0 var(--space-3) 0;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  text-align: center;
+  padding: var(--space-4);
+}
+.empty-state-icon {
+  font-size: 2.5rem;
+  margin: 0 0 var(--space-2) 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--color-bg) 75%, transparent);
+  z-index: 1000;
+}
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-dialog {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100dvh - var(--space-4) * 2);
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.modal-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+}
+.modal-close:hover { color: var(--color-fg); }
+.modal-close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.form-field {
+  margin-bottom: var(--space-4);
+}
+
+.required-mark {
+  color: var(--color-fg-muted);
+}
+
+.amount-input-wrap {
+  position: relative;
+}
+.amount-prefix {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-fg-muted);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  pointer-events: none;
+}
+.amount-input {
+  padding-left: calc(var(--space-4) + var(--space-3));
+}
+
+.field-error {
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.field-error:empty {
+  display: none;
+}
+
+.input-invalid {
+  border-width: 2px;
+  border-color: var(--color-primary);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
