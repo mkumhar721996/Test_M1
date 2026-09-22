@@ -28,6 +28,18 @@ test('AC1: Add Expense button opens a modal with amount, date, category, and des
   expect(getByLabelText(modal, 'Description (optional)')).toBeTruthy();
 });
 
+test('AC1: the dialog role, aria-modal, and aria-labelledby live on the dialog card, not the backdrop', () => {
+  const root = setup();
+  fireEvent.click(getByRole(root, 'button', { name: 'Add Expense' }));
+  const modal = getByRole(root, 'dialog');
+
+  expect(modal.classList.contains('modal-dialog')).toBe(true);
+  expect(modal.classList.contains('modal-overlay')).toBe(false);
+  expect(modal.getAttribute('aria-modal')).toBe('true');
+  const labelledBy = modal.getAttribute('aria-labelledby');
+  expect(modal.querySelector(`#${labelledBy}`)).toBeTruthy();
+});
+
 test('ACs 2-4: submitting with required fields empty keeps the modal open, marks fields invalid, and shows inline errors', () => {
   const root = setup();
   fireEvent.click(getByRole(root, 'button', { name: 'Add Expense' }));

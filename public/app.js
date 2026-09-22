@@ -70,11 +70,13 @@ function renderApp(root) {
   function openModal() {
     lastFocused = document.activeElement;
     modal.overlay.hidden = false;
+    modal.dialog.hidden = false;
     modal.amountInput.focus();
   }
 
   function closeModal() {
     modal.overlay.hidden = true;
+    modal.dialog.hidden = true;
     resetForm();
     if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
   }
@@ -191,11 +193,12 @@ function buildModal() {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.hidden = true;
-  overlay.setAttribute('role', 'dialog');
-  overlay.setAttribute('aria-modal', 'true');
 
   const dialog = document.createElement('div');
   dialog.className = 'modal-dialog card';
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.hidden = true;
 
   const modalHeader = document.createElement('div');
   modalHeader.className = 'modal-header';
@@ -203,7 +206,7 @@ function buildModal() {
   modalTitle.className = 'modal-title';
   modalTitle.id = 'expense-modal-title';
   modalTitle.textContent = 'Add expense';
-  overlay.setAttribute('aria-labelledby', modalTitle.id);
+  dialog.setAttribute('aria-labelledby', modalTitle.id);
   const closeBtn = document.createElement('button');
   closeBtn.type = 'button';
   closeBtn.className = 'modal-close';
@@ -258,6 +261,7 @@ function buildModal() {
 
   return {
     overlay,
+    dialog,
     amountInput: amountField.input,
     dateInput: dateField.input,
     categorySelect: categoryField.select,
