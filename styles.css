@@ -1,0 +1,101 @@
+/* ---- Site header (both screens) ---- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.wordmark {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ---- Login screen layout ---- */
+.login-shell {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4);
+}
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+.login-card h1 {
+  margin: 0 0 var(--space-2) 0;
+}
+.field-group {
+  margin-top: var(--space-3);
+}
+.field-error {
+  display: none;
+  margin-top: var(--space-1);
+  align-items: flex-start;
+  gap: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.field-error.is-visible { display: flex; }
+.field-group .input[aria-invalid="true"] {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.banner-error {
+  display: none;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+.banner-error.is-visible { display: flex; }
+.banner-error .icon { font-size: var(--font-size-lg); line-height: 1; }
+.banner-error strong { color: var(--color-fg); }
+.banner-error p { margin: var(--space-1) 0 0 0; color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+.login-card .btn { width: 100%; min-height: 44px; }
+
+.login-card .input { min-height: 44px; box-sizing: border-box; }
+
+.legal-note {
+  margin-top: var(--space-3);
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ---- Account (post-login) screen ---- */
+.account-shell {
+  padding: var(--space-4);
+  max-width: 720px;
+  margin: 0 auto;
+}
+.redirect-toast {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+}
+.redirect-toast.is-visible { display: flex; }

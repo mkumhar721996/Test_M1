@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Amazon — Sign in</title>
+<link rel="stylesheet" href="design-system/tokens.css" />
+<link rel="stylesheet" href="design-system/prototype-utils.css" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="u-surface">
+
+<header class="site-header">
+  <span class="wordmark">amazon</span>
+</header>
+
+<div class="login-shell">
+  <div>
+    <div class="card login-card">
+      <h1 class="card-title u-text-lg">Sign in</h1>
+      <p class="card-body u-text-sm">Access your account to view orders, manage your cart, and more.</p>
+
+      <div id="banner-error" class="banner-error" role="alert" aria-live="assertive" tabindex="-1">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <div>
+          <strong class="u-text-sm">Sign-in problem</strong>
+          <p id="banner-error-text">The email/username or password you entered is incorrect.</p>
+        </div>
+      </div>
+
+      <div id="redirect-toast-login" class="redirect-toast" role="status" aria-live="polite">
+        <span aria-hidden="true">✓</span>
+        <span>Signed in — redirecting to your account…</span>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field-group">
+          <label class="label" for="login-email">Email or username</label>
+          <input class="input" type="text" id="login-email" name="email" autocomplete="username" aria-describedby="email-error" />
+          <div id="email-error" class="field-error" role="alert">
+            <span aria-hidden="true">⚠</span>
+            <span>Enter your email or username.</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="label" for="login-password">Password</label>
+          <input class="input" type="password" id="login-password" name="password" autocomplete="current-password" aria-describedby="password-error" />
+          <div id="password-error" class="field-error" role="alert">
+            <span aria-hidden="true">⚠</span>
+            <span>Enter your password.</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <button type="submit" id="submit-btn" class="btn btn-primary">Sign in</button>
+        </div>
+      </form>
+
+      <p class="legal-note">By signing in, you agree to Amazon's Conditions of Use and Privacy Notice.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initLoginForm } from './login-form.js';
+  initLoginForm();
+</script>
+</body>
+</html>

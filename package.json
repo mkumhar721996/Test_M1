@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest && vitest run"
   },
   "dependencies": {
     "express": "^4.22.3"
@@ -12,6 +12,14 @@
     "@testing-library/dom": "^10.4.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "supertest": "^6.3.4"
+    "jsdom": "^25.0.1",
+    "supertest": "^6.3.4",
+    "vitest": "^2.1.9"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/tests/"
+    ]
   }
 }
