@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../design-system/tokens.css" />
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/expenses.css" />
+<link rel="stylesheet" href="/styles.css" />
 <script src="./js/expenses.js" defer></script>
 </head>
 <body class="u-surface">
@@ -104,5 +105,26 @@
     <span id="toast-message">Expense updated</span>
   </div>
 
+  <!--
+    TODO(rebase): uncertain merge — please review.
+    This block (id="expenses"/"root"/"dialog" + currency/validation/expensesView/app
+    scripts) implements "Add Expense" + "Delete Expense with Confirmation" against the
+    backend REST API (src/expenses). It was originally the only content of this page,
+    written before TEST-M1-STORY-032 ("Edit Expense via Modal Form", merged after this
+    branch was created) replaced the page body above with a localStorage-backed table +
+    edit modal. Both are kept side by side so neither feature's tests/behavior regress,
+    but product/design should decide how to reconcile a single expense list UI.
+  -->
+  <main id="expenses">
+    <div id="root"></div>
+  </main>
+  <div id="dialog"></div>
+  <script src="/currency.js"></script>
+  <script src="/validation.js"></script>
+  <script src="/expensesView.js"></script>
+  <script src="/app.js"></script>
+  <script>
+    renderApp(document.getElementById('root'));
+  </script>
 </body>
 </html>

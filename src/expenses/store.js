@@ -8,8 +8,8 @@ function createExpense(data) {
   return expense;
 }
 
-function listExpenses() {
-  return Array.from(expenses.values());
+function listExpenses(ownerId) {
+  return Array.from(expenses.values()).filter((expense) => expense.ownerId === ownerId);
 }
 
 function getExpense(id) {
