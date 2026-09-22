@@ -25,12 +25,12 @@ describe('AC1: login page load state', () => {
 describe('AC2: empty-field validation', () => {
   it('shows an email error and preserves the password when email is left empty', () => {
     initLoginForm(document, window);
-    document.getElementById('login-password').value = 'Sunshine!42';
+    document.getElementById('login-password').value = 'test-password';
     fireEvent.submit(document.getElementById('login-form'));
 
     expect(document.getElementById('email-error').classList.contains('is-visible')).toBe(true);
     expect(document.getElementById('password-error').classList.contains('is-visible')).toBe(false);
-    expect(document.getElementById('login-password').value).toBe('Sunshine!42');
+    expect(document.getElementById('login-password').value).toBe('test-password');
   });
 
   it('shows a password error and preserves the email when password is left empty', () => {
@@ -88,7 +88,7 @@ describe('AC5: valid credentials redirect', () => {
     const win = { setTimeout: window.setTimeout.bind(window), location: { assign } };
     initLoginForm(document, win);
     document.getElementById('login-email').value = 'avery.chen@example.com';
-    document.getElementById('login-password').value = 'Sunshine!42';
+    document.getElementById('login-password').value = 'test-password';
     fireEvent.submit(document.getElementById('login-form'));
     await vi.advanceTimersByTimeAsync(850);
 
