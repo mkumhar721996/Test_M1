@@ -29,6 +29,10 @@
     return `<ul id="expense-list">${expenses.map(renderExpenseRow).join('')}</ul>`;
   }
 
+  function renderError(message) {
+    return `<p id="error-message" role="alert">${escapeHtml(message)}</p>`;
+  }
+
   function renderConfirmDialog(expense) {
     return `<div id="confirm-dialog" role="dialog" aria-modal="true">
       <p>Delete this expense permanently? This action cannot be undone.</p>
@@ -37,5 +41,5 @@
     </div>`;
   }
 
-  return { renderExpenseList, renderExpenseRow, renderEmptyState, renderConfirmDialog };
+  return { renderExpenseList, renderExpenseRow, renderEmptyState, renderConfirmDialog, renderError };
 });

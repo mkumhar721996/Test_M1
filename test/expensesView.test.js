@@ -1,4 +1,4 @@
-const { renderExpenseList, renderConfirmDialog } = require('../public/expensesView');
+const { renderExpenseList, renderConfirmDialog, renderError } = require('../public/expensesView');
 
 describe('renderExpenseList', () => {
   test('renders the empty state message when there are no expenses', () => {
@@ -30,6 +30,19 @@ describe('renderExpenseList', () => {
   test('escapes user-provided text to avoid injecting markup', () => {
     const expense = { id: 'xss-1', amount: 1, date: '2026-01-01', category: 'Food', description: '<script>alert(1)</script>' };
     const html = renderExpenseList([expense], 'No expenses yet');
+    expect(html).not.toContain('<script>alert(1)</script>');
+  });
+});
+
+describe('renderError', () => {
+  test('renders the given message as an alert', () => {
+    const html = renderError('Something went wrong. Please try again.');
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Something went wrong. Please try again.');
+  });
+
+  test('escapes the message to avoid injecting markup', () => {
+    const html = renderError('<script>alert(1)</script>');
     expect(html).not.toContain('<script>alert(1)</script>');
   });
 });
