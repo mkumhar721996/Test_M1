@@ -33,7 +33,13 @@ function renderApp(root) {
   // (see public/index.html). Its absence lets unit tests exercise renderApp()
   // in isolation without talking to a backend.
   const dialogEl = typeof document !== 'undefined' ? document.getElementById('dialog') : null;
+  const errorEl = typeof document !== 'undefined' ? document.getElementById('error') : null;
   const backendEnabled = Boolean(dialogEl) && typeof fetch === 'function';
+
+  function renderErrorMessage(message) {
+    if (!errorEl) return;
+    errorEl.innerHTML = message && window.ExpensesView ? window.ExpensesView.renderError(message) : '';
+  }
 
   root.innerHTML = '';
 
@@ -206,15 +212,25 @@ function renderApp(root) {
 
   async function confirmDelete(expense) {
     try {
-      await fetch(`/expenses/${expense.id}?confirm=true`, {
+      const res = await fetch(`/expenses/${expense.id}?confirm=true`, {
         method: 'DELETE',
         headers: authHeaders(),
       });
+      if (!res.ok && res.status !== 404) {
+        closeDeleteConfirm();
+        renderErrorMessage('Unable to delete this expense. Please try again.');
+        return;
+      }
     } catch (err) {
       // Network errors shouldn't block removing the row locally below; the
       // record simply may not have existed on the backend (e.g. it was
       // created client-side only and never persisted).
+      closeDeleteConfirm();
+      renderErrorMessage('Unable to delete this expense. Please try again.');
+      return;
     }
+
+    renderErrorMessage(null);
 
     const idx = expenses.findIndex((e) => e.id === expense.id);
     if (idx !== -1) expenses.splice(idx, 1);
@@ -230,15 +246,19 @@ function renderApp(root) {
     if (!backendEnabled) return;
     try {
       const res = await fetch('/expenses', { headers: authHeaders() });
-      if (!res.ok) return;
+      if (!res.ok) {
+        renderErrorMessage('Unable to load expenses. Please try again.');
+        return;
+      }
       const data = await res.json();
+      renderErrorMessage(null);
       (data.expenses || []).forEach((expense) => {
         expenses.push(expense);
         list.appendChild(renderExpenseRow(expense));
       });
       updateSummary();
     } catch (err) {
-      // If the backend is unreachable, fall back to local-only usage.
+      renderErrorMessage('Unable to load expenses. Please try again.');
     }
   }
 
