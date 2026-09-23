@@ -1,36 +1,43 @@
 const crypto = require('crypto');
+const { validateWorkflowDefinition } = require('./validation');
 
-const workflows = new Map(); // id -> { id, versions: [{ version, taskGraph }] }
+const tenants = new Map(); // tenantId -> Map<workflowId, VersionRecord[]>
 
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+function getTenantWorkflows(tenantId) {
+  if (!tenants.has(tenantId)) tenants.set(tenantId, new Map());
+  return tenants.get(tenantId);
 }
 
-function createWorkflow(taskGraph) {
-  const id = crypto.randomUUID();
-  workflows.set(id, { id, versions: [{ version: 1, taskGraph: clone(taskGraph) }] });
-  return getVersion(id, 1);
+function saveWorkflow({ tenantId, workflowId, definition, actor }) {
+  const errors = validateWorkflowDefinition(definition);
+  if (errors.length > 0) {
+    const err = new Error('workflow definition is invalid');
+    err.code = 'VALIDATION_ERROR';
+    err.details = errors;
+    throw err;
+  }
+  const workflows = getTenantWorkflows(tenantId);
+  const id = workflowId || crypto.randomUUID();
+  const versions = workflows.get(id) || [];
+  const record = {
+    id,
+    version: versions.length + 1,
+    definition,
+    savedBy: actor,
+    savedAt: new Date().toISOString(),
+  };
+  workflows.set(id, [...versions, record]);
+  return record;
 }
 
-function updateWorkflow(workflowId, taskGraph) {
-  const workflow = workflows.get(workflowId);
-  if (!workflow) return undefined;
-  const version = workflow.versions.length + 1;
-  workflow.versions.push({ version, taskGraph: clone(taskGraph) });
-  return getVersion(workflowId, version);
+function getLatestVersion(tenantId, workflowId) {
+  const versions = getTenantWorkflows(tenantId).get(workflowId);
+  return versions && versions.length > 0 ? versions[versions.length - 1] : undefined;
 }
 
-function getLatestVersion(workflowId) {
-  const workflow = workflows.get(workflowId);
-  if (!workflow) return undefined;
-  return getVersion(workflowId, workflow.versions.length);
+function getVersion(tenantId, workflowId, version) {
+  const versions = getTenantWorkflows(tenantId).get(workflowId);
+  return versions ? versions.find((v) => v.version === version) : undefined;
 }
 
-function getVersion(workflowId, version) {
-  const workflow = workflows.get(workflowId);
-  if (!workflow) return undefined;
-  const found = workflow.versions.find((v) => v.version === version);
-  return found ? { workflowId, version: found.version, taskGraph: clone(found.taskGraph) } : undefined;
-}
-
-module.exports = { createWorkflow, updateWorkflow, getLatestVersion, getVersion };
+module.exports = { saveWorkflow, getLatestVersion, getVersion };
