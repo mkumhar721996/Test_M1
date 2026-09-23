@@ -15,4 +15,9 @@ function getEmailQueueFor(recipientId) {
   return emailQueue.filter((e) => e.to === recipientId);
 }
 
-module.exports = { notifyCoordinatorPaused, getInAppAlertsFor, getEmailQueueFor };
+function resetNotifications() {
+  inAppAlerts.length = 0;
+  emailQueue.length = 0;
+}
+
+module.exports = { notifyCoordinatorPaused, getInAppAlertsFor, getEmailQueueFor, resetNotifications };

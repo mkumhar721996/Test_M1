@@ -4,6 +4,10 @@ async function postTransition(runId, action, actor) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ actorId: actor.actorId, actorRole: actor.actorRole }),
   });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || 'request failed');
+  }
   return res.json();
 }
 
@@ -30,7 +34,7 @@ function initRunApp(doc = document, { run, actor }) {
       run = await postTransition(run.id, action, actor);
     } catch (err) {
       errorEl.hidden = false;
-      errorEl.textContent = `${idleLabel} failed — please try again.`;
+      errorEl.textContent = err.message || `${idleLabel} failed — please try again.`;
     } finally {
       btn.textContent = idleLabel;
       render();

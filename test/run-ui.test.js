@@ -21,7 +21,7 @@ test('clicking Pause disables the button and shows an in-progress indicator unti
   expect(document.getElementById('pause-btn').disabled).toBe(true);
   expect(document.getElementById('pause-btn').textContent).toBe('Pausing…');
 
-  resolveFetch({ json: async () => ({ id: 'run_1', state: 'paused' }) });
+  resolveFetch({ ok: true, json: async () => ({ id: 'run_1', state: 'paused' }) });
   await Promise.resolve();
   await Promise.resolve();
 
@@ -41,7 +41,7 @@ test('clicking Cancel disables the button and shows an in-progress indicator unt
   expect(document.getElementById('cancel-btn').disabled).toBe(true);
   expect(document.getElementById('cancel-btn').textContent).toBe('Cancelling…');
 
-  resolveFetch({ json: async () => ({ id: 'run_1', state: 'cancelled' }) });
+  resolveFetch({ ok: true, json: async () => ({ id: 'run_1', state: 'cancelled' }) });
   await Promise.resolve();
   await Promise.resolve();
 
@@ -90,4 +90,26 @@ test('a failed pause request re-enables the button and shows an inline error', a
 
   expect(document.getElementById('pause-btn').disabled).toBe(false);
   expect(document.getElementById('run-error').hidden).toBe(false);
+});
+
+test('a pause request rejected with a 403 permission error shows the error and leaves the run state unchanged', async () => {
+  jest.resetModules();
+  loadPage();
+  const { initRunApp } = require('../public/js/run');
+  global.fetch = jest.fn(() => Promise.resolve({
+    ok: false,
+    status: 403,
+    json: async () => ({ error: 'actor is not authorized to manage this run' }),
+  }));
+
+  initRunApp(document, { run: { id: 'run_1', state: 'started' }, actor: { actorId: 'someone_else', actorRole: 'employee' } });
+  document.getElementById('pause-btn').click();
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+
+  expect(document.getElementById('pause-btn').disabled).toBe(false);
+  expect(document.getElementById('run-error').hidden).toBe(false);
+  expect(document.getElementById('run-error').textContent).toMatch(/not authorized/i);
+  expect(document.getElementById('run-state').textContent).toBe('started');
 });

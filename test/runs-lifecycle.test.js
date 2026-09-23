@@ -1,8 +1,12 @@
 const { createRun } = require('../src/runs/store');
 const { pauseRun, resumeRun, cancelRun, getNextDispatchableTask, RunTransitionError } = require('../src/runs/lifecycle');
-const { getInAppAlertsFor, getEmailQueueFor } = require('../src/runs/notifications');
+const { getInAppAlertsFor, getEmailQueueFor, resetNotifications } = require('../src/runs/notifications');
 
 const coordinator = { id: 'coord_1', role: 'hr_coordinator' };
+
+beforeEach(() => {
+  resetNotifications();
+});
 
 test('pausing a started run moves it to paused, blocks dispatch, and notifies the coordinator', () => {
   const run = createRun({ assignedCoordinatorId: 'coord_1', state: 'started', tasks: [{ id: 't1', state: 'pending' }] });
@@ -10,8 +14,10 @@ test('pausing a started run moves it to paused, blocks dispatch, and notifies th
 
   expect(updated.state).toBe('paused');
   expect(getNextDispatchableTask(updated)).toBeNull();
-  expect(getInAppAlertsFor('coord_1').length).toBeGreaterThan(0);
-  expect(getEmailQueueFor('coord_1').length).toBeGreaterThan(0);
+  expect(getInAppAlertsFor('coord_1')).toHaveLength(1);
+  expect(getInAppAlertsFor('coord_1')[0]).toMatchObject({ recipientId: 'coord_1', type: 'run_paused', runId: run.id });
+  expect(getEmailQueueFor('coord_1')).toHaveLength(1);
+  expect(getEmailQueueFor('coord_1')[0]).toMatchObject({ to: 'coord_1', runId: run.id });
 });
 
 test('pausing a blocked run moves it to paused, blocks dispatch, and notifies the coordinator', () => {
@@ -20,8 +26,10 @@ test('pausing a blocked run moves it to paused, blocks dispatch, and notifies th
 
   expect(updated.state).toBe('paused');
   expect(getNextDispatchableTask(updated)).toBeNull();
-  expect(getInAppAlertsFor('coord_2').length).toBeGreaterThan(0);
-  expect(getEmailQueueFor('coord_2').length).toBeGreaterThan(0);
+  expect(getInAppAlertsFor('coord_2')).toHaveLength(1);
+  expect(getInAppAlertsFor('coord_2')[0]).toMatchObject({ recipientId: 'coord_2', type: 'run_paused', runId: run.id });
+  expect(getEmailQueueFor('coord_2')).toHaveLength(1);
+  expect(getEmailQueueFor('coord_2')[0]).toMatchObject({ to: 'coord_2', runId: run.id });
 });
 
 test('resuming a paused run returns to started and continues dispatching the same pending task', () => {
