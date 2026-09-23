@@ -1,0 +1,211 @@
+/*
+  Design-system gap note: tokens.json has no semantic warning/danger color
+  (only color-fg / color-fg-muted / color-bg / color-surface / color-primary /
+  color-primary-fg / color-border exist). The "over limit" warning below is
+  therefore built from color-primary as the accent, paired redundantly with
+  an icon (⚠) and a text label ("Over limit") so the condition is never
+  color-only.
+*/
+
+/* ---------- Loading state ---------- */
+.loading-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: spin 800ms linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation-duration: 2.4s; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-label {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+}
+.skeleton-row {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+.skeleton-bar {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-border), var(--color-surface), var(--color-border));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-bar { animation: none; background: var(--color-border); }
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-col-name { width: 34%; }
+.skeleton-col-spend { width: 18%; }
+.skeleton-col-limit { width: 18%; }
+.skeleton-col-actions { width: 24%; margin-left: auto; }
+
+/* ---------- Error state ---------- */
+.error-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.error-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.error-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ---------- Table / success state ---------- */
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-base);
+}
+.category-table caption {
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  padding-bottom: var(--space-2);
+}
+.category-table th,
+.category-table td {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  vertical-align: middle;
+}
+.category-table thead th {
+  border-top: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  font-weight: var(--font-weight-bold);
+}
+.category-table tbody th[scope="row"] {
+  font-weight: var(--font-weight-regular);
+}
+.cat-name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+.cell-value { font-family: var(--font-family-base); }
+.cell-value.no-limit {
+  color: var(--color-fg-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+.category-row.is-warning td,
+.category-row.is-warning th {
+  background: var(--color-surface);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+.category-row.is-warning td:first-child,
+.category-row.is-warning th {
+  border-left: 3px solid var(--color-primary);
+}
+
+.warning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.action-btn:hover { border-color: var(--color-primary); }
+.action-btn.danger { color: var(--color-fg); }
+.action-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Mobile: rows become stacked cards ---------- */
+@media (max-width: 640px) {
+  .category-table thead { display: none; }
+  .category-table, .category-table tbody, .category-table tr, .category-table td, .category-table th {
+    display: block;
+    width: 100%;
+  }
+  .category-table tr {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+    padding: var(--space-2) 0;
+  }
+  .category-table td, .category-table th {
+    border-top: none;
+    padding: var(--space-1) var(--space-4);
+  }
+  .category-table td::before,
+  .category-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: 2px;
+  }
+  .category-row.is-warning td:first-child,
+  .category-row.is-warning th { border-left: none; border-top: 3px solid var(--color-primary); }
+}

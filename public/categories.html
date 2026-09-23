@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expense Tracker — Categories</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/expenses.css" />
+<link rel="stylesheet" href="./css/categories.css" />
+<script src="./js/categories.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Expense Tracker</span>
+    <nav class="app-nav">
+      <a href="index.html">Expenses</a>
+      <a href="#" onclick="return false;">Employees</a>
+      <a href="categories.html" class="active" aria-current="page">Categories</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Categories</h1>
+      <p>Monitor spend per category, including any limits you've set.</p>
+    </div>
+
+    <!-- State: Loading -->
+    <div id="state-loading" class="card">
+      <div class="loading-panel" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span class="loading-label">Loading categories…</span>
+      </div>
+      <div aria-hidden="true">
+        <div class="skeleton-row">
+          <div class="skeleton-bar skeleton-col-name"></div>
+          <div class="skeleton-bar skeleton-col-spend"></div>
+          <div class="skeleton-bar skeleton-col-limit"></div>
+          <div class="skeleton-bar skeleton-col-actions"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton-bar skeleton-col-name"></div>
+          <div class="skeleton-bar skeleton-col-spend"></div>
+          <div class="skeleton-bar skeleton-col-limit"></div>
+          <div class="skeleton-bar skeleton-col-actions"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton-bar skeleton-col-name"></div>
+          <div class="skeleton-bar skeleton-col-spend"></div>
+          <div class="skeleton-bar skeleton-col-limit"></div>
+          <div class="skeleton-bar skeleton-col-actions"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: Error -->
+    <div id="state-error" class="card" hidden>
+      <div class="error-panel" role="alert">
+        <span class="error-title"><span aria-hidden="true">⚠</span> Couldn't load categories</span>
+        <p class="error-body">
+          We ran into a problem fetching your category list. Check your connection and try again.
+        </p>
+        <button class="btn btn-primary" id="retry-btn" type="button">Retry</button>
+      </div>
+    </div>
+
+    <!-- State: Success -->
+    <div id="state-success" class="card" hidden>
+      <div class="table-scroll">
+        <table class="category-table">
+          <caption class="visually-hidden">Categories with total spend and spend limit</caption>
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col">Total spend</th>
+              <th scope="col">Spend limit</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="category-tbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>
