@@ -3,13 +3,13 @@
  */
 
 :root {
-  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
-  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
-  --color-bg: #111827; /** Default page background. */
-  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
-  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
-  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
-  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
   --space-1: 4px; /** Smallest spacing increment. */
   --space-2: 8px;
   --space-3: 12px;
