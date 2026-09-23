@@ -380,6 +380,23 @@
   .status-chip--active .status-dot { color: var(--color-primary); }
   .status-chip--cancelled { border-style: dashed; color: var(--color-fg-muted); text-decoration: line-through; }
   .status-chip--completed { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  /* Error/blocked variants are distinguished from --active/--pending by border WIDTH + icon +
+     label (never by a new hue) since tokens.json has no dedicated error color — see the
+     design-system gap note above. */
+  .status-chip--error { border: 2px solid var(--color-fg); color: var(--color-fg); }
+  .status-chip--blocked { border: 2px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Validation error (edge case) ---------- */
+  /* Border WIDTH change + inline text, not color alone (Rule 3, Rule 6). */
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-error-text {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
 
   /* ---------- Run card ---------- */
   .run-meta { margin: var(--space-3) 0 0 0; }
@@ -1001,6 +1018,140 @@
       </div>
     </div>
 
+    <!-- Screen: Edge Cases
+         Notes — failure, blocked, and boundary states that sit alongside the happy-path
+         states on screen 2. Rule 5 requires designing empty/loading/error/partial/success;
+         the earlier revision only covered success + pending, so this screen fills the
+         error/blocked/partial gap. "Retry" buttons are interactive (setTimeout-simulated)
+         so a reviewer can see the recovery path, not just a static failure snapshot.
+    -->
+    <div class="screen" data-name="Edge Cases">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Run status — edge cases</h1>
+            <p>Failure, blocked, and boundary states. "Retry" buttons are interactive.</p>
+          </div>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: trigger-failed -->
+          <div>
+            <h3>Run trigger failed</h3>
+            <span class="ac-tag">AC1 edge — onboarding engine unreachable</span>
+            <div class="card" id="edge-trigger-card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Offer accepted</span>
+                <span class="status-chip status-chip--error" id="edge-trigger-chip"><span aria-hidden="true">⛔</span> Trigger failed</span>
+              </div>
+              <p class="no-run-note" id="edge-trigger-note">The onboarding engine did not respond. The profile stays in "Offer accepted" and no Run was created — nothing to cancel or clean up.</p>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top: var(--space-3);">
+                <button class="btn btn-secondary btn-sm" type="button" id="edge-trigger-retry">Retry trigger</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: cancel-failed -->
+          <div>
+            <h3>Run cancellation failed</h3>
+            <span class="ac-tag">AC2/AC3 edge — old Run would not cancel</span>
+            <div class="card" id="edge-cancel-card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7241 (Engineering — Software Engineer II)</span>
+                <span class="status-chip status-chip--error" id="edge-cancel-chip"><span aria-hidden="true">⛔</span> Cancel failed</span>
+              </div>
+              <p class="no-run-note" id="edge-cancel-note">Role/department change to Product — Product Manager was saved, but the old Run could not be cancelled. The profile stays locked and the old Run stays Active until this resolves — the new Run is not started until it does.</p>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top: var(--space-3);">
+                <button class="btn btn-secondary btn-sm" type="button" id="edge-cancel-retry">Retry cancellation</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: blocked-concurrent-edit -->
+          <div>
+            <h3>Edit blocked — sync in progress</h3>
+            <span class="ac-tag">AC9 edge — action attempted mid-sync</span>
+            <div class="card">
+              <div class="pending-banner" style="margin-bottom: var(--space-3);">
+                <span class="spin" aria-hidden="true">⏳</span>
+                <span>Cancelling current Run and starting a new one…</span>
+              </div>
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Department/role changed</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — restarting Run</span>
+              </div>
+              <div class="consequence-note" style="margin: var(--space-3) 0 0 0;">
+                <span aria-hidden="true">🔒</span>
+                <span>"Deactivate profile" and both edit buttons are disabled until this sync finishes — a second trigger/cancel can't be queued on top of one already in flight.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: validation-error -->
+          <div>
+            <h3>Validation error — contact form</h3>
+            <span class="ac-tag">AC4/AC5 edge — invalid input, values preserved</span>
+            <div class="card">
+              <div class="field" style="margin-bottom: var(--space-3);">
+                <label class="label" for="edge-field-email">Email</label>
+                <input class="input input-error" id="edge-field-email" type="text" value="jordan.reyes@" aria-invalid="true" aria-describedby="edge-email-error" />
+                <span class="field-error-text" id="edge-email-error">Enter a complete email address, e.g. jordan.reyes@example.com</span>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="edge-field-phone">Phone</label>
+                <input class="input input-error" id="edge-field-phone" type="text" value="" aria-invalid="true" aria-describedby="edge-phone-error" />
+                <span class="field-error-text" id="edge-phone-error">Phone is required</span>
+              </div>
+              <p class="no-run-note">"Save changes" stays disabled until every field is valid. The name and start date the reviewer already typed are untouched — only the invalid fields are flagged.</p>
+            </div>
+          </div>
+
+          <!-- State: deactivate-blocked-pending -->
+          <div>
+            <h3>Deactivate blocked — Run still starting</h3>
+            <span class="ac-tag">AC6/AC9 edge — deactivation attempted mid-trigger</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Offer accepted</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — starting Run</span>
+              </div>
+              <div class="top-actions" style="margin-top: var(--space-3);">
+                <button class="btn btn-secondary" type="button" disabled aria-disabled="true">Deactivate profile</button>
+              </div>
+              <p class="no-run-note">Deactivation is queued behind the in-flight trigger, never raced against it — the button stays disabled until the new Run finishes starting, then deactivation can cancel it cleanly.</p>
+            </div>
+          </div>
+
+          <!-- State: long-value-overflow -->
+          <div>
+            <h3>Long role/department name</h3>
+            <span class="ac-tag">Layout edge — no truncation, no overflow scroll</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7455</span>
+                <span class="status-chip status-chip--active"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <div class="run-meta">
+                <div class="run-meta-row"><span class="k">Reflects</span><span class="v">International Strategic Partnerships &amp; Government Relations — Senior Manager, Global Cross-Functional Alliances</span></div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width: 60%;"></div></div>
+              <p class="progress-label">3 of 5 tasks complete</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 
 <script>
@@ -1520,6 +1671,38 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
   }
+
+  // ---------- Edge Cases screen: interactive retry (self-contained, no shared state) ----------
+  function wireEdgeRetry(btnId, cardId, chipId, noteId, retryingLabel, successChip, successNote) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      btn.disabled = true;
+      const chip = document.getElementById(chipId);
+      const note = document.getElementById(noteId);
+      chip.className = 'status-chip status-chip--pending';
+      chip.innerHTML = `<span class="spin" aria-hidden="true">⏳</span> ${retryingLabel}`;
+      note.textContent = 'Retrying…';
+      setTimeout(() => {
+        chip.className = 'status-chip status-chip--active';
+        chip.innerHTML = '<span class="status-dot" aria-hidden="true">●</span> Active';
+        note.textContent = successNote;
+        btn.remove();
+      }, 900);
+    });
+  }
+  wireEdgeRetry(
+    'edge-trigger-retry', 'edge-trigger-card', 'edge-trigger-chip', 'edge-trigger-note',
+    'Retrying trigger…',
+    null,
+    'Retry succeeded — Run run_7460 is now Active.'
+  );
+  wireEdgeRetry(
+    'edge-cancel-retry', 'edge-cancel-card', 'edge-cancel-chip', 'edge-cancel-note',
+    'Retrying cancellation…',
+    null,
+    'Retry succeeded — run_7241 is now Cancelled and run_7461 (Product — Product Manager) is Active.'
+  );
 
   // ---------- Reset demo data ----------
   document.getElementById('reset-data-btn').addEventListener('click', () => {
