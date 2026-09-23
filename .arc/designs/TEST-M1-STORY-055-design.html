@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-055 — Onboarding Run Trigger and Sync</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning
+    color (only color-fg, color-fg-muted, color-primary/-fg, color-surface,
+    color-bg, color-border). Per rule 3 (never encode meaning in color alone)
+    every Run status below is distinguished by icon + label + border style
+    (solid/dashed) using only existing tokens — never by hue alone. If
+    sdlc.design-system-bootstrap later adds semantic status colors, the
+    `.status-chip--*` rules are the only place to introduce them.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- App-level nav (top bar) ---------- */
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+  .app-nav a {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid transparent;
+  }
+  .app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  .page-header { margin-bottom: var(--space-4); display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  @media (min-width: 820px) {
+    .layout-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
+
+  .card-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap; }
+
+  /* ---------- Key/value rows ---------- */
+  .kv-list { border-top: 1px solid var(--color-border); }
+  .kv-row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (max-width: 480px) {
+    .kv-row { grid-template-columns: 1fr; gap: var(--space-1); }
+    .kv-row .kv-actions { justify-self: start; }
+  }
+  .kv-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+  }
+  .kv-value {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+  }
+  .kv-actions { text-align: right; }
+
+  /* ---------- Group edit buttons ---------- */
+  .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 0;
+  }
+
+  .profile-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+  }
+  .profile-status-chip--active { border-color: var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Pending lock banner (AC9) ---------- */
+  .pending-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .pending-banner[hidden] { display: none; }
+  .spin {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spin { animation: none; }
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  fieldset.profile-fieldset { border: none; margin: 0; padding: 0; }
+  fieldset.profile-fieldset[disabled] .kv-actions button,
+  fieldset.profile-fieldset[disabled] .top-actions button {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .top-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+  /* ---------- Status chip (Run) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+  }
+  .status-chip--none { color: var(--color-fg-muted); }
+  .status-chip--pending { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--active .status-dot { color: var(--color-primary); }
+  .status-chip--cancelled { border-style: dashed; color: var(--color-fg-muted); text-decoration: line-through; }
+  .status-chip--completed { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  /* Error/blocked variants are distinguished from --active/--pending by border WIDTH + icon +
+     label (never by a new hue) since tokens.json has no dedicated error color — see the
+     design-system gap note above. */
+  .status-chip--error { border: 2px solid var(--color-fg); color: var(--color-fg); }
+  .status-chip--blocked { border: 2px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Validation error (edge case) ---------- */
+  /* Border WIDTH change + inline text, not color alone (Rule 3, Rule 6). */
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-error-text {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  /* ---------- Run card ---------- */
+  .run-meta { margin: var(--space-3) 0 0 0; }
+  .run-meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-1) 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .run-meta-row .k { color: var(--color-fg-muted); }
+  .run-meta-row .v { color: var(--color-fg); text-align: right; }
+
+  .progress-track {
+    height: 8px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    margin-top: var(--space-2);
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    transition: width 0.2s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+  }
+  .progress-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+
+  .no-run-note {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: var(--space-2) 0 0 0;
+  }
+
+  .fresh-start-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  /* ---------- Run history ---------- */
+  .history-toggle {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    margin-top: var(--space-3);
+  }
+  .history-list {
+    list-style: none;
+    margin: var(--space-2) 0 0 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .history-list[hidden] { display: none; }
+  .history-item {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .history-item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .history-item-id {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .history-item-body {
+    margin: var(--space-2) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .not-resumed-note {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .history-empty {
+    padding: var(--space-3) 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* ---------- Modal (borrowed structure) ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--color-bg);
+    opacity: 0.72;
+    z-index: 100;
+  }
+  .modal-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-4);
+    overflow-y: auto;
+  }
+  .modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+  .modal-panel {
+    width: min(92vw, 460px);
+    margin-top: var(--space-4);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4);
+  }
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .modal-header h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .modal-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+  .icon-btn:hover { color: var(--color-fg); }
+
+  .field { margin-bottom: var(--space-4); }
+  .consequence-note {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    max-width: min(90vw, 340px);
+  }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 980px) {
+    .reference-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Profiles (active) · Runs · Settings. This project (Test_M1) has
+     no existing HR/onboarding frontend, so the nav is a minimal project-appropriate top
+     bar (not the arc platform's own sidebar chrome). -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-055</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Hire Profile (interactive)
+         Notes — this single page walks through every AC in one linear script:
+           1. Set "Hire stage" to "Offer accepted" and click "Save profile" — the profile
+              locks (pending banner + disabled actions) while a new Run is triggered in the
+              onboarding engine, then the Run card shows it Active (AC1, AC9).
+           2. Click "Edit role & department", change either field, and confirm — the
+              current Run is cancelled and a new one starts reflecting the update; watch it
+              move to Run history as Cancelled while a fresh Run appears Active (AC2, AC3, AC9).
+           3. Click "Edit start date & contact", change any field, and save — the Run card
+              does not change at all (same Run ID, same progress) while the profile fields
+              update immediately (AC4, AC5).
+           4. Click "Deactivate profile" and confirm — the active Run is cancelled (AC6).
+           5. Click "Reactivate profile" and confirm — a brand-new Run starts from the
+              beginning (0 of 5 tasks); expand "Run history" to see the earlier cancelled
+              Run still marked "Not resumed" (AC7, AC8).
+           - "Reset demo data" (top right) restores the initial Draft/no-Run state so the
+             script can be replayed from step 1.
+    -->
+    <div class="screen" data-name="Hire Profile">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Jordan Reyes</h1>
+            <p>New-hire profile and onboarding Run status.</p>
+          </div>
+          <div class="top-actions" id="top-actions"><!-- rendered by JS: Deactivate/Reactivate --></div>
+        </div>
+
+        <div class="pending-banner" id="pending-banner" role="status" aria-live="polite" hidden>
+          <span class="spin" aria-hidden="true">⏳</span>
+          <span id="pending-banner-text">Syncing with onboarding engine…</span>
+        </div>
+
+        <div class="layout-grid">
+          <!-- Profile card -->
+          <div class="card">
+            <div class="card-header-row">
+              <h2 class="card-title" style="margin:0;">Profile details</h2>
+              <span class="profile-status-chip" id="profile-status-chip"></span>
+            </div>
+            <fieldset class="profile-fieldset" id="profile-fieldset">
+              <div class="kv-list" id="kv-list"><!-- rendered by JS --></div>
+            </fieldset>
+          </div>
+
+          <!-- Run card -->
+          <div class="card">
+            <div class="card-header-row">
+              <h2 class="card-title" style="margin:0;">Onboarding Run</h2>
+              <span class="status-chip" id="run-status-chip"></span>
+            </div>
+            <div id="run-body"><!-- rendered by JS --></div>
+
+            <button class="history-toggle" id="history-toggle-btn" type="button" aria-expanded="false">
+              Run history (<span id="history-count">0</span>) ▾
+            </button>
+            <ul class="history-list" id="history-list" hidden></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact & start date edit modal (AC4, AC5) -->
+      <div class="modal-overlay" id="contact-overlay" hidden></div>
+      <div class="modal-wrap" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="contact-modal-title">Edit start date &amp; contact</h2>
+              <p>These fields never affect an active Run.</p>
+            </div>
+            <button class="icon-btn" id="contact-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="contact-form">
+            <div class="field">
+              <label class="label" for="field-name">Full name</label>
+              <input class="input" id="field-name" name="name" type="text" required />
+            </div>
+            <div class="field">
+              <label class="label" for="field-email">Email</label>
+              <input class="input" id="field-email" name="email" type="email" required />
+            </div>
+            <div class="field">
+              <label class="label" for="field-phone">Phone</label>
+              <input class="input" id="field-phone" name="phone" type="tel" required />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="field-start-date">Start date</label>
+              <input class="input" id="field-start-date" name="startDate" type="date" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="contact-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="contact-save-btn">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Role & department edit modal (AC2, AC3) -->
+      <div class="modal-overlay" id="role-overlay" hidden></div>
+      <div class="modal-wrap" id="role-modal" role="dialog" aria-modal="true" aria-labelledby="role-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="role-modal-title">Edit role &amp; department</h2>
+              <p>Changing either field restarts the onboarding Run.</p>
+            </div>
+            <button class="icon-btn" id="role-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <!-- Step 1: edit fields -->
+          <form id="role-form">
+            <div class="field">
+              <label class="label" for="field-department">Department</label>
+              <select class="input" id="field-department" name="department">
+                <option>Engineering</option>
+                <option>Product</option>
+                <option>Sales</option>
+                <option>People Ops</option>
+                <option>Finance</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="field-role">Role</label>
+              <input class="input" id="field-role" name="role" type="text" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="role-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="role-continue-btn">Continue</button>
+            </div>
+          </form>
+
+          <!-- Step 2: confirm consequence -->
+          <div id="role-confirm-step" hidden>
+            <div class="consequence-note">
+              <span aria-hidden="true">⚠</span>
+              <span id="role-confirm-copy">Change role or department? The current onboarding Run will be cancelled and a new Run will start reflecting the update.</span>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="role-back-btn">Back</button>
+              <button type="button" class="btn btn-primary" id="role-confirm-btn">Confirm change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deactivate confirm modal (AC6) -->
+      <div class="modal-overlay" id="deactivate-overlay" hidden></div>
+      <div class="modal-wrap" id="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="deactivate-modal-title">Deactivate profile?</h2>
+            </div>
+            <button class="icon-btn" id="deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span>Deactivating Jordan Reyes's profile cancels the active onboarding Run.</span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="deactivate-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="deactivate-confirm-btn">Deactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reactivate confirm modal (AC7, AC8) -->
+      <div class="modal-overlay" id="reactivate-overlay" hidden></div>
+      <div class="modal-wrap" id="reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="reactivate-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="reactivate-modal-title">Reactivate profile?</h2>
+            </div>
+            <button class="icon-btn" id="reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span>A fresh onboarding Run starts from the beginning. The previously cancelled Run is not resumed.</span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="reactivate-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="reactivate-confirm-btn">Reactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every AC-relevant Run state, for reviewers who
+             want a quick scan without driving the full script on screen 1.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Run status — reference states</h1>
+            <p>Non-interactive snapshots. Use screen 1 to try the real flow.</p>
+          </div>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: no-run -->
+          <div>
+            <h3>No Run yet</h3>
+            <span class="ac-tag">Baseline — before AC1</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Draft</span>
+                <span class="status-chip status-chip--none"><span aria-hidden="true">○</span> No Run</span>
+              </div>
+              <p class="no-run-note">Set hire stage to "Offer accepted" and save to trigger a Run.</p>
+            </div>
+          </div>
+
+          <!-- State: pending-trigger -->
+          <div>
+            <h3>Pending — starting Run</h3>
+            <span class="ac-tag">Satisfies AC1, AC9</span>
+            <div class="card">
+              <div class="pending-banner" style="margin-bottom: var(--space-3);">
+                <span class="spin" aria-hidden="true">⏳</span>
+                <span>Syncing with onboarding engine…</span>
+              </div>
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Offer accepted</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — starting Run</span>
+              </div>
+              <p class="no-run-note">Profile is locked until the trigger completes.</p>
+            </div>
+          </div>
+
+          <!-- State: active -->
+          <div>
+            <h3>Active Run</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7241</span>
+                <span class="status-chip status-chip--active"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">Reflects: Engineering — Software Engineer II</p>
+              <div class="progress-track"><div class="progress-fill" style="width: 40%;"></div></div>
+              <p class="progress-label">2 of 5 tasks complete</p>
+            </div>
+          </div>
+
+          <!-- State: pending-restart -->
+          <div>
+            <h3>Pending — cancelling &amp; restarting</h3>
+            <span class="ac-tag">Satisfies AC2, AC3, AC9</span>
+            <div class="card">
+              <div class="pending-banner" style="margin-bottom: var(--space-3);">
+                <span class="spin" aria-hidden="true">⏳</span>
+                <span>Cancelling current Run and starting a new one…</span>
+              </div>
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Department/role changed</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — restarting Run</span>
+              </div>
+              <p class="no-run-note">Profile fields are locked while the old Run is cancelled and the new one starts.</p>
+            </div>
+          </div>
+
+          <!-- State: unaffected -->
+          <div>
+            <h3>Run continues unaffected</h3>
+            <span class="ac-tag">Satisfies AC4, AC5</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7318 (unchanged)</span>
+                <span class="status-chip status-chip--active"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">Start date, name, and contact details were updated. Same Run ID, same progress.</p>
+              <div class="progress-track"><div class="progress-fill" style="width: 20%;"></div></div>
+              <p class="progress-label">1 of 5 tasks complete</p>
+            </div>
+          </div>
+
+          <!-- State: cancelled-deactivated -->
+          <div>
+            <h3>Cancelled — profile deactivated</h3>
+            <span class="ac-tag">Satisfies AC6</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7318</span>
+                <span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">Reason: profile deactivated.</p>
+            </div>
+          </div>
+
+          <!-- State: reactivated-fresh -->
+          <div>
+            <h3>Reactivated — fresh Run</h3>
+            <span class="ac-tag">Satisfies AC7, AC8</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7402 (new)</span>
+                <span class="status-chip status-chip--active"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div>
+              <p class="progress-label">0 of 5 tasks complete</p>
+              <span class="fresh-start-tag"><span aria-hidden="true">↺</span> Started from the beginning</span>
+              <ul class="history-list" style="margin-top: var(--space-3);">
+                <li class="history-item" style="border-bottom:none; padding-bottom:0;">
+                  <div class="history-item-head">
+                    <span class="history-item-id">run_7318</span>
+                    <span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span>
+                  </div>
+                  <p class="history-item-body">Reason: profile deactivated.</p>
+                  <span class="not-resumed-note"><span aria-hidden="true">⊘</span> Not resumed — new Run created instead</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Edge Cases
+         Notes — failure, blocked, and boundary states that sit alongside the happy-path
+         states on screen 2. Rule 5 requires designing empty/loading/error/partial/success;
+         the earlier revision only covered success + pending, so this screen fills the
+         error/blocked/partial gap. "Retry" buttons are interactive (setTimeout-simulated)
+         so a reviewer can see the recovery path, not just a static failure snapshot.
+    -->
+    <div class="screen" data-name="Edge Cases">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Run status — edge cases</h1>
+            <p>Failure, blocked, and boundary states. "Retry" buttons are interactive.</p>
+          </div>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: trigger-failed -->
+          <div>
+            <h3>Run trigger failed</h3>
+            <span class="ac-tag">AC1 edge — onboarding engine unreachable</span>
+            <div class="card" id="edge-trigger-card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Offer accepted</span>
+                <span class="status-chip status-chip--error" id="edge-trigger-chip"><span aria-hidden="true">⛔</span> Trigger failed</span>
+              </div>
+              <p class="no-run-note" id="edge-trigger-note">The onboarding engine did not respond. The profile stays in "Offer accepted" and no Run was created — nothing to cancel or clean up.</p>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top: var(--space-3);">
+                <button class="btn btn-secondary btn-sm" type="button" id="edge-trigger-retry">Retry trigger</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: cancel-failed -->
+          <div>
+            <h3>Run cancellation failed</h3>
+            <span class="ac-tag">AC2/AC3 edge — old Run would not cancel</span>
+            <div class="card" id="edge-cancel-card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7241 (Engineering — Software Engineer II)</span>
+                <span class="status-chip status-chip--error" id="edge-cancel-chip"><span aria-hidden="true">⛔</span> Cancel failed</span>
+              </div>
+              <p class="no-run-note" id="edge-cancel-note">Role/department change to Product — Product Manager was saved, but the old Run could not be cancelled. The profile stays locked and the old Run stays Active until this resolves — the new Run is not started until it does.</p>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top: var(--space-3);">
+                <button class="btn btn-secondary btn-sm" type="button" id="edge-cancel-retry">Retry cancellation</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: blocked-concurrent-edit -->
+          <div>
+            <h3>Edit blocked — sync in progress</h3>
+            <span class="ac-tag">AC9 edge — action attempted mid-sync</span>
+            <div class="card">
+              <div class="pending-banner" style="margin-bottom: var(--space-3);">
+                <span class="spin" aria-hidden="true">⏳</span>
+                <span>Cancelling current Run and starting a new one…</span>
+              </div>
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Department/role changed</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — restarting Run</span>
+              </div>
+              <div class="consequence-note" style="margin: var(--space-3) 0 0 0;">
+                <span aria-hidden="true">🔒</span>
+                <span>"Deactivate profile" and both edit buttons are disabled until this sync finishes — a second trigger/cancel can't be queued on top of one already in flight.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: validation-error -->
+          <div>
+            <h3>Validation error — contact form</h3>
+            <span class="ac-tag">AC4/AC5 edge — invalid input, values preserved</span>
+            <div class="card">
+              <div class="field" style="margin-bottom: var(--space-3);">
+                <label class="label" for="edge-field-email">Email</label>
+                <input class="input input-error" id="edge-field-email" type="text" value="jordan.reyes@" aria-invalid="true" aria-describedby="edge-email-error" />
+                <span class="field-error-text" id="edge-email-error">Enter a complete email address, e.g. jordan.reyes@example.com</span>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="edge-field-phone">Phone</label>
+                <input class="input input-error" id="edge-field-phone" type="text" value="" aria-invalid="true" aria-describedby="edge-phone-error" />
+                <span class="field-error-text" id="edge-phone-error">Phone is required</span>
+              </div>
+              <p class="no-run-note">"Save changes" stays disabled until every field is valid. The name and start date the reviewer already typed are untouched — only the invalid fields are flagged.</p>
+            </div>
+          </div>
+
+          <!-- State: deactivate-blocked-pending -->
+          <div>
+            <h3>Deactivate blocked — Run still starting</h3>
+            <span class="ac-tag">AC6/AC9 edge — deactivation attempted mid-trigger</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">Hire stage: Offer accepted</span>
+                <span class="status-chip status-chip--pending"><span aria-hidden="true">⏳</span> Pending — starting Run</span>
+              </div>
+              <div class="top-actions" style="margin-top: var(--space-3);">
+                <button class="btn btn-secondary" type="button" disabled aria-disabled="true">Deactivate profile</button>
+              </div>
+              <p class="no-run-note">Deactivation is queued behind the in-flight trigger, never raced against it — the button stays disabled until the new Run finishes starting, then deactivation can cancel it cleanly.</p>
+            </div>
+          </div>
+
+          <!-- State: long-value-overflow -->
+          <div>
+            <h3>Long role/department name</h3>
+            <span class="ac-tag">Layout edge — no truncation, no overflow scroll</span>
+            <div class="card">
+              <div class="card-header-row">
+                <span class="u-text-sm u-text-muted">run_7455</span>
+                <span class="status-chip status-chip--active"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <div class="run-meta">
+                <div class="run-meta-row"><span class="k">Reflects</span><span class="v">International Strategic Partnerships &amp; Government Relations — Senior Manager, Global Cross-Functional Alliances</span></div>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width: 60%;"></div></div>
+              <p class="progress-label">3 of 5 tasks complete</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-055-onboarding';
+  const TASKS_TOTAL = 5;
+  const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
+
+  const INITIAL_STATE = {
+    profile: {
+      id: 'hire_2031',
+      name: 'Jordan Reyes',
+      email: 'jordan.reyes@example.com',
+      phone: '(312) 555-0148',
+      startDate: '2026-10-05',
+      department: 'Engineering',
+      role: 'Software Engineer II',
+      hireStage: 'draft', // draft | offer_accepted
+      profileStatus: 'active', // active | deactivated
+    },
+    run: null,
+    history: [],
+    runSeq: 0,
+  };
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_STATE));
+    } catch (e) { /* storage unavailable */ }
+    return JSON.parse(JSON.stringify(INITIAL_STATE));
+  }
+
+  function persistState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  let state = loadState();
+  let progressTimer = null;
+  let historyOpen = false;
+
+  function workflowName(dept, role) {
+    return `${dept} — ${role}`;
+  }
+
+  // ---------- Pending / lock ----------
+  function setPending(isPending, label) {
+    const banner = document.getElementById('pending-banner');
+    const bannerText = document.getElementById('pending-banner-text');
+    const fieldset = document.getElementById('profile-fieldset');
+    banner.hidden = !isPending;
+    if (label) bannerText.textContent = label;
+    fieldset.disabled = isPending;
+    renderTopActions();
+    renderRunCard(isPending ? label : null);
+  }
+
+  // ---------- Profile card ----------
+  function renderProfile() {
+    const p = state.profile;
+    const chip = document.getElementById('profile-status-chip');
+    chip.className = 'profile-status-chip' + (p.profileStatus === 'active' ? ' profile-status-chip--active' : '');
+    chip.innerHTML = p.profileStatus === 'active'
+      ? '<span aria-hidden="true">●</span> Active profile'
+      : '<span aria-hidden="true">○</span> Deactivated';
+
+    const stageLabel = p.hireStage === 'offer_accepted' ? 'Offer accepted' : 'Draft';
+    const canEditStage = p.hireStage !== 'offer_accepted' && p.profileStatus === 'active';
+
+    const kv = document.getElementById('kv-list');
+    kv.innerHTML = `
+      <div class="kv-row">
+        <span class="kv-label">Name</span>
+        <span class="kv-value">${escapeHtml(p.name)}</span>
+        <span class="kv-actions"></span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-label">Email</span>
+        <span class="kv-value">${escapeHtml(p.email)}</span>
+        <span class="kv-actions"></span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-label">Phone</span>
+        <span class="kv-value">${escapeHtml(p.phone)}</span>
+        <span class="kv-actions"></span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-label">Start date</span>
+        <span class="kv-value">${formatDateDisplay(p.startDate)}</span>
+        <span class="kv-actions">
+          <button class="btn btn-secondary btn-sm" type="button" id="edit-contact-btn" ${p.profileStatus !== 'active' ? 'disabled' : ''}>Edit start date &amp; contact</button>
+        </span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-label">Department</span>
+        <span class="kv-value">${escapeHtml(p.department)}</span>
+        <span class="kv-actions"></span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-label">Role</span>
+        <span class="kv-value">${escapeHtml(p.role)}</span>
+        <span class="kv-actions">
+          <button class="btn btn-secondary btn-sm" type="button" id="edit-role-btn" ${p.profileStatus !== 'active' ? 'disabled' : ''}>Edit role &amp; department</button>
+        </span>
+      </div>
+      <div class="kv-row" style="border-bottom:none;">
+        <span class="kv-label">Hire stage</span>
+        <span class="kv-value">
+          ${canEditStage
+            ? `<select class="input" id="field-hire-stage" style="max-width:220px; display:inline-block;">
+                 <option value="draft" ${p.hireStage === 'draft' ? 'selected' : ''}>Draft</option>
+                 <option value="offer_accepted" ${p.hireStage === 'offer_accepted' ? 'selected' : ''}>Offer accepted</option>
+               </select>`
+            : `${stageLabel} ${p.hireStage === 'offer_accepted' ? '✓' : ''}`}
+        </span>
+        <span class="kv-actions">
+          ${canEditStage ? '<button class="btn btn-primary btn-sm" type="button" id="save-stage-btn">Save profile</button>' : ''}
+        </span>
+      </div>
+    `;
+
+    const editContactBtn = document.getElementById('edit-contact-btn');
+    if (editContactBtn) editContactBtn.addEventListener('click', openContactModal);
+    const editRoleBtn = document.getElementById('edit-role-btn');
+    if (editRoleBtn) editRoleBtn.addEventListener('click', openRoleModal);
+    const saveStageBtn = document.getElementById('save-stage-btn');
+    if (saveStageBtn) saveStageBtn.addEventListener('click', saveHireStage);
+  }
+
+  function renderTopActions() {
+    const el = document.getElementById('top-actions');
+    const p = state.profile;
+    const locked = document.getElementById('pending-banner') && !document.getElementById('pending-banner').hidden;
+    if (p.profileStatus === 'active') {
+      el.innerHTML = `<button class="btn btn-secondary" type="button" id="deactivate-btn" ${locked ? 'disabled' : ''}>Deactivate profile</button>`;
+      const btn = document.getElementById('deactivate-btn');
+      if (btn) btn.addEventListener('click', openDeactivateModal);
+    } else {
+      el.innerHTML = `<button class="btn btn-primary" type="button" id="reactivate-btn" ${locked ? 'disabled' : ''}>Reactivate profile</button>`;
+      const btn = document.getElementById('reactivate-btn');
+      if (btn) btn.addEventListener('click', openReactivateModal);
+    }
+  }
+
+  // ---------- Run card ----------
+  function statusChipMarkup(status, pendingLabel) {
+    if (status === 'pending') return `<span aria-hidden="true">⏳</span> ${pendingLabel || 'Pending'}`;
+    if (status === 'active') return '<span class="status-dot" aria-hidden="true">●</span> Active';
+    if (status === 'cancelled') return '<span aria-hidden="true">✕</span> Cancelled';
+    if (status === 'completed') return '<span aria-hidden="true">✓</span> Completed';
+    return '<span aria-hidden="true">○</span> No Run';
+  }
+
+  function renderRunCard(pendingLabel) {
+    const chip = document.getElementById('run-status-chip');
+    const body = document.getElementById('run-body');
+    const run = state.run;
+
+    if (pendingLabel) {
+      chip.className = 'status-chip status-chip--pending';
+      chip.innerHTML = statusChipMarkup('pending', pendingLabel);
+      body.innerHTML = `<p class="no-run-note">Waiting on the onboarding engine — this may take a moment.</p>`;
+      renderHistory();
+      return;
+    }
+
+    if (!run) {
+      chip.className = 'status-chip status-chip--none';
+      chip.innerHTML = statusChipMarkup('none');
+      body.innerHTML = `<p class="no-run-note">No Run yet. Set hire stage to "Offer accepted" and save the profile to trigger one.</p>`;
+      renderHistory();
+      return;
+    }
+
+    chip.className = 'status-chip status-chip--' + run.status;
+    chip.innerHTML = statusChipMarkup(run.status);
+
+    const pct = Math.round((run.tasksDone / TASKS_TOTAL) * 100);
+    body.innerHTML = `
+      <div class="run-meta">
+        <div class="run-meta-row"><span class="k">Run ID</span><span class="v">${run.id}</span></div>
+        <div class="run-meta-row"><span class="k">Reflects</span><span class="v">${escapeHtml(workflowName(run.department, run.role))}</span></div>
+        <div class="run-meta-row"><span class="k">Started</span><span class="v">${run.startedAt}</span></div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width: ${pct}%;"></div></div>
+      <p class="progress-label">${run.tasksDone} of ${TASKS_TOTAL} tasks complete</p>
+      ${run.freshStart ? '<span class="fresh-start-tag"><span aria-hidden="true">↺</span> Started from the beginning</span>' : ''}
+    `;
+    renderHistory();
+  }
+
+  function renderHistory() {
+    document.getElementById('history-count').textContent = state.history.length;
+    const list = document.getElementById('history-list');
+    if (state.history.length === 0) {
+      list.innerHTML = '<li class="history-empty">No previous Runs.</li>';
+    } else {
+      list.innerHTML = state.history.slice().reverse().map(h => `
+        <li class="history-item">
+          <div class="history-item-head">
+            <span class="history-item-id">${h.id} — ${escapeHtml(workflowName(h.department, h.role))}</span>
+            <span class="status-chip status-chip--cancelled">${statusChipMarkup('cancelled')}</span>
+          </div>
+          <p class="history-item-body">Reason: ${escapeHtml(h.reason)}. Reached ${h.tasksDone} of ${TASKS_TOTAL} tasks before cancellation.</p>
+          <span class="not-resumed-note"><span aria-hidden="true">⊘</span> Not resumed — a new Run was created instead</span>
+        </li>
+      `).join('');
+    }
+    list.hidden = !historyOpen;
+  }
+
+  document.getElementById('history-toggle-btn').addEventListener('click', function () {
+    historyOpen = !historyOpen;
+    this.setAttribute('aria-expanded', String(historyOpen));
+    this.innerHTML = `Run history (<span id="history-count">${state.history.length}</span>) ${historyOpen ? '▴' : '▾'}`;
+    document.getElementById('history-list').hidden = !historyOpen;
+  });
+
+  // ---------- Simulated background task progress ----------
+  function startProgressSimulation() {
+    clearInterval(progressTimer);
+    progressTimer = setInterval(() => {
+      if (!state.run || state.run.status !== 'active') return;
+      if (state.run.tasksDone >= TASKS_TOTAL) { clearInterval(progressTimer); return; }
+      state.run.tasksDone += 1;
+      persistState();
+      renderRunCard();
+    }, 2600);
+  }
+
+  // ---------- AC1: trigger on offer-accepted save ----------
+  function saveHireStage() {
+    const select = document.getElementById('field-hire-stage');
+    const newStage = select.value;
+    state.profile.hireStage = newStage;
+    persistState();
+    renderProfile();
+
+    if (newStage !== 'offer_accepted') { renderRunCard(); return; }
+
+    setPending(true, 'Starting onboarding Run…');
+    setTimeout(() => {
+      state.runSeq += 1;
+      const run = {
+        id: 'run_' + (7200 + state.runSeq),
+        department: state.profile.department,
+        role: state.profile.role,
+        status: 'active',
+        startedAt: nowLabel(),
+        tasksDone: 0,
+        freshStart: false,
+      };
+      state.run = run;
+      persistState();
+      setPending(false);
+      renderProfile();
+      renderRunCard();
+      showToast('Onboarding Run started');
+      startProgressSimulation();
+    }, 700);
+  }
+
+  // ---------- Contact & start date modal (AC4, AC5) ----------
+  const contactOverlay = document.getElementById('contact-overlay');
+  const contactModal = document.getElementById('contact-modal');
+
+  function openContactModal() {
+    const p = state.profile;
+    document.getElementById('field-name').value = p.name;
+    document.getElementById('field-email').value = p.email;
+    document.getElementById('field-phone').value = p.phone;
+    document.getElementById('field-start-date').value = p.startDate;
+    contactOverlay.hidden = false;
+    contactModal.hidden = false;
+    document.addEventListener('keydown', onContactKeydown);
+    document.getElementById('field-name').focus();
+  }
+  function closeContactModal() {
+    contactOverlay.hidden = true;
+    contactModal.hidden = true;
+    document.removeEventListener('keydown', onContactKeydown);
+  }
+  function onContactKeydown(e) { if (e.key === 'Escape') { e.preventDefault(); closeContactModal(); } }
+  document.getElementById('contact-close-btn').addEventListener('click', closeContactModal);
+  document.getElementById('contact-cancel-btn').addEventListener('click', closeContactModal);
+  contactOverlay.addEventListener('click', closeContactModal);
+
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const saveBtn = document.getElementById('contact-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    const name = document.getElementById('field-name').value.trim();
+    const email = document.getElementById('field-email').value.trim();
+    const phone = document.getElementById('field-phone').value.trim();
+    const startDate = document.getElementById('field-start-date').value;
+
+    setTimeout(() => {
+      state.profile.name = name || state.profile.name;
+      state.profile.email = email || state.profile.email;
+      state.profile.phone = phone || state.profile.phone;
+      state.profile.startDate = startDate || state.profile.startDate;
+      persistState();
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save changes';
+      closeContactModal();
+      renderProfile();
+      // Run is intentionally left untouched — AC4, AC5.
+      renderRunCard();
+      showToast('Profile updated — onboarding Run unaffected');
+    }, 350);
+  });
+
+  // ---------- Role & department modal (AC2, AC3) ----------
+  const roleOverlay = document.getElementById('role-overlay');
+  const roleModal = document.getElementById('role-modal');
+  const roleForm = document.getElementById('role-form');
+  const roleConfirmStep = document.getElementById('role-confirm-step');
+
+  function openRoleModal() {
+    const departmentSelect = document.getElementById('field-department');
+    const options = DEPARTMENTS.includes(state.profile.department) ? DEPARTMENTS : [state.profile.department, ...DEPARTMENTS];
+    departmentSelect.innerHTML = options.map((d) => `<option ${d === state.profile.department ? 'selected' : ''}>${d}</option>`).join('');
+    document.getElementById('field-role').value = state.profile.role;
+    roleForm.hidden = false;
+    roleConfirmStep.hidden = true;
+    roleOverlay.hidden = false;
+    roleModal.hidden = false;
+    document.addEventListener('keydown', onRoleKeydown);
+    document.getElementById('field-department').focus();
+  }
+  function closeRoleModal() {
+    roleOverlay.hidden = true;
+    roleModal.hidden = true;
+    document.removeEventListener('keydown', onRoleKeydown);
+  }
+  function onRoleKeydown(e) { if (e.key === 'Escape') { e.preventDefault(); closeRoleModal(); } }
+  document.getElementById('role-close-btn').addEventListener('click', closeRoleModal);
+  document.getElementById('role-cancel-btn').addEventListener('click', closeRoleModal);
+  roleOverlay.addEventListener('click', closeRoleModal);
+  document.getElementById('role-back-btn').addEventListener('click', () => {
+    roleForm.hidden = false;
+    roleConfirmStep.hidden = true;
+  });
+
+  let pendingRoleChange = null;
+  roleForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    pendingRoleChange = {
+      department: document.getElementById('field-department').value,
+      role: document.getElementById('field-role').value.trim() || state.profile.role,
+    };
+    const hasActiveRun = state.run && state.run.status === 'active';
+    document.getElementById('role-confirm-copy').textContent = hasActiveRun
+      ? 'Change role or department? The current onboarding Run will be cancelled and a new Run will start reflecting the update.'
+      : 'Change role or department? This will be saved to the profile.';
+    roleForm.hidden = true;
+    roleConfirmStep.hidden = false;
+  });
+
+  document.getElementById('role-confirm-btn').addEventListener('click', function () {
+    const change = pendingRoleChange;
+    closeRoleModal();
+    const hasActiveRun = state.run && state.run.status === 'active';
+
+    if (!hasActiveRun) {
+      state.profile.department = change.department;
+      state.profile.role = change.role;
+      persistState();
+      renderProfile();
+      showToast('Role & department updated');
+      return;
+    }
+
+    setPending(true, 'Cancelling current Run and starting a new one…');
+    setTimeout(() => {
+      // Cancel the existing Run — AC2.
+      const oldRun = state.run;
+      state.history.push({
+        id: oldRun.id,
+        department: oldRun.department,
+        role: oldRun.role,
+        reason: 'role/department changed',
+        tasksDone: oldRun.tasksDone,
+      });
+
+      state.profile.department = change.department;
+      state.profile.role = change.role;
+
+      // Start a new Run reflecting the update — AC3.
+      state.runSeq += 1;
+      state.run = {
+        id: 'run_' + (7200 + state.runSeq),
+        department: change.department,
+        role: change.role,
+        status: 'active',
+        startedAt: nowLabel(),
+        tasksDone: 0,
+        freshStart: false,
+      };
+      persistState();
+      setPending(false);
+      renderProfile();
+      renderRunCard();
+      showToast('Onboarding Run restarted for new role/department');
+      startProgressSimulation();
+    }, 800);
+  });
+
+  // ---------- Deactivate modal (AC6) ----------
+  const deactivateOverlay = document.getElementById('deactivate-overlay');
+  const deactivateModal = document.getElementById('deactivate-modal');
+  function openDeactivateModal() {
+    deactivateOverlay.hidden = false;
+    deactivateModal.hidden = false;
+    document.addEventListener('keydown', onDeactivateKeydown);
+  }
+  function closeDeactivateModal() {
+    deactivateOverlay.hidden = true;
+    deactivateModal.hidden = true;
+    document.removeEventListener('keydown', onDeactivateKeydown);
+  }
+  function onDeactivateKeydown(e) { if (e.key === 'Escape') { e.preventDefault(); closeDeactivateModal(); } }
+  document.getElementById('deactivate-close-btn').addEventListener('click', closeDeactivateModal);
+  document.getElementById('deactivate-cancel-btn').addEventListener('click', closeDeactivateModal);
+  deactivateOverlay.addEventListener('click', closeDeactivateModal);
+
+  document.getElementById('deactivate-confirm-btn').addEventListener('click', function () {
+    closeDeactivateModal();
+    setPending(true, 'Cancelling onboarding Run…');
+    setTimeout(() => {
+      if (state.run && state.run.status === 'active') {
+        state.history.push({
+          id: state.run.id,
+          department: state.run.department,
+          role: state.run.role,
+          reason: 'profile deactivated',
+          tasksDone: state.run.tasksDone,
+        });
+      }
+      state.run = null;
+      state.profile.profileStatus = 'deactivated';
+      persistState();
+      clearInterval(progressTimer);
+      setPending(false);
+      renderProfile();
+      renderRunCard();
+      showToast('Profile deactivated — onboarding Run cancelled');
+    }, 700);
+  });
+
+  // ---------- Reactivate modal (AC7, AC8) ----------
+  const reactivateOverlay = document.getElementById('reactivate-overlay');
+  const reactivateModal = document.getElementById('reactivate-modal');
+  function openReactivateModal() {
+    reactivateOverlay.hidden = false;
+    reactivateModal.hidden = false;
+    document.addEventListener('keydown', onReactivateKeydown);
+  }
+  function closeReactivateModal() {
+    reactivateOverlay.hidden = true;
+    reactivateModal.hidden = true;
+    document.removeEventListener('keydown', onReactivateKeydown);
+  }
+  function onReactivateKeydown(e) { if (e.key === 'Escape') { e.preventDefault(); closeReactivateModal(); } }
+  document.getElementById('reactivate-close-btn').addEventListener('click', closeReactivateModal);
+  document.getElementById('reactivate-cancel-btn').addEventListener('click', closeReactivateModal);
+  reactivateOverlay.addEventListener('click', closeReactivateModal);
+
+  document.getElementById('reactivate-confirm-btn').addEventListener('click', function () {
+    closeReactivateModal();
+    setPending(true, 'Starting a fresh onboarding Run…');
+    setTimeout(() => {
+      state.profile.profileStatus = 'active';
+      state.runSeq += 1;
+      state.run = {
+        id: 'run_' + (7200 + state.runSeq),
+        department: state.profile.department,
+        role: state.profile.role,
+        status: 'active',
+        startedAt: nowLabel(),
+        tasksDone: 0,
+        freshStart: true,
+      };
+      persistState();
+      setPending(false);
+      renderProfile();
+      renderRunCard();
+      showToast('Profile reactivated — new onboarding Run started');
+      startProgressSimulation();
+    }, 700);
+  });
+
+  // ---------- Helpers ----------
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+  function nowLabel() {
+    const d = new Date();
+    return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) +
+      ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
+  // ---------- Edge Cases screen: interactive retry (self-contained, no shared state) ----------
+  function wireEdgeRetry(btnId, cardId, chipId, noteId, retryingLabel, successChip, successNote) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      btn.disabled = true;
+      const chip = document.getElementById(chipId);
+      const note = document.getElementById(noteId);
+      chip.className = 'status-chip status-chip--pending';
+      chip.innerHTML = `<span class="spin" aria-hidden="true">⏳</span> ${retryingLabel}`;
+      note.textContent = 'Retrying…';
+      setTimeout(() => {
+        chip.className = 'status-chip status-chip--active';
+        chip.innerHTML = '<span class="status-dot" aria-hidden="true">●</span> Active';
+        note.textContent = successNote;
+        btn.remove();
+      }, 900);
+    });
+  }
+  wireEdgeRetry(
+    'edge-trigger-retry', 'edge-trigger-card', 'edge-trigger-chip', 'edge-trigger-note',
+    'Retrying trigger…',
+    null,
+    'Retry succeeded — Run run_7460 is now Active.'
+  );
+  wireEdgeRetry(
+    'edge-cancel-retry', 'edge-cancel-card', 'edge-cancel-chip', 'edge-cancel-note',
+    'Retrying cancellation…',
+    null,
+    'Retry succeeded — run_7241 is now Cancelled and run_7461 (Product — Product Manager) is Active.'
+  );
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    clearInterval(progressTimer);
+    state = loadState();
+    historyOpen = false;
+    renderProfile();
+    renderTopActions();
+    renderRunCard();
+    showToast('Demo data reset');
+  });
+
+  // ---------- Init ----------
+  renderProfile();
+  renderTopActions();
+  renderRunCard();
+  if (state.run && state.run.status === 'active') startProgressSimulation();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function anyModalOpen() {
+    return [contactModal, roleModal, deactivateModal, reactivateModal].some(m => m && m.hidden === false);
+  }
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (anyModalOpen()) return; // let Esc close the modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
