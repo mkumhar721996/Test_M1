@@ -9,9 +9,37 @@ const CATEGORY_ICONS = {
   Entertainment: '🎬',
   Other: '🗂️',
 };
+
+const USER_ID_KEY = 'expenseUserId';
+
+function getUserId() {
+  let id = localStorage.getItem(USER_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(USER_ID_KEY, id);
+  }
+  return id;
+}
+
+function authHeaders() {
+  return { Authorization: `Bearer ${getUserId()}` };
+}
+
 function renderApp(root) {
   const expenses = [];
   let lastFocused = null;
+
+  // The standalone #dialog mount point only exists on the real app page
+  // (see public/index.html). Its absence lets unit tests exercise renderApp()
+  // in isolation without talking to a backend.
+  const dialogEl = typeof document !== 'undefined' ? document.getElementById('dialog') : null;
+  const errorEl = typeof document !== 'undefined' ? document.getElementById('error') : null;
+  const backendEnabled = Boolean(dialogEl) && typeof fetch === 'function';
+
+  function renderErrorMessage(message) {
+    if (!errorEl) return;
+    errorEl.innerHTML = message && window.ExpensesView ? window.ExpensesView.renderError(message) : '';
+  }
 
   root.innerHTML = '';
 
@@ -119,6 +147,9 @@ function renderApp(root) {
   function renderExpenseRow(expense) {
     const li = document.createElement('li');
     li.className = 'expense-row card';
+    if (expense.id) {
+      li.dataset.expenseId = expense.id;
+    }
 
     const rowMain = document.createElement('div');
     rowMain.className = 'expense-row-main';
@@ -144,7 +175,91 @@ function renderApp(root) {
 
     li.appendChild(rowMain);
     li.appendChild(rowMeta);
+
+    if (backendEnabled && expense.id) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'btn btn-secondary expense-delete-btn';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.setAttribute('data-action', 'delete');
+      deleteBtn.setAttribute('data-id', expense.id);
+      deleteBtn.addEventListener('click', () => openDeleteConfirm(expense));
+      li.appendChild(deleteBtn);
+    }
+
     return li;
+  }
+
+  function openDeleteConfirm(expense) {
+    if (!dialogEl) return;
+    dialogEl.innerHTML = window.ExpensesView
+      ? window.ExpensesView.renderConfirmDialog(expense)
+      : `<div id="confirm-dialog" role="dialog" aria-modal="true">
+          <p>Delete this expense permanently? This action cannot be undone.</p>
+          <button type="button" data-action="confirm-delete">Delete</button>
+          <button type="button" data-action="cancel-delete">Cancel</button>
+        </div>`;
+
+    const confirmBtn = dialogEl.querySelector('[data-action="confirm-delete"]');
+    const cancelBtn = dialogEl.querySelector('[data-action="cancel-delete"]');
+    if (confirmBtn) confirmBtn.addEventListener('click', () => confirmDelete(expense));
+    if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteConfirm);
+  }
+
+  function closeDeleteConfirm() {
+    if (dialogEl) dialogEl.innerHTML = '';
+  }
+
+  async function confirmDelete(expense) {
+    try {
+      const res = await fetch(`/expenses/${expense.id}?confirm=true`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (!res.ok && res.status !== 404) {
+        closeDeleteConfirm();
+        renderErrorMessage('Unable to delete this expense. Please try again.');
+        return;
+      }
+    } catch (err) {
+      // Network errors shouldn't block removing the row locally below; the
+      // record simply may not have existed on the backend (e.g. it was
+      // created client-side only and never persisted).
+      closeDeleteConfirm();
+      renderErrorMessage('Unable to delete this expense. Please try again.');
+      return;
+    }
+
+    renderErrorMessage(null);
+
+    const idx = expenses.findIndex((e) => e.id === expense.id);
+    if (idx !== -1) expenses.splice(idx, 1);
+
+    const row = list.querySelector(`[data-expense-id="${expense.id}"]`);
+    if (row) row.remove();
+
+    closeDeleteConfirm();
+    updateSummary();
+  }
+
+  async function loadExistingExpenses() {
+    if (!backendEnabled) return;
+    try {
+      const res = await fetch('/expenses', { headers: authHeaders() });
+      if (!res.ok) {
+        renderErrorMessage('Unable to load expenses. Please try again.');
+        return;
+      }
+      const data = await res.json();
+      renderErrorMessage(null);
+      (data.expenses || []).forEach((expense) => {
+        expenses.push(expense);
+        list.appendChild(renderExpenseRow(expense));
+      });
+      updateSummary();
+    } catch (err) {
+      renderErrorMessage('Unable to load expenses. Please try again.');
+    }
   }
 
   function handleSave() {
@@ -163,6 +278,7 @@ function renderApp(root) {
     if (!result.valid) return;
 
     const expense = {
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : undefined,
       amount: parseFloat(values.amount),
       date: values.date,
       category: values.category,
@@ -185,6 +301,7 @@ function renderApp(root) {
   });
 
   updateSummary();
+  loadExistingExpenses();
 
   return { expenses };
 }
