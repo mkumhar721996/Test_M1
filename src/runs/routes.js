@@ -15,13 +15,13 @@ router.post('/', (req, res) => {
   if (!actor.tenantId) {
     return res.status(400).json({
       code: 'MISSING_TENANT_ID',
-      message: 'x-tenant-id header is required.',
+      message: 'tenantId is required in the signed x-actor-token payload.',
     });
   }
-  if (!req.body || !req.body.hireId) {
+  if (!req.body || typeof req.body.hireId !== 'string' || !req.body.hireId) {
     return res.status(400).json({
       code: 'MISSING_HIRE_ID',
-      message: 'hireId is required in the request body.',
+      message: 'hireId is required in the request body and must be a non-empty string.',
     });
   }
   try {

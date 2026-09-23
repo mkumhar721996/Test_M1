@@ -3,6 +3,7 @@ const { getVersionToPin } = require('../workflows/store');
 
 const ACTIVE_STATUSES = ['started', 'paused', 'blocked'];
 const runsById = new Map();
+const runIdsByHireKey = new Map();
 
 class DuplicateActiveRunError extends Error {
   constructor(existingRunId) {
@@ -12,10 +13,13 @@ class DuplicateActiveRunError extends Error {
   }
 }
 
+function hireKey(tenantId, hireId) {
+  return `${tenantId}:${hireId}`;
+}
+
 function listRunsForHire(tenantId, hireId) {
-  return [...runsById.values()].filter(
-    (run) => run.tenantId === tenantId && run.hireId === hireId
-  );
+  const ids = runIdsByHireKey.get(hireKey(tenantId, hireId)) || [];
+  return ids.map((id) => runsById.get(id));
 }
 
 function findActiveRunForHire(tenantId, hireId) {
@@ -37,6 +41,13 @@ function startRun({ tenantId, hireId }) {
     createdAt: new Date().toISOString(),
   };
   runsById.set(run.id, run);
+  const key = hireKey(tenantId, hireId);
+  const ids = runIdsByHireKey.get(key);
+  if (ids) {
+    ids.push(run.id);
+  } else {
+    runIdsByHireKey.set(key, [run.id]);
+  }
   return run;
 }
 

@@ -56,6 +56,30 @@ test('AC4: a duplicate start attempt is rejected with a structured DUPLICATE_ACT
   expect(second.body.existing_run_id).toBe(first.body.id);
 });
 
+test('AC4: a duplicate start attempt is rejected while the existing Run is paused', async () => {
+  const tenantId = crypto.randomUUID();
+  const hireId = crypto.randomUUID();
+  const headers = authHeaders(tenantId, 'hr_coordinator');
+  const first = await request(app).post('/runs').set(headers).send({ hireId });
+  getRun(first.body.id).status = 'paused';
+  const second = await request(app).post('/runs').set(headers).send({ hireId });
+  expect(second.status).toBe(409);
+  expect(second.body.code).toBe('DUPLICATE_ACTIVE_RUN');
+  expect(second.body.existing_run_id).toBe(first.body.id);
+});
+
+test('AC4: a duplicate start attempt is rejected while the existing Run is blocked', async () => {
+  const tenantId = crypto.randomUUID();
+  const hireId = crypto.randomUUID();
+  const headers = authHeaders(tenantId, 'hr_coordinator');
+  const first = await request(app).post('/runs').set(headers).send({ hireId });
+  getRun(first.body.id).status = 'blocked';
+  const second = await request(app).post('/runs').set(headers).send({ hireId });
+  expect(second.status).toBe(409);
+  expect(second.body.code).toBe('DUPLICATE_ACTIVE_RUN');
+  expect(second.body.existing_run_id).toBe(first.body.id);
+});
+
 test('AC5: no additional Run is created after a rejected duplicate attempt', async () => {
   const tenantId = crypto.randomUUID();
   const hireId = crypto.randomUUID();
@@ -177,6 +201,15 @@ test('additional: a missing hireId in the request body is rejected with MISSING_
     .post('/runs')
     .set(authHeaders(crypto.randomUUID(), 'hr_coordinator'))
     .send({});
+  expect(res.status).toBe(400);
+  expect(res.body.code).toBe('MISSING_HIRE_ID');
+});
+
+test('additional: a non-string hireId is rejected with MISSING_HIRE_ID', async () => {
+  const res = await request(app)
+    .post('/runs')
+    .set(authHeaders(crypto.randomUUID(), 'hr_coordinator'))
+    .send({ hireId: { toString: () => 'x' } });
   expect(res.status).toBe(400);
   expect(res.body.code).toBe('MISSING_HIRE_ID');
 });
