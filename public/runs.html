@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Run Detail — Workforce Ops</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/runs.css" />
+<script src="./js/runs.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce Ops</span>
+    <nav class="app-nav">
+      <a href="./runs.html" class="active" aria-current="page">Runs</a>
+      <a href="./index.html">Expenses</a>
+      <a href="./audit-log.html">Audit Log</a>
+    </nav>
+    <div class="notif-wrap">
+      <button class="notif-btn" id="notif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+        🔔
+        <span class="notif-badge" id="notif-badge" hidden>0</span>
+      </button>
+      <div class="notif-dropdown" id="notif-dropdown" role="menu" hidden>
+        <h3>Notifications</h3>
+        <div id="notif-list">
+          <p class="notif-empty" id="notif-empty">No alerts yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Run detail</h1>
+      <p>Automated onboarding tasks retry on failure, then hand off to HR when they can't recover on their own.</p>
+    </div>
+
+    <div class="card run-card">
+      <div class="run-card-top">
+        <div>
+          <p class="run-id" id="run-id"></p>
+          <h2 class="card-title" style="margin:0;" id="run-name"></h2>
+        </div>
+        <span class="chip chip-active" id="run-status-chip">▶ In progress</span>
+      </div>
+      <p class="run-meta" id="run-meta"></p>
+    </div>
+
+    <div class="task-list" id="task-list">
+      <!-- rendered by JS -->
+    </div>
+
+    <div class="page-header" style="margin-top: var(--space-4);">
+      <h1 style="font-size: var(--font-size-md);">Audit log</h1>
+      <p>Immutable record of every retry and block event on this Run — attempt number, failure reason, and timestamp (append-only; entries cannot be edited or deleted).</p>
+    </div>
+    <div class="card audit-card">
+      <div class="audit-scroll">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Task</th>
+              <th scope="col">Event</th>
+              <th scope="col" class="col-attempt">Attempt</th>
+              <th scope="col">Detail</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resolve modal: hidden until "Resolve blocked task" is activated -->
+  <div class="modal-overlay" id="modal-overlay" hidden></div>
+  <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-title">Resolve blocked task</h2>
+          <p>Only HR coordinators and platform admins can resolve a blocked task.</p>
+        </div>
+        <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without resolving">✕</button>
+      </div>
+
+      <form id="resolve-form">
+        <div class="field">
+          <label class="label" for="resolver-select">Resolved by</label>
+          <select class="input" id="resolver-select" name="resolver">
+            <option value="Priya Nair — HR Coordinator">Priya Nair — HR Coordinator</option>
+            <option value="Sam Okafor — Platform Admin">Sam Okafor — Platform Admin</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label class="label" for="resolution-note">Resolution note</label>
+          <textarea class="input" id="resolution-note" name="note" rows="3" placeholder="e.g. Vendor outage confirmed resolved; laptop provisioned manually via IT portal."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-resolve-btn">Mark resolved &amp; resume run</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true" id="toast-icon">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>

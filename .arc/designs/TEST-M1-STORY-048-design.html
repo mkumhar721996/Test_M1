@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-048 — Task Retry Policy &amp; Blocked State</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/warning/danger
+    color (only color-fg, color-fg-muted, color-primary/-fg, color-surface,
+    color-bg, color-border). Per guidelines this prototype does not invent a
+    new hex value. Task/Run states are distinguished by icon + label + border
+    weight (never color alone): a plain 1px border for neutral states
+    (Pending, Completed), a 1px color-primary border for active/attention
+    states (In progress, Retrying), and a bold 2px color-primary border for
+    the terminal Blocked state. If sdlc.design-system-bootstrap later adds
+    e.g. `color-danger` / `color-warning` / `color-success`, the `.chip-*`
+    rules below are the only place to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- App-level nav (top bar) ---------- */
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+  .app-nav a {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid transparent;
+  }
+  .app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible,
+  .input:focus-visible, .notif-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Notification bell ---------- */
+  .notif-wrap { position: relative; }
+  .notif-btn {
+    position: relative;
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+    font-size: var(--font-size-md);
+    line-height: 1;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .notif-btn:hover { border-color: var(--color-primary); }
+  .notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    font-family: var(--font-family-base);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    min-width: 18px;
+    height: 18px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+  .notif-badge[hidden] { display: none; }
+  .notif-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    width: min(90vw, 360px);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3);
+    z-index: 150;
+  }
+  .notif-dropdown[hidden] { display: none; }
+  .notif-dropdown h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .notif-item {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-2) 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .notif-item:first-of-type { border-top: none; }
+  .notif-item p { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .notif-item time { font-family: var(--font-family-base); font-size: 11px; color: var(--color-fg-muted); }
+  .notif-empty { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); padding: var(--space-2) 0; }
+
+  /* ---------- Page ---------- */
+  .page { max-width: 900px; margin: 0 auto; padding: var(--space-4); }
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Run header ---------- */
+  .run-card { margin-bottom: var(--space-4); }
+  .run-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .run-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .run-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  /* ---------- Status chips ---------- */
+  .chip { gap: var(--space-1); border: 1px solid var(--color-border); }
+  .chip-pending { color: var(--color-fg-muted); }
+  .chip-active { border-color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .chip-blocked { border-color: var(--color-primary); border-width: 2px; font-weight: var(--font-weight-bold); }
+
+  /* ---------- Task list ---------- */
+  .task-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .task-card { padding: var(--space-4); }
+  .task-card.is-blocked { border-color: var(--color-primary); border-width: 2px; }
+  .task-card.is-active { border-color: var(--color-primary); }
+  .task-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .task-name { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .task-icon { font-size: var(--font-size-lg); line-height: 1; }
+  .task-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+  .task-reason { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin: var(--space-2) 0 0 0; padding: var(--space-2) var(--space-3); background: var(--color-bg); border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+  .task-actions { display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; }
+
+  /* ---------- Backoff track ---------- */
+  .backoff-track { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) 0 0 0; flex-wrap: wrap; }
+  .backoff-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .backoff-step.is-done { color: var(--color-fg); }
+  .backoff-step.is-current { border-color: var(--color-primary); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .backoff-step.is-terminal { border-color: var(--color-primary); border-width: 2px; color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .backoff-arrow { color: var(--color-fg-muted); }
+
+  /* ---------- Banner ---------- */
+  .banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-3) var(--space-4);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    margin: var(--space-3) 0 0 0;
+  }
+  .banner[hidden] { display: none; }
+  .banner p { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .banner strong { color: var(--color-fg); }
+  .banner-icon { font-size: var(--font-size-lg); line-height: 1; }
+
+  /* ---------- Audit log ---------- */
+  .audit-card { padding: 0; overflow: hidden; }
+  .audit-scroll { overflow-x: auto; }
+  table.audit-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .audit-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .audit-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .audit-table tbody tr:last-child td { border-bottom: none; }
+  .audit-table tbody tr.row-new { animation: flash-update 1.6s ease-out; }
+  @keyframes flash-update {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .audit-table tbody tr.row-new,
+    .task-card.is-blocked { animation: none; }
+  }
+  .audit-empty td { text-align: center; color: var(--color-fg-muted); padding: var(--space-4); }
+  .col-attempt { white-space: nowrap; text-align: center; }
+  .audit-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); padding: var(--space-3) var(--space-4); margin: 0; border-bottom: 1px solid var(--color-border); }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: var(--color-bg); opacity: 0.72; z-index: 100; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 101; display: flex; align-items: flex-start; justify-content: center; padding: var(--space-4); overflow-y: auto; }
+  .modal-panel { width: min(92vw, 480px); margin-top: var(--space-4); background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); box-shadow: var(--shadow-sm); padding: var(--space-4); }
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .modal-header h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .modal-header p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+  .icon-btn { background: none; border: none; color: var(--color-fg-muted); font-size: var(--font-size-lg); line-height: 1; cursor: pointer; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); min-height: 44px; min-width: 44px; }
+  .icon-btn:hover { color: var(--color-fg); }
+  .field { margin-bottom: var(--space-4); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4); }
+
+  /* ---------- Toast ---------- */
+  .toast { position: fixed; bottom: var(--space-4); right: var(--space-4); z-index: 200; display: flex; align-items: center; gap: var(--space-2); background: var(--card-default-background); border: 1px solid var(--card-default-border); border-left: 4px solid var(--color-primary); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); max-width: min(90vw, 340px); }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Email preview ---------- */
+  .email-card { padding: 0; overflow: hidden; }
+  .email-header { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); }
+  .email-header dl { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); }
+  .email-header dt { color: var(--color-fg-muted); }
+  .email-header dd { color: var(--color-fg); margin: 0; }
+  .email-body { padding: var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .email-body p { margin: 0 0 var(--space-3) 0; }
+  .email-body ul { margin: 0 0 var(--space-3) 0; padding-left: var(--space-4); color: var(--color-fg-muted); }
+
+  /* ---------- Reference states grid ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) { .reference-grid { grid-template-columns: repeat(2, 1fr); } }
+  .reference-grid h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — Runs (active) · Employees · Audit Log. Test_M1's existing
+     codebase is a minimal "employees" Express API with no frontend of its own, and
+     this story's domain (Runs composed of Tasks, e.g. onboarding automation) sits
+     alongside the "Employees" area seen in prior Test_M1 prototypes. A top bar with
+     a notification bell is used rather than the arc platform's own sidebar chrome,
+     since this is not an ARC-* story. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-048</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Run Detail — Live Simulation
+         Notes:
+           - Fully interactive walk-through of the whole policy, driven by the
+             "Simulate next outcome" button on the "Provision laptop asset" task
+             (no real network calls — setTimeout stands in for latency).
+           - Click 1: attempt 1 fails → a retry is scheduled with exponential
+             backoff (30s) and the task state becomes "Retrying" (AC1, AC2).
+           - Click 2: attempt 2 fails → retry scheduled with backoff (2m), task
+             stays "Retrying" (AC1, AC2).
+           - Click 3: attempt 3 fails → task AND the parent Run both move to
+             "Blocked" (AC3); a banner confirms the HR coordinator was notified
+             via in-app alert + email (AC4), the bell badge increments, and
+             "Resolve blocked task" becomes available.
+           - Every transition appends a row to the "Audit log" card at the
+             bottom of the page with attempt number, failure reason, and
+             timestamp (AC6) — entries are append-only, no edit/delete affordance.
+           - "Resolve blocked task" opens a modal where an HR coordinator or
+             platform admin records a resolution note; confirming moves the
+             task and Run back to "In progress" so the Run can continue from
+             that point (AC5), and logs the resolution to the audit log (AC6).
+           - "Reset simulation" restores the initial state for re-review.
+    -->
+    <div class="screen" data-name="Run Detail — Live Simulation">
+      <div class="app-topbar">
+        <span class="brand">Workforce Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Audit Log</a>
+        </nav>
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+            🔔
+            <span class="notif-badge" id="notif-badge" hidden>0</span>
+          </button>
+          <div class="notif-dropdown" id="notif-dropdown" role="menu" hidden>
+            <h3>Notifications</h3>
+            <div id="notif-list">
+              <p class="notif-empty" id="notif-empty">No alerts yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Run detail</h1>
+          <p>Automated onboarding tasks retry on failure, then hand off to HR when they can't recover on their own.</p>
+        </div>
+
+        <div class="card run-card">
+          <div class="run-card-top">
+            <div>
+              <p class="run-id">RUN-4821</p>
+              <h2 class="card-title" style="margin:0;">Onboarding: Jordan Lee</h2>
+            </div>
+            <span class="chip chip-active" id="run-status-chip">▶ In progress</span>
+          </div>
+          <p class="run-meta">Started 2026-09-23 08:58 UTC · 3 tasks</p>
+        </div>
+
+        <div class="task-list">
+          <div class="task-card card">
+            <div class="task-top">
+              <p class="task-name"><span class="task-icon" aria-hidden="true">✓</span> Create IT account</p>
+              <span class="chip">✓ Completed</span>
+            </div>
+            <p class="task-meta">Completed 08:59 UTC · 1 attempt</p>
+          </div>
+
+          <div class="task-card card is-active" id="focus-task-card">
+            <div class="task-top">
+              <p class="task-name"><span class="task-icon" aria-hidden="true" id="focus-task-icon">▶</span> Provision laptop asset</p>
+              <span class="chip chip-active" id="focus-task-chip">▶ In progress</span>
+            </div>
+            <p class="task-meta" id="focus-task-meta">Assigned system: Asset Provisioning API · Attempt 0 of 3</p>
+            <p class="task-reason" id="focus-task-reason" hidden></p>
+
+            <div class="backoff-track" id="backoff-track" aria-label="Retry backoff schedule">
+              <span class="backoff-step" data-step="1">1st retry · 30s</span>
+              <span class="backoff-arrow" aria-hidden="true">→</span>
+              <span class="backoff-step" data-step="2">2nd retry · 2m</span>
+              <span class="backoff-arrow" aria-hidden="true">→</span>
+              <span class="backoff-step" data-step="3">3rd failure · blocked</span>
+            </div>
+
+            <div class="banner" id="blocked-banner" hidden>
+              <span class="banner-icon" aria-hidden="true">⛔</span>
+              <div>
+                <p><strong>Task blocked after 3 failed attempts.</strong> Human intervention required before this Run can continue.</p>
+                <p style="margin-top:4px;">🔔 In-app alert sent to <strong>Priya Nair</strong> (HR Coordinator) · 📧 Email sent to <strong>priya.nair@northlake-hr.example</strong></p>
+              </div>
+            </div>
+
+            <div class="task-actions">
+              <button class="btn btn-primary" id="simulate-btn" type="button">Simulate next outcome: attempt 1 fails</button>
+              <button class="btn btn-secondary" id="resolve-btn" type="button" hidden>Resolve blocked task</button>
+              <button class="btn btn-secondary" id="reset-sim-btn" type="button">Reset simulation</button>
+            </div>
+          </div>
+
+          <div class="task-card card">
+            <div class="task-top">
+              <p class="task-name"><span class="task-icon" aria-hidden="true">○</span> Schedule orientation session</p>
+              <span class="chip chip-pending">○ Queued</span>
+            </div>
+            <p class="task-meta">Waiting on: Provision laptop asset</p>
+          </div>
+        </div>
+
+        <div class="page-header" style="margin-top: var(--space-4);">
+          <h1 style="font-size: var(--font-size-md);">Audit log</h1>
+          <p>Immutable record of every retry and block event on this Run — attempt number, failure reason, and timestamp (append-only; entries cannot be edited or deleted).</p>
+        </div>
+        <div class="card audit-card">
+          <div class="audit-scroll">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Event</th>
+                  <th scope="col" class="col-attempt">Attempt</th>
+                  <th scope="col">Detail</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resolve modal: hidden until "Resolve blocked task" is activated -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">Resolve blocked task</h2>
+              <p>Only HR coordinators and platform admins can resolve a blocked task.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without resolving">✕</button>
+          </div>
+
+          <form id="resolve-form">
+            <div class="field">
+              <label class="label" for="resolver-select">Resolved by</label>
+              <select class="input" id="resolver-select" name="resolver">
+                <option value="Priya Nair — HR Coordinator">Priya Nair — HR Coordinator</option>
+                <option value="Sam Okafor — Platform Admin">Sam Okafor — Platform Admin</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="resolution-note">Resolution note</label>
+              <textarea class="input" id="resolution-note" name="note" rows="3" placeholder="e.g. Vendor outage confirmed resolved; laptop provisioned manually via IT portal."></textarea>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-resolve-btn">Mark resolved &amp; resume run</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true" id="toast-icon">✓</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Retry &amp; Blocked — Reference States
+         Notes:
+           - Static side-by-side snapshots of the four key states called out in
+             the acceptance criteria, for reviewers who want a quick look
+             without driving the simulation on screen 1.
+    -->
+    <div class="screen" data-name="Retry &amp; Blocked — Reference States">
+      <div class="app-topbar">
+        <span class="brand">Workforce Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Audit Log</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Retry &amp; blocked — reference states</h1>
+          <p>Non-interactive snapshots. Use screen 1 to drive the real simulation.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <!-- State: Retrying (attempt 1) -->
+            <h3>Retrying — attempt 1 of 3</h3>
+            <span class="ac-tag">Satisfies AC1, AC2</span>
+            <div class="task-card card is-active">
+              <div class="task-top">
+                <p class="task-name"><span class="task-icon" aria-hidden="true">↻</span> Provision laptop asset</p>
+                <span class="chip chip-active">↻ Retrying</span>
+              </div>
+              <p class="task-meta">Attempt 1 of 3 · Next retry in 30s</p>
+              <p class="task-reason">Vendor API timeout (504) — Dell fulfillment gateway did not respond within 30s.</p>
+            </div>
+          </div>
+
+          <div>
+            <!-- State: Retrying (attempt 2, longer backoff) -->
+            <h3>Retrying — attempt 2 of 3</h3>
+            <span class="ac-tag">Satisfies AC1, AC2</span>
+            <div class="task-card card is-active">
+              <div class="task-top">
+                <p class="task-name"><span class="task-icon" aria-hidden="true">↻</span> Provision laptop asset</p>
+                <span class="chip chip-active">↻ Retrying</span>
+              </div>
+              <p class="task-meta">Attempt 2 of 3 · Next retry in 2m (exponential backoff)</p>
+              <p class="task-reason">Vendor API timeout (504) — Dell fulfillment gateway did not respond within 30s.</p>
+            </div>
+          </div>
+
+          <div>
+            <!-- State: Blocked (task + Run) -->
+            <h3>Blocked — 3rd failure</h3>
+            <span class="ac-tag">Satisfies AC3, AC4</span>
+            <div class="task-card card is-blocked">
+              <div class="task-top">
+                <p class="task-name"><span class="task-icon" aria-hidden="true">⛔</span> Provision laptop asset</p>
+                <span class="chip chip-blocked">⛔ Blocked</span>
+              </div>
+              <p class="task-meta">Attempt 3 of 3 · Run RUN-4821 also moved to Blocked</p>
+              <p class="task-reason">Vendor API timeout (504) — Dell fulfillment gateway did not respond within 30s.</p>
+              <div class="banner" style="margin-top: var(--space-3);">
+                <span class="banner-icon" aria-hidden="true">🔔</span>
+                <p>In-app alert + email sent to <strong>Priya Nair</strong> (HR Coordinator).</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- State: Resolved and resumed -->
+            <h3>Resolved &amp; resumed</h3>
+            <span class="ac-tag">Satisfies AC5, AC6</span>
+            <div class="task-card card is-active">
+              <div class="task-top">
+                <p class="task-name"><span class="task-icon" aria-hidden="true">▶</span> Provision laptop asset</p>
+                <span class="chip chip-active">▶ In progress</span>
+              </div>
+              <p class="task-meta">Resolved by Priya Nair — HR Coordinator · Run resumed</p>
+              <p class="task-reason">Resolution note: "Vendor outage confirmed resolved; laptop provisioned manually via IT portal."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: HR Coordinator Notifications
+         Notes:
+           - Shows what Priya (the assigned HR coordinator) sees within
+             ~1 second of the third failure: an in-app alert (bell dropdown,
+             already visible open here) and the paired email (AC4).
+           - Both channels reference the same Run/Task and deep-link to the
+             blocked task so the coordinator can resolve it (AC5).
+    -->
+    <div class="screen" data-name="HR Coordinator Notifications">
+      <div class="app-topbar">
+        <span class="brand">Workforce Ops</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Audit Log</a>
+        </nav>
+        <div class="notif-wrap">
+          <button class="notif-btn" type="button" aria-label="Notifications" disabled style="pointer-events:none;">
+            🔔<span class="notif-badge">1</span>
+          </button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>HR coordinator notifications</h1>
+          <p>Signed in as Priya Nair — HR Coordinator.</p>
+        </div>
+
+        <h2 class="card-title" style="font-size: var(--font-size-md); margin-bottom: var(--space-2);">In-app alert</h2>
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <div class="notif-item" style="border-top:none;">
+            <span aria-hidden="true">⛔</span>
+            <div>
+              <p><strong>Task blocked:</strong> "Provision laptop asset" on RUN-4821 (Onboarding: Jordan Lee) failed 3 times and needs your review.</p>
+              <time>Today, 09:07 UTC</time>
+              <div style="margin-top: var(--space-2);">
+                <button class="btn btn-secondary btn-sm-inline" type="button" onclick="return false;" style="padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm);">View blocked task →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="card-title" style="font-size: var(--font-size-md); margin-bottom: var(--space-2);">Paired email</h2>
+        <div class="card email-card">
+          <div class="email-header">
+            <dl>
+              <dt>From</dt><dd>Workforce Ops &lt;no-reply@workforce-ops.northlake-hr.example&gt;</dd>
+              <dt>To</dt><dd>Priya Nair &lt;priya.nair@northlake-hr.example&gt;</dd>
+              <dt>Subject</dt><dd>Action needed: Task blocked on RUN-4821 (Jordan Lee onboarding)</dd>
+              <dt>Sent</dt><dd>Today, 09:07 UTC</dd>
+            </dl>
+          </div>
+          <div class="email-body">
+            <p>Hi Priya,</p>
+            <p>The task <strong>"Provision laptop asset"</strong> on Run <strong>RUN-4821</strong> (Onboarding: Jordan Lee) has failed 3 times and could not recover automatically. The task and its Run are now in a <strong>Blocked</strong> state pending your review.</p>
+            <ul>
+              <li>Attempts: 3 of 3</li>
+              <li>Last failure: Vendor API timeout (504) — Dell fulfillment gateway did not respond within 30s.</li>
+              <li>Last attempt: Today, 09:07 UTC</li>
+            </ul>
+            <p>Open the Run to review the failure history and resolve or override the task so the Run can resume.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Audit Log — Full History
+         Notes:
+           - Standalone audit view across Runs, reachable from the "Audit Log"
+             nav item. Immutable, append-only — no edit or delete affordance
+             anywhere in this view (AC6).
+           - Every retry, block, and resolution event records attempt number,
+             failure reason (or resolution note), and a UTC timestamp.
+    -->
+    <div class="screen" data-name="Audit Log — Full History">
+      <div class="app-topbar">
+        <span class="brand">Workforce Ops</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" class="active" aria-current="page">Audit Log</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Audit log</h1>
+          <p>Every retry, block, and resolution event across Runs. Entries are immutable and append-only.</p>
+        </div>
+
+        <div class="card audit-card">
+          <p class="audit-note">Showing 6 of 6 events · newest first · this log cannot be edited or deleted, by design.</p>
+          <div class="audit-scroll">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Run / Task</th>
+                  <th scope="col">Event</th>
+                  <th scope="col" class="col-attempt">Attempt</th>
+                  <th scope="col">Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026-09-23 09:07:41 UTC</td>
+                  <td>RUN-4821 · Provision laptop asset</td>
+                  <td><span class="chip chip-blocked" style="font-size:11px;">⛔ Blocked</span></td>
+                  <td class="col-attempt">3 of 3</td>
+                  <td>Vendor API timeout (504). Task and Run moved to Blocked. HR coordinator notified (in-app + email).</td>
+                </tr>
+                <tr>
+                  <td>2026-09-23 09:04:52 UTC</td>
+                  <td>RUN-4821 · Provision laptop asset</td>
+                  <td><span class="chip chip-active" style="font-size:11px;">↻ Retry scheduled</span></td>
+                  <td class="col-attempt">2 of 3</td>
+                  <td>Vendor API timeout (504). Retry scheduled with backoff 2m. State → retrying.</td>
+                </tr>
+                <tr>
+                  <td>2026-09-23 09:02:14 UTC</td>
+                  <td>RUN-4821 · Provision laptop asset</td>
+                  <td><span class="chip chip-active" style="font-size:11px;">↻ Retry scheduled</span></td>
+                  <td class="col-attempt">1 of 3</td>
+                  <td>Vendor API timeout (504). Retry scheduled with backoff 30s. State → retrying.</td>
+                </tr>
+                <tr>
+                  <td>2026-09-23 08:59:03 UTC</td>
+                  <td>RUN-4821 · Create IT account</td>
+                  <td><span class="chip" style="font-size:11px;">✓ Completed</span></td>
+                  <td class="col-attempt">1 of 3</td>
+                  <td>Directory account created successfully.</td>
+                </tr>
+                <tr>
+                  <td>2026-09-22 16:41:09 UTC</td>
+                  <td>RUN-4798 · Send welcome kit</td>
+                  <td><span class="chip chip-blocked" style="font-size:11px;">✓ Resolved</span></td>
+                  <td class="col-attempt">3 of 3</td>
+                  <td>Manually resolved by Sam Okafor — Platform Admin. Note: "Carrier tracking restored; kit confirmed delivered." Run resumed.</td>
+                </tr>
+                <tr>
+                  <td>2026-09-22 16:12:55 UTC</td>
+                  <td>RUN-4798 · Send welcome kit</td>
+                  <td><span class="chip chip-blocked" style="font-size:11px;">⛔ Blocked</span></td>
+                  <td class="col-attempt">3 of 3</td>
+                  <td>Shipping API returned 500. Task and Run moved to Blocked. HR coordinator notified (in-app + email).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const BACKOFF_LABELS = ['30s', '2m'];
+  const FAILURE_REASON = 'Vendor API timeout (504) — Dell fulfillment gateway did not respond within 30s.';
+  const HR_COORDINATOR = 'Priya Nair';
+  const HR_EMAIL = 'priya.nair@northlake-hr.example';
+
+  let attempt = 0; // attempts recorded so far (0..3)
+  let taskState = 'in-progress'; // in-progress | retrying | blocked | resolved
+  let runBlocked = false;
+  let notifCount = 0;
+  const notifications = [];
+
+  function nowLabel() {
+    // Fixed simulated clock advancing per click, for readable audit rows.
+    const base = new Date('2026-09-23T09:00:00Z');
+    base.setSeconds(base.getSeconds() + attempt * 172 + (taskState === 'resolved' ? 300 : 0));
+    return base.toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC');
+  }
+
+  function formatTime(offsetSeconds) {
+    const base = new Date('2026-09-23T09:00:00Z');
+    base.setSeconds(base.getSeconds() + offsetSeconds);
+    return base.toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC');
+  }
+
+  // ---------- Elements ----------
+  const runStatusChip = document.getElementById('run-status-chip');
+  const focusCard = document.getElementById('focus-task-card');
+  const focusIcon = document.getElementById('focus-task-icon');
+  const focusChip = document.getElementById('focus-task-chip');
+  const focusMeta = document.getElementById('focus-task-meta');
+  const focusReason = document.getElementById('focus-task-reason');
+  const backoffTrack = document.getElementById('backoff-track');
+  const blockedBanner = document.getElementById('blocked-banner');
+  const simulateBtn = document.getElementById('simulate-btn');
+  const resolveBtn = document.getElementById('resolve-btn');
+  const resetBtn = document.getElementById('reset-sim-btn');
+  const auditTbody = document.getElementById('audit-tbody');
+
+  function addAuditRow({ time, task, event, attemptLabel, detail }) {
+    const tr = document.createElement('tr');
+    tr.className = 'row-new';
+    tr.innerHTML = `
+      <td>${time}</td>
+      <td>${task}</td>
+      <td>${event}</td>
+      <td class="col-attempt">${attemptLabel}</td>
+      <td>${detail}</td>
+    `;
+    auditTbody.insertBefore(tr, auditTbody.firstChild);
+  }
+
+  function renderAuditEmpty() {
+    auditTbody.innerHTML = '<tr class="audit-empty"><td colspan="5">No retry or block events recorded yet for this Run.</td></tr>';
+  }
+
+  function addNotification(text) {
+    notifCount += 1;
+    notifications.unshift({ text, time: nowLabel() });
+    renderNotifications();
+  }
+
+  function renderNotifications() {
+    const badge = document.getElementById('notif-badge');
+    const list = document.getElementById('notif-list');
+    badge.hidden = notifCount === 0;
+    badge.textContent = String(notifCount);
+    if (notifications.length === 0) {
+      list.innerHTML = '<p class="notif-empty" id="notif-empty">No alerts yet.</p>';
+      return;
+    }
+    list.innerHTML = notifications.map(n => `
+      <div class="notif-item">
+        <span aria-hidden="true">⛔</span>
+        <div><p>${n.text}</p><time>${n.time}</time></div>
+      </div>
+    `).join('');
+  }
+
+  function updateBackoffTrack() {
+    const steps = backoffTrack.querySelectorAll('.backoff-step');
+    steps.forEach((el, idx) => {
+      const stepNum = idx + 1;
+      el.classList.remove('is-done', 'is-current', 'is-terminal');
+      if (stepNum < attempt) el.classList.add('is-done');
+      if (stepNum === attempt && taskState === 'retrying') el.classList.add('is-current');
+      if (stepNum === 3 && taskState === 'blocked') el.classList.add('is-terminal');
+    });
+  }
+
+  function render() {
+    updateBackoffTrack();
+
+    if (taskState === 'in-progress' && attempt === 0) {
+      focusIcon.textContent = '▶';
+      focusChip.className = 'chip chip-active';
+      focusChip.textContent = '▶ In progress';
+      focusMeta.textContent = 'Assigned system: Asset Provisioning API · Attempt 0 of 3';
+      focusReason.hidden = true;
+      focusCard.className = 'task-card card is-active';
+      blockedBanner.hidden = true;
+      simulateBtn.hidden = false;
+      simulateBtn.disabled = false;
+      simulateBtn.textContent = 'Simulate next outcome: attempt 1 fails';
+      resolveBtn.hidden = true;
+      runStatusChip.className = 'chip chip-active';
+      runStatusChip.textContent = '▶ In progress';
+    } else if (taskState === 'retrying') {
+      focusIcon.textContent = '↻';
+      focusChip.className = 'chip chip-active';
+      focusChip.textContent = '↻ Retrying';
+      focusMeta.textContent = `Attempt ${attempt} of 3 · Next retry in ${BACKOFF_LABELS[attempt - 1]} (exponential backoff)`;
+      focusReason.hidden = false;
+      focusReason.textContent = FAILURE_REASON;
+      focusCard.className = 'task-card card is-active';
+      blockedBanner.hidden = true;
+      simulateBtn.hidden = false;
+      simulateBtn.disabled = false;
+      simulateBtn.textContent = attempt === 1
+        ? 'Simulate next outcome: attempt 2 fails'
+        : 'Simulate next outcome: attempt 3 fails (will block)';
+      resolveBtn.hidden = true;
+      runStatusChip.className = 'chip chip-active';
+      runStatusChip.textContent = '▶ In progress';
+    } else if (taskState === 'blocked') {
+      focusIcon.textContent = '⛔';
+      focusChip.className = 'chip chip-blocked';
+      focusChip.textContent = '⛔ Blocked';
+      focusMeta.textContent = 'Attempt 3 of 3 · Run RUN-4821 also moved to Blocked';
+      focusReason.hidden = false;
+      focusReason.textContent = FAILURE_REASON;
+      focusCard.className = 'task-card card is-blocked';
+      blockedBanner.hidden = false;
+      simulateBtn.hidden = true;
+      resolveBtn.hidden = false;
+      runStatusChip.className = 'chip chip-blocked';
+      runStatusChip.textContent = '⛔ Blocked';
+    } else if (taskState === 'resolved') {
+      focusIcon.textContent = '▶';
+      focusChip.className = 'chip chip-active';
+      focusChip.textContent = '▶ In progress';
+      focusMeta.textContent = 'Resolved — Run resumed from this task';
+      focusReason.hidden = false;
+      focusCard.className = 'task-card card is-active';
+      blockedBanner.hidden = true;
+      simulateBtn.hidden = true;
+      resolveBtn.hidden = true;
+      runStatusChip.className = 'chip chip-active';
+      runStatusChip.textContent = '▶ In progress';
+    }
+  }
+
+  simulateBtn.addEventListener('click', () => {
+    simulateBtn.disabled = true;
+    const label = attempt === 0 ? 'attempt 1' : attempt === 1 ? 'attempt 2' : 'attempt 3';
+    simulateBtn.textContent = `Recording failure & evaluating retry policy… (${label})`;
+
+    // Simulated latency — no real network call.
+    setTimeout(() => {
+      attempt += 1;
+      const time = formatTime(attempt === 1 ? 134 : attempt === 2 ? 292 : 461);
+
+      if (attempt < 3) {
+        taskState = 'retrying';
+        addAuditRow({
+          time,
+          task: 'Provision laptop asset',
+          event: '<span class="chip chip-active" style="font-size:11px;">↻ Retry scheduled</span>',
+          attemptLabel: `${attempt} of 3`,
+          detail: `${FAILURE_REASON} Retry scheduled with backoff ${BACKOFF_LABELS[attempt - 1]}. State → retrying.`,
+        });
+        render();
+        showToast('✓', `Retry scheduled — attempt ${attempt} of 3`);
+      } else {
+        taskState = 'blocked';
+        runBlocked = true;
+        addAuditRow({
+          time,
+          task: 'Provision laptop asset',
+          event: '<span class="chip chip-blocked" style="font-size:11px;">⛔ Blocked</span>',
+          attemptLabel: '3 of 3',
+          detail: `${FAILURE_REASON} Task and Run moved to Blocked. HR coordinator notified (in-app + email).`,
+        });
+        addNotification(`Task blocked: "Provision laptop asset" on RUN-4821 needs your review.`);
+        render();
+        showToast('⛔', `Blocked after 3 failures — ${HR_COORDINATOR} notified (in-app + email)`);
+      }
+    }, 450);
+  });
+
+  // ---------- Resolve modal ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const resolveForm = document.getElementById('resolve-form');
+  const resolveModalBtn = document.getElementById('modal-resolve-btn');
+
+  function openResolveModal() {
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+    document.getElementById('resolver-select').focus();
+  }
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    resolveModalBtn.disabled = false;
+    resolveModalBtn.textContent = 'Mark resolved & resume run';
+    document.removeEventListener('keydown', onModalKeydown);
+  }
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+  }
+
+  resolveBtn.addEventListener('click', openResolveModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  resolveForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    resolveModalBtn.disabled = true;
+    resolveModalBtn.textContent = 'Resuming run…';
+
+    const resolver = document.getElementById('resolver-select').value;
+    const note = document.getElementById('resolution-note').value.trim() || 'No additional note provided.';
+
+    setTimeout(() => {
+      taskState = 'resolved';
+      focusReason.textContent = `Resolution note: "${note}"`;
+      const time = formatTime(600);
+      addAuditRow({
+        time,
+        task: 'Provision laptop asset',
+        event: '<span class="chip chip-active" style="font-size:11px;">✓ Resolved</span>',
+        attemptLabel: '3 of 3',
+        detail: `Manually resolved by ${resolver}. Note: "${note}". Run resumed from this task.`,
+      });
+      render();
+      closeModal();
+      showToast('✓', `Resolved by ${resolver} — Run resumed`);
+    }, 450);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(icon, message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-icon').textContent = icon;
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
+  // ---------- Notification bell ----------
+  const notifBtn = document.getElementById('notif-btn');
+  const notifDropdown = document.getElementById('notif-dropdown');
+  notifBtn.addEventListener('click', () => {
+    const open = notifDropdown.hidden;
+    notifDropdown.hidden = !open;
+    notifBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!notifDropdown.hidden && !e.target.closest('.notif-wrap')) {
+      notifDropdown.hidden = true;
+      notifBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // ---------- Reset ----------
+  resetBtn.addEventListener('click', () => {
+    attempt = 0;
+    taskState = 'in-progress';
+    runBlocked = false;
+    notifCount = 0;
+    notifications.length = 0;
+    renderNotifications();
+    renderAuditEmpty();
+    render();
+    showToast('↺', 'Simulation reset');
+  });
+
+  renderAuditEmpty();
+  renderNotifications();
+  render();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (modalWrap.hidden === false) return; // let Esc close the modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
