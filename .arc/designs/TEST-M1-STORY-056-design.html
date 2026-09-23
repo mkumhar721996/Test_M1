@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="arc-dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-056 — New Hire Onboarding Status Visibility</title>
+
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+
+<!-- App nav: no sidebar. This is a single-purpose employee self-service page, so navigation
+     is a simple top bar — product wordmark + current page label ("My Onboarding") + the
+     signed-in user's identity chip (name/role changes per screen to make the scenario clear).
+     There is nothing else for a new hire to navigate to from here. -->
+
+<style>
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    line-height: var(--line-height-base);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .topbar-brand {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .topbar-brand .product {
+    font-size: var(--font-size-md);
+  }
+
+  .topbar-brand .page {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .identity-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .identity-text {
+    font-size: var(--font-size-sm);
+    line-height: 1.2;
+  }
+
+  .identity-text .name {
+    color: var(--color-fg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .identity-text .role {
+    color: var(--color-fg-muted);
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-4);
+    padding-bottom: 64px;
+  }
+
+  .page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-header h1 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+  }
+
+  .refresh-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .last-updated {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+
+  .btn-refresh:disabled {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .btn-refresh .spin {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary);
+    border-top-color: transparent;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-refresh .spin { animation: none; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .card + .card {
+    margin-top: var(--space-4);
+  }
+
+  .card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .card-heading h2 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+  }
+
+  /* Status chip — never color alone: every chip pairs an icon glyph + a text label. */
+  .chip-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+  }
+
+  .chip-status.is-current {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .chip-status.is-complete {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+
+  .current-stage-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .current-stage-meta {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  /* Stage stepper — vertical timeline; reads identically at 360px and desktop widths. */
+  .stage-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .stage-item {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .stage-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .stage-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 50%;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 2px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+  }
+
+  .stage-item.is-complete .stage-dot {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+
+  .stage-item.is-current .stage-dot {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .stage-connector {
+    flex: 1;
+    width: 2px;
+    min-height: 24px;
+    background: var(--color-border);
+    margin: var(--space-1) 0;
+  }
+
+  .stage-item.is-complete .stage-connector {
+    background: var(--color-primary);
+  }
+
+  .stage-body {
+    padding-bottom: var(--space-4);
+  }
+
+  .stage-name {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    padding-top: var(--space-1);
+  }
+
+  .stage-status {
+    margin: var(--space-1) 0 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .stage-item.is-current .stage-status {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Completed steps list */
+  .step-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .step-row:last-child {
+    border-bottom: none;
+  }
+
+  .step-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .step-title {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .step-meta {
+    margin: var(--space-1) 0 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .step-row.is-new {
+    animation: fade-in 400ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-row.is-new { animation: none; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Empty / not-started state */
+  .empty-state, .denied-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .empty-icon, .denied-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto var(--space-3);
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    font-size: 1.5rem;
+  }
+
+  .empty-state h2, .denied-state h2 {
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .empty-state p, .denied-state p {
+    max-width: 46ch;
+    margin: 0 auto var(--space-2) auto;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-md);
+  }
+
+  .denied-reason {
+    display: inline-block;
+    margin: var(--space-2) auto var(--space-3) auto;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  .denied-reason code {
+    color: var(--color-fg);
+  }
+
+  .completion-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    border-radius: var(--radius-lg);
+  }
+
+  .completion-banner .emoji {
+    font-size: 1.5rem;
+  }
+
+  .completion-banner p {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  a.link-inline {
+    color: var(--color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  a.link-inline:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 400px) {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .refresh-row {
+      justify-content: space-between;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="color:var(--color-fg-muted)">TEST-M1-STORY-056</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;padding:6px 8px;">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-weight:700;padding:6px 8px;">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+  <!-- State: loading -->
+  <!--
+    Screen: Loading
+    Notes:
+      - Skeleton preserves the final layout (topbar, page header, current-stage card,
+        completed-steps card) so there is no layout shift once real data arrives.
+      - Shown on first open of the status view, before the Run data resolves.
+  -->
+  <div class="screen" data-name="Loading">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="product">Test M1</span>
+        <span class="page">Onboarding</span>
+      </div>
+      <div class="identity">
+        <span class="identity-avatar" aria-hidden="true">JL</span>
+        <span class="identity-text"><span class="name">Jordan Lee</span></span>
+      </div>
+    </div>
+    <main class="page" aria-busy="true">
+      <div class="page-header">
+        <h1>My onboarding status</h1>
+      </div>
+      <div class="card" aria-hidden="true">
+        <div style="height:14px;width:40%;background:var(--color-border);border-radius:var(--radius-sm);margin-bottom:var(--space-2);"></div>
+        <div style="height:22px;width:60%;background:var(--color-border);border-radius:var(--radius-sm);margin-bottom:var(--space-2);"></div>
+        <div style="height:14px;width:30%;background:var(--color-border);border-radius:var(--radius-sm);"></div>
+      </div>
+      <div class="card">
+        <div style="height:16px;width:50%;background:var(--color-border);border-radius:var(--radius-sm);margin-bottom:var(--space-4);"></div>
+        <div style="height:44px;width:100%;background:var(--color-border);border-radius:var(--radius-sm);margin-bottom:var(--space-3);opacity:.7;"></div>
+        <div style="height:44px;width:100%;background:var(--color-border);border-radius:var(--radius-sm);margin-bottom:var(--space-3);opacity:.5;"></div>
+        <div style="height:44px;width:100%;background:var(--color-border);border-radius:var(--radius-sm);opacity:.3;"></div>
+      </div>
+      <p class="sr-only">Loading your onboarding status…</p>
+    </main>
+  </div>
+
+  <!-- State: not-started -->
+  <!--
+    Screen: Not started
+    Satisfies AC6: onboarding Run has not yet started — show a clear, actionable message
+    instead of an empty stage list.
+    Notes:
+      - "Check again" simulates a reload (AC3): it re-fetches and still finds no Run,
+        but visibly updates "Last checked" so the hire trusts the view is live, not stale.
+  -->
+  <div class="screen" data-name="Not started">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="product">Test M1</span>
+        <span class="page">Onboarding</span>
+      </div>
+      <div class="identity">
+        <span class="identity-avatar" aria-hidden="true">AR</span>
+        <span class="identity-text"><span class="name">Alex Rivera</span></span>
+      </div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <h1>My onboarding status</h1>
+        <div class="refresh-row">
+          <span class="last-updated" id="not-started-updated">Last checked just now</span>
+          <button class="btn-refresh" id="check-again-btn" type="button">
+            <span aria-hidden="true">⟳</span> Check again
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">🕒</div>
+          <h2>Onboarding hasn't started yet</h2>
+          <p>
+            We don't see an onboarding Run for your account yet. Onboarding usually
+            begins on your first day — <strong>October 6, 2026</strong>. Check back then,
+            or reach out to your People Partner if you think this is a mistake.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- State: in-progress -->
+  <!--
+    Screen: In progress
+    Satisfies AC1 (current stage shown), AC2 (all completed steps with timestamps),
+    AC3 (reload reflects latest Run data).
+    Notes:
+      - "Refresh status" simulates a reload: after ~350ms it advances the Run —
+        Equipment Provisioning completes, Team Introductions becomes current, and a new
+        completed step appears in the list (fades in, marked "is-new" for clarity).
+      - The "attempt to view a teammate's status" link demonstrates the AC4/AC5 flow by
+        jumping to the Access denied screen, as if the hire had followed a shared link.
+  -->
+  <div class="screen" data-name="In progress">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="product">Test M1</span>
+        <span class="page">Onboarding</span>
+      </div>
+      <div class="identity">
+        <span class="identity-avatar" aria-hidden="true">JL</span>
+        <span class="identity-text"><span class="name">Jordan Lee</span> · <span class="role">New hire</span></span>
+      </div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <h1>My onboarding status</h1>
+        <div class="refresh-row">
+          <span class="last-updated" id="progress-updated">Last updated Sep 23, 2026, 4:47 PM</span>
+          <button class="btn-refresh" id="refresh-btn" type="button">
+            <span aria-hidden="true">⟳</span> Refresh status
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="current-stage-meta">Current stage</p>
+        <p class="current-stage-name" id="current-stage-name">Equipment Provisioning</p>
+        <span class="chip-status is-current"><span aria-hidden="true">●</span> In progress</span>
+      </div>
+
+      <div class="card">
+        <div class="card-heading">
+          <h2>Onboarding stages</h2>
+        </div>
+        <ol class="stage-list" id="stage-list" aria-label="Onboarding stages">
+          <li class="stage-item is-complete">
+            <div class="stage-rail">
+              <span class="stage-dot" aria-hidden="true">✓</span>
+              <span class="stage-connector"></span>
+            </div>
+            <div class="stage-body">
+              <p class="stage-name">Account &amp; Access Setup</p>
+              <p class="stage-status">✓ Completed</p>
+            </div>
+          </li>
+          <li class="stage-item is-complete">
+            <div class="stage-rail">
+              <span class="stage-dot" aria-hidden="true">✓</span>
+              <span class="stage-connector"></span>
+            </div>
+            <div class="stage-body">
+              <p class="stage-name">Paperwork &amp; Compliance</p>
+              <p class="stage-status">✓ Completed</p>
+            </div>
+          </li>
+          <li class="stage-item is-current" id="stage-equipment">
+            <div class="stage-rail">
+              <span class="stage-dot" aria-hidden="true">●</span>
+              <span class="stage-connector"></span>
+            </div>
+            <div class="stage-body">
+              <p class="stage-name">Equipment Provisioning</p>
+              <p class="stage-status">● In progress</p>
+            </div>
+          </li>
+          <li class="stage-item" id="stage-team">
+            <div class="stage-rail">
+              <span class="stage-dot" aria-hidden="true">○</span>
+              <span class="stage-connector"></span>
+            </div>
+            <div class="stage-body">
+              <p class="stage-name">Team Introductions</p>
+              <p class="stage-status">○ Not started</p>
+            </div>
+          </li>
+          <li class="stage-item">
+            <div class="stage-rail">
+              <span class="stage-dot" aria-hidden="true">○</span>
+            </div>
+            <div class="stage-body">
+              <p class="stage-name">Training &amp; Certification</p>
+              <p class="stage-status">○ Not started</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-heading">
+          <h2>Completed steps</h2>
+        </div>
+        <ul class="step-list" id="step-list">
+          <li class="step-row">
+            <span class="step-check" aria-hidden="true">✓</span>
+            <div>
+              <p class="step-title">HR system account created</p>
+              <p class="step-meta">Account &amp; Access Setup · Completed Sep 22, 2026, 9:02 AM</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <span class="step-check" aria-hidden="true">✓</span>
+            <div>
+              <p class="step-title">Corporate email &amp; SSO provisioned</p>
+              <p class="step-meta">Account &amp; Access Setup · Completed Sep 22, 2026, 9:15 AM</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <span class="step-check" aria-hidden="true">✓</span>
+            <div>
+              <p class="step-title">Offer letter acknowledgment signed</p>
+              <p class="step-meta">Paperwork &amp; Compliance · Completed Sep 22, 2026, 2:30 PM</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <span class="step-check" aria-hidden="true">✓</span>
+            <div>
+              <p class="step-title">Tax &amp; compliance forms submitted</p>
+              <p class="step-meta">Paperwork &amp; Compliance · Completed Sep 23, 2026, 10:05 AM</p>
+            </div>
+          </li>
+          <li class="step-row">
+            <span class="step-check" aria-hidden="true">✓</span>
+            <div>
+              <p class="step-title">Laptop shipped</p>
+              <p class="step-meta">Equipment Provisioning · Completed Sep 23, 2026, 4:47 PM</p>
+            </div>
+          </li>
+        </ul>
+        <p role="status" aria-live="polite" class="sr-only" id="progress-live"></p>
+      </div>
+
+      <p class="u-text-sm" style="color:var(--color-fg-muted);">
+        Following a shared link to a teammate's status?
+        <a href="#" class="link-inline" id="try-view-other">Try viewing Sam Okafor's onboarding status</a>
+      </p>
+    </main>
+  </div>
+
+  <!-- State: completed -->
+  <!--
+    Screen: Completed
+    Satisfies AC7 (current stage shown as complete) and AC8 (all steps completed with
+    timestamps).
+    Notes:
+      - The current-stage card intentionally reads "Complete" rather than naming the
+        last stage as "in progress" — this is the literal AC7 wording.
+  -->
+  <div class="screen" data-name="Completed">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="product">Test M1</span>
+        <span class="page">Onboarding</span>
+      </div>
+      <div class="identity">
+        <span class="identity-avatar" aria-hidden="true">PN</span>
+        <span class="identity-text"><span class="name">Priya Nandan</span> · <span class="role">New hire</span></span>
+      </div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <h1>My onboarding status</h1>
+        <span class="last-updated">Last updated Sep 10, 2026, 5:30 PM</span>
+      </div>
+
+      <div class="completion-banner">
+        <span class="emoji" aria-hidden="true">🎉</span>
+        <p>Onboarding complete — welcome aboard, Priya! Finished Sep 10, 2026.</p>
+      </div>
+
+      <div class="card">
+        <p class="current-stage-meta">Current stage</p>
+        <p class="current-stage-name">Complete</p>
+        <span class="chip-status is-complete"><span aria-hidden="true">✓</span> Complete</span>
+      </div>
+
+      <div class="card">
+        <div class="card-heading">
+          <h2>Onboarding stages</h2>
+        </div>
+        <ol class="stage-list" aria-label="Onboarding stages">
+          <li class="stage-item is-complete">
+            <div class="stage-rail"><span class="stage-dot" aria-hidden="true">✓</span><span class="stage-connector"></span></div>
+            <div class="stage-body"><p class="stage-name">Account &amp; Access Setup</p><p class="stage-status">✓ Completed</p></div>
+          </li>
+          <li class="stage-item is-complete">
+            <div class="stage-rail"><span class="stage-dot" aria-hidden="true">✓</span><span class="stage-connector"></span></div>
+            <div class="stage-body"><p class="stage-name">Paperwork &amp; Compliance</p><p class="stage-status">✓ Completed</p></div>
+          </li>
+          <li class="stage-item is-complete">
+            <div class="stage-rail"><span class="stage-dot" aria-hidden="true">✓</span><span class="stage-connector"></span></div>
+            <div class="stage-body"><p class="stage-name">Equipment Provisioning</p><p class="stage-status">✓ Completed</p></div>
+          </li>
+          <li class="stage-item is-complete">
+            <div class="stage-rail"><span class="stage-dot" aria-hidden="true">✓</span><span class="stage-connector"></span></div>
+            <div class="stage-body"><p class="stage-name">Team Introductions</p><p class="stage-status">✓ Completed</p></div>
+          </li>
+          <li class="stage-item is-complete">
+            <div class="stage-rail"><span class="stage-dot" aria-hidden="true">✓</span></div>
+            <div class="stage-body"><p class="stage-name">Training &amp; Certification</p><p class="stage-status">✓ Completed</p></div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-heading">
+          <h2>Completed steps</h2>
+        </div>
+        <ul class="step-list">
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">HR system account created</p><p class="step-meta">Account &amp; Access Setup · Completed Sep 1, 2026, 8:55 AM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Corporate email &amp; SSO provisioned</p><p class="step-meta">Account &amp; Access Setup · Completed Sep 1, 2026, 9:10 AM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Offer letter acknowledgment signed</p><p class="step-meta">Paperwork &amp; Compliance · Completed Sep 1, 2026, 1:20 PM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Tax &amp; compliance forms submitted</p><p class="step-meta">Paperwork &amp; Compliance · Completed Sep 2, 2026, 11:00 AM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Laptop shipped &amp; setup confirmed</p><p class="step-meta">Equipment Provisioning · Completed Sep 4, 2026, 3:40 PM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Manager &amp; team intro calls completed</p><p class="step-meta">Team Introductions · Completed Sep 8, 2026, 2:15 PM</p></div>
+          </li>
+          <li class="step-row"><span class="step-check" aria-hidden="true">✓</span>
+            <div><p class="step-title">Required training modules completed</p><p class="step-meta">Training &amp; Certification · Completed Sep 10, 2026, 5:30 PM</p></div>
+          </li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <!-- State: forbidden -->
+  <!--
+    Screen: Access denied
+    Satisfies AC4 (request denied) and AC5 (appropriate error message shown).
+    Notes:
+      - Reached by following a shared link to a teammate's status page
+        (/onboarding/status/sam-okafor) while signed in as Jordan Lee — the topbar still
+        shows Jordan Lee's identity to make clear the session is valid, only the target
+        record is not theirs.
+      - "Back to my onboarding status" is the recovery action (guideline: error states
+        say what happened + how to fix).
+  -->
+  <div class="screen" data-name="Access denied">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span class="product">Test M1</span>
+        <span class="page">Onboarding</span>
+      </div>
+      <div class="identity">
+        <span class="identity-avatar" aria-hidden="true">JL</span>
+        <span class="identity-text"><span class="name">Jordan Lee</span> · <span class="role">New hire</span></span>
+      </div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <h1>Onboarding status</h1>
+      </div>
+      <div class="card">
+        <div class="denied-state">
+          <div class="denied-icon" aria-hidden="true">🔒</div>
+          <h2>You can only view your own onboarding status</h2>
+          <p>
+            This onboarding status belongs to another team member. If you followed a
+            shared link by mistake, ask them to check it, or contact your People Partner
+            if you believe you should have access.
+          </p>
+          <div class="denied-reason">Requested: <code>/onboarding/status/sam-okafor</code></div>
+          <div>
+            <button class="btn-refresh" id="back-to-mine-btn" type="button">
+              ← Back to my onboarding status
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<script>
+  // Fixture data for the "refresh reflects latest Run data" demo on the In progress screen.
+  var progressReloadFixture = {
+    updatedLabel: "Last updated just now",
+    stageName: "Team Introductions",
+    newStep: {
+      title: "Laptop setup confirmed",
+      meta: "Equipment Provisioning · Completed Sep 23, 2026, 5:12 PM"
+    }
+  };
+  var progressReloaded = false;
+
+  document.getElementById('refresh-btn').addEventListener('click', function () {
+    var btn = this;
+    if (progressReloaded) {
+      document.getElementById('progress-live').textContent = "Status refreshed — no new updates.";
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin" aria-hidden="true"></span> Refreshing…';
+    setTimeout(function () {
+      // Equipment Provisioning completes, Team Introductions becomes current.
+      var equipStage = document.getElementById('stage-equipment');
+      equipStage.classList.remove('is-current');
+      equipStage.classList.add('is-complete');
+      equipStage.querySelector('.stage-dot').textContent = '✓';
+      equipStage.querySelector('.stage-status').textContent = '✓ Completed';
+
+      var teamStage = document.getElementById('stage-team');
+      teamStage.classList.add('is-current');
+      teamStage.querySelector('.stage-dot').textContent = '●';
+      teamStage.querySelector('.stage-status').textContent = '● In progress';
+
+      document.getElementById('current-stage-name').textContent = progressReloadFixture.stageName;
+
+      var list = document.getElementById('step-list');
+      var li = document.createElement('li');
+      li.className = 'step-row is-new';
+      li.innerHTML = '<span class="step-check" aria-hidden="true">✓</span>' +
+        '<div><p class="step-title">' + progressReloadFixture.newStep.title + '</p>' +
+        '<p class="step-meta">' + progressReloadFixture.newStep.meta + '</p></div>';
+      list.appendChild(li);
+
+      document.getElementById('progress-updated').textContent = progressReloadFixture.updatedLabel;
+      document.getElementById('progress-live').textContent =
+        "Status refreshed — Equipment Provisioning completed. Team Introductions is now in progress.";
+
+      btn.disabled = false;
+      btn.innerHTML = '<span aria-hidden="true">⟳</span> Refresh status';
+      progressReloaded = true;
+    }, 350);
+  });
+
+  document.getElementById('check-again-btn').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin" aria-hidden="true"></span> Checking…';
+    setTimeout(function () {
+      document.getElementById('not-started-updated').textContent = "Last checked just now";
+      btn.disabled = false;
+      btn.innerHTML = '<span aria-hidden="true">⟳</span> Check again';
+    }, 350);
+  });
+
+  document.getElementById('try-view-other').addEventListener('click', function (e) {
+    e.preventDefault();
+    show(screens.findIndex(function (s) { return s.dataset.name === 'Access denied'; }));
+  });
+
+  document.getElementById('back-to-mine-btn').addEventListener('click', function () {
+    show(screens.findIndex(function (s) { return s.dataset.name === 'In progress'; }));
+  });
+
+  // Reviewer bar
+  var screens = Array.from(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+    document.getElementById('screen-label').textContent =
+      (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+  }
+  document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+  document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
