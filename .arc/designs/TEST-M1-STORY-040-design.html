@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-040 — Category Filtering and Grouping in Expense List</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<!--
+  TEST-M1-STORY-040: Category Filtering and Grouping in Expense List
+
+  Design notes / decisions for reviewers:
+    - Reuses the expense-list visual language established in TEST-M1-STORY-031/032 (app shell,
+      sidebar nav, expense-row card, category chip + icon, formatCurrency helper) so this story
+      reads as an addition to the same product, not a new screen family.
+    - The design system (tokens.json) has no dedicated "select" or "toggle/switch" component —
+      only the generic `.input` class (used here for the category filter, matching the `<select>`
+      pattern already used for the category field in the Add/Edit Expense modals) and `.btn`.
+      "Group by category" is therefore built as a two-button segmented control using existing
+      `.btn`/`.btn-primary`/`.btn-secondary` styles rather than inventing an unstyled switch.
+      Flagging this as a gap worth raising with the design-system owners if more toggle-style
+      controls are needed later.
+    - No "toast/notification" component exists either. A minimal toast is built from `.card`-style
+      tokens only (surface, border, radius, shadow-sm) to satisfy guideline §4 ("every action
+      produces visible feedback") for the simulate-rename / simulate-delete demo actions below.
+    - Renaming vs. deleting a category are modeled with deliberately different timing, per the
+      acceptance criteria's own wording:
+        • Renaming (AC9/AC10) explicitly stays stale until the list is refreshed/reopened, so the
+          "Category renamed" screen keeps a separate simulated "server" copy of category names and
+          only copies it into the visible list on an explicit "Refresh expense list" action.
+        • Deleting (AC5/AC6) has no such staleness carve-out in the ACs — a deleted category no
+          longer exists anywhere, so the "Category deleted" screen reassigns expenses to
+          Uncategorised and removes every reference (filter option + group heading) immediately.
+    - "Uncategorised" is treated as a fixed, non-editable pseudo-category (always last in the
+      filter list and in grouped view) rather than a real row in the categories table, since it
+      cannot itself be renamed or deleted.
+    - Uncategorised is visually distinguished from a real category (AC3) by both an icon (❔) and
+      wording ("no category assigned"), never by color alone (guideline §3).
+    - Demo-only "simulate a change made elsewhere" controls are visually boxed and labelled
+      "🧪 Prototype demo controls" so reviewers don't mistake them for real product chrome — in the
+      shipped feature these changes would originate from a separate Category management screen
+      (out of scope for this story).
+-->
+<!-- App nav: left sidebar (collapses to a horizontal top bar under 640px) — Dashboard · Expenses · Reports · Settings -->
+<style>
+  body { margin: 0; }
+
+  /* ---------- Reviewer bar ---------- */
+  #review-bar button {
+    color: var(--color-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-2);
+  }
+  #review-bar button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+  @media (min-width: 640px) {
+    .app-shell { flex-direction: row; }
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+  }
+  @media (min-width: 640px) {
+    .sidebar {
+      flex-direction: column;
+      width: 220px;
+      flex-shrink: 0;
+      padding: var(--space-4) var(--space-2);
+      border-bottom: none;
+      border-right: 1px solid var(--color-border);
+      gap: var(--space-1);
+    }
+  }
+
+  .brand {
+    display: none;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    padding: 0 var(--space-2) var(--space-4) var(--space-2);
+  }
+  @media (min-width: 640px) {
+    .brand { display: block; }
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-3);
+    min-height: 44px;
+    border-radius: var(--radius-sm);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-item.active {
+    color: var(--color-primary-fg);
+    background: var(--color-primary);
+  }
+  .nav-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-4);
+    max-width: 820px;
+  }
+
+  .page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .btn {
+    min-height: 44px;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 220px;
+  }
+
+  .filter-field .input {
+    min-height: 44px;
+  }
+
+  .view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .view-toggle button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    border: none;
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .view-toggle button + button {
+    border-left: 1px solid var(--color-border);
+  }
+  .view-toggle button.active {
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .view-toggle button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  /* ---------- Expense list (shared with STORY-031/032) ---------- */
+  .expense-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .expense-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  @media (min-width: 640px) {
+    .expense-row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .expense-row-main {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .expense-desc {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    overflow-wrap: anywhere;
+  }
+
+  .expense-row-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    justify-content: space-between;
+  }
+  @media (min-width: 640px) {
+    .expense-row-meta { justify-content: flex-end; }
+  }
+
+  .expense-amount {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+
+  .chip-uncategorised {
+    border: 1px dashed var(--color-border);
+    color: var(--color-fg-muted);
+    background: var(--color-bg);
+  }
+
+  .list-summary {
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  /* ---------- Group headings ---------- */
+  .group-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-1);
+    margin: var(--space-4) 0 var(--space-1) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .group-heading:first-child {
+    margin-top: 0;
+  }
+  .group-heading-name {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .group-heading-meta {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .group-heading-uncategorised {
+    border-bottom-style: dashed;
+  }
+  .group-heading-uncategorised .group-heading-name {
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-regular);
+    font-style: italic;
+  }
+
+  /* ---------- Empty state (shared pattern) ---------- */
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4);
+  }
+  .empty-state-icon {
+    font-size: 2.5rem;
+    margin: 0 0 var(--space-2) 0;
+  }
+  .empty-state .btn {
+    margin-top: var(--space-3);
+  }
+
+  /* ---------- Demo panel (prototype-only, not real product chrome) ---------- */
+  .demo-panel {
+    margin-top: var(--space-4);
+    border-style: dashed;
+  }
+  .demo-panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  /* ---------- Toast (built from card tokens; no dedicated component exists) ---------- */
+  .toast {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    left: var(--space-4);
+    max-width: 420px;
+    margin-left: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    z-index: 2000;
+  }
+  .toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toast { transition: opacity 1ms linear; transform: none; }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-040</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: default
+     Screen: Expense List — Filter & Group (interactive)
+     Notes:
+       - This is the primary interactive screen. Everything is live — no separate screens needed
+         for basic filtering/grouping, since real product behavior is a single list reacting to
+         two controls.
+       - AC1: pick any single category (e.g. "Food") from the Category filter — the list narrows
+         to only that category's expenses.
+       - AC2: pick "Uncategorised (no category assigned)" from the filter — only the two expenses
+         with no category show.
+       - AC4: while a filter is applied, an "✕ Clear filter" button appears next to the dropdown —
+         click it (or re-select "All categories") to see every expense again.
+       - AC3/AC7/AC8: click "Grouped by category" — expenses are re-rendered under category
+         headings (Food, Transport, Housing, Entertainment), each showing a count + $ subtotal,
+         with a visually distinct "❔ Uncategorised" heading at the end showing only a count, no
+         subtotal. Filtering and grouping combine (e.g. filter to "Transport" + grouped shows a
+         single heading).
+       - Starts on the flat, ungrouped view (matching the existing list from STORY-031/032) so
+         grouping reads as an opt-in enhancement, not a forced new default.
+-->
+<div class="screen" data-name="Expense List — Filter &amp; Group">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <span class="brand">Expense Tracker</span>
+      <a class="nav-item" href="#">📊 Dashboard</a>
+      <a class="nav-item active" href="#" aria-current="page">💳 Expenses</a>
+      <a class="nav-item" href="#">📈 Reports</a>
+      <a class="nav-item" href="#">⚙️ Settings</a>
+    </nav>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Expenses</h1>
+          <p class="u-text-sm u-text-muted list-summary" id="summary-main"></p>
+        </div>
+        <button type="button" class="btn btn-primary">+ Add expense</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="filter-main">Category</label>
+          <select class="input" id="filter-main" onchange="setFilter('main', this.value)">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clear-filter-main" onclick="setFilter('main', 'all')" style="display:none;">✕ Clear filter</button>
+        <div class="view-toggle" role="group" aria-label="List layout">
+          <button type="button" id="view-flat-main" class="active" aria-pressed="true" onclick="setGrouped('main', false)">☰ Flat list</button>
+          <button type="button" id="view-grouped-main" aria-pressed="false" onclick="setGrouped('main', true)">▤ Grouped by category</button>
+        </div>
+      </div>
+
+      <div class="expense-list" id="list-main"></div>
+
+      <div class="empty-state card" id="empty-main" style="display:none;">
+        <p class="empty-state-icon" aria-hidden="true">🔍</p>
+        <h2 class="u-text-lg">No expenses match this filter</h2>
+        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
+        <button type="button" class="btn btn-primary" onclick="setFilter('main', 'all')">✕ Clear filter</button>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast-main" role="status" aria-live="polite"></div>
+</div>
+
+<!-- State: rename-stale
+     Screen: Category Renamed — Stale Until Refresh
+     Notes:
+       - AC9: click "Rename 'Transport' → 'Travel' (elsewhere)" — a toast confirms the simulated
+         rename, but the Category filter dropdown and the "Transport" group heading below are
+         untouched, since this list was already open when the rename happened elsewhere.
+       - AC10: click "🔄 Refresh expense list" — after a brief simulated reload, the filter option
+         and the group heading both relabel to "Travel", with the same expenses and subtotal.
+       - Grouping starts ON for this screen so the heading text is visible without an extra click.
+-->
+<div class="screen" data-name="Category Renamed — Stale Until Refresh">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <span class="brand">Expense Tracker</span>
+      <a class="nav-item" href="#">📊 Dashboard</a>
+      <a class="nav-item active" href="#" aria-current="page">💳 Expenses</a>
+      <a class="nav-item" href="#">📈 Reports</a>
+      <a class="nav-item" href="#">⚙️ Settings</a>
+    </nav>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Expenses</h1>
+          <p class="u-text-sm u-text-muted list-summary" id="summary-rename"></p>
+        </div>
+        <button type="button" class="btn btn-primary">+ Add expense</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="filter-rename">Category</label>
+          <select class="input" id="filter-rename" onchange="setFilter('rename', this.value)">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clear-filter-rename" onclick="setFilter('rename', 'all')" style="display:none;">✕ Clear filter</button>
+        <div class="view-toggle" role="group" aria-label="List layout">
+          <button type="button" id="view-flat-rename" aria-pressed="false" onclick="setGrouped('rename', false)">☰ Flat list</button>
+          <button type="button" id="view-grouped-rename" class="active" aria-pressed="true" onclick="setGrouped('rename', true)">▤ Grouped by category</button>
+        </div>
+      </div>
+
+      <div class="expense-list" id="list-rename"></div>
+
+      <div class="empty-state card" id="empty-rename" style="display:none;">
+        <p class="empty-state-icon" aria-hidden="true">🔍</p>
+        <h2 class="u-text-lg">No expenses match this filter</h2>
+        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
+        <button type="button" class="btn btn-primary" onclick="setFilter('rename', 'all')">✕ Clear filter</button>
+      </div>
+
+      <div class="card demo-panel">
+        <p class="u-text-sm" style="margin:0 0 var(--space-1) 0;"><strong>🧪 Prototype demo controls</strong></p>
+        <p class="u-text-sm u-text-muted" style="margin:0;">
+          Simulates a teammate renaming a category in Settings while this expense list stays open
+          in another tab. Not part of the real product UI.
+        </p>
+        <div class="demo-panel-actions">
+          <button type="button" class="btn btn-secondary" id="rename-btn-rename" onclick="simulateRename()">Rename "Transport" → "Travel" (elsewhere)</button>
+          <button type="button" class="btn btn-primary" id="refresh-btn-rename" onclick="simulateRefresh()">🔄 Refresh expense list</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast-rename" role="status" aria-live="polite"></div>
+</div>
+
+<!-- State: delete-cascade
+     Screen: Category Deleted — Immediate Reassignment
+     Notes:
+       - AC5/AC6: click "🗑 Delete 'Entertainment' category (elsewhere)" — its 2 expenses move to
+         the Uncategorised group immediately (count updates from 2 to 4), and "Entertainment" is
+         removed at once from both the Category filter dropdown and the grouped headings. No
+         refresh step is required or offered here, unlike the rename screen — see the annotation
+         at the top of the file for why.
+-->
+<div class="screen" data-name="Category Deleted — Immediate Reassignment">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <span class="brand">Expense Tracker</span>
+      <a class="nav-item" href="#">📊 Dashboard</a>
+      <a class="nav-item active" href="#" aria-current="page">💳 Expenses</a>
+      <a class="nav-item" href="#">📈 Reports</a>
+      <a class="nav-item" href="#">⚙️ Settings</a>
+    </nav>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Expenses</h1>
+          <p class="u-text-sm u-text-muted list-summary" id="summary-delete"></p>
+        </div>
+        <button type="button" class="btn btn-primary">+ Add expense</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="filter-delete">Category</label>
+          <select class="input" id="filter-delete" onchange="setFilter('delete', this.value)">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clear-filter-delete" onclick="setFilter('delete', 'all')" style="display:none;">✕ Clear filter</button>
+        <div class="view-toggle" role="group" aria-label="List layout">
+          <button type="button" id="view-flat-delete" aria-pressed="false" onclick="setGrouped('delete', false)">☰ Flat list</button>
+          <button type="button" id="view-grouped-delete" class="active" aria-pressed="true" onclick="setGrouped('delete', true)">▤ Grouped by category</button>
+        </div>
+      </div>
+
+      <div class="expense-list" id="list-delete"></div>
+
+      <div class="empty-state card" id="empty-delete" style="display:none;">
+        <p class="empty-state-icon" aria-hidden="true">🔍</p>
+        <h2 class="u-text-lg">No expenses match this filter</h2>
+        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
+        <button type="button" class="btn btn-primary" onclick="setFilter('delete', 'all')">✕ Clear filter</button>
+      </div>
+
+      <div class="card demo-panel">
+        <p class="u-text-sm" style="margin:0 0 var(--space-1) 0;"><strong>🧪 Prototype demo controls</strong></p>
+        <p class="u-text-sm u-text-muted" style="margin:0;">
+          Simulates a teammate deleting a category in Settings. Not part of the real product UI.
+        </p>
+        <div class="demo-panel-actions">
+          <button type="button" class="btn btn-secondary" id="delete-btn-delete" onclick="simulateDelete()">🗑 Delete "Entertainment" category (elsewhere)</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast-delete" role="status" aria-live="polite"></div>
+</div>
+
+</div>
+
+<script>
+  // ---------- Fixture data (inline; no network calls) ----------
+  function makeCategories() {
+    return [
+      { id: 'food',          name: 'Food' },
+      { id: 'transport',     name: 'Transport' },
+      { id: 'housing',       name: 'Housing' },
+      { id: 'entertainment', name: 'Entertainment' },
+    ];
+  }
+
+  function makeExpenses() {
+    return [
+      { id: 1, categoryId: 'food',          amount: 42.50,  date: '2026-09-20', description: 'Team lunch at Cafe Luna' },
+      { id: 2, categoryId: 'transport',     amount: 128.00, date: '2026-09-18', description: 'Monthly train pass' },
+      { id: 3, categoryId: 'entertainment', amount: 15.99,  date: '2026-09-15', description: 'Movie tickets' },
+      { id: 4, categoryId: 'food',          amount: 86.20,  date: '2026-09-12', description: 'Grocery run' },
+      { id: 5, categoryId: null,            amount: 12.00,  date: '2026-09-10', description: 'Bank fee refund adjustment' },
+      { id: 6, categoryId: 'housing',       amount: 950.00, date: '2026-09-01', description: 'September rent share' },
+      { id: 7, categoryId: 'transport',     amount: 54.30,  date: '2026-09-05', description: 'Ride share to airport' },
+      { id: 8, categoryId: 'entertainment', amount: 120.00, date: '2026-08-29', description: 'Concert tickets' },
+      { id: 9, categoryId: null,            amount: 34.75,  date: '2026-08-22', description: 'Unlabeled receipt — office supplies' },
+    ];
+  }
+
+  const ICONS = { food: '🍔', transport: '🚗', housing: '🏠', entertainment: '🎬' };
+
+  const state = {
+    main:   { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: false },
+    rename: { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: true,
+              serverCategories: makeCategories() },
+    delete: { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: true },
+  };
+
+  function formatCurrency(amount) {
+    return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatDate(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function pluralize(n, word) {
+    return `${n} ${word}${n === 1 ? '' : 's'}`;
+  }
+
+  function showToast(key, message) {
+    const toast = document.getElementById(`toast-${key}`);
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('is-visible'), 4000);
+  }
+
+  function renderFilterOptions(key) {
+    const select = document.getElementById(`filter-${key}`);
+    const s = state[key];
+    select.innerHTML = '<option value="all">All categories</option>' +
+      s.categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('') +
+      '<option value="uncategorised">Uncategorised (no category assigned)</option>';
+
+    const validValues = ['all', 'uncategorised', ...s.categories.map(c => c.id)];
+    if (!validValues.includes(s.filter)) s.filter = 'all';
+    select.value = s.filter;
+  }
+
+  function updateClearFilterVisibility(key) {
+    document.getElementById(`clear-filter-${key}`).style.display = state[key].filter === 'all' ? 'none' : 'inline-flex';
+  }
+
+  function expenseRow(e, categories) {
+    const cat = e.categoryId ? categories.find(c => c.id === e.categoryId) : null;
+    const chipHtml = cat
+      ? `<span class="chip">${ICONS[cat.id] || '🗂️'} ${escapeHtml(cat.name)}</span>`
+      : `<span class="chip chip-uncategorised">❔ Uncategorised</span>`;
+    return `
+      <div class="expense-row card">
+        <div class="expense-row-main">
+          ${chipHtml}
+          <span class="expense-desc">${escapeHtml(e.description)}</span>
+        </div>
+        <div class="expense-row-meta">
+          <span class="expense-date u-text-sm u-text-muted">${formatDate(e.date)}</span>
+          <span class="expense-amount">${formatCurrency(e.amount)}</span>
+        </div>
+      </div>`;
+  }
+
+  function renderFlat(items, categories) {
+    return items.map(e => expenseRow(e, categories)).join('');
+  }
+
+  function renderGrouped(items, categories) {
+    let html = '';
+    categories.forEach(cat => {
+      const group = items.filter(e => e.categoryId === cat.id);
+      if (group.length === 0) return;
+      const subtotal = group.reduce((sum, e) => sum + e.amount, 0);
+      html += `
+        <div class="group-heading">
+          <span class="group-heading-name">${ICONS[cat.id] || '🗂️'} ${escapeHtml(cat.name)}</span>
+          <span class="group-heading-meta">${pluralize(group.length, 'expense')} · ${formatCurrency(subtotal)} subtotal</span>
+        </div>` + renderFlat(group, categories);
+    });
+    const uncategorised = items.filter(e => e.categoryId === null);
+    if (uncategorised.length > 0) {
+      html += `
+        <div class="group-heading group-heading-uncategorised">
+          <span class="group-heading-name">❔ Uncategorised</span>
+          <span class="group-heading-meta">${pluralize(uncategorised.length, 'expense')} · no subtotal (no category assigned)</span>
+        </div>` + renderFlat(uncategorised, categories);
+    }
+    return html;
+  }
+
+  function renderList(key) {
+    const s = state[key];
+    const listEl = document.getElementById(`list-${key}`);
+    const emptyEl = document.getElementById(`empty-${key}`);
+    const summaryEl = document.getElementById(`summary-${key}`);
+
+    const total = s.expenses.length;
+    const totalSum = s.expenses.reduce((sum, e) => sum + e.amount, 0);
+
+    let visible = s.expenses;
+    if (s.filter === 'uncategorised') visible = s.expenses.filter(e => e.categoryId === null);
+    else if (s.filter !== 'all') visible = s.expenses.filter(e => e.categoryId === s.filter);
+
+    if (s.filter === 'all') {
+      summaryEl.textContent = `${pluralize(total, 'expense')} · ${formatCurrency(totalSum)} total`;
+    } else {
+      const visSum = visible.reduce((sum, e) => sum + e.amount, 0);
+      const label = s.filter === 'uncategorised' ? 'Uncategorised' : (s.categories.find(c => c.id === s.filter)?.name || s.filter);
+      summaryEl.textContent = `Showing ${visible.length} of ${total} expenses in "${label}" · ${formatCurrency(visSum)} shown`;
+    }
+
+    updateClearFilterVisibility(key);
+
+    if (visible.length === 0) {
+      listEl.innerHTML = '';
+      listEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    listEl.style.display = 'flex';
+    listEl.innerHTML = s.grouped ? renderGrouped(visible, s.categories) : renderFlat(visible, s.categories);
+  }
+
+  function setFilter(key, value) {
+    state[key].filter = value;
+    renderList(key);
+  }
+
+  function setGrouped(key, grouped) {
+    state[key].grouped = grouped;
+    const flatBtn = document.getElementById(`view-flat-${key}`);
+    const groupedBtn = document.getElementById(`view-grouped-${key}`);
+    flatBtn.classList.toggle('active', !grouped);
+    flatBtn.setAttribute('aria-pressed', String(!grouped));
+    groupedBtn.classList.toggle('active', grouped);
+    groupedBtn.setAttribute('aria-pressed', String(grouped));
+    renderList(key);
+  }
+
+  function simulateRename() {
+    const cat = state.rename.serverCategories.find(c => c.id === 'transport');
+    if (!cat || cat.name === 'Travel') return;
+    cat.name = 'Travel';
+    document.getElementById('rename-btn-rename').disabled = true;
+    document.getElementById('rename-btn-rename').textContent = '✓ Renamed elsewhere (not yet visible below)';
+    showToast('rename', '✓ Simulated: "Transport" renamed to "Travel" in Settings. This list hasn’t refreshed yet, so the old name still shows below.');
+  }
+
+  function simulateRefresh() {
+    const btn = document.getElementById('refresh-btn-rename');
+    btn.disabled = true;
+    btn.textContent = 'Refreshing…';
+    showToast('rename', 'Refreshing expense list…');
+    setTimeout(() => {
+      state.rename.categories = state.rename.serverCategories.map(c => ({ ...c }));
+      renderFilterOptions('rename');
+      renderList('rename');
+      btn.disabled = false;
+      btn.textContent = '🔄 Refresh expense list';
+      showToast('rename', '✓ Expense list refreshed — the filter and group heading now show "Travel".');
+    }, 350);
+  }
+
+  function simulateDelete() {
+    const key = 'delete';
+    const catId = 'entertainment';
+    const s = state[key];
+    const cat = s.categories.find(c => c.id === catId);
+    if (!cat) return;
+
+    let reassigned = 0;
+    s.expenses.forEach(e => {
+      if (e.categoryId === catId) { e.categoryId = null; reassigned += 1; }
+    });
+    s.categories = s.categories.filter(c => c.id !== catId);
+    if (s.filter === catId) s.filter = 'all';
+
+    renderFilterOptions(key);
+    renderList(key);
+
+    const btn = document.getElementById('delete-btn-delete');
+    btn.disabled = true;
+    btn.textContent = '✓ "Entertainment" deleted';
+    showToast(key, `✓ Simulated: "Entertainment" deleted. ${pluralize(reassigned, 'expense')} moved to Uncategorised immediately — no trace of "Entertainment" remains.`);
+  }
+
+  // ---------- Init ----------
+  ['main', 'rename', 'delete'].forEach(key => {
+    renderFilterOptions(key);
+    if (state[key].grouped) {
+      document.getElementById(`view-flat-${key}`).classList.remove('active');
+      document.getElementById(`view-flat-${key}`).setAttribute('aria-pressed', 'false');
+      document.getElementById(`view-grouped-${key}`).classList.add('active');
+      document.getElementById(`view-grouped-${key}`).setAttribute('aria-pressed', 'true');
+    }
+    renderList(key);
+  });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
