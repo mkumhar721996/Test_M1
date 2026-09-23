@@ -1,18 +1,21 @@
 const crypto = require('crypto');
 
-const DEFAULT_DEV_SECRET = 'insecure-dev-only-secret-change-me';
-
-function getSecret() {
-  return process.env.WORKFLOWS_AUTH_SECRET || DEFAULT_DEV_SECRET;
+if (!process.env.WORKFLOWS_AUTH_SECRET) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'WORKFLOWS_AUTH_SECRET is not set; generating a random per-process secret. ' +
+      'Set WORKFLOWS_AUTH_SECRET in production so tokens remain valid across restarts.'
+  );
 }
+const runtimeSecret = process.env.WORKFLOWS_AUTH_SECRET || crypto.randomBytes(32).toString('hex');
 
-function sign(claims, secret = getSecret()) {
+function sign(claims, secret = runtimeSecret) {
   const body = Buffer.from(JSON.stringify(claims)).toString('base64url');
   const signature = crypto.createHmac('sha256', secret).update(body).digest('base64url');
   return `${body}.${signature}`;
 }
 
-function verify(token, secret = getSecret()) {
+function verify(token, secret = runtimeSecret) {
   if (typeof token !== 'string' || !token.includes('.')) return null;
   const [body, signature] = token.split('.');
   if (!body || !signature) return null;

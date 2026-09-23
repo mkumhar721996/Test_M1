@@ -18,6 +18,17 @@ test('a token signed with a different secret fails verification', () => {
   expect(verify(token)).toBeNull();
 });
 
+test('a token forged with the previously-hardcoded default secret string does not verify', () => {
+  const crypto = require('crypto');
+  const claims = { actorId: 'attacker', role: 'platform_admin', tenantId: 'tenant-a' };
+  const body = Buffer.from(JSON.stringify(claims)).toString('base64url');
+  const forgedSignature = crypto
+    .createHmac('sha256', 'insecure-dev-only-secret-change-me')
+    .update(body)
+    .digest('base64url');
+  expect(verify(`${body}.${forgedSignature}`)).toBeNull();
+});
+
 test('garbage input is not verified', () => {
   expect(verify('not-a-real-token')).toBeNull();
   expect(verify(undefined)).toBeNull();
