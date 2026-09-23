@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audit Log — Workforce Ops</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/runs.css" />
+<script src="./js/audit-log.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce Ops</span>
+    <nav class="app-nav">
+      <a href="./runs.html">Runs</a>
+      <a href="./index.html">Expenses</a>
+      <a href="./audit-log.html" class="active" aria-current="page">Audit Log</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Audit log</h1>
+      <p>Every retry, block, and resolution event across Runs. Entries are immutable and append-only.</p>
+    </div>
+
+    <div class="card audit-card">
+      <p class="audit-note" id="audit-note">Showing 0 of 0 events · newest first · this log cannot be edited or deleted, by design.</p>
+      <div class="audit-scroll">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Run / Task</th>
+              <th scope="col">Event</th>
+              <th scope="col" class="col-attempt">Attempt</th>
+              <th scope="col">Detail</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
