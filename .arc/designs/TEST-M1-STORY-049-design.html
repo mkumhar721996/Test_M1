@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-049 — Task &amp; Run Timeout Configuration</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /*
+    Design-system gap note for the reviewer:
+    tokens.json defines only color-fg / color-fg-muted / color-bg / color-surface /
+    color-primary / color-primary-fg / color-border — there is no semantic
+    "danger"/"warning" color token yet. Per UI guideline §3 ("never encode meaning in
+    color alone"), the Blocked / expired states below are differentiated from
+    Running / Pending using an icon + label + emphasis (filled chip, bold border)
+    built from the existing --color-primary and --color-fg tokens, not a new hue.
+    Recommend a future design-system pass add color-danger / color-warning tokens
+    so blocked/expiry states can carry their own hue as well.
+  */
+
+  * { box-sizing: border-box; }
+
+  html, body { min-height: 100dvh; }
+
+  body {
+    margin: 0;
+  }
+
+  #screens { max-width: 1040px; margin: 0 auto; padding: var(--space-4); }
+
+  .screen { display: none; }
+  .screen[data-active="true"] { display: block; }
+
+  /* ---------- Reviewer bar (canonical, per §11) ---------- */
+  #review-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 13px;
+    font-family: var(--font-family-base);
+  }
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; font-weight: var(--font-weight-bold);
+    cursor: pointer; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm);
+  }
+  #review-bar button:hover { background: var(--color-bg); }
+  #review-bar button:focus-visible {
+    outline: 2px solid var(--color-primary); outline-offset: 1px;
+  }
+  #review-id { font-family: monospace; color: var(--color-fg-muted); }
+  #screen-label { flex: 1; text-align: center; font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  #review-bar-spacer { height: 46px; }
+
+  /* ---------- App top bar (project-established pattern: single top nav, no sidebar) ---------- */
+  .app-topbar {
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar-brand { font-weight: var(--font-weight-bold); font-size: var(--font-size-md); color: var(--color-fg); }
+  .app-topbar-nav { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+  .app-topbar-nav-item {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg-muted); padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm); cursor: default;
+  }
+  .app-topbar-nav-item.is-active {
+    color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    font-weight: var(--font-weight-bold);
+  }
+  .app-topbar-user { margin-left: auto; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  h1.page-title { font-size: var(--font-size-lg); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  p.page-subtitle { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0 0 var(--space-4) 0; max-width: 68ch; }
+
+  .page-header { padding: var(--space-4) 0 var(--space-3) 0; }
+
+  /* ---------- Generic layout helpers ---------- */
+  .row { display: flex; align-items: center; gap: var(--space-3); }
+  .row-wrap { flex-wrap: wrap; }
+  .between { justify-content: space-between; }
+  .stack-2 > * + * { margin-top: var(--space-2); }
+  .stack-3 > * + * { margin-top: var(--space-3); }
+  .stack-4 > * + * { margin-top: var(--space-4); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ---------- Chips / status ---------- */
+  .chip { border: 1px solid var(--color-border); }
+  .chip-icon { margin-right: var(--space-1); }
+  .chip-pending { color: var(--color-fg-muted); }
+  .chip-running {
+    color: var(--color-primary); border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  }
+  .chip-done { color: var(--color-fg); background: var(--color-surface); }
+  .chip-blocked {
+    color: var(--color-fg); background: var(--color-primary);
+    border-color: var(--color-primary); font-weight: var(--font-weight-bold);
+  }
+  .chip-alert {
+    color: var(--color-primary); border: 1px dashed var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  }
+
+  /* ---------- Cards / tasks ---------- */
+  .task-row {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-3); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-bg);
+    flex-wrap: wrap;
+  }
+  .task-row + .task-row { margin-top: var(--space-2); }
+  .task-row.is-blocked { border-color: var(--color-primary); border-style: solid; border-width: 2px; }
+  .task-name { font-weight: var(--font-weight-bold); color: var(--color-fg); min-width: 180px; }
+  .task-meta { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .task-timeout-field { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+  .task-timeout-field .input { width: 90px; text-align: right; }
+
+  /* ---------- Progress bar (run duration budget) ---------- */
+  .budget-track {
+    width: 100%; height: 10px; border-radius: var(--radius-lg);
+    background: var(--color-bg); border: 1px solid var(--color-border); overflow: hidden;
+  }
+  .budget-fill { height: 100%; background: var(--color-primary); }
+  .budget-fill.is-danger { background: var(--color-fg); }
+
+  /* ---------- Banner (blocked explanation) ---------- */
+  .banner {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    padding: var(--space-3) var(--space-4); border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  }
+  .banner-icon { font-size: 1.25rem; line-height: 1; }
+  .banner-title { font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .banner-body { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+
+  /* ---------- Table (audit log) ---------- */
+  table.audit-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  table.audit-table th, table.audit-table td {
+    text-align: left; padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  table.audit-table th { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); font-size: var(--font-size-sm); }
+  table.audit-table td.mono, table.audit-table th.mono { font-family: monospace; }
+  .audit-note {
+    display: flex; align-items: center; gap: var(--space-2);
+    color: var(--color-fg-muted); font-size: var(--font-size-sm); margin-top: var(--space-3);
+  }
+
+  /* ---------- Alerts panel ---------- */
+  .alert-item {
+    display: flex; gap: var(--space-3); padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    background: var(--color-bg); align-items: flex-start;
+  }
+  .alert-item + .alert-item { margin-top: var(--space-2); }
+  .alert-item.is-unread { border-color: var(--color-primary); }
+  .alert-bell { font-size: 1.1rem; }
+  .alert-title { font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; font-size: var(--font-size-sm); }
+  .alert-body { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+  .alert-time { color: var(--color-fg-muted); font-size: var(--font-size-sm); white-space: nowrap; margin-left: auto; }
+
+  /* ---------- Email preview ---------- */
+  .email-tabs { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
+  .email-tab {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-fg-muted); cursor: pointer;
+  }
+  .email-tab.is-active { color: var(--color-primary-fg); background: var(--color-primary); border-color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .email-window { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .email-window-header { background: var(--color-surface); padding: var(--space-3); border-bottom: 1px solid var(--color-border); }
+  .email-field { display: flex; gap: var(--space-2); font-size: var(--font-size-sm); }
+  .email-field-label { color: var(--color-fg-muted); width: 56px; flex-shrink: 0; }
+  .email-field-value { color: var(--color-fg); }
+  .email-window-body { padding: var(--space-4); background: var(--color-bg); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .email-window-body p { margin: 0 0 var(--space-3) 0; }
+  .email-window-body ul { margin: 0 0 var(--space-3) 0; padding-left: var(--space-4); }
+  .email-cta { display: inline-block; padding: var(--space-2) var(--space-4); background: var(--color-primary); color: var(--color-primary-fg); border-radius: var(--radius-md); font-weight: var(--font-weight-bold); text-decoration: none; font-size: var(--font-size-sm); }
+
+  /* ---------- Toast ---------- */
+  #toast {
+    position: fixed; bottom: var(--space-4); left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--color-surface); color: var(--color-fg); border: 1px solid var(--color-primary);
+    padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+    font-size: var(--font-size-sm); opacity: 0; pointer-events: none; z-index: 10000;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+  #toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    #toast { transition: none; }
+  }
+
+  .btn:disabled { cursor: not-allowed; opacity: 0.6; }
+  .btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  .field-hint { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+
+  .simulate-btn {
+    background: none; border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); cursor: pointer;
+  }
+  .simulate-btn:hover { color: var(--color-fg); border-color: var(--color-fg); }
+</style>
+</head>
+<!-- App nav: single top bar (matches this project's established "Expense Tracker MVP" pattern
+     from TEST-M1-STORY-030/031/032) with a new "Workflows" item added for this admin-facing
+     timeout-configuration feature — Workflows is a new IA area, so it is called out explicitly
+     rather than silently reusing "Expenses". -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar">
+    <span id="review-id">TEST-M1-STORY-049</span>
+    <button id="prev-btn" type="button">&larr; Prev</button>
+    <span id="screen-label"></span>
+    <button id="next-btn" type="button">Next &rarr;</button>
+  </div>
+  <div id="review-bar-spacer"></div>
+
+  <div class="app-topbar">
+    <span class="app-topbar-brand">Expense Tracker MVP</span>
+    <nav class="app-topbar-nav" aria-label="Primary">
+      <span class="app-topbar-nav-item">Expenses</span>
+      <span class="app-topbar-nav-item is-active" aria-current="page">Workflows</span>
+    </nav>
+    <span class="app-topbar-user">Signed in as Alex Morgan (HR Ops Admin)</span>
+  </div>
+
+  <div id="screens">
+
+    <!-- ============================================================ -->
+    <!-- Screen 1: Workflow definition — timeout configuration        -->
+    <!-- Satisfies: AC1 (per-task timeout saved on task definition)   -->
+    <!--            AC3 (max total Run duration saved on workflow)    -->
+    <!-- Notes:                                                       -->
+    <!--   - Each task row has its own timeout duration + unit field  -->
+    <!--   - Workflow-level "Maximum total run duration" sits above   -->
+    <!--     the task list, scoped separately from per-task timeouts  -->
+    <!--   - Save triggers a simulated ~350ms save (button disables + -->
+    <!--     relabels "Saving…") then a confirmation toast — no page  -->
+    <!--     reload, per interaction guidelines                       -->
+    <!--   - Inline hint clarifies what happens on expiry (blocked,   -->
+    <!--     not hard-fail) so the config UI teaches the new behavior -->
+    <!-- ============================================================ -->
+    <!-- State: workflow-definition-editing -->
+    <section class="screen" data-name="Workflow Definition — Timeout Configuration">
+      <div class="page-header">
+        <h1 class="page-title">New hire onboarding — workflow definition</h1>
+        <p class="page-subtitle">Configure how long each task, and the Run as a whole, may take before it escalates
+          to a blocked state for HR review instead of failing outright.</p>
+      </div>
+
+      <div class="card stack-4" style="margin-bottom: var(--space-4);">
+        <div>
+          <h3 class="card-title" style="margin-bottom: var(--space-1);">Maximum total Run duration</h3>
+          <p class="card-body" style="margin-bottom: var(--space-3);">Applies to every Run started from this workflow definition. If a Run is still active past this limit, it moves to blocked.</p>
+          <div class="row row-wrap">
+            <label class="label" for="run-timeout-value" style="margin-bottom: 0;">Timeout</label>
+            <input class="input" id="run-timeout-value" type="number" min="1" value="5" style="width: 90px;" />
+            <select class="input" id="run-timeout-unit" style="width: 120px;">
+              <option value="hours">hours</option>
+              <option value="days" selected>days</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row between" style="margin-bottom: var(--space-3);">
+          <h3 class="card-title" style="margin: 0;">Tasks</h3>
+          <span class="u-text-sm u-text-muted">4 tasks</span>
+        </div>
+        <div id="task-list" class="stack-2">
+          <!-- rows rendered by script from fixture data -->
+        </div>
+        <p class="field-hint">Leave a task's timeout blank to fall back to the workflow default. On expiry, the task and the Run move to blocked — they are never auto-failed.</p>
+      </div>
+
+      <div class="row" style="margin-top: var(--space-4);">
+        <button class="btn btn-primary" id="save-timeouts-btn" type="button">Save timeout settings</button>
+        <span class="u-text-sm u-text-muted" id="save-status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 2: Run in progress — configured timeouts applied      -->
+    <!-- Satisfies: AC2 (task timeout applied to execution)           -->
+    <!--            AC4 (Run duration timeout applied at start)       -->
+    <!-- Notes:                                                       -->
+    <!--   - Each task chip shows the timeout inherited from the      -->
+    <!--     workflow definition, so the applied value is traceable   -->
+    <!--     back to Screen 1                                         -->
+    <!--   - The Run-level budget bar shows elapsed vs. the 5-day cap  -->
+    <!--     configured on the workflow                                -->
+    <!--   - Two "fast-forward" buttons jump to the two ways this Run  -->
+    <!--     can end up blocked, to demonstrate causality per §10      -->
+    <!-- ============================================================ -->
+    <!-- State: run-in-progress -->
+    <section class="screen" data-name="Run — In Progress (timeouts applied)">
+      <div class="page-header">
+        <h1 class="page-title">Run #4521 — Jordan Lee (New hire onboarding)</h1>
+        <p class="page-subtitle">Started 2026-09-22 09:00 UTC · HR coordinator: Priya Shah</p>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: var(--space-4);">
+        <div class="card">
+          <h3 class="card-title">Run status</h3>
+          <span class="chip chip-running"><span class="chip-icon">&#9654;</span>Running</span>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Run duration budget</h3>
+          <div class="budget-track"><div class="budget-fill" style="width: 41%;"></div></div>
+          <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">2d 1h elapsed of 5d configured maximum</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Tasks</h3>
+        <div class="stack-2">
+          <div class="task-row">
+            <span class="task-name">Collect documents</span>
+            <span class="chip chip-done"><span class="chip-icon">&#10003;</span>Completed</span>
+            <span class="task-meta">Timeout applied: 24h · finished in 6h 12m</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">Manager approval</span>
+            <span class="chip chip-running"><span class="chip-icon">&#9654;</span>Running</span>
+            <span class="task-meta">Timeout applied: 4h · elapsed 1h 48m</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">IT provisioning</span>
+            <span class="chip chip-pending"><span class="chip-icon">&#9679;</span>Pending</span>
+            <span class="task-meta">Timeout will apply: 2h</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">Orientation scheduling</span>
+            <span class="chip chip-pending"><span class="chip-icon">&#9679;</span>Pending</span>
+            <span class="task-meta">Timeout will apply: 8h</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row row-wrap" style="margin-top: var(--space-4); gap: var(--space-3);">
+        <button class="simulate-btn" type="button" id="simulate-task-expiry">&#9193; Simulate: "Manager approval" timeout expires</button>
+        <button class="simulate-btn" type="button" id="simulate-run-expiry">&#9193; Simulate: Run duration timeout expires</button>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 3: Task timeout expired — task and Run both blocked   -->
+    <!-- Satisfies: AC5 (task -> blocked), AC6 (Run -> blocked)       -->
+    <!-- Notes:                                                       -->
+    <!--   - "Manager approval" row is visually distinct (thicker      -->
+    <!--     border + filled chip + icon) — never color alone         -->
+    <!--   - Downstream pending tasks are shown as "on hold" since the -->
+    <!--     Run itself is blocked                                     -->
+    <!--   - Banner explains the escalation in plain language and      -->
+    <!--     links onward to the alert/email/audit evidence screens    -->
+    <!-- ============================================================ -->
+    <!-- State: task-timeout-blocked -->
+    <section class="screen" data-name="Run — Task Timeout Expired (blocked)">
+      <div class="page-header">
+        <h1 class="page-title">Run #4521 — Jordan Lee (New hire onboarding)</h1>
+        <p class="page-subtitle">Started 2026-09-22 09:00 UTC · HR coordinator: Priya Shah</p>
+      </div>
+
+      <div class="banner" style="margin-bottom: var(--space-4);">
+        <span class="banner-icon">&#9888;&#65039;</span>
+        <div>
+          <p class="banner-title">Run blocked — task timeout expired</p>
+          <p class="banner-body">"Manager approval" exceeded its configured 4h timeout at 2026-09-22 13:02 UTC. The task and the Run were moved to blocked rather than failed, so no work is lost. Priya Shah has been notified in-app and by email.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: var(--space-4);">
+        <div class="card">
+          <h3 class="card-title">Run status</h3>
+          <span class="chip chip-blocked"><span class="chip-icon">&#9724;</span>Blocked</span>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Run duration budget</h3>
+          <div class="budget-track"><div class="budget-fill" style="width: 41%;"></div></div>
+          <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">2d 1h elapsed of 5d configured maximum — halted by task-level block</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Tasks</h3>
+        <div class="stack-2">
+          <div class="task-row">
+            <span class="task-name">Collect documents</span>
+            <span class="chip chip-done"><span class="chip-icon">&#10003;</span>Completed</span>
+            <span class="task-meta">Timeout applied: 24h · finished in 6h 12m</span>
+          </div>
+          <div class="task-row is-blocked">
+            <span class="task-name">Manager approval</span>
+            <span class="chip chip-blocked"><span class="chip-icon">&#9724;</span>Blocked</span>
+            <span class="task-meta">Timeout applied: 4h · expired at 13:02 UTC</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">IT provisioning</span>
+            <span class="chip chip-pending"><span class="chip-icon">&#9679;</span>On hold</span>
+            <span class="task-meta">Run blocked upstream</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">Orientation scheduling</span>
+            <span class="chip chip-pending"><span class="chip-icon">&#9679;</span>On hold</span>
+            <span class="task-meta">Run blocked upstream</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="u-text-sm u-text-muted" style="margin-top: var(--space-3);">See this event in the <button class="simulate-btn" type="button" data-jump="alerts">in-app alert</button>, <button class="simulate-btn" type="button" data-jump="email">email notification</button>, and <button class="simulate-btn" type="button" data-jump="audit">audit log</button> screens.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 4: Run duration timeout expired — Run blocked         -->
+    <!-- Satisfies: AC7 (Run's own max-duration timeout -> blocked)   -->
+    <!-- Notes:                                                       -->
+    <!--   - Distinguishes this from Screen 3: no single task expired, -->
+    <!--     the Run's own overall budget ran out while a task was     -->
+    <!--     still legitimately in progress                            -->
+    <!--   - Budget bar reads 100%+ to make the overrun visible         -->
+    <!-- ============================================================ -->
+    <!-- State: run-duration-blocked -->
+    <section class="screen" data-name="Run — Duration Timeout Expired (blocked)">
+      <div class="page-header">
+        <h1 class="page-title">Run #4498 — Casey Nguyen (New hire onboarding)</h1>
+        <p class="page-subtitle">Started 2026-09-16 09:00 UTC · HR coordinator: Marcus Webb</p>
+      </div>
+
+      <div class="banner" style="margin-bottom: var(--space-4);">
+        <span class="banner-icon">&#9888;&#65039;</span>
+        <div>
+          <p class="banner-title">Run blocked — maximum Run duration exceeded</p>
+          <p class="banner-body">This Run passed its configured 5-day maximum total duration at 2026-09-21 09:00 UTC while "IT provisioning" was still in progress. No single task timed out — the Run's overall budget did. The Run was moved to blocked; Marcus Webb has been notified in-app and by email.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: var(--space-4);">
+        <div class="card">
+          <h3 class="card-title">Run status</h3>
+          <span class="chip chip-blocked"><span class="chip-icon">&#9724;</span>Blocked</span>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Run duration budget</h3>
+          <div class="budget-track"><div class="budget-fill is-danger" style="width: 100%;"></div></div>
+          <p class="u-text-sm u-text-muted" style="margin: var(--space-2) 0 0 0;">5d 0h 04m elapsed of 5d configured maximum — over budget</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Tasks</h3>
+        <div class="stack-2">
+          <div class="task-row">
+            <span class="task-name">Collect documents</span>
+            <span class="chip chip-done"><span class="chip-icon">&#10003;</span>Completed</span>
+            <span class="task-meta">Timeout applied: 24h · finished in 9h 40m</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">Manager approval</span>
+            <span class="chip chip-done"><span class="chip-icon">&#10003;</span>Completed</span>
+            <span class="task-meta">Timeout applied: 4h · finished in 2h 05m</span>
+          </div>
+          <div class="task-row is-blocked">
+            <span class="task-name">IT provisioning</span>
+            <span class="chip chip-blocked"><span class="chip-icon">&#9724;</span>Blocked</span>
+            <span class="task-meta">Timeout applied: 2h (not yet expired) · halted by Run-level block</span>
+          </div>
+          <div class="task-row">
+            <span class="task-name">Orientation scheduling</span>
+            <span class="chip chip-pending"><span class="chip-icon">&#9679;</span>On hold</span>
+            <span class="task-meta">Run blocked upstream</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="u-text-sm u-text-muted" style="margin-top: var(--space-3);">See this event in the <button class="simulate-btn" type="button" data-jump="alerts">in-app alert</button>, <button class="simulate-btn" type="button" data-jump="email">email notification</button>, and <button class="simulate-btn" type="button" data-jump="audit">audit log</button> screens.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 5: In-app alerts — HR coordinator notification        -->
+    <!-- Satisfies: AC8 (in-app alert on timeout expiry)               -->
+    <!-- Notes:                                                       -->
+    <!--   - Bell icon + unread badge count in the top bar mirrors     -->
+    <!--     where this would live in the real product                -->
+    <!--   - Each alert names the actor (HR coordinator), the event    -->
+    <!--     type, and links back to the Run                            -->
+    <!--   - "Mark as read" simulates a 250ms request, then the unread  -->
+    <!--     ring is removed — visible feedback per §4                 -->
+    <!-- ============================================================ -->
+    <!-- State: in-app-alerts -->
+    <section class="screen" data-name="In-App Alerts (HR Coordinator)">
+      <div class="page-header">
+        <h1 class="page-title">Alerts</h1>
+        <p class="page-subtitle">Timeout-expiry alerts for HR coordinators, delivered in-app the moment expiry is detected.</p>
+      </div>
+
+      <div class="stack-2" id="alerts-list">
+        <div class="alert-item is-unread" data-alert-id="alert-1">
+          <span class="alert-bell">&#128276;</span>
+          <div style="flex: 1;">
+            <p class="alert-title">Task timeout expired — Run #4521</p>
+            <p class="alert-body">"Manager approval" exceeded its 4h timeout. Task and Run moved to blocked. Assigned to you (Priya Shah).</p>
+          </div>
+          <span class="alert-time">2026-09-22 13:02 UTC</span>
+          <button class="btn btn-secondary" data-mark-read="alert-1" type="button" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">Mark read</button>
+        </div>
+        <div class="alert-item is-unread" data-alert-id="alert-2">
+          <span class="alert-bell">&#128276;</span>
+          <div style="flex: 1;">
+            <p class="alert-title">Run duration timeout expired — Run #4498</p>
+            <p class="alert-body">Maximum total Run duration (5d) exceeded. Run moved to blocked. Assigned to you (Marcus Webb).</p>
+          </div>
+          <span class="alert-time">2026-09-21 09:00 UTC</span>
+          <button class="btn btn-secondary" data-mark-read="alert-2" type="button" style="padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm);">Mark read</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 6: Email notification preview                          -->
+    <!-- Satisfies: AC9 (email alert on timeout expiry)                -->
+    <!-- Notes:                                                       -->
+    <!--   - Tabs switch between the two events' emails without       -->
+    <!--     leaving the screen (no new reviewer-bar screen needed)    -->
+    <!--   - Rendered as a read-only email-client mock, not a live     -->
+    <!--     send — labelled "Simulated preview" so reviewers don't     -->
+    <!--     mistake it for a real message                              -->
+    <!-- ============================================================ -->
+    <!-- State: email-preview -->
+    <section class="screen" data-name="Email Notification Preview">
+      <div class="page-header">
+        <h1 class="page-title">Email notification — simulated preview</h1>
+        <p class="page-subtitle">Sent to the HR coordinator assigned to the Run, at the same moment as the in-app alert.</p>
+      </div>
+
+      <div class="email-tabs">
+        <button class="email-tab is-active" type="button" data-email-tab="task">Task timeout · Run #4521</button>
+        <button class="email-tab" type="button" data-email-tab="run">Run duration timeout · Run #4498</button>
+      </div>
+
+      <div class="email-window" id="email-task">
+        <div class="email-window-header stack-2">
+          <div class="email-field"><span class="email-field-label">To</span><span class="email-field-value">priya.shah@example.com</span></div>
+          <div class="email-field"><span class="email-field-label">Subject</span><span class="email-field-value">Action required: Run #4521 blocked (task timeout expired)</span></div>
+        </div>
+        <div class="email-window-body">
+          <p>Hi Priya,</p>
+          <p>The task "Manager approval" in Run #4521 (New hire onboarding — Jordan Lee) exceeded its configured timeout and has moved to <strong>blocked</strong>. The Run has also moved to blocked pending your review.</p>
+          <ul>
+            <li>Task ID: task_2_manager_approval</li>
+            <li>Run ID: run_4521</li>
+            <li>Configured timeout: 4h</li>
+            <li>Expiry detected: 2026-09-22 13:02 UTC</li>
+          </ul>
+          <a class="email-cta" href="#" onclick="return false;">Review Run #4521</a>
+        </div>
+      </div>
+
+      <div class="email-window" id="email-run" style="display: none;">
+        <div class="email-window-header stack-2">
+          <div class="email-field"><span class="email-field-label">To</span><span class="email-field-value">marcus.webb@example.com</span></div>
+          <div class="email-field"><span class="email-field-label">Subject</span><span class="email-field-value">Action required: Run #4498 blocked (maximum Run duration exceeded)</span></div>
+        </div>
+        <div class="email-window-body">
+          <p>Hi Marcus,</p>
+          <p>Run #4498 (New hire onboarding — Casey Nguyen) exceeded its configured maximum total Run duration and has moved to <strong>blocked</strong> pending your review.</p>
+          <ul>
+            <li>Run ID: run_4498</li>
+            <li>Configured timeout: 5d</li>
+            <li>Expiry detected: 2026-09-21 09:00 UTC</li>
+          </ul>
+          <a class="email-cta" href="#" onclick="return false;">Review Run #4498</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Screen 7: Audit log                                           -->
+    <!-- Satisfies: AC10 (task/run id, configured timeout, expiry      -->
+    <!--            timestamp written to the immutable audit log)      -->
+    <!-- Notes:                                                       -->
+    <!--   - "Immutable" is communicated via a read-only note and the  -->
+    <!--     absence of any edit/delete affordance on the rows          -->
+    <!--   - One row per expiry event; both the task- and Run-level     -->
+    <!--     events from Screens 3 & 4 appear here                      -->
+    <!-- ============================================================ -->
+    <!-- State: audit-log -->
+    <section class="screen" data-name="Audit Log">
+      <div class="page-header">
+        <h1 class="page-title">Audit log — timeout expiry events</h1>
+        <p class="page-subtitle">Every timeout expiry is written here at detection time. Entries are append-only and cannot be edited or removed.</p>
+      </div>
+
+      <div class="card" style="overflow-x: auto;">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th class="mono">Task ID</th>
+              <th class="mono">Run ID</th>
+              <th>Configured timeout</th>
+              <th>Expiry detected (UTC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Task timeout expired</td>
+              <td class="mono">task_2_manager_approval</td>
+              <td class="mono">run_4521</td>
+              <td>4h</td>
+              <td>2026-09-22 13:02:11</td>
+            </tr>
+            <tr>
+              <td>Run duration timeout expired</td>
+              <td class="mono">&mdash;</td>
+              <td class="mono">run_4498</td>
+              <td>5d</td>
+              <td>2026-09-21 09:00:47</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="audit-note"><span aria-hidden="true">&#128274;</span> Immutable — audit entries have no edit or delete action, by design.</p>
+    </section>
+
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // Inline fixture data — no network calls in this prototype.
+  var FIXTURE = {
+    workflow: {
+      name: "New hire onboarding",
+      maxRunDuration: { value: 5, unit: "days" },
+      tasks: [
+        { id: "task_1_collect_documents", name: "Collect documents", timeout: { value: 24, unit: "hours" } },
+        { id: "task_2_manager_approval", name: "Manager approval", timeout: { value: 4, unit: "hours" } },
+        { id: "task_3_it_provisioning", name: "IT provisioning", timeout: { value: 2, unit: "hours" } },
+        { id: "task_4_orientation_scheduling", name: "Orientation scheduling", timeout: { value: 8, unit: "hours" } }
+      ]
+    }
+  };
+
+  // ---- Render task list on Screen 1 from fixture data ----
+  (function renderTaskList() {
+    var list = document.getElementById('task-list');
+    FIXTURE.workflow.tasks.forEach(function (task) {
+      var row = document.createElement('div');
+      row.className = 'task-row';
+      row.innerHTML =
+        '<span class="task-name">' + task.name + '</span>' +
+        '<span class="task-meta mono" style="font-family: monospace;">' + task.id + '</span>' +
+        '<div class="task-timeout-field">' +
+          '<label class="label" style="margin: 0;" for="timeout-' + task.id + '">Timeout</label>' +
+          '<input class="input" type="number" min="1" id="timeout-' + task.id + '" value="' + task.timeout.value + '" />' +
+          '<select class="input" style="width: 100px;" id="timeout-unit-' + task.id + '">' +
+            '<option value="minutes"' + (task.timeout.unit === 'minutes' ? ' selected' : '') + '>minutes</option>' +
+            '<option value="hours"' + (task.timeout.unit === 'hours' ? ' selected' : '') + '>hours</option>' +
+            '<option value="days"' + (task.timeout.unit === 'days' ? ' selected' : '') + '>days</option>' +
+          '</select>' +
+        '</div>';
+      list.appendChild(row);
+    });
+  })();
+
+  // ---- Toast helper ----
+  var toastTimer = null;
+  function showToast(message) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2600);
+  }
+
+  // ---- Screen 1: Save timeout settings (simulated latency) ----
+  var saveBtn = document.getElementById('save-timeouts-btn');
+  var saveStatus = document.getElementById('save-status');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function () {
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      saveStatus.textContent = '';
+      setTimeout(function () {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save timeout settings';
+        saveStatus.textContent = 'Saved 2 seconds ago';
+        showToast('Timeout settings saved — applied to future Runs of this workflow.');
+      }, 350);
+    });
+  }
+
+  // ---- Reviewer bar navigation ----
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) {
+      s.setAttribute('data-active', j === cur ? 'true' : 'false');
+    });
+    document.getElementById('screen-label').textContent =
+      (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+  }
+  document.getElementById('prev-btn').addEventListener('click', function () { show(cur - 1); });
+  document.getElementById('next-btn').addEventListener('click', function () { show(cur + 1); });
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // Jump helpers keyed by screen data-name substring
+  var JUMP_TARGETS = {
+    alerts: 'In-App Alerts',
+    email: 'Email Notification',
+    audit: 'Audit Log'
+  };
+  function jumpTo(key) {
+    var label = JUMP_TARGETS[key];
+    var idx = screens.findIndex(function (s) { return s.dataset.name.indexOf(label) === 0; });
+    if (idx > -1) show(idx);
+  }
+  document.querySelectorAll('[data-jump]').forEach(function (btn) {
+    btn.addEventListener('click', function () { jumpTo(btn.getAttribute('data-jump')); });
+  });
+
+  // ---- Screen 2: "Simulate expiry" buttons jump to the resulting blocked screen ----
+  var simTaskBtn = document.getElementById('simulate-task-expiry');
+  var simRunBtn = document.getElementById('simulate-run-expiry');
+  if (simTaskBtn) {
+    simTaskBtn.addEventListener('click', function () {
+      simTaskBtn.disabled = true;
+      simTaskBtn.textContent = 'Detecting expiry…';
+      setTimeout(function () {
+        simTaskBtn.disabled = false;
+        simTaskBtn.textContent = '⏱ Simulate: "Manager approval" timeout expires';
+        var idx = screens.findIndex(function (s) { return s.dataset.name.indexOf('Task Timeout Expired') > -1; });
+        show(idx);
+        showToast('Timeout expired — task and Run moved to blocked. HR coordinator notified.');
+      }, 300);
+    });
+  }
+  if (simRunBtn) {
+    simRunBtn.addEventListener('click', function () {
+      simRunBtn.disabled = true;
+      simRunBtn.textContent = 'Detecting expiry…';
+      setTimeout(function () {
+        simRunBtn.disabled = false;
+        simRunBtn.textContent = '⏱ Simulate: Run duration timeout expires';
+        var idx = screens.findIndex(function (s) { return s.dataset.name.indexOf('Duration Timeout Expired') > -1; });
+        show(idx);
+        showToast('Run duration timeout expired — Run moved to blocked. HR coordinator notified.');
+      }, 300);
+    });
+  }
+
+  // ---- Screen 5: Mark alert as read (simulated latency) ----
+  document.querySelectorAll('[data-mark-read]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-mark-read');
+      var item = document.querySelector('[data-alert-id="' + id + '"]');
+      btn.disabled = true;
+      var originalLabel = btn.textContent;
+      btn.textContent = 'Marking…';
+      setTimeout(function () {
+        item.classList.remove('is-unread');
+        btn.disabled = false;
+        btn.textContent = 'Read';
+        showToast('Alert marked as read.');
+      }, 250);
+    });
+  });
+
+  // ---- Screen 6: Email tab toggle ----
+  document.querySelectorAll('[data-email-tab]').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('[data-email-tab]').forEach(function (t) { t.classList.remove('is-active'); });
+      tab.classList.add('is-active');
+      var which = tab.getAttribute('data-email-tab');
+      document.getElementById('email-task').style.display = which === 'task' ? 'block' : 'none';
+      document.getElementById('email-run').style.display = which === 'run' ? 'block' : 'none';
+    });
+  });
+
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
