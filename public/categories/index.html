@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="arc-dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Categories — Test_M1</title>
+<link rel="stylesheet" href="/design-system/tokens.css" />
+<link rel="stylesheet" href="/design-system/prototype-utils.css" />
+<link rel="stylesheet" href="/app/categories/categories.css" />
+</head>
+<body class="u-surface">
+
+<div class="app-shell">
+  <nav class="sidebar" aria-label="Primary">
+    <div class="sidebar-brand">Test_M1</div>
+    <a class="nav-item" href="#">Dashboard</a>
+    <a class="nav-item" href="#">Expenses</a>
+    <a class="nav-item active" href="/app/categories/" aria-current="page">Categories</a>
+    <a class="nav-item" href="#">Settings</a>
+  </nav>
+  <main class="main">
+    <div class="page-header">
+      <h1 class="page-title">Categories</h1>
+      <p class="page-subtitle">Create, rename, and delete the categories you use to organise expenses.</p>
+    </div>
+    <div class="content-grid">
+      <div class="card">
+        <h2 class="card-title" style="margin-bottom: var(--space-3);">Add a category</h2>
+        <form id="create-form" novalidate>
+          <label class="label" for="create-input">New category name</label>
+          <div class="create-form-row">
+            <div class="field">
+              <input class="input" id="create-input" type="text" placeholder="e.g. Software" autocomplete="off" />
+              <p class="field-error" id="create-error" hidden>
+                <span aria-hidden="true">⚠</span>
+                <span></span>
+              </p>
+            </div>
+            <button class="btn btn-primary" type="submit" id="create-submit">
+              <span class="spinner" hidden aria-hidden="true"></span>
+              <span>Create category</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card empty-state" id="empty-state-block" hidden>
+        <div class="empty-state-icon" aria-hidden="true">🗂️</div>
+        <h2 class="empty-state-title">No categories yet</h2>
+        <p class="empty-state-body">Create your first category above to start organising expenses the way that fits how you work.</p>
+      </div>
+
+      <div class="card" id="category-list-card" hidden>
+        <h2 class="card-title" style="margin-bottom: var(--space-3);">Your categories</h2>
+        <ul class="category-list" id="category-list"></ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Delete dialog: no assigned expenses (AC6) -->
+<div class="dialog-backdrop" id="delete-simple-backdrop" hidden role="presentation">
+  <div class="card dialog-card" role="alertdialog" aria-modal="true" aria-labelledby="delete-simple-title">
+    <h2 class="card-title" id="delete-simple-title">Delete category?</h2>
+    <p class="card-body" id="delete-simple-body"></p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary btn-sm" type="button" id="delete-simple-cancel">Cancel</button>
+      <button class="btn btn-secondary btn-sm" type="button" id="delete-simple-confirm">
+        <span class="spinner" hidden aria-hidden="true"></span>
+        <span>Delete category</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete dialog: has assigned expenses — reassign or leave uncategorised (AC7/AC8/AC9/AC10) -->
+<div class="dialog-backdrop" id="delete-reassign-backdrop" hidden role="presentation">
+  <div class="card dialog-card" role="alertdialog" aria-modal="true" aria-labelledby="delete-reassign-title">
+    <h2 class="card-title" id="delete-reassign-title">Delete category?</h2>
+    <p class="card-body" id="delete-reassign-body"></p>
+
+    <fieldset style="border: none; padding: 0; margin: var(--space-3) 0 0 0;">
+      <legend class="visually-hidden">What should happen to these expenses?</legend>
+
+      <label class="dialog-option">
+        <input type="radio" name="resolution" value="reassign" id="resolution-reassign" checked />
+        <span class="dialog-option-label">Reassign these expenses to another category</span>
+      </label>
+      <div class="dialog-option-select">
+        <label class="visually-hidden" for="reassign-target">Reassign to</label>
+        <select class="input" id="reassign-target"></select>
+      </div>
+
+      <label class="dialog-option">
+        <input type="radio" name="resolution" value="uncategorise" id="resolution-uncategorise" />
+        <span class="dialog-option-label">Leave these expenses uncategorised</span>
+      </label>
+    </fieldset>
+
+    <div class="dialog-actions">
+      <button class="btn btn-secondary btn-sm" type="button" id="delete-reassign-cancel">Cancel</button>
+      <button class="btn btn-secondary btn-sm" type="button" id="delete-reassign-confirm">
+        <span class="spinner" hidden aria-hidden="true"></span>
+        <span>Delete category</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+<script src="/app/categories/app.js"></script>
+</body>
+</html>
