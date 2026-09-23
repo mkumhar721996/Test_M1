@@ -1,3 +1,5 @@
+const { escapeHtml, formatDateDisplay } = require('./utils');
+
 const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
 const INITIAL_EXPENSES = [
@@ -25,11 +27,6 @@ function formatUSD(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
-function formatDateDisplay(iso) {
-  const [y, m, d] = iso.split('-');
-  return `${m}/${d}/${y}`;
-}
-
 function validateExpenseFields({ amount, date, category }) {
   const amountValue = parseFloat(amount);
   return {
@@ -37,12 +34,6 @@ function validateExpenseFields({ amount, date, category }) {
     date: date === '' ? 'Date is required.' : null,
     category: category === '' ? 'Category is required.' : null,
   };
-}
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
 }
 
 function initExpensesApp(doc = document) {
@@ -86,7 +77,7 @@ function initExpensesApp(doc = document) {
       tr.innerHTML = `
         <td>${formatDateDisplay(exp.date)}</td>
         <td><span class="chip">${exp.category}</span></td>
-        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
+        <td class="desc-cell">${escapeHtml(doc, exp.description) || '—'}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
           <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>

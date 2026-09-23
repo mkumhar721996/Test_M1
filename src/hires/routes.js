@@ -1,43 +1,80 @@
 const express = require('express');
-const { createHire, getHire, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
-  const hire = await createHire(req.body);
-  res.status(201).json(hire);
+const PATCHABLE_FIELDS = ['name', 'email', 'phone', 'startDate', 'department', 'role', 'hireStage'];
+
+function pickPatchableFields(body) {
+  return PATCHABLE_FIELDS.reduce((changes, field) => {
+    if (field in body) changes[field] = body[field];
+    return changes;
+  }, {});
+}
+
+router.get('/', (req, res, next) => {
+  try {
+    res.status(200).json(listHires());
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/:id', (req, res) => {
-  const hire = getHire(req.params.id);
-  if (!hire) {
-    return res.status(404).json({ error: 'hire not found' });
+router.post('/', async (req, res, next) => {
+  try {
+    const hire = await createHire(req.body);
+    res.status(201).json(hire);
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json(hire);
 });
 
-router.patch('/:id', async (req, res) => {
-  const hire = await updateHire(req.params.id, req.body);
-  if (!hire) {
-    return res.status(404).json({ error: 'hire not found' });
+router.get('/:id', (req, res, next) => {
+  try {
+    const hire = getHire(req.params.id);
+    if (!hire) {
+      return res.status(404).json({ error: 'hire not found' });
+    }
+    res.status(200).json(hire);
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json(hire);
 });
 
-router.post('/:id/deactivate', async (req, res) => {
-  const hire = await deactivateHire(req.params.id);
-  if (!hire) {
-    return res.status(404).json({ error: 'hire not found' });
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const hire = await updateHire(req.params.id, pickPatchableFields(req.body));
+    if (!hire) {
+      return res.status(404).json({ error: 'hire not found' });
+    }
+    res.status(200).json(hire);
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json(hire);
 });
 
-router.post('/:id/reactivate', async (req, res) => {
-  const hire = await reactivateHire(req.params.id);
-  if (!hire) {
-    return res.status(404).json({ error: 'hire not found' });
+router.post('/:id/deactivate', async (req, res, next) => {
+  try {
+    const hire = await deactivateHire(req.params.id);
+    if (!hire) {
+      return res.status(404).json({ error: 'hire not found' });
+    }
+    res.status(200).json(hire);
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json(hire);
+});
+
+router.post('/:id/reactivate', async (req, res, next) => {
+  try {
+    const hire = await reactivateHire(req.params.id);
+    if (!hire) {
+      return res.status(404).json({ error: 'hire not found' });
+    }
+    res.status(200).json(hire);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

@@ -1,19 +1,15 @@
+const { escapeHtml, formatDateDisplay } = require('./utils');
+
 const TASKS_TOTAL = 5;
-const DEMO_HIRE_ID = 'hire_2031';
-
-function escapeHtml(doc, str) {
-  const div = doc.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
-}
-
-function formatDateDisplay(iso) {
-  const [y, m, d] = iso.split('-');
-  return `${m}/${d}/${y}`;
-}
+const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
 
 function workflowName(dept, role) {
   return `${dept} — ${role}`;
+}
+
+function departmentOptionsMarkup(doc, currentDepartment) {
+  const options = DEPARTMENTS.includes(currentDepartment) ? DEPARTMENTS : [currentDepartment, ...DEPARTMENTS];
+  return options.map((d) => `<option value="${escapeHtml(doc, d)}" ${d === currentDepartment ? 'selected' : ''}>${escapeHtml(doc, d)}</option>`).join('');
 }
 
 function statusChipMarkup(status) {
@@ -110,7 +106,7 @@ function initHireProfileApp(doc, initialHire, api) {
       </div>
       <div class="kv-row">
         <span class="kv-label">Start date</span>
-        <span class="kv-value">${formatDateDisplay(hire.startDate)}</span>
+        <span class="kv-value">${escapeHtml(doc, formatDateDisplay(hire.startDate))}</span>
         <span class="kv-actions">
           <button class="btn btn-secondary btn-sm" type="button" id="edit-contact-btn" ${hire.profileStatus !== 'active' ? 'disabled' : ''}>Edit start date &amp; contact</button>
         </span>
@@ -262,7 +258,7 @@ function initHireProfileApp(doc, initialHire, api) {
 
   // ---------- Role & department modal (AC2, AC3, AC9) ----------
   function openRoleModal() {
-    doc.getElementById('field-department').value = hire.department;
+    doc.getElementById('field-department').innerHTML = departmentOptionsMarkup(doc, hire.department);
     doc.getElementById('field-role').value = hire.role;
     roleForm.hidden = false;
     roleConfirmStep.hidden = true;
@@ -370,14 +366,15 @@ function initHireProfileApp(doc, initialHire, api) {
   // ---------- Hire stage save (AC1, AC9) ----------
   function handleSaveStage() {
     const newStage = doc.getElementById('field-hire-stage').value;
-    setPending(true, 'Starting onboarding Run…');
+    const willTriggerRun = newStage === 'offer_accepted' && newStage !== hire.hireStage;
+    if (willTriggerRun) setPending(true, 'Starting onboarding Run…');
     api.saveStage(newStage).then((updated) => {
       hire = updated;
-      setPending(false);
+      if (willTriggerRun) setPending(false);
       renderAll();
-      showToast('Onboarding Run started');
+      if (willTriggerRun) showToast('Onboarding Run started');
     }).catch(() => {
-      setPending(false);
+      if (willTriggerRun) setPending(false);
       renderAll();
       showToast('Could not start the onboarding Run — please try again');
     });
@@ -406,8 +403,8 @@ module.exports = { initHireProfileApp };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch(`/hires/${DEMO_HIRE_ID}`)
+    fetch('/hires')
       .then((res) => res.json())
-      .then((hire) => initHireProfileApp(document, hire, createDefaultApi(DEMO_HIRE_ID)));
+      .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id)));
   });
 }

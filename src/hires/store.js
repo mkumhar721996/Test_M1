@@ -42,6 +42,10 @@ function getHire(id) {
   return hires.get(id);
 }
 
+function listHires() {
+  return Array.from(hires.values());
+}
+
 async function updateHire(id, changes) {
   const hire = hires.get(id);
   if (!hire) return undefined;
@@ -51,24 +55,22 @@ async function updateHire(id, changes) {
   const departmentChanging = 'department' in changes && changes.department !== hire.department;
   const roleChanging = 'role' in changes && changes.role !== hire.role;
   const roleOrDeptChanging = departmentChanging || roleChanging;
-
-  Object.assign(hire, changes);
+  const nextDepartment = 'department' in changes ? changes.department : hire.department;
+  const nextRole = 'role' in changes ? changes.role : hire.role;
 
   if (changingToOfferAccepted && !hasActiveRun) {
-    hire.run = await engineClient.triggerRun({
-      hireId: hire.id,
-      department: hire.department,
-      role: hire.role,
-    });
+    const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
+    Object.assign(hire, changes);
+    hire.run = run;
   } else if (hasActiveRun && roleOrDeptChanging) {
     const oldRun = hire.run;
     await engineClient.cancelRun(oldRun.id);
+    const newRun = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
+    Object.assign(hire, changes);
     hire.runHistory.push({ ...oldRun, status: 'cancelled', reason: 'role_or_department_changed' });
-    hire.run = await engineClient.triggerRun({
-      hireId: hire.id,
-      department: hire.department,
-      role: hire.role,
-    });
+    hire.run = newRun;
+  } else {
+    Object.assign(hire, changes);
   }
 
   return hire;
@@ -90,17 +92,16 @@ async function deactivateHire(id) {
 async function reactivateHire(id) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
 
+  const run = await engineClient.triggerRun({
+    hireId: hire.id,
+    department: hire.department,
+    role: hire.role,
+  });
   hire.profileStatus = 'active';
-  hire.run = {
-    ...(await engineClient.triggerRun({
-      hireId: hire.id,
-      department: hire.department,
-      role: hire.role,
-    })),
-    freshStart: true,
-  };
+  hire.run = { ...run, freshStart: true };
   return hire;
 }
 
-module.exports = { createHire, getHire, updateHire, deactivateHire, reactivateHire };
+module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire };

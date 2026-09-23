@@ -14,4 +14,8 @@ app.use('/workflows', workflowsRouter);
 app.use('/runs', runsRouter);
 app.use('/hires', hiresRouter);
 
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: 'internal server error' });
+});
+
 module.exports = app;

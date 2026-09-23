@@ -1475,7 +1475,9 @@
   const roleConfirmStep = document.getElementById('role-confirm-step');
 
   function openRoleModal() {
-    document.getElementById('field-department').value = state.profile.department;
+    const departmentSelect = document.getElementById('field-department');
+    const options = DEPARTMENTS.includes(state.profile.department) ? DEPARTMENTS : [state.profile.department, ...DEPARTMENTS];
+    departmentSelect.innerHTML = options.map((d) => `<option ${d === state.profile.department ? 'selected' : ''}>${d}</option>`).join('');
     document.getElementById('field-role').value = state.profile.role;
     roleForm.hidden = false;
     roleConfirmStep.hidden = true;
