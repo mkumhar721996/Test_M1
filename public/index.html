@@ -7,42 +7,44 @@
 <link rel="stylesheet" href="../design-system/tokens.css" />
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/expenses.css" />
+<script src="./js/categories.js" defer></script>
 <script src="./js/expenses.js" defer></script>
 </head>
 <body class="u-surface">
 
-  <div class="app-topbar">
-    <span class="brand">Expense Tracker</span>
-    <nav class="app-nav">
-      <a href="#" class="active" aria-current="page">Expenses</a>
-      <a href="#" onclick="return false;">Employees</a>
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <span class="brand">Expense Tracker</span>
+      <a class="nav-item" href="#">📊 Dashboard</a>
+      <a class="nav-item active" href="#" aria-current="page">💳 Expenses</a>
+      <a class="nav-item" href="#">📈 Reports</a>
+      <a class="nav-item" href="#">⚙️ Settings</a>
     </nav>
-  </div>
-
-  <div class="page">
-    <div class="page-header">
-      <h1>Expenses</h1>
-      <p>Review and correct submitted expense records.</p>
-    </div>
-
-    <div class="card table-card">
-      <div class="table-scroll">
-        <table class="expense-table">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Category</th>
-              <th scope="col">Description</th>
-              <th scope="col" class="col-amount">Amount</th>
-              <th scope="col" class="col-actions">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="expense-tbody">
-            <!-- rendered by JS -->
-          </tbody>
-        </table>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Expenses</h1>
+          <p class="u-text-sm u-text-muted list-summary" id="list-summary"></p>
+        </div>
+        <button type="button" class="btn btn-primary">+ Add expense</button>
       </div>
-    </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="filter-category">Category</label>
+          <select class="input" id="filter-category"></select>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clear-filter-btn" style="display:none;">✕ Clear filter</button>
+        <div class="view-toggle" role="group" aria-label="List layout">
+          <button type="button" id="view-flat-btn" class="active" aria-pressed="true">☰ Flat list</button>
+          <button type="button" id="view-grouped-btn" aria-pressed="false">▤ Grouped by category</button>
+        </div>
+      </div>
+
+      <ul class="expense-list" id="expense-list"></ul>
+
+      <div class="empty-state card" id="empty-state" style="display:none;"></div>
+    </main>
   </div>
 
   <!-- Edit modal: hidden until an "Edit" action is activated -->
@@ -77,11 +79,6 @@
           <label class="label" for="field-category">Category</label>
           <select class="input" id="field-category" name="category" aria-describedby="error-category">
             <option value="">Select a category</option>
-            <option>Travel</option>
-            <option>Meals</option>
-            <option>Software</option>
-            <option>Office Supplies</option>
-            <option>Other</option>
           </select>
           <p class="field-error" id="error-category" role="alert" hidden>⚠ Category is required.</p>
         </div>

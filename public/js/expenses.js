@@ -1,10 +1,19 @@
+const categoriesModule = typeof module !== 'undefined' ? require('./categories') : window;
+
 const STORAGE_KEY = 'expenses';
-const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
 const INITIAL_EXPENSES = [
-  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
-  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
-  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
+  { id: 'exp_001', date: '2026-09-02', categoryId: 'travel', description: 'Flight to Chicago client site', amount: 482.50 },
+  { id: 'exp_002', date: '2026-09-05', categoryId: 'meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
+  { id: 'exp_003', date: '2026-09-10', categoryId: 'software', description: 'Figma seat renewal', amount: 15.00 },
 ];
+
+const CATEGORY_ICONS = {
+  travel: '✈️',
+  meals: '🍽️',
+  software: '💻',
+  'office-supplies': '🖇️',
+  other: '🗂️',
+};
 
 function loadExpenses() {
   try {
@@ -45,10 +54,30 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function pluralize(n, word) {
+  return `${n} ${word}${n === 1 ? '' : 's'}`;
+}
+
+// Resolves to the category's current name, or null for an explicit null categoryId
+// AND for a "dangling" categoryId that matches no current category (e.g. a deleted
+// category) — both cases render/filter as Uncategorised.
+function resolveCategoryName(categoryId, categories) {
+  if (!categoryId) return null;
+  const match = categories.find((c) => c.id === categoryId);
+  return match ? match.name : null;
+}
+
+function reassignExpensesFromDeletedCategory(expenses, categoryId) {
+  return expenses.map((e) => (e.categoryId === categoryId ? { ...e, categoryId: null } : e));
+}
+
 function initExpensesApp(doc = document) {
   let expenses = loadExpenses();
+  let categories = categoriesModule.loadCategories();
   let editingId = null;
   let lastUpdatedId = null;
+  let filter = 'all';
+  let grouped = false;
 
   const overlay = doc.getElementById('modal-overlay');
   const modalWrap = doc.getElementById('modal-wrap');
@@ -68,38 +97,151 @@ function initExpensesApp(doc = document) {
   const toastMessage = doc.getElementById('toast-message');
   let toastTimer = null;
 
-  function renderList() {
-    const tbody = doc.getElementById('expense-tbody');
-    tbody.innerHTML = '';
+  const filterSelect = doc.getElementById('filter-category');
+  const clearFilterBtn = doc.getElementById('clear-filter-btn');
+  const viewFlatBtn = doc.getElementById('view-flat-btn');
+  const viewGroupedBtn = doc.getElementById('view-grouped-btn');
+  const listEl = doc.getElementById('expense-list');
+  const emptyEl = doc.getElementById('empty-state');
+  const summaryEl = doc.getElementById('list-summary');
 
-    if (expenses.length === 0) {
-      const tr = doc.createElement('tr');
-      tr.className = 'empty-row';
-      tr.innerHTML = '<td colspan="5">No expenses yet.</td>';
-      tbody.appendChild(tr);
+  function isUncategorised(exp) {
+    return resolveCategoryName(exp.categoryId, categories) === null;
+  }
+
+  function renderCategoryFieldOptions() {
+    fieldCategory.innerHTML = '<option value="">Select a category</option>' +
+      categories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  }
+
+  function renderFilterOptions() {
+    filterSelect.innerHTML = '<option value="all">All categories</option>' +
+      categories.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('') +
+      '<option value="uncategorised">Uncategorised (no category assigned)</option>';
+
+    const validValues = ['all', 'uncategorised', ...categories.map((c) => c.id)];
+    if (!validValues.includes(filter)) filter = 'all';
+    filterSelect.value = filter;
+  }
+
+  function updateClearFilterVisibility() {
+    clearFilterBtn.style.display = filter === 'all' ? 'none' : 'inline-flex';
+  }
+
+  function expenseRowHtml(exp) {
+    const name = resolveCategoryName(exp.categoryId, categories);
+    const chipHtml = name
+      ? `<span class="chip">${CATEGORY_ICONS[exp.categoryId] || '🗂️'} ${escapeHtml(name)}</span>`
+      : '<span class="chip chip-uncategorised">❔ Uncategorised</span>';
+    const updatedClass = exp.id === lastUpdatedId ? ' row-updated' : '';
+    return `
+      <li class="expense-row card${updatedClass}">
+        <div class="expense-row-main">
+          ${chipHtml}
+          <span class="expense-desc">${escapeHtml(exp.description) || '—'}</span>
+        </div>
+        <div class="expense-row-meta">
+          <span class="expense-date u-text-sm u-text-muted">${formatDateDisplay(exp.date)}</span>
+          <span class="expense-amount">${formatUSD(exp.amount)}</span>
+          <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
+        </div>
+      </li>`;
+  }
+
+  function renderFlat(items) {
+    return items.map(expenseRowHtml).join('');
+  }
+
+  function renderGrouped(items) {
+    let html = '';
+    categories.forEach((cat) => {
+      const group = items.filter((e) => e.categoryId === cat.id);
+      if (group.length === 0) return;
+      const subtotal = group.reduce((sum, e) => sum + e.amount, 0);
+      html += `
+        <li class="group-heading">
+          <span class="group-heading-name">${CATEGORY_ICONS[cat.id] || '🗂️'} ${escapeHtml(cat.name)}</span>
+          <span class="group-heading-meta">${pluralize(group.length, 'expense')} · ${formatUSD(subtotal)} subtotal</span>
+        </li>` + renderFlat(group);
+    });
+    const uncategorised = items.filter((e) => isUncategorised(e));
+    if (uncategorised.length > 0) {
+      html += `
+        <li class="group-heading group-heading-uncategorised">
+          <span class="group-heading-name">❔ Uncategorised</span>
+          <span class="group-heading-meta">${pluralize(uncategorised.length, 'expense')} · no category assigned</span>
+        </li>` + renderFlat(uncategorised);
+    }
+    return html;
+  }
+
+  function renderList() {
+    const total = expenses.length;
+    const totalSum = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+    let visible = expenses;
+    if (filter === 'uncategorised') {
+      visible = expenses.filter((e) => isUncategorised(e));
+    } else if (filter !== 'all') {
+      visible = expenses.filter((e) => e.categoryId === filter);
+    }
+
+    if (total === 0) {
+      summaryEl.textContent = 'No expenses recorded yet';
+    } else if (filter === 'all') {
+      summaryEl.textContent = `${pluralize(total, 'expense')} · ${formatUSD(totalSum)} total`;
+    } else {
+      const visSum = visible.reduce((sum, e) => sum + e.amount, 0);
+      const category = categories.find((c) => c.id === filter);
+      const label = filter === 'uncategorised' ? 'Uncategorised' : (category ? category.name : filter);
+      summaryEl.textContent = `Showing ${visible.length} of ${total} expenses in "${label}" · ${formatUSD(visSum)} shown`;
+    }
+
+    updateClearFilterVisibility();
+
+    if (visible.length === 0) {
+      listEl.innerHTML = '';
+      listEl.style.display = 'none';
+      emptyEl.innerHTML = total === 0
+        ? `
+          <p class="empty-state-icon" aria-hidden="true">🧾</p>
+          <h2 class="u-text-lg">No expenses yet</h2>
+          <p class="u-text-md u-text-muted">Add your first expense to start tracking spend by category.</p>
+          <button type="button" class="btn btn-primary">+ Add expense</button>`
+        : `
+          <p class="empty-state-icon" aria-hidden="true">🔍</p>
+          <h2 class="u-text-lg">No expenses match this filter</h2>
+          <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
+          <button type="button" class="btn btn-primary" id="empty-clear-filter-btn">✕ Clear filter</button>`;
+      emptyEl.style.display = 'block';
+      const emptyClearBtn = doc.getElementById('empty-clear-filter-btn');
+      if (emptyClearBtn) emptyClearBtn.addEventListener('click', () => setFilter('all'));
       return;
     }
 
-    expenses.forEach((exp) => {
-      const tr = doc.createElement('tr');
-      if (exp.id === lastUpdatedId) tr.className = 'row-updated';
-      tr.innerHTML = `
-        <td>${formatDateDisplay(exp.date)}</td>
-        <td><span class="chip">${exp.category}</span></td>
-        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
-        <td class="col-amount">${formatUSD(exp.amount)}</td>
-        <td class="col-actions">
-          <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-
+    emptyEl.style.display = 'none';
+    listEl.style.display = 'flex';
+    listEl.innerHTML = grouped ? renderGrouped(visible) : renderFlat(visible);
     lastUpdatedId = null;
 
-    tbody.querySelectorAll('[data-edit-id]').forEach((btn) => {
+    listEl.querySelectorAll('[data-edit-id]').forEach((btn) => {
       btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
     });
+  }
+
+  function setFilter(value) {
+    filter = value;
+    if (filterSelect.value !== value) filterSelect.value = value;
+    renderList();
+  }
+
+  function setGrouped(value) {
+    grouped = value;
+    viewFlatBtn.classList.toggle('active', !value);
+    viewFlatBtn.setAttribute('aria-pressed', String(!value));
+    viewGroupedBtn.classList.toggle('active', value);
+    viewGroupedBtn.setAttribute('aria-pressed', String(value));
+    renderList();
   }
 
   function setFieldError(fieldEl, errorEl, hasError) {
@@ -121,7 +263,7 @@ function initExpensesApp(doc = document) {
 
     fieldAmount.value = exp.amount.toFixed(2);
     fieldDate.value = exp.date;
-    fieldCategory.value = exp.category;
+    fieldCategory.value = exp.categoryId || '';
     fieldDescription.value = exp.description;
     clearAllErrors();
 
@@ -163,6 +305,11 @@ function initExpensesApp(doc = document) {
   doc.getElementById('modal-cancel-btn').addEventListener('click', cancelEdit);
   overlay.addEventListener('click', cancelEdit);
 
+  filterSelect.addEventListener('change', () => setFilter(filterSelect.value));
+  clearFilterBtn.addEventListener('click', () => setFilter('all'));
+  viewFlatBtn.addEventListener('click', () => setGrouped(false));
+  viewGroupedBtn.addEventListener('click', () => setGrouped(true));
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -197,7 +344,7 @@ function initExpensesApp(doc = document) {
         ...expenses[idx],
         amount: Math.round(parseFloat(amountRaw) * 100) / 100,
         date: dateValue,
-        category: categoryValue,
+        categoryId: categoryValue,
         description: fieldDescription.value.trim(),
       };
       try {
@@ -220,17 +367,20 @@ function initExpensesApp(doc = document) {
     }, 350);
   });
 
+  renderCategoryFieldOptions();
+  renderFilterOptions();
   renderList();
 }
 
 module.exports = {
   STORAGE_KEY,
-  CATEGORIES,
   INITIAL_EXPENSES,
   loadExpenses,
   persistExpenses,
   formatUSD,
   validateExpenseFields,
+  resolveCategoryName,
+  reassignExpensesFromDeletedCategory,
   initExpensesApp,
 };
 
