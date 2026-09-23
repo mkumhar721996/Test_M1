@@ -14,8 +14,8 @@
   --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
   --color-bg: #111827; /** Default page background. */
   --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
-  --color-primary: #ef4444; /** Brand/primary action color. Red, chosen to keep the same relative luminance as the previous blue so its contrast against color-bg and color-primary-fg is unchanged. */
-  --color-primary-fg: #ffffff; /** Text/icon color used on top of color-primary. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
   --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
   --space-1: 4px; /** Smallest spacing increment. */
   --space-2: 8px;
@@ -619,10 +619,9 @@
          - Revision (2026-09-18 feedback: "make more visible UI in yellow colour"): the
            "Try it" callout above the form now uses a bold left accent, an inline warning
            icon, and full-contrast text (was muted gray) so it reads as a can't-miss
-           callout. Rendered in this project's --color-primary (red) rather than yellow —
-           tokens.json has no yellow/warning color token yet, and UI guideline §0 forbids
-           hardcoding one outside the design system. Flagging for sdlc.design-system-bootstrap
-           to add a color-warning token; once available, swap it in here.
+           callout. Rendered in this project's --color-primary, which the design system
+           now defines as yellow, so no separate warning token or hardcoded color is
+           needed.
   -->
   <div class="screen" data-name="Live Demo">
     <header class="app-topbar">
@@ -762,6 +761,9 @@
     div.textContent = str;
     return div.innerHTML;
   }
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;');
+  }
   function todayOffset(days) {
     const d = new Date();
     d.setDate(d.getDate() + days);
@@ -775,7 +777,7 @@
         <span class="chip"><span class="sr-only">Category:</span> ${escapeHtml(e.category)}</span>
       </div>
       <p class="expense-description"><span class="sr-only">Description:</span> ${escapeHtml(e.description)}</p>
-      <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="${e.date}">${formatDate(e.date)}</time></div>
+      <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="${escapeAttr(e.date)}">${formatDate(e.date)}</time></div>
     </li>`;
   }
 
