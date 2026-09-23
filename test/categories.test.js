@@ -131,6 +131,20 @@ describe('Category List View — Accessible Spend Summary', () => {
     expect(document.querySelector('#category-tbody tr').classList.contains('is-warning')).toBe(true);
   });
 
+  test('security: a malicious category name cannot break out of an HTML attribute to inject a handler', async () => {
+    const maliciousName = '"><img src=x onerror="window.__pwned = true">';
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([{ id: 'cat-1', name: maliciousName, totalSpend: 10, spendLimit: null }]),
+    });
+    const { initCategoriesApp } = require('../public/js/categories');
+    await initCategoriesApp(document);
+    expect(window.__pwned).toBeUndefined();
+    expect(document.querySelectorAll('#category-tbody img').length).toBe(0);
+    const editBtn = document.querySelector('[data-action="edit"]');
+    expect(editBtn.getAttribute('aria-label')).toBe(`Edit ${maliciousName}`);
+  });
+
   test('AC9: a failed fetch displays an inline error message in place of the category list', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
     const { loadCategories } = require('../public/js/categories');

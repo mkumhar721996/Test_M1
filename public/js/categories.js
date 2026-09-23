@@ -13,9 +13,20 @@ function fetchCategories() {
   });
 }
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderCategoryRows(doc, categories) {
   const tbody = doc.getElementById('category-tbody');
   tbody.innerHTML = categories.map((cat) => {
+    const name = escapeHtml(cat.name);
+    const id = escapeHtml(cat.id);
     const overLimit = isOverLimit(cat);
     const limitCell = cat.spendLimit != null
       ? `<span class="cell-value">${formatUSD(cat.spendLimit)}</span>`
@@ -27,13 +38,13 @@ function renderCategoryRows(doc, categories) {
     const limitAction = cat.spendLimit != null ? 'edit-limit' : 'set-limit';
     return `
       <tr class="category-row${overLimit ? ' is-warning' : ''}">
-        <th scope="row" data-label="Category"><span class="cat-name">${cat.name}</span></th>
+        <th scope="row" data-label="Category"><span class="cat-name">${name}</span></th>
         <td data-label="Total spend">${spendCell}</td>
         <td data-label="Spend limit">${limitCell}</td>
         <td class="row-actions" data-label="Actions">
-          <button class="action-btn" type="button" aria-label="Edit ${cat.name}" data-action="edit" data-category-id="${cat.id}">Edit</button>
-          <button class="action-btn danger" type="button" aria-label="Delete ${cat.name}" data-action="delete" data-category-id="${cat.id}">Delete</button>
-          <button class="action-btn" type="button" aria-label="${limitBtnLabel} for ${cat.name}" data-action="${limitAction}" data-category-id="${cat.id}">${limitBtnLabel}</button>
+          <button class="action-btn" type="button" aria-label="Edit ${name}" data-action="edit" data-category-id="${id}">Edit</button>
+          <button class="action-btn danger" type="button" aria-label="Delete ${name}" data-action="delete" data-category-id="${id}">Delete</button>
+          <button class="action-btn" type="button" aria-label="${limitBtnLabel} for ${name}" data-action="${limitAction}" data-category-id="${id}">${limitBtnLabel}</button>
         </td>
       </tr>`;
   }).join('');
@@ -91,6 +102,7 @@ module.exports = {
   formatUSD,
   isOverLimit,
   fetchCategories,
+  escapeHtml,
   renderCategoryRows,
   setState,
   loadCategories,
