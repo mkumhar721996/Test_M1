@@ -25,3 +25,8 @@ test('verifyActorToken rejects missing or malformed tokens', () => {
   expect(verifyActorToken(undefined)).toBeNull();
   expect(verifyActorToken('not-a-valid-token')).toBeNull();
 });
+
+test('verifyActorToken preserves a tenantId containing a colon rather than splitting it', () => {
+  const token = signActorToken('company:dept', 'hr_coordinator');
+  expect(verifyActorToken(token)).toEqual({ tenantId: 'company:dept', role: 'hr_coordinator' });
+});

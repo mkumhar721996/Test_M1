@@ -13,7 +13,7 @@ function signActorToken(tenantId, role) {
   if (!secret) {
     throw new Error('ACTOR_TOKEN_SECRET is not configured.');
   }
-  const payload = `${tenantId ?? ''}:${role ?? ''}`;
+  const payload = JSON.stringify({ tenantId: tenantId ?? '', role: role ?? '' });
   const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
   return `${Buffer.from(payload, 'utf8').toString('base64')}.${signature}`;
 }
@@ -38,8 +38,12 @@ function verifyActorToken(token) {
   if (expectedBuf.length !== actualBuf.length || !crypto.timingSafeEqual(expectedBuf, actualBuf)) {
     return null;
   }
-  const [tenantId, role] = payload.split(':');
-  return { tenantId, role };
+  try {
+    const { tenantId, role } = JSON.parse(payload);
+    return { tenantId, role };
+  } catch {
+    return null;
+  }
 }
 
 function getActor(req) {
