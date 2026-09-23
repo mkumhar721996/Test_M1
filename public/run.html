@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Run Detail</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/run.css" />
+<script src="./js/run.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Run Detail</span>
+  </div>
+
+  <div class="page" id="root" data-actor-id="coord_1" data-actor-role="hr_coordinator">
+    <div class="page-header">
+      <h1>Run Status: <span id="run-state">—</span></h1>
+    </div>
+
+    <div class="card run-actions">
+      <button class="btn btn-primary" id="pause-btn" type="button">Pause</button>
+      <button class="btn btn-secondary" id="resume-btn" type="button">Resume</button>
+      <button class="btn btn-secondary" id="cancel-btn" type="button">Cancel</button>
+    </div>
+
+    <p class="field-error" id="run-error" role="alert" hidden></p>
+  </div>
+
+</body>
+</html>
