@@ -1,0 +1,17 @@
+.run-actions {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.field-error[hidden] { display: none; }
