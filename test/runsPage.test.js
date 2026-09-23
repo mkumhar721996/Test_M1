@@ -107,6 +107,25 @@ describe('Run Detail page', () => {
     expect(document.getElementById('audit-tbody').textContent).toContain('Vendor API timeout');
   });
 
+  test('a failed simulate request restores the original attempt-specific button label', async () => {
+    global.fetch = jest.fn()
+      .mockImplementationOnce(() => jsonResponse(baseRun))
+      .mockImplementationOnce(() => Promise.resolve({ ok: false, json: () => Promise.resolve({ error: 'network error' }) }));
+
+    const { initRunsPage } = require('../public/js/runs');
+    await initRunsPage(document, 'RUN-4821');
+    await flush();
+
+    const originalLabel = document.getElementById('simulate-btn').textContent;
+    document.getElementById('simulate-btn').click();
+    await flush();
+    await flush();
+
+    const btn = document.getElementById('simulate-btn');
+    expect(btn.disabled).toBe(false);
+    expect(btn.textContent).toBe(originalLabel);
+  });
+
   test('AC3/AC4: the third failure shows the blocked banner and a notification badge', async () => {
     global.fetch = jest.fn()
       .mockImplementationOnce(() => jsonResponse(retryingRun(2)))

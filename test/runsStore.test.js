@@ -89,6 +89,45 @@ test('AC6: retry and block events are written to the audit log with attempt, rea
   expect(entry.timestamp).toBeDefined();
 });
 
+test('AC3: a task with no assigned HR coordinator can still block without crashing, and sends no notification', () => {
+  const run = createRun({
+    name: 'Onboarding: No Coordinator',
+    tasks: [{ name: 'Provision laptop asset' }],
+  });
+  const taskId = run.tasks[0].id;
+  recordTaskFailure(run.id, taskId, 'x');
+  recordTaskFailure(run.id, taskId, 'x');
+  const detail = recordTaskFailure(run.id, taskId, 'Vendor API timeout (504)');
+  expect(findTask(detail, taskId).state).toBe('blocked');
+  expect(detail.state).toBe('blocked');
+  expect(detail.notifications).toHaveLength(0);
+});
+
+test('AC5: resolving one blocked task leaves the Run blocked if another task is still blocked', () => {
+  const run = createRun({
+    name: 'Onboarding: Two Blocked Tasks',
+    tasks: [
+      { name: 'Provision laptop asset', hrCoordinator: { name: 'Priya Nair', email: 'priya.nair@northlake-hr.example' } },
+      { name: 'Ship welcome kit', hrCoordinator: { name: 'Sam Okafor', email: 'sam.okafor@northlake-hr.example' } },
+    ],
+  });
+  const [taskAId, taskBId] = run.tasks.map((t) => t.id);
+
+  [taskAId, taskBId].forEach((taskId) => {
+    recordTaskFailure(run.id, taskId, 'x');
+    recordTaskFailure(run.id, taskId, 'x');
+    recordTaskFailure(run.id, taskId, 'x');
+  });
+
+  const afterResolvingA = resolveTask(run.id, taskAId, { resolver: 'Priya Nair — HR Coordinator', note: 'Fixed manually' });
+  expect(findTask(afterResolvingA, taskAId).state).toBe('in-progress');
+  expect(findTask(afterResolvingA, taskBId).state).toBe('blocked');
+  expect(afterResolvingA.state).toBe('blocked');
+
+  const afterResolvingB = resolveTask(run.id, taskBId, { resolver: 'Sam Okafor — Platform Admin', note: 'Fixed manually' });
+  expect(afterResolvingB.state).toBe('in-progress');
+});
+
 test('getRunDetail composes tasks, auditLog, and notifications for the run', () => {
   const run = makeRun();
   const taskId = run.tasks[0].id;

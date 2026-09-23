@@ -228,6 +228,7 @@ async function initRunsPage(doc = document, runId = 'RUN-4821') {
     const focusTask = getFocusTask();
     if (!focusTask) return;
     const btn = doc.getElementById('simulate-btn');
+    const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Recording failure & evaluating retry policy…';
     try {
@@ -247,7 +248,7 @@ async function initRunsPage(doc = document, runId = 'RUN-4821') {
     } catch (err) {
       showToast(doc, '⚠', err.message);
       btn.disabled = false;
-      btn.textContent = 'Simulate next outcome';
+      btn.textContent = originalText;
     }
   }
 

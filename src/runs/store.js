@@ -98,7 +98,9 @@ function recordTaskFailure(runId, taskId, reason) {
       reason,
       timestamp,
     });
-    notifications.notifyHrCoordinator({ coordinator: task.hrCoordinator, run, task, reason, timestamp });
+    if (task.hrCoordinator) {
+      notifications.notifyHrCoordinator({ coordinator: task.hrCoordinator, run, task, reason, timestamp });
+    }
   }
 
   return getRunDetail(runId);
@@ -112,7 +114,7 @@ function resolveTask(runId, taskId, { resolver, note }) {
   task.attempts = 0;
   task.nextRetryAt = null;
   task.lastFailureReason = null;
-  run.state = 'in-progress';
+  run.state = run.tasks.some((t) => t.state === 'blocked') ? 'blocked' : 'in-progress';
   const timestamp = new Date().toISOString();
 
   auditLog.record({

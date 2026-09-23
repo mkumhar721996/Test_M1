@@ -2,6 +2,8 @@ const inAppAlerts = [];
 const sentEmails = [];
 
 function notifyHrCoordinator({ coordinator, run, task, reason, timestamp }) {
+  if (!coordinator) return { alert: null, email: null };
+
   const text = `Task blocked: "${task.name}" on ${run.id} (${run.name}) failed ${task.attempts} times and needs your review.`;
   const alert = {
     id: `${run.id}:${task.id}:${timestamp}`,
