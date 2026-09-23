@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-053 — New Hire Profile CRUD</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/warning/danger
+    color (only color-fg, color-fg-muted, color-primary/-fg, color-surface,
+    color-bg, color-border). Per instructions this prototype does not invent a
+    new hex value. Status (Active/Deactivated) and destructive intent
+    (Deactivate) are signalled with an icon + label + weight, never color
+    alone. If sdlc.design-system-bootstrap later adds e.g. `color-danger` or
+    `color-success`, the `.status-dot`, `.field-error`, and
+    `.btn-destructive-hint` rules below are the only places to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- App-level nav (top bar) ---------- */
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-nav { display: flex; gap: var(--space-3); flex: 1; }
+  .app-nav a {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid transparent;
+  }
+  .app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  .tab-btn:focus-visible, .row-view-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .session-badge {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-3) var(--space-2);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .tab-btn.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .tab-count {
+    display: inline-block;
+    margin-left: var(--space-1);
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-regular);
+  }
+
+  /* ---------- Hire list ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.hire-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .hire-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .hire-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .hire-table tbody tr:last-child td { border-bottom: none; }
+  .hire-table tbody tr.row-updated { animation: flash-update 1.4s ease-out; }
+  .hire-table tbody tr.row-leaving { animation: fade-out 0.4s ease-out forwards; }
+  @keyframes flash-update {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @keyframes fade-out {
+    0% { opacity: 1; }
+    100% { opacity: 0.15; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hire-table tbody tr.row-updated,
+    .hire-table tbody tr.row-leaving { animation: none; }
+  }
+  .name-cell { font-weight: var(--font-weight-bold); }
+  .name-cell .email-sub {
+    display: block;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .empty-row td, .skeleton-row td { padding: var(--space-4); }
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-2);
+  }
+  .empty-state p { margin: 0 0 var(--space-3) 0; color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .error-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-2);
+  }
+  .error-state p { margin: 0 0 var(--space-3) 0; color: var(--color-fg); font-family: var(--font-family-base); font-weight: var(--font-weight-bold); }
+
+  /* Status indicator: icon + label, never color alone */
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .status-dot { font-size: 10px; line-height: 1; }
+  .status-tag.is-deactivated { color: var(--color-fg-muted); }
+
+  /* Skeleton loading rows */
+  .skeleton-bar {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: var(--color-border);
+    opacity: 0.6;
+    animation: skeleton-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.65; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-bar { animation: none; opacity: 0.5; }
+  }
+
+  .btn-sm {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+    min-height: 0;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--color-bg);
+    opacity: 0.72;
+    z-index: 100;
+  }
+  .modal-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-4);
+    overflow-y: auto;
+  }
+  .modal-panel {
+    width: min(92vw, 480px);
+    margin-top: var(--space-4);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4);
+  }
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .modal-header h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .modal-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .icon-btn:hover { color: var(--color-fg); }
+
+  .field { margin-bottom: var(--space-4); }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+  .input-invalid {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .optional-tag { font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .modal-actions.spread { justify-content: space-between; }
+
+  /* View-mode definition list */
+  .profile-status-row {
+    margin-bottom: var(--space-4);
+  }
+  .dl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3) var(--space-4);
+  }
+  @media (max-width: 480px) {
+    .dl-grid { grid-template-columns: 1fr; }
+  }
+  .dl-grid dt {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .dl-grid dd {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .deactivated-note {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* Deactivate confirm panel */
+  .confirm-copy {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .confirm-copy .confirm-icon { font-size: var(--font-size-lg); line-height: 1.3; }
+  .confirm-sub {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+  .btn-destructive-hint {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    max-width: min(90vw, 340px);
+  }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .mini-modal {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses · Employees (active). Consistent with existing
+     Test_M1 prototypes (TEST-M1-STORY-030/031/032): this project has no existing
+     frontend beyond a small Express API with an "employees" module, so the nav
+     is a minimal project-appropriate top bar, not the arc platform's own chrome. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-053</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- State: loading → success (transient) / empty (reachable) — Screen: New Hires
+         Notes:
+           - On load, the table shows a brief skeleton (~350ms) before rendering rows —
+             simulated latency, no real network call.
+           - "Add new hire" opens a blank form. Required fields: first name, last name,
+             email, role, department, start date (phone is optional). Submitting a valid
+             form closes the modal, shows a confirmation toast, and the new profile appears
+             at the top of the Active hires list, briefly highlighted (AC1).
+           - Each row's "View" button opens the profile in a read-only modal showing
+             personal details, role, department, and start date (AC2).
+           - Inside that modal, "Edit profile" switches the same modal into an editable
+             form pre-populated with the current values. Saving validates required fields,
+             then the modal returns to view mode and the list shows the updated value,
+             briefly highlighted (AC3).
+           - Inside the view modal, "Deactivate" (for active profiles only) opens an inline
+             confirmation naming the consequence. Confirming removes the profile from the
+             Active hires tab; it reappears under the Deactivated tab (AC4).
+           - Data is written to localStorage under `test-m1-story-053-hires` — reload this
+             file to confirm changes persisted. "Reset demo data" (top right) restores the
+             five original fixture profiles.
+           - Esc, the backdrop, or × all close the open modal without saving.
+    -->
+    <div class="screen" data-name="New Hires">
+      <div class="app-topbar">
+        <span class="brand">Test_M1</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+        </nav>
+        <span class="session-badge">👤 Signed in as HR Admin</span>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>New hires</h1>
+            <p>Create, view, and update onboarding profiles so hire data lives within arc.</p>
+          </div>
+          <button class="btn btn-primary" id="open-create-btn" type="button">+ Add new hire</button>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Hire status">
+          <button class="tab-btn active" id="tab-active-btn" type="button" role="tab" aria-selected="true">
+            Active hires<span class="tab-count" id="count-active"></span>
+          </button>
+          <button class="tab-btn" id="tab-deactivated-btn" type="button" role="tab" aria-selected="false">
+            Deactivated<span class="tab-count" id="count-deactivated"></span>
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="hire-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Department</th>
+                  <th scope="col">Start date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hire-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create modal -->
+      <div class="modal-overlay" id="create-overlay" hidden></div>
+      <div class="modal-wrap" id="create-wrap" role="dialog" aria-modal="true" aria-labelledby="create-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="create-title">Add new hire</h2>
+              <p>Enter their personal details, role, department, and start date.</p>
+            </div>
+            <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <form id="create-form" novalidate>
+            <div class="field-row">
+              <div class="field">
+                <label class="label" for="create-firstName">First name</label>
+                <input class="input" id="create-firstName" name="firstName" type="text" placeholder="Jordan" aria-describedby="create-error-firstName" />
+                <p class="field-error" id="create-error-firstName" role="alert" hidden>⚠ First name is required.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="create-lastName">Last name</label>
+                <input class="input" id="create-lastName" name="lastName" type="text" placeholder="Lee" aria-describedby="create-error-lastName" />
+                <p class="field-error" id="create-error-lastName" role="alert" hidden>⚠ Last name is required.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="create-email">Email</label>
+              <input class="input" id="create-email" name="email" type="email" placeholder="jordan.lee@example.com" aria-describedby="create-error-email" />
+              <p class="field-error" id="create-error-email" role="alert" hidden>⚠ Enter a valid email address.</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="create-phone">Phone <span class="optional-tag">(optional)</span></label>
+              <input class="input" id="create-phone" name="phone" type="tel" placeholder="(555) 010-0100" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="create-role">Role</label>
+              <input class="input" id="create-role" name="role" type="text" placeholder="People Ops Generalist" aria-describedby="create-error-role" />
+              <p class="field-error" id="create-error-role" role="alert" hidden>⚠ Role is required.</p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="label" for="create-department">Department</label>
+                <select class="input" id="create-department" name="department" aria-describedby="create-error-department">
+                  <option value="">Select a department</option>
+                  <option>Engineering</option>
+                  <option>Sales</option>
+                  <option>Marketing</option>
+                  <option>Design</option>
+                  <option>Finance</option>
+                  <option>People Ops</option>
+                  <option>Customer Support</option>
+                </select>
+                <p class="field-error" id="create-error-department" role="alert" hidden>⚠ Select a department.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="create-startDate">Start date</label>
+                <input class="input" id="create-startDate" name="startDate" type="date" aria-describedby="create-error-startDate" />
+                <p class="field-error" id="create-error-startDate" role="alert" hidden>⚠ Start date is required.</p>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="create-save-btn">Add hire</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Profile modal: view / edit / deactivate-confirm modes, driven by JS -->
+      <div class="modal-overlay" id="profile-overlay" hidden></div>
+      <div class="modal-wrap" id="profile-wrap" role="dialog" aria-modal="true" aria-labelledby="profile-title" hidden>
+        <div class="modal-panel" id="profile-panel">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="toast-message">Saved</span>
+      </div>
+    </div>
+
+    <!-- State: reference gallery (empty / error / loading / validation error / deactivate confirm) — Screen: Reference States
+         Notes:
+           - Static, non-interactive snapshots of states that are hard to land on by
+             clicking alone. Use screen 1 for the real, driveable CRUD flow.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Test_M1</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Reference states</h1>
+            <p>Non-interactive snapshots covering the empty, loading, error, and validation states of the new hire list and forms.</p>
+          </div>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Loading</h3>
+            <span class="ac-tag">List state — data still loading</span>
+            <div class="card table-card">
+              <div class="table-scroll">
+                <table class="hire-table" style="min-width: 0;">
+                  <tbody>
+                    <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 70%;"></div></td></tr>
+                    <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 55%;"></div></td></tr>
+                    <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 62%;"></div></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Empty</h3>
+            <span class="ac-tag">List state — no active hires</span>
+            <div class="card table-card">
+              <div class="empty-state">
+                <p>No active hires yet.</p>
+                <button class="btn btn-primary btn-sm" type="button" disabled>+ Add new hire</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Error</h3>
+            <span class="ac-tag">List state — failed to load</span>
+            <div class="card table-card">
+              <div class="error-state">
+                <p>⚠ Couldn't load new hires.</p>
+                <p class="u-text-sm u-text-muted" style="margin: 0 0 var(--space-3) 0;">Check your connection and try again.</p>
+                <button class="btn btn-secondary btn-sm" type="button" disabled>Retry</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Validation error</h3>
+            <span class="ac-tag">Satisfies AC1 — required fields enforced</span>
+            <div class="mini-modal">
+              <div class="field-row">
+                <div class="field">
+                  <label class="label">First name</label>
+                  <input class="input input-invalid" type="text" value="" />
+                  <p class="field-error">⚠ First name is required.</p>
+                </div>
+                <div class="field">
+                  <label class="label">Last name</label>
+                  <input class="input" type="text" value="Ashby" readonly />
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Department</label>
+                <input class="input input-invalid" type="text" value="Select a department" readonly />
+                <p class="field-error">⚠ Select a department.</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Profile detail (view mode)</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <div class="mini-modal">
+              <div class="profile-status-row">
+                <span class="status-tag"><span class="status-dot" aria-hidden="true">●</span> Active</span>
+              </div>
+              <dl class="dl-grid">
+                <div><dt>Email</dt><dd>priya.nair@example.com</dd></div>
+                <div><dt>Phone</dt><dd>(555) 014-2231</dd></div>
+                <div><dt>Department</dt><dd>Engineering</dd></div>
+                <div><dt>Role</dt><dd>Software Engineer II</dd></div>
+                <div><dt>Start date</dt><dd>Oct 6, 2026</dd></div>
+              </dl>
+            </div>
+          </div>
+
+          <div>
+            <h3>Deactivate confirmation</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="mini-modal">
+              <p class="confirm-copy"><span class="confirm-icon" aria-hidden="true">⚠</span> Deactivate Devon Ashby?</p>
+              <p class="confirm-sub">They'll no longer appear in the active hire list. You can still find them under the Deactivated tab.</p>
+              <div class="modal-actions" style="margin-top: var(--space-3);">
+                <button class="btn btn-secondary btn-sm" type="button" disabled>Cancel</button>
+                <button class="btn btn-secondary btn-sm btn-destructive-hint" type="button" disabled>🚫 Deactivate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-053-hires';
+  const DEPARTMENTS = ['Engineering', 'Sales', 'Marketing', 'Design', 'Finance', 'People Ops', 'Customer Support'];
+  const INITIAL_HIRES = [
+    { id: 'hire_001', firstName: 'Priya', lastName: 'Nair', email: 'priya.nair@example.com', phone: '(555) 014-2231', role: 'Software Engineer II', department: 'Engineering', startDate: '2026-10-06', status: 'active' },
+    { id: 'hire_002', firstName: 'Marcus', lastName: 'Webb', email: 'marcus.webb@example.com', phone: '(555) 022-9981', role: 'Account Executive', department: 'Sales', startDate: '2026-09-29', status: 'active' },
+    { id: 'hire_003', firstName: 'Elena', lastName: 'Fischer', email: 'elena.fischer@example.com', phone: '(555) 038-4410', role: 'Senior Product Designer', department: 'Design', startDate: '2026-10-13', status: 'active' },
+    { id: 'hire_004', firstName: 'Devon', lastName: 'Ashby', email: 'devon.ashby@example.com', phone: '(555) 047-7765', role: 'Financial Analyst', department: 'Finance', startDate: '2026-10-20', status: 'active' },
+    { id: 'hire_005', firstName: 'Sam', lastName: 'Whitfield', email: 'sam.whitfield@example.com', phone: '(555) 059-3302', role: 'Marketing Coordinator', department: 'Marketing', startDate: '2026-08-18', status: 'deactivated' },
+  ];
+
+  function loadHires() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_HIRES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_HIRES.map(h => ({ ...h }));
+  }
+
+  function persistHires(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function fullName(h) { return `${h.firstName} ${h.lastName}`; }
+
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let hires = loadHires();
+  let activeTab = 'active';
+  let lastUpdatedId = null;
+  let editingId = null;
+
+  // ---------- List rendering ----------
+  function renderSkeleton() {
+    const tbody = document.getElementById('hire-tbody');
+    tbody.innerHTML = `
+      <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 70%;"></div></td></tr>
+      <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 55%;"></div></td></tr>
+      <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width: 62%;"></div></td></tr>
+    `;
+  }
+
+  function renderList() {
+    const tbody = document.getElementById('hire-tbody');
+    tbody.innerHTML = '';
+
+    const rows = hires.filter(h => h.status === activeTab);
+
+    document.getElementById('count-active').textContent = ` (${hires.filter(h => h.status === 'active').length})`;
+    document.getElementById('count-deactivated').textContent = ` (${hires.filter(h => h.status === 'deactivated').length})`;
+
+    if (rows.length === 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'empty-row';
+      tr.innerHTML = activeTab === 'active'
+        ? `<td colspan="6"><div class="empty-state"><p>No active hires yet.</p>
+             <button class="btn btn-primary btn-sm" type="button" id="empty-add-btn">+ Add new hire</button></div></td>`
+        : `<td colspan="6"><div class="empty-state"><p>No deactivated profiles.</p></div></td>`;
+      tbody.appendChild(tr);
+      const emptyAddBtn = document.getElementById('empty-add-btn');
+      if (emptyAddBtn) emptyAddBtn.addEventListener('click', openCreateModal);
+      return;
+    }
+
+    rows.forEach(h => {
+      const tr = document.createElement('tr');
+      if (h.id === lastUpdatedId) tr.className = 'row-updated';
+      const statusHtml = h.status === 'active'
+        ? `<span class="status-tag"><span class="status-dot" aria-hidden="true">●</span> Active</span>`
+        : `<span class="status-tag is-deactivated"><span class="status-dot" aria-hidden="true">○</span> Deactivated</span>`;
+      tr.innerHTML = `
+        <td class="name-cell">${escapeHtml(fullName(h))}<span class="email-sub">${escapeHtml(h.email)}</span></td>
+        <td>${escapeHtml(h.role)}</td>
+        <td>${escapeHtml(h.department)}</td>
+        <td>${formatDateDisplay(h.startDate)}</td>
+        <td>${statusHtml}</td>
+        <td class="col-actions">
+          <button class="btn btn-secondary btn-sm row-view-btn" type="button" data-view-id="${h.id}">View</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastUpdatedId = null;
+
+    tbody.querySelectorAll('[data-view-id]').forEach(btn => {
+      btn.addEventListener('click', () => openProfileModal(btn.getAttribute('data-view-id')));
+    });
+  }
+
+  document.getElementById('tab-active-btn').addEventListener('click', () => switchTab('active'));
+  document.getElementById('tab-deactivated-btn').addEventListener('click', () => switchTab('deactivated'));
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-active-btn').classList.toggle('active', tab === 'active');
+    document.getElementById('tab-active-btn').setAttribute('aria-selected', tab === 'active');
+    document.getElementById('tab-deactivated-btn').classList.toggle('active', tab === 'deactivated');
+    document.getElementById('tab-deactivated-btn').setAttribute('aria-selected', tab === 'deactivated');
+    renderList();
+  }
+
+  // ---------- Create modal ----------
+  const createOverlay = document.getElementById('create-overlay');
+  const createWrap = document.getElementById('create-wrap');
+  const createForm = document.getElementById('create-form');
+  const createSaveBtn = document.getElementById('create-save-btn');
+
+  const createFields = {
+    firstName: document.getElementById('create-firstName'),
+    lastName: document.getElementById('create-lastName'),
+    email: document.getElementById('create-email'),
+    phone: document.getElementById('create-phone'),
+    role: document.getElementById('create-role'),
+    department: document.getElementById('create-department'),
+    startDate: document.getElementById('create-startDate'),
+  };
+
+  function openCreateModal() {
+    createForm.reset();
+    clearCreateErrors();
+    createOverlay.hidden = false;
+    createWrap.hidden = false;
+    document.addEventListener('keydown', onCreateKeydown);
+    createFields.firstName.focus();
+  }
+
+  function closeCreateModal() {
+    createOverlay.hidden = true;
+    createWrap.hidden = true;
+    createSaveBtn.disabled = false;
+    createSaveBtn.textContent = 'Add hire';
+    document.removeEventListener('keydown', onCreateKeydown);
+  }
+
+  function onCreateKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); cancelCreate(); }
+  }
+
+  function cancelCreate() {
+    closeCreateModal();
+    showToast('New hire discarded');
+  }
+
+  document.getElementById('open-create-btn').addEventListener('click', openCreateModal);
+  document.getElementById('create-close-btn').addEventListener('click', cancelCreate);
+  document.getElementById('create-cancel-btn').addEventListener('click', cancelCreate);
+  createOverlay.addEventListener('click', cancelCreate);
+
+  function setFieldError(fieldEl, errorEl, hasError) {
+    errorEl.hidden = !hasError;
+    fieldEl.classList.toggle('input-invalid', hasError);
+    fieldEl.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+  }
+
+  function clearCreateErrors() {
+    setFieldError(createFields.firstName, document.getElementById('create-error-firstName'), false);
+    setFieldError(createFields.lastName, document.getElementById('create-error-lastName'), false);
+    setFieldError(createFields.email, document.getElementById('create-error-email'), false);
+    setFieldError(createFields.role, document.getElementById('create-error-role'), false);
+    setFieldError(createFields.department, document.getElementById('create-error-department'), false);
+    setFieldError(createFields.startDate, document.getElementById('create-error-startDate'), false);
+  }
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  createForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearCreateErrors();
+
+    const firstNameVal = createFields.firstName.value.trim();
+    const lastNameVal = createFields.lastName.value.trim();
+    const emailVal = createFields.email.value.trim();
+    const roleVal = createFields.role.value.trim();
+    const departmentVal = createFields.department.value;
+    const startDateVal = createFields.startDate.value.trim();
+
+    const firstNameInvalid = firstNameVal === '';
+    const lastNameInvalid = lastNameVal === '';
+    const emailInvalid = emailVal === '' || !EMAIL_RE.test(emailVal);
+    const roleInvalid = roleVal === '';
+    const departmentInvalid = departmentVal === '';
+    const startDateInvalid = startDateVal === '';
+
+    setFieldError(createFields.firstName, document.getElementById('create-error-firstName'), firstNameInvalid);
+    setFieldError(createFields.lastName, document.getElementById('create-error-lastName'), lastNameInvalid);
+    setFieldError(createFields.email, document.getElementById('create-error-email'), emailInvalid);
+    setFieldError(createFields.role, document.getElementById('create-error-role'), roleInvalid);
+    setFieldError(createFields.department, document.getElementById('create-error-department'), departmentInvalid);
+    setFieldError(createFields.startDate, document.getElementById('create-error-startDate'), startDateInvalid);
+
+    if (firstNameInvalid || lastNameInvalid || emailInvalid || roleInvalid || departmentInvalid || startDateInvalid) {
+      // AC1: form stays open, inline errors shown, input preserved.
+      const firstInvalid = firstNameInvalid ? createFields.firstName
+        : lastNameInvalid ? createFields.lastName
+        : emailInvalid ? createFields.email
+        : roleInvalid ? createFields.role
+        : departmentInvalid ? createFields.department
+        : createFields.startDate;
+      firstInvalid.focus();
+      return;
+    }
+
+    createSaveBtn.disabled = true;
+    createSaveBtn.textContent = 'Adding…';
+
+    setTimeout(() => {
+      const newHire = {
+        id: 'hire_' + Math.random().toString(36).slice(2, 9),
+        firstName: firstNameVal,
+        lastName: lastNameVal,
+        email: emailVal,
+        phone: createFields.phone.value.trim(),
+        role: roleVal,
+        department: departmentVal,
+        startDate: startDateVal,
+        status: 'active',
+      };
+      hires = [newHire, ...hires];
+      persistHires(hires);
+      lastUpdatedId = newHire.id;
+      closeCreateModal();
+      switchTab('active');
+      showToast(`${fullName(newHire)} added to new hires`);
+    }, 350);
+  });
+
+  // ---------- Profile modal (view / edit / deactivate-confirm) ----------
+  const profileOverlay = document.getElementById('profile-overlay');
+  const profileWrap = document.getElementById('profile-wrap');
+  const profilePanel = document.getElementById('profile-panel');
+  let profileMode = 'view'; // 'view' | 'edit' | 'confirm-deactivate'
+
+  function openProfileModal(id) {
+    editingId = id;
+    profileMode = 'view';
+    renderProfilePanel();
+    profileOverlay.hidden = false;
+    profileWrap.hidden = false;
+    document.addEventListener('keydown', onProfileKeydown);
+  }
+
+  function closeProfileModal() {
+    profileOverlay.hidden = true;
+    profileWrap.hidden = true;
+    editingId = null;
+    profileMode = 'view';
+    document.removeEventListener('keydown', onProfileKeydown);
+  }
+
+  function onProfileKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeProfileModal(); }
+  }
+
+  profileOverlay.addEventListener('click', closeProfileModal);
+
+  function currentHire() { return hires.find(h => h.id === editingId); }
+
+  function departmentOptionsHtml(selected) {
+    return ['', ...DEPARTMENTS].map(d => {
+      if (d === '') return `<option value="">Select a department</option>`;
+      return `<option ${d === selected ? 'selected' : ''}>${d}</option>`;
+    }).join('');
+  }
+
+  function renderProfilePanel() {
+    const h = currentHire();
+    if (!h) { closeProfileModal(); return; }
+
+    if (profileMode === 'view') {
+      const statusHtml = h.status === 'active'
+        ? `<span class="status-tag"><span class="status-dot" aria-hidden="true">●</span> Active</span>`
+        : `<span class="status-tag is-deactivated"><span class="status-dot" aria-hidden="true">○</span> Deactivated</span>`;
+      profilePanel.innerHTML = `
+        <div class="modal-header">
+          <div>
+            <h2 id="profile-title">${escapeHtml(fullName(h))}</h2>
+            <p>${escapeHtml(h.role)} · ${escapeHtml(h.department)}</p>
+          </div>
+          <button class="icon-btn" id="profile-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <div class="profile-status-row">${statusHtml}</div>
+        <dl class="dl-grid">
+          <div><dt>Email</dt><dd>${escapeHtml(h.email)}</dd></div>
+          <div><dt>Phone</dt><dd>${escapeHtml(h.phone) || '—'}</dd></div>
+          <div><dt>Department</dt><dd>${escapeHtml(h.department)}</dd></div>
+          <div><dt>Role</dt><dd>${escapeHtml(h.role)}</dd></div>
+          <div><dt>Start date</dt><dd>${formatDateDisplay(h.startDate)}</dd></div>
+        </dl>
+        ${h.status === 'deactivated' ? `<div class="deactivated-note"><span aria-hidden="true">ℹ</span> This profile is deactivated and hidden from the active hire list.</div>` : ''}
+        <div class="modal-actions spread">
+          <div>
+            ${h.status === 'active' ? `<button class="btn btn-secondary btn-destructive-hint" id="profile-deactivate-btn" type="button">🚫 Deactivate</button>` : ''}
+          </div>
+          <div style="display:flex; gap: var(--space-3);">
+            <button class="btn btn-secondary" id="profile-cancel-btn" type="button">Close</button>
+            <button class="btn btn-primary" id="profile-edit-btn" type="button">Edit profile</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('profile-close-btn').addEventListener('click', closeProfileModal);
+      document.getElementById('profile-cancel-btn').addEventListener('click', closeProfileModal);
+      document.getElementById('profile-edit-btn').addEventListener('click', () => { profileMode = 'edit'; renderProfilePanel(); });
+      const deactivateBtn = document.getElementById('profile-deactivate-btn');
+      if (deactivateBtn) deactivateBtn.addEventListener('click', () => { profileMode = 'confirm-deactivate'; renderProfilePanel(); });
+      document.getElementById('profile-edit-btn').focus();
+      return;
+    }
+
+    if (profileMode === 'edit') {
+      profilePanel.innerHTML = `
+        <div class="modal-header">
+          <div>
+            <h2 id="profile-title">Edit profile</h2>
+            <p>Update any field, then save to apply the change.</p>
+          </div>
+          <button class="icon-btn" id="edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form id="edit-form" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="edit-firstName">First name</label>
+              <input class="input" id="edit-firstName" name="firstName" type="text" value="${escapeHtml(h.firstName)}" aria-describedby="edit-error-firstName" />
+              <p class="field-error" id="edit-error-firstName" role="alert" hidden>⚠ First name is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="edit-lastName">Last name</label>
+              <input class="input" id="edit-lastName" name="lastName" type="text" value="${escapeHtml(h.lastName)}" aria-describedby="edit-error-lastName" />
+              <p class="field-error" id="edit-error-lastName" role="alert" hidden>⚠ Last name is required.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="edit-email">Email</label>
+            <input class="input" id="edit-email" name="email" type="email" value="${escapeHtml(h.email)}" aria-describedby="edit-error-email" />
+            <p class="field-error" id="edit-error-email" role="alert" hidden>⚠ Enter a valid email address.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="edit-phone">Phone <span class="optional-tag">(optional)</span></label>
+            <input class="input" id="edit-phone" name="phone" type="tel" value="${escapeHtml(h.phone)}" />
+          </div>
+          <div class="field">
+            <label class="label" for="edit-role">Role</label>
+            <input class="input" id="edit-role" name="role" type="text" value="${escapeHtml(h.role)}" aria-describedby="edit-error-role" />
+            <p class="field-error" id="edit-error-role" role="alert" hidden>⚠ Role is required.</p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="edit-department">Department</label>
+              <select class="input" id="edit-department" name="department" aria-describedby="edit-error-department">
+                ${departmentOptionsHtml(h.department)}
+              </select>
+              <p class="field-error" id="edit-error-department" role="alert" hidden>⚠ Select a department.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="edit-startDate">Start date</label>
+              <input class="input" id="edit-startDate" name="startDate" type="date" value="${h.startDate}" aria-describedby="edit-error-startDate" />
+              <p class="field-error" id="edit-error-startDate" role="alert" hidden>⚠ Start date is required.</p>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('edit-close-btn').addEventListener('click', () => { profileMode = 'view'; renderProfilePanel(); });
+      document.getElementById('edit-cancel-btn').addEventListener('click', () => { profileMode = 'view'; renderProfilePanel(); });
+      wireEditForm();
+      document.getElementById('edit-firstName').focus();
+      return;
+    }
+
+    if (profileMode === 'confirm-deactivate') {
+      profilePanel.innerHTML = `
+        <div class="modal-header">
+          <div>
+            <h2 id="profile-title">Deactivate profile</h2>
+          </div>
+          <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <p class="confirm-copy"><span class="confirm-icon" aria-hidden="true">⚠</span> Deactivate ${escapeHtml(fullName(h))}?</p>
+        <p class="confirm-sub">They'll no longer appear in the active hire list. You can still find them under the Deactivated tab.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-secondary btn-destructive-hint" id="confirm-deactivate-btn">🚫 Deactivate</button>
+        </div>
+      `;
+      document.getElementById('confirm-close-btn').addEventListener('click', () => { profileMode = 'view'; renderProfilePanel(); });
+      document.getElementById('confirm-cancel-btn').addEventListener('click', () => { profileMode = 'view'; renderProfilePanel(); });
+      document.getElementById('confirm-deactivate-btn').addEventListener('click', confirmDeactivate);
+      document.getElementById('confirm-cancel-btn').focus();
+      return;
+    }
+  }
+
+  function wireEditForm() {
+    const form = document.getElementById('edit-form');
+    const saveBtn = document.getElementById('edit-save-btn');
+    const fields = {
+      firstName: document.getElementById('edit-firstName'),
+      lastName: document.getElementById('edit-lastName'),
+      email: document.getElementById('edit-email'),
+      phone: document.getElementById('edit-phone'),
+      role: document.getElementById('edit-role'),
+      department: document.getElementById('edit-department'),
+      startDate: document.getElementById('edit-startDate'),
+    };
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const firstNameVal = fields.firstName.value.trim();
+      const lastNameVal = fields.lastName.value.trim();
+      const emailVal = fields.email.value.trim();
+      const roleVal = fields.role.value.trim();
+      const departmentVal = fields.department.value;
+      const startDateVal = fields.startDate.value.trim();
+
+      const firstNameInvalid = firstNameVal === '';
+      const lastNameInvalid = lastNameVal === '';
+      const emailInvalid = emailVal === '' || !EMAIL_RE.test(emailVal);
+      const roleInvalid = roleVal === '';
+      const departmentInvalid = departmentVal === '';
+      const startDateInvalid = startDateVal === '';
+
+      setFieldError(fields.firstName, document.getElementById('edit-error-firstName'), firstNameInvalid);
+      setFieldError(fields.lastName, document.getElementById('edit-error-lastName'), lastNameInvalid);
+      setFieldError(fields.email, document.getElementById('edit-error-email'), emailInvalid);
+      setFieldError(fields.role, document.getElementById('edit-error-role'), roleInvalid);
+      setFieldError(fields.department, document.getElementById('edit-error-department'), departmentInvalid);
+      setFieldError(fields.startDate, document.getElementById('edit-error-startDate'), startDateInvalid);
+
+      if (firstNameInvalid || lastNameInvalid || emailInvalid || roleInvalid || departmentInvalid || startDateInvalid) {
+        // AC3: modal stays open, inline errors shown, input preserved.
+        const firstInvalid = firstNameInvalid ? fields.firstName
+          : lastNameInvalid ? fields.lastName
+          : emailInvalid ? fields.email
+          : roleInvalid ? fields.role
+          : departmentInvalid ? fields.department
+          : fields.startDate;
+        firstInvalid.focus();
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      const targetId = editingId;
+
+      setTimeout(() => {
+        if (editingId !== targetId) return;
+        const idx = hires.findIndex(h => h.id === targetId);
+        if (idx === -1) return;
+
+        hires[idx] = {
+          ...hires[idx],
+          firstName: firstNameVal,
+          lastName: lastNameVal,
+          email: emailVal,
+          phone: fields.phone.value.trim(),
+          role: roleVal,
+          department: departmentVal,
+          startDate: startDateVal,
+        };
+        persistHires(hires);
+        lastUpdatedId = hires[idx].id;
+        profileMode = 'view';
+        renderProfilePanel();
+        renderList();
+        showToast('Profile updated');
+      }, 350);
+    });
+  }
+
+  function confirmDeactivate() {
+    const targetId = editingId;
+    const btn = document.getElementById('confirm-deactivate-btn');
+    btn.disabled = true;
+    btn.textContent = 'Deactivating…';
+
+    setTimeout(() => {
+      const idx = hires.findIndex(h => h.id === targetId);
+      if (idx === -1) return;
+      hires[idx] = { ...hires[idx], status: 'deactivated' };
+      persistHires(hires);
+      const name = fullName(hires[idx]);
+      closeProfileModal();
+      renderList();
+      showToast(`${name} deactivated — removed from active hires`);
+    }, 350);
+  }
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
+  }
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    hires = loadHires();
+    lastUpdatedId = null;
+    switchTab('active');
+    showToast('Demo data reset');
+  });
+
+  // ---------- Initial load: simulated latency ----------
+  renderSkeleton();
+  setTimeout(() => {
+    renderList();
+  }, 350);
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (profileWrap.hidden === false || createWrap.hidden === false) return; // let Esc close a modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
