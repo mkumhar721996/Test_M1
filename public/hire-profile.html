@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hire Profile — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hire-profile.css" />
+<script src="./js/hire-profile.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 id="hire-name-heading"></h1>
+        <p>New-hire profile and onboarding Run status.</p>
+      </div>
+      <div class="top-actions" id="top-actions"><!-- rendered by JS: Deactivate/Reactivate --></div>
+    </div>
+
+    <div class="pending-banner" id="pending-banner" role="status" aria-live="polite" hidden>
+      <span class="spin" aria-hidden="true">⏳</span>
+      <span id="pending-banner-text">Syncing with onboarding engine…</span>
+    </div>
+
+    <div class="layout-grid">
+      <!-- Profile card -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2 class="card-title" style="margin:0;">Profile details</h2>
+          <span class="profile-status-chip" id="profile-status-chip"></span>
+        </div>
+        <fieldset class="profile-fieldset" id="profile-fieldset">
+          <div class="kv-list" id="kv-list"><!-- rendered by JS --></div>
+        </fieldset>
+      </div>
+
+      <!-- Run card -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2 class="card-title" style="margin:0;">Onboarding Run</h2>
+          <span class="status-chip" id="run-status-chip"></span>
+        </div>
+        <div id="run-body"><!-- rendered by JS --></div>
+
+        <button class="history-toggle" id="history-toggle-btn" type="button" aria-expanded="false">
+          Run history (<span id="history-count">0</span>) ▾
+        </button>
+        <ul class="history-list" id="history-list" hidden></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact & start date edit modal (AC4, AC5) -->
+  <div class="modal-overlay" id="contact-overlay" hidden></div>
+  <div class="modal-wrap" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="contact-modal-title">Edit start date &amp; contact</h2>
+          <p>These fields never affect an active Run.</p>
+        </div>
+        <button class="icon-btn" id="contact-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="contact-form">
+        <div class="field">
+          <label class="label" for="field-name">Full name</label>
+          <input class="input" id="field-name" name="name" type="text" required />
+        </div>
+        <div class="field">
+          <label class="label" for="field-email">Email</label>
+          <input class="input" id="field-email" name="email" type="email" required />
+        </div>
+        <div class="field">
+          <label class="label" for="field-phone">Phone</label>
+          <input class="input" id="field-phone" name="phone" type="tel" required />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="field-start-date">Start date</label>
+          <input class="input" id="field-start-date" name="startDate" type="date" required />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="contact-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="contact-save-btn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Role & department edit modal (AC2, AC3) -->
+  <div class="modal-overlay" id="role-overlay" hidden></div>
+  <div class="modal-wrap" id="role-modal" role="dialog" aria-modal="true" aria-labelledby="role-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="role-modal-title">Edit role &amp; department</h2>
+          <p>Changing either field restarts the onboarding Run.</p>
+        </div>
+        <button class="icon-btn" id="role-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+
+      <!-- Step 1: edit fields -->
+      <form id="role-form">
+        <div class="field">
+          <label class="label" for="field-department">Department</label>
+          <select class="input" id="field-department" name="department">
+            <option>Engineering</option>
+            <option>Product</option>
+            <option>Sales</option>
+            <option>People Ops</option>
+            <option>Finance</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="field-role">Role</label>
+          <input class="input" id="field-role" name="role" type="text" required />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="role-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="role-continue-btn">Continue</button>
+        </div>
+      </form>
+
+      <!-- Step 2: confirm consequence -->
+      <div id="role-confirm-step" hidden>
+        <div class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span id="role-confirm-copy">Change role or department? The current onboarding Run will be cancelled and a new Run will start reflecting the update.</span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="role-back-btn">Back</button>
+          <button type="button" class="btn btn-primary" id="role-confirm-btn">Confirm change</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deactivate confirm modal (AC6) -->
+  <div class="modal-overlay" id="deactivate-overlay" hidden></div>
+  <div class="modal-wrap" id="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="deactivate-modal-title">Deactivate profile?</h2>
+        </div>
+        <button class="icon-btn" id="deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">⚠</span>
+        <span id="deactivate-consequence-copy">Deactivating this profile cancels the active onboarding Run.</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="deactivate-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="deactivate-confirm-btn">Deactivate profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reactivate confirm modal (AC7, AC8) -->
+  <div class="modal-overlay" id="reactivate-overlay" hidden></div>
+  <div class="modal-wrap" id="reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="reactivate-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="reactivate-modal-title">Reactivate profile?</h2>
+        </div>
+        <button class="icon-btn" id="reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">⚠</span>
+        <span>A fresh onboarding Run starts from the beginning. The previously cancelled Run is not resumed.</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="reactivate-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="reactivate-confirm-btn">Reactivate profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>

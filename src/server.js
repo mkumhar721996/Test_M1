@@ -3,6 +3,7 @@ const express = require('express');
 const employeesRouter = require('./employees/routes');
 const workflowsRouter = require('./workflows/routes');
 const runsRouter = require('./runs/routes');
+const hiresRouter = require('./hires/routes');
 
 const app = express();
 app.use(express.json());
@@ -11,5 +12,6 @@ app.use('/design-system', express.static(path.join(__dirname, '..', 'design-syst
 app.use('/employees', employeesRouter);
 app.use('/workflows', workflowsRouter);
 app.use('/runs', runsRouter);
+app.use('/hires', hiresRouter);
 
 module.exports = app;
