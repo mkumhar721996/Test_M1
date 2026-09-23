@@ -19,7 +19,7 @@ test('AC1: a run stays pinned to its original version and task graph after a lat
     actor: 'user-1',
   });
 
-  const reloaded = getRun(run.id);
+  const reloaded = getRun(TENANT, run.id);
   expect(reloaded.definitionVersion).toBe(1);
   expect(reloaded.definition).toEqual({ tasks: [{ id: 't1', next: [] }] });
 });
@@ -57,7 +57,9 @@ test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', 
     .set('Authorization', hrCoordinator(TENANT))
     .send({ workflowId, definition: { tasks: [{ id: 't1', next: ['t2'] }, { id: 't2', next: [] }] } });
 
-  const getRes = await request(app).get(`/runs/${runRes.body.id}`);
+  const getRes = await request(app)
+    .get(`/runs/${runRes.body.id}`)
+    .set('Authorization', hrCoordinator(TENANT));
   expect(getRes.body.definitionVersion).toBe(1);
   expect(getRes.body.definition).toEqual({ tasks: [{ id: 't1', next: [] }] });
 });
@@ -81,4 +83,26 @@ test('AC2 (HTTP): a run created after an update is pinned to the new latest vers
     .send();
   expect(runRes.body.definitionVersion).toBe(2);
   expect(runRes.body.definition).toEqual(updateRes.body.definition);
+});
+
+test('security: a run created under one tenant is not retrievable by another tenant', async () => {
+  const createRes = await request(app)
+    .post('/workflows')
+    .set('Authorization', hrCoordinator(TENANT))
+    .send({ definition: { tasks: [{ id: 't1', next: [] }] } });
+
+  const runRes = await request(app)
+    .post(`/workflows/${createRes.body.id}/runs`)
+    .set('Authorization', hrCoordinator(TENANT))
+    .send();
+
+  const otherTenantRes = await request(app)
+    .get(`/runs/${runRes.body.id}`)
+    .set('Authorization', hrCoordinator('tenant-b'));
+  expect(otherTenantRes.status).toBe(404);
+});
+
+test('security: fetching a run without a bearer token is rejected', async () => {
+  const res = await request(app).get('/runs/some-run-id');
+  expect(res.status).toBe(401);
 });

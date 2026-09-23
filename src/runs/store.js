@@ -17,8 +17,10 @@ function startRun(tenantId, workflowId) {
   return run;
 }
 
-function getRun(runId) {
-  return runs.get(runId);
+function getRun(tenantId, runId) {
+  const run = runs.get(runId);
+  if (!run || run.tenantId !== tenantId) return undefined;
+  return run;
 }
 
 module.exports = { startRun, getRun };

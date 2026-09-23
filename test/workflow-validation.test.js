@@ -43,3 +43,23 @@ test('a definition with no tasks is reported as invalid', () => {
     expect.objectContaining({ field: 'tasks' }),
   ]));
 });
+
+test('AC6: a null sequencing entry is reported by field instead of throwing', () => {
+  const errors = validateWorkflowDefinition({
+    tasks: [{ id: 'a' }],
+    sequencing: [null],
+  });
+  expect(errors).toEqual(expect.arrayContaining([
+    expect.objectContaining({ field: 'sequencing[0]' }),
+  ]));
+});
+
+test('AC6: a null branch entry is reported by field instead of throwing', () => {
+  const errors = validateWorkflowDefinition({
+    tasks: [{ id: 'a' }],
+    branches: [null],
+  });
+  expect(errors).toEqual(expect.arrayContaining([
+    expect.objectContaining({ field: 'branches[0]' }),
+  ]));
+});

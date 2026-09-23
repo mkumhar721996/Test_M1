@@ -33,3 +33,18 @@ test('garbage input is not verified', () => {
   expect(verify('not-a-real-token')).toBeNull();
   expect(verify(undefined)).toBeNull();
 });
+
+test('an expired token is rejected', () => {
+  const claims = { actorId: 'user-1', role: 'hr_coordinator', tenantId: 'tenant-a' };
+  const token = sign(claims, undefined, -1);
+  expect(verify(token)).toBeNull();
+});
+
+test('a token without exp/iat claims is rejected', () => {
+  const crypto = require('crypto');
+  const secret = 'known-test-secret';
+  const claims = { actorId: 'user-1', role: 'hr_coordinator', tenantId: 'tenant-a' };
+  const body = Buffer.from(JSON.stringify(claims)).toString('base64url');
+  const signature = crypto.createHmac('sha256', secret).update(body).digest('base64url');
+  expect(verify(`${body}.${signature}`, secret)).toBeNull();
+});

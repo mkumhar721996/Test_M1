@@ -162,6 +162,14 @@ test('security: a request claiming a role/tenant via raw headers (no valid token
   expect(res.status).toBe(401);
 });
 
+test('a non-string workflowId is rejected with a 400', async () => {
+  const res = await request(app)
+    .post('/workflows')
+    .set('Authorization', hrCoordinator('tenant-a'))
+    .send({ workflowId: { $ne: null }, definition: validDefinition });
+  expect(res.status).toBe(400);
+});
+
 test('security: a token with a tampered role claim is rejected', async () => {
   const validToken = hrCoordinator('tenant-a').replace('Bearer ', '');
   const [, signature] = validToken.split('.');

@@ -23,6 +23,10 @@ function validateWorkflowDefinition(definition) {
 
   const sequencing = Array.isArray(definition.sequencing) ? definition.sequencing : [];
   sequencing.forEach((rule, i) => {
+    if (!rule || typeof rule !== 'object') {
+      errors.push({ field: `sequencing[${i}]`, message: 'sequencing rule must be an object' });
+      return;
+    }
     if (!taskIds.has(rule.from)) {
       errors.push({ field: `sequencing[${i}].from`, message: `references unknown task id "${rule.from}"` });
     }
@@ -33,6 +37,10 @@ function validateWorkflowDefinition(definition) {
 
   const branches = Array.isArray(definition.branches) ? definition.branches : [];
   branches.forEach((branch, i) => {
+    if (!branch || typeof branch !== 'object') {
+      errors.push({ field: `branches[${i}]`, message: 'branch must be an object' });
+      return;
+    }
     ['from', 'whenTrue', 'whenFalse'].forEach((key) => {
       const value = branch[key];
       if (value !== undefined && !taskIds.has(value)) {
