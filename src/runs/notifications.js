@@ -12,4 +12,8 @@ function getNotificationsForCoordinator(coordinatorId) {
   return notifications.filter((n) => n.coordinatorId === coordinatorId);
 }
 
-module.exports = { notifyHrCoordinator, getNotificationsForCoordinator };
+function resetNotifications() {
+  notifications.length = 0;
+}
+
+module.exports = { notifyHrCoordinator, getNotificationsForCoordinator, resetNotifications };

@@ -1,6 +1,10 @@
 const request = require('supertest');
 const app = require('../src/server');
-const { getNotificationsForCoordinator } = require('../src/runs/notifications');
+const { getNotificationsForCoordinator, resetNotifications } = require('../src/runs/notifications');
+
+beforeEach(() => {
+  resetNotifications();
+});
 
 const workflowPayload = {
   name: 'New Hire Onboarding',
@@ -33,6 +37,10 @@ test('AC1: a run for a remote-contractor hire executes the matching branch tasks
   expect(runRes.status).toBe(201);
   expect(runRes.body.taskStatuses['ship-equipment']).toBe('executed');
   expect(runRes.body.taskStatuses['remote-it-setup']).toBe('executed');
+  expect(runRes.body.taskStatuses['badge-provisioning']).toBe('skipped');
+  expect(runRes.body.taskStatuses['onsite-it-setup']).toBe('skipped');
+  expect(runRes.body.taskStatuses['send-welcome-email']).toBe('skipped');
+  expect(runRes.body.taskStatuses['assign-buddy']).toBe('skipped');
 });
 
 test('AC2: the non-matching branch tasks are recorded as skipped', async () => {
@@ -45,6 +53,8 @@ test('AC2: the non-matching branch tasks are recorded as skipped', async () => {
       hireAttributes: { hireType: 'remote-contractor' },
     });
 
+  expect(runRes.body.taskStatuses['ship-equipment']).toBe('executed');
+  expect(runRes.body.taskStatuses['remote-it-setup']).toBe('executed');
   expect(runRes.body.taskStatuses['badge-provisioning']).toBe('skipped');
   expect(runRes.body.taskStatuses['onsite-it-setup']).toBe('skipped');
 });
