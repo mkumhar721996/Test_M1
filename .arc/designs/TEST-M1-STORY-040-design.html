@@ -225,6 +225,24 @@
       "🧪 Prototype demo controls" so reviewers don't mistake them for real product chrome — in the
       shipped feature these changes would originate from a separate Category management screen
       (out of scope for this story).
+
+  Revision (2026-09-23) — PO feedback "cover edge cases UX design as well":
+    - Added a 4th screen, "Edge Cases & Data Quirks", covering scenarios the first pass only
+      handled correctly in code but never surfaced for review: a true zero-expenses empty state,
+      filtering to a real category that happens to have zero expenses, all categories being
+      removed at once, and a category renamed to an unusually long string.
+    - Fixed a copy bug this surfaced: the empty state previously always read "No expenses match
+      this filter", even when the account has zero expenses at all. `renderList` now distinguishes
+      a true empty account (invitation-to-act copy + icon, per guideline §5) from a filter that
+      simply matched nothing (guidance to clear the filter). Applies uniformly to all screens —
+      same output as before for every state already reviewed, this only fixes the previously
+      unreachable/undemoed zero-expenses case.
+    - Hardened grouping/chip rendering against a "dangling" categoryId (one that doesn't match any
+      current category, e.g. because a category was removed by a path other than the modelled
+      delete flow) — such expenses now always fall back to the Uncategorised chip/heading instead
+      of silently disappearing from grouped view. Directly reinforces AC6 ("no reference to the
+      deleted category remains") as a defensive default, not just a result of the one scripted
+      delete action.
 -->
 <!-- App nav: left sidebar (collapses to a horizontal top bar under 640px) — Dashboard · Expenses · Reports · Settings -->
 <style>
@@ -637,12 +655,7 @@
 
       <div class="expense-list" id="list-main"></div>
 
-      <div class="empty-state card" id="empty-main" style="display:none;">
-        <p class="empty-state-icon" aria-hidden="true">🔍</p>
-        <h2 class="u-text-lg">No expenses match this filter</h2>
-        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
-        <button type="button" class="btn btn-primary" onclick="setFilter('main', 'all')">✕ Clear filter</button>
-      </div>
+      <div class="empty-state card" id="empty-main" style="display:none;"></div>
     </main>
   </div>
   <div class="toast" id="toast-main" role="status" aria-live="polite"></div>
@@ -692,12 +705,7 @@
 
       <div class="expense-list" id="list-rename"></div>
 
-      <div class="empty-state card" id="empty-rename" style="display:none;">
-        <p class="empty-state-icon" aria-hidden="true">🔍</p>
-        <h2 class="u-text-lg">No expenses match this filter</h2>
-        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
-        <button type="button" class="btn btn-primary" onclick="setFilter('rename', 'all')">✕ Clear filter</button>
-      </div>
+      <div class="empty-state card" id="empty-rename" style="display:none;"></div>
 
       <div class="card demo-panel">
         <p class="u-text-sm" style="margin:0 0 var(--space-1) 0;"><strong>🧪 Prototype demo controls</strong></p>
@@ -758,12 +766,7 @@
 
       <div class="expense-list" id="list-delete"></div>
 
-      <div class="empty-state card" id="empty-delete" style="display:none;">
-        <p class="empty-state-icon" aria-hidden="true">🔍</p>
-        <h2 class="u-text-lg">No expenses match this filter</h2>
-        <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
-        <button type="button" class="btn btn-primary" onclick="setFilter('delete', 'all')">✕ Clear filter</button>
-      </div>
+      <div class="empty-state card" id="empty-delete" style="display:none;"></div>
 
       <div class="card demo-panel">
         <p class="u-text-sm" style="margin:0 0 var(--space-1) 0;"><strong>🧪 Prototype demo controls</strong></p>
@@ -777,6 +780,77 @@
     </main>
   </div>
   <div class="toast" id="toast-delete" role="status" aria-live="polite"></div>
+</div>
+
+<!-- State: edge-cases
+     Screen: Edge Cases & Data Quirks
+     Notes:
+       - Zero expenses: click "🧹 Clear all expenses" — shows the true empty account state
+         (invitation to act: "No expenses yet" + icon), distinct from a filter matching nothing.
+         Click "↩ Restore expenses" to bring the 9 fixture rows back.
+       - Category with zero expenses: this screen adds a real category, "Misc", that no expense
+         is assigned to. Select "Misc" from the Category filter (no button needed) to see the
+         "No expenses match this filter" empty state for a *valid* category, as opposed to the
+         zero-expenses-account state above.
+       - No categories left: click "🗑️ Remove all categories" — every real category disappears
+         from the filter dropdown and grouped view at once; all 9 expenses fall back to a single
+         "❔ Uncategorised" group, and grouping degrades gracefully to one heading instead of
+         breaking.
+       - Long category name: click "🏷️ Rename 'Housing' to a long name" — the filter option, the
+         group heading, and every expense chip using it wrap onto multiple lines instead of
+         overflowing or truncating unreadably (AC3/AC7 must still hold with unusual data).
+-->
+<div class="screen" data-name="Edge Cases &amp; Data Quirks">
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Primary">
+      <span class="brand">Expense Tracker</span>
+      <a class="nav-item" href="#">📊 Dashboard</a>
+      <a class="nav-item active" href="#" aria-current="page">💳 Expenses</a>
+      <a class="nav-item" href="#">📈 Reports</a>
+      <a class="nav-item" href="#">⚙️ Settings</a>
+    </nav>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Expenses</h1>
+          <p class="u-text-sm u-text-muted list-summary" id="summary-edge"></p>
+        </div>
+        <button type="button" class="btn btn-primary">+ Add expense</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="filter-edge">Category</label>
+          <select class="input" id="filter-edge" onchange="setFilter('edge', this.value)">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clear-filter-edge" onclick="setFilter('edge', 'all')" style="display:none;">✕ Clear filter</button>
+        <div class="view-toggle" role="group" aria-label="List layout">
+          <button type="button" id="view-flat-edge" aria-pressed="false" onclick="setGrouped('edge', false)">☰ Flat list</button>
+          <button type="button" id="view-grouped-edge" class="active" aria-pressed="true" onclick="setGrouped('edge', true)">▤ Grouped by category</button>
+        </div>
+      </div>
+
+      <div class="expense-list" id="list-edge"></div>
+
+      <div class="empty-state card" id="empty-edge" style="display:none;"></div>
+
+      <div class="card demo-panel">
+        <p class="u-text-sm" style="margin:0 0 var(--space-1) 0;"><strong>🧪 Prototype demo controls</strong></p>
+        <p class="u-text-sm u-text-muted" style="margin:0;">
+          Each button below forces a boundary condition so it can be reviewed on demand, instead of
+          relying on chance to hit it with real data.
+        </p>
+        <div class="demo-panel-actions">
+          <button type="button" class="btn btn-secondary" id="empty-toggle-edge" onclick="toggleEmptyDemo()">🧹 Clear all expenses (simulate new account)</button>
+          <button type="button" class="btn btn-secondary" id="remove-categories-btn-edge" onclick="simulateRemoveAllCategories()">🗑️ Remove all categories</button>
+          <button type="button" class="btn btn-secondary" id="long-name-btn-edge" onclick="simulateLongName()">🏷️ Rename "Housing" to a long name</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast-edge" role="status" aria-live="polite"></div>
 </div>
 
 </div>
@@ -806,13 +880,18 @@
     ];
   }
 
-  const ICONS = { food: '🍔', transport: '🚗', housing: '🏠', entertainment: '🎬' };
+  const ICONS = { food: '🍔', transport: '🚗', housing: '🏠', entertainment: '🎬', misc: '🗂️' };
 
   const state = {
     main:   { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: false },
     rename: { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: true,
               serverCategories: makeCategories() },
     delete: { categories: makeCategories(), expenses: makeExpenses(), filter: 'all', grouped: true },
+    // "Misc" deliberately has zero expenses, so selecting it from the filter demonstrates a
+    // real (non-Uncategorised) category matching nothing — a different empty state than a
+    // brand-new account with zero expenses altogether.
+    edge:   { categories: [...makeCategories(), { id: 'misc', name: 'Misc' }], expenses: makeExpenses(),
+              filter: 'all', grouped: true },
   };
 
   function formatCurrency(amount) {
@@ -860,8 +939,16 @@
     document.getElementById(`clear-filter-${key}`).style.display = state[key].filter === 'all' ? 'none' : 'inline-flex';
   }
 
+  function resolveCategory(e, categories) {
+    // Falls back to Uncategorised for an explicit null AND for a "dangling" categoryId that no
+    // longer matches any current category (e.g. removed by a path other than the modelled
+    // delete flow) — see AC6: a deleted category must leave no trace anywhere in the list.
+    if (!e.categoryId) return null;
+    return categories.find(c => c.id === e.categoryId) || null;
+  }
+
   function expenseRow(e, categories) {
-    const cat = e.categoryId ? categories.find(c => c.id === e.categoryId) : null;
+    const cat = resolveCategory(e, categories);
     const chipHtml = cat
       ? `<span class="chip">${ICONS[cat.id] || '🗂️'} ${escapeHtml(cat.name)}</span>`
       : `<span class="chip chip-uncategorised">❔ Uncategorised</span>`;
@@ -894,7 +981,7 @@
           <span class="group-heading-meta">${pluralize(group.length, 'expense')} · ${formatCurrency(subtotal)} subtotal</span>
         </div>` + renderFlat(group, categories);
     });
-    const uncategorised = items.filter(e => e.categoryId === null);
+    const uncategorised = items.filter(e => !resolveCategory(e, categories));
     if (uncategorised.length > 0) {
       html += `
         <div class="group-heading group-heading-uncategorised">
@@ -918,7 +1005,9 @@
     if (s.filter === 'uncategorised') visible = s.expenses.filter(e => e.categoryId === null);
     else if (s.filter !== 'all') visible = s.expenses.filter(e => e.categoryId === s.filter);
 
-    if (s.filter === 'all') {
+    if (total === 0) {
+      summaryEl.textContent = 'No expenses recorded yet';
+    } else if (s.filter === 'all') {
       summaryEl.textContent = `${pluralize(total, 'expense')} · ${formatCurrency(totalSum)} total`;
     } else {
       const visSum = visible.reduce((sum, e) => sum + e.amount, 0);
@@ -931,6 +1020,17 @@
     if (visible.length === 0) {
       listEl.innerHTML = '';
       listEl.style.display = 'none';
+      emptyEl.innerHTML = total === 0
+        ? `
+          <p class="empty-state-icon" aria-hidden="true">🧾</p>
+          <h2 class="u-text-lg">No expenses yet</h2>
+          <p class="u-text-md u-text-muted">Add your first expense to start tracking spend by category.</p>
+          <button type="button" class="btn btn-primary">+ Add expense</button>`
+        : `
+          <p class="empty-state-icon" aria-hidden="true">🔍</p>
+          <h2 class="u-text-lg">No expenses match this filter</h2>
+          <p class="u-text-md u-text-muted">Try a different category, or clear the filter to see everything again.</p>
+          <button type="button" class="btn btn-primary" onclick="setFilter('${key}', 'all')">✕ Clear filter</button>`;
       emptyEl.style.display = 'block';
       return;
     }
@@ -1002,8 +1102,54 @@
     showToast(key, `✓ Simulated: "Entertainment" deleted. ${pluralize(reassigned, 'expense')} moved to Uncategorised immediately — no trace of "Entertainment" remains.`);
   }
 
+  function toggleEmptyDemo() {
+    const key = 'edge';
+    const s = state[key];
+    const btn = document.getElementById('empty-toggle-edge');
+    if (s.expenses.length > 0) {
+      s._savedExpenses = s.expenses;
+      s.expenses = [];
+      btn.textContent = '↩ Restore expenses';
+      showToast(key, '✓ Simulated: all expenses cleared. This is a brand-new account, not a filter matching nothing — the empty state below invites the user to add one.');
+    } else {
+      s.expenses = s._savedExpenses || makeExpenses();
+      btn.textContent = '🧹 Clear all expenses (simulate new account)';
+      showToast(key, '✓ Expenses restored.');
+    }
+    renderList(key);
+  }
+
+  function simulateRemoveAllCategories() {
+    const key = 'edge';
+    const s = state[key];
+    if (s.categories.length === 0) return;
+    s.categories = [];
+    if (s.filter !== 'all' && s.filter !== 'uncategorised') s.filter = 'all';
+    renderFilterOptions(key);
+    renderList(key);
+    const btn = document.getElementById('remove-categories-btn-edge');
+    btn.disabled = true;
+    btn.textContent = '✓ All categories removed';
+    const longNameBtn = document.getElementById('long-name-btn-edge');
+    longNameBtn.disabled = true; // "Housing" no longer exists to rename
+    showToast(key, '✓ Simulated: every category removed. All 9 expenses now fall back to a single "Uncategorised" group — grouping degrades gracefully instead of breaking.');
+  }
+
+  function simulateLongName() {
+    const key = 'edge';
+    const cat = state[key].categories.find(c => c.id === 'housing');
+    if (!cat) return; // already removed via "Remove all categories"
+    cat.name = 'International Travel & Client Entertainment Reimbursements';
+    renderFilterOptions(key);
+    renderList(key);
+    const btn = document.getElementById('long-name-btn-edge');
+    btn.disabled = true;
+    btn.textContent = '✓ "Housing" renamed to a long name';
+    showToast(key, '✓ Simulated: "Housing" renamed to an unusually long name. The filter option and group heading wrap instead of overflowing.');
+  }
+
   // ---------- Init ----------
-  ['main', 'rename', 'delete'].forEach(key => {
+  ['main', 'rename', 'delete', 'edge'].forEach(key => {
     renderFilterOptions(key);
     if (state[key].grouped) {
       document.getElementById(`view-flat-${key}`).classList.remove('active');
