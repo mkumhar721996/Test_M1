@@ -1,5 +1,6 @@
 const { formatCurrencyUSD } = typeof module !== 'undefined' ? require('./currency') : window;
 const { validateExpenseForm } = typeof module !== 'undefined' ? require('./validation') : window;
+const { loadExpenses, saveExpenses } = typeof module !== 'undefined' ? require('./storage') : window;
 
 const CATEGORIES = ['Food', 'Transport', 'Housing', 'Entertainment', 'Other'];
 const CATEGORY_ICONS = {
@@ -9,8 +10,13 @@ const CATEGORY_ICONS = {
   Entertainment: '🎬',
   Other: '🗂️',
 };
+function formatDisplayDate(isoDate) {
+  const d = new Date(isoDate + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function renderApp(root) {
-  const expenses = [];
+  const expenses = loadExpenses();
   let lastFocused = null;
 
   root.innerHTML = '';
@@ -44,10 +50,18 @@ function renderApp(root) {
     <h2 class="u-text-lg">No expenses yet</h2>
     <p class="u-text-md u-text-muted">Add your first expense to start tracking your spending.</p>
   `;
+  const emptyAddBtn = document.createElement('button');
+  emptyAddBtn.type = 'button';
+  emptyAddBtn.className = 'btn btn-primary';
+  emptyAddBtn.id = 'empty-add-first-btn';
+  emptyAddBtn.textContent = '+ Add your first expense';
+  emptyAddBtn.addEventListener('click', openModal);
+  emptyState.appendChild(emptyAddBtn);
 
   const list = document.createElement('ul');
   list.className = 'expense-list';
   list.id = 'expense-list';
+  expenses.forEach((expense) => list.appendChild(renderExpenseRow(expense)));
 
   main.appendChild(header);
   main.appendChild(emptyState);
@@ -135,7 +149,7 @@ function renderApp(root) {
     rowMeta.className = 'expense-row-meta';
     const date = document.createElement('span');
     date.className = 'expense-date u-text-sm u-text-muted';
-    date.textContent = expense.date;
+    date.textContent = formatDisplayDate(expense.date);
     const amount = document.createElement('span');
     amount.className = 'expense-amount';
     amount.textContent = formatCurrencyUSD(expense.amount);
@@ -169,6 +183,7 @@ function renderApp(root) {
       description: values.description.trim(),
     };
     expenses.unshift(expense);
+    saveExpenses(expenses);
     list.insertBefore(renderExpenseRow(expense), list.firstChild);
     updateSummary();
     closeModal();

@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-030 — Expense List View with Empty State</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f9fafb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.98:1). */
+  --color-fg-muted: #9ca3af; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #111827; /** Default page background. */
+  --color-surface: #1f2937; /** Slightly raised surface used behind cards and chips. */
+  --color-primary: #eab308; /** Brand/primary action color. Yellow. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is now a light yellow and white text would not clear WCAG AA against it. */
+  --color-border: #374151; /** Default hairline border for cards, inputs, and dividers. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+</style>
+<style>
+  /* Page-specific layout only — every value below resolves through design-system tokens. */
+
+  body {
+    margin: 0;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Bump the shared .btn/.input to a real 44px touch target without redefining tokens. */
+  .btn,
+  .input,
+  .select {
+    min-height: 44px;
+  }
+
+  .select {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    background: var(--color-bg);
+    border: 1px solid var(--input-default-border);
+    border-radius: var(--input-default-radius);
+  }
+  .select:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .app-topbar-brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-topbar-nav-item {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--color-fg-muted);
+  }
+  .app-topbar-nav-item.is-active {
+    color: var(--color-fg);
+    background: var(--color-bg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  .page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+  }
+  .empty-state-icon {
+    margin: 0 auto var(--space-3);
+    width: 56px;
+    height: 56px;
+    color: var(--color-fg-muted);
+  }
+  .empty-state-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2);
+  }
+  .empty-state-body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    max-width: 42ch;
+    margin: 0 auto var(--space-4);
+  }
+
+  .expense-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .expense-row {
+    background: var(--color-surface);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .expense-row .chip {
+    border: 1px solid var(--color-border);
+  }
+  .expense-primary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .expense-amount {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .expense-description {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    margin: 0;
+  }
+  .expense-date {
+    font-family: var(--font-family-base);
+  }
+
+  @media (min-width: 640px) {
+    .expense-row {
+      flex-direction: row;
+      align-items: center;
+    }
+    .expense-primary {
+      flex: 0 0 auto;
+      min-width: 190px;
+    }
+    .expense-description {
+      flex: 1;
+    }
+    .expense-date {
+      flex: 0 0 auto;
+      text-align: right;
+    }
+  }
+
+  .list-count {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3);
+  }
+
+  .demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+    box-shadow: var(--shadow-sm);
+  }
+  .demo-note-icon {
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-base);
+  }
+  .demo-note strong {
+    color: var(--color-fg);
+  }
+
+  .demo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .add-form {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .add-form h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3);
+  }
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  @media (min-width: 640px) {
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .form-field-full {
+      grid-column: 1 / -1;
+    }
+  }
+  .form-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+  }
+  .field-error {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    margin: var(--space-1) 0 0;
+  }
+  .input[aria-invalid="true"],
+  .select[aria-invalid="true"] {
+    border-color: var(--color-primary);
+  }
+
+  .toast {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-3);
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: top bar — single-page "Expenses" view (Expense Tracker MVP, M1 scope: no
+     additional nav items exist yet; the top bar establishes the app identity and the
+     current-page indicator per UI guideline §7, "always show where you are"). -->
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-030</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">&larr; Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">Next &rarr;</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+  <!-- State: empty -->
+  <!-- Screen: Empty State
+       Notes:
+         - AC1: no records exist → the list area is replaced entirely by an invitation,
+           never a blank void. Heading text is literally "No expenses yet" per the AC.
+         - "+ Add your first expense" is the only call to action on this screen. Clicking
+           it jumps to the "Live Demo" screen (via the reviewer bar), which contains the
+           actual interactive add-expense form — building the real Add Expense flow is a
+           separate story; this jump exists only so a reviewer can see the concept connect.
+         - Icon is decorative (aria-hidden) — the heading + body copy carry all meaning,
+           never color/icon alone (UI guideline §3).
+  -->
+  <div class="screen" data-name="Empty State">
+    <header class="app-topbar">
+      <span class="app-topbar-brand">Expense Tracker</span>
+      <nav aria-label="Primary">
+        <span class="app-topbar-nav-item is-active" aria-current="page">Expenses</span>
+      </nav>
+    </header>
+    <main class="page">
+      <div class="page-header">
+        <h1>Expenses</h1>
+      </div>
+
+      <div class="empty-state" role="status">
+        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+        <h2 class="empty-state-title">No expenses yet</h2>
+        <p class="empty-state-body">Start tracking your spending — add your first expense to see it listed here.</p>
+        <button type="button" class="btn btn-primary" id="goto-live-demo-btn">+ Add your first expense</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- State: populated -->
+  <!-- Screen: Populated List
+       Notes:
+         - AC2: each row shows amount ($USD, two decimals), date, category, description.
+         - AC3: fixture data is ordered most-recently-added first (Sep 17 at top, Sep 10
+           at bottom) — this is the static reference for what "correct order" looks like.
+         - AC5: every value is preceded by a visually-hidden label (".sr-only") so a screen
+           reader announces "Amount: $128.40 Category: Utilities Date: ... Description: ..."
+           — inspect with a screen reader or DevTools accessibility tree to verify.
+         - "+ Add expense" in the header is a static mock of the same control seen live in
+           the "Live Demo" screen; it does not open a form here, since this screen is a
+           fixed reference frame for the populated state, not the interactive one.
+  -->
+  <div class="screen" data-name="Populated List">
+    <header class="app-topbar">
+      <span class="app-topbar-brand">Expense Tracker</span>
+      <nav aria-label="Primary">
+        <span class="app-topbar-nav-item is-active" aria-current="page">Expenses</span>
+      </nav>
+    </header>
+    <main class="page">
+      <div class="page-header">
+        <h1>Expenses</h1>
+        <button type="button" class="btn btn-primary" disabled title="See the &quot;Live Demo&quot; screen for the working control">+ Add expense</button>
+      </div>
+      <p class="list-count">5 expenses</p>
+
+      <ul class="expense-list" aria-label="Expenses, most recently added first">
+        <li class="expense-row">
+          <div class="expense-primary">
+            <span class="expense-amount"><span class="sr-only">Amount:</span> $128.40</span>
+            <span class="chip"><span class="sr-only">Category:</span> Utilities</span>
+          </div>
+          <p class="expense-description"><span class="sr-only">Description:</span> Monthly electricity bill</p>
+          <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="2026-09-17">Sep 17, 2026</time></div>
+        </li>
+        <li class="expense-row">
+          <div class="expense-primary">
+            <span class="expense-amount"><span class="sr-only">Amount:</span> $42.50</span>
+            <span class="chip"><span class="sr-only">Category:</span> Groceries</span>
+          </div>
+          <p class="expense-description"><span class="sr-only">Description:</span> Weekly grocery run at Trader Joe's</p>
+          <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="2026-09-16">Sep 16, 2026</time></div>
+        </li>
+        <li class="expense-row">
+          <div class="expense-primary">
+            <span class="expense-amount"><span class="sr-only">Amount:</span> $16.75</span>
+            <span class="chip"><span class="sr-only">Category:</span> Dining</span>
+          </div>
+          <p class="expense-description"><span class="sr-only">Description:</span> Lunch with the team at Corner Bistro</p>
+          <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="2026-09-15">Sep 15, 2026</time></div>
+        </li>
+        <li class="expense-row">
+          <div class="expense-primary">
+            <span class="expense-amount"><span class="sr-only">Amount:</span> $9.00</span>
+            <span class="chip"><span class="sr-only">Category:</span> Transport</span>
+          </div>
+          <p class="expense-description"><span class="sr-only">Description:</span> Metro card top-up</p>
+          <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="2026-09-14">Sep 14, 2026</time></div>
+        </li>
+        <li class="expense-row">
+          <div class="expense-primary">
+            <span class="expense-amount"><span class="sr-only">Amount:</span> $64.99</span>
+            <span class="chip"><span class="sr-only">Category:</span> Entertainment</span>
+          </div>
+          <p class="expense-description"><span class="sr-only">Description:</span> Concert ticket for the Saturday show</p>
+          <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="2026-09-10">Sep 10, 2026</time></div>
+        </li>
+      </ul>
+    </main>
+  </div>
+
+  <!-- State: live-demo -->
+  <!-- Screen: Live Demo (Add expense + persistence)
+       Notes:
+         - This screen is functionally wired to real browser localStorage (key
+           "TEST-M1-STORY-030-expenses") — it is the one screen in this prototype that is
+           not a static mock, specifically to give the reviewer a concrete way to check
+           AC4: add an expense (or click "Load sample expenses"), then use your browser's
+           actual refresh (F5 / Cmd+R) — the same records reappear in the same order.
+         - "+ Add expense" reveals an inline form (amount, date, category, description).
+           Submitting simulates a ~350ms save (per UI guideline §4/§10), disables the
+           button with a "Saving…" label, then prepends the new record — demonstrating
+           AC3's most-recently-added-first ordering live.
+         - Required-field validation is inline and specific, and preserves whatever the
+           reviewer typed (UI guideline §6) — try submitting the empty form to see it.
+         - "Clear all expenses" is a destructive action; it arms on first click ("Click
+           again to confirm…") and only clears on a second click within 3s, per UI
+           guideline §4's confirm-and-name-the-consequence rule — no native browser
+           dialogs are used.
+         - The rendered list here reuses the exact row markup/labels from the "Populated
+           List" screen, so AC2/AC5 hold here too, and the empty state reuses the "Empty
+           State" screen's markup when the list is cleared, so AC1 holds here too.
+         - Revision (2026-09-18 feedback: "make more visible UI in yellow colour"): the
+           "Try it" callout above the form now uses a bold left accent, an inline warning
+           icon, and full-contrast text (was muted gray) so it reads as a can't-miss
+           callout. Rendered in this project's --color-primary, which the design system
+           now defines as yellow, so no separate warning token or hardcoded color is
+           needed.
+  -->
+  <div class="screen" data-name="Live Demo">
+    <header class="app-topbar">
+      <span class="app-topbar-brand">Expense Tracker</span>
+      <nav aria-label="Primary">
+        <span class="app-topbar-nav-item is-active" aria-current="page">Expenses</span>
+      </nav>
+    </header>
+    <main class="page">
+      <div class="page-header">
+        <h1>Expenses</h1>
+        <button type="button" class="btn btn-primary" id="live-add-toggle">+ Add expense</button>
+      </div>
+
+      <div class="demo-note">
+        <span class="demo-note-icon" aria-hidden="true">&#9888;</span>
+        <span><strong>Try it:</strong> add an expense (or click "Load sample expenses" below),
+        then refresh this page in your browser. The record(s) you added reappear in the
+        same order — this page reads and writes real <code>localStorage</code> to prove
+        AC4's persistence requirement.</span>
+      </div>
+
+      <div id="live-toast" class="toast" role="status" aria-live="polite" style="display:none;"></div>
+
+      <div id="live-add-form-wrap" style="display:none;">
+        <div class="add-form">
+          <h2>Add expense</h2>
+          <form id="live-add-form" novalidate>
+            <div class="form-grid">
+              <div>
+                <label class="label" for="live-amount">Amount (USD)</label>
+                <input class="input" type="number" id="live-amount" name="amount" min="0.01" step="0.01" inputmode="decimal" aria-describedby="live-amount-error" />
+                <p class="field-error" id="live-amount-error" hidden></p>
+              </div>
+              <div>
+                <label class="label" for="live-date">Date</label>
+                <input class="input" type="date" id="live-date" name="date" aria-describedby="live-date-error" />
+                <p class="field-error" id="live-date-error" hidden></p>
+              </div>
+              <div>
+                <label class="label" for="live-category">Category</label>
+                <select class="select" id="live-category" name="category" aria-describedby="live-category-error">
+                  <option value="" selected disabled>Select a category</option>
+                  <option value="Groceries">Groceries</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Dining">Dining</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Health">Health</option>
+                  <option value="Other">Other</option>
+                </select>
+                <p class="field-error" id="live-category-error" hidden></p>
+              </div>
+              <div class="form-field-full">
+                <label class="label" for="live-description">Description</label>
+                <input class="input" type="text" id="live-description" name="description" aria-describedby="live-description-error" maxlength="120" />
+                <p class="field-error" id="live-description-error" hidden></p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="live-save-btn">Save expense</button>
+              <button type="button" class="btn btn-secondary" id="live-cancel-btn">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Empty state (shown when localStorage has zero records) -->
+      <div id="live-empty" class="empty-state" role="status">
+        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+        <h2 class="empty-state-title">No expenses yet</h2>
+        <p class="empty-state-body">Start tracking your spending — add your first expense to see it listed here.</p>
+        <div class="demo-actions" style="justify-content:center;">
+          <button type="button" class="btn btn-primary" id="live-empty-add-btn">+ Add your first expense</button>
+          <button type="button" class="btn btn-secondary" id="live-seed-btn">Load sample expenses</button>
+        </div>
+      </div>
+
+      <!-- Populated state (shown when localStorage has one or more records) -->
+      <div id="live-list-wrap" style="display:none;">
+        <p class="list-count" id="live-count"></p>
+        <ul class="expense-list" id="live-list" aria-label="Expenses, most recently added first"></ul>
+        <div class="demo-actions">
+          <button type="button" class="btn btn-secondary" id="live-clear-btn">Clear all expenses</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<script>
+  // ---- Reviewer bar wiring ----
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  document.getElementById('goto-live-demo-btn').addEventListener('click', () => show(2));
+
+  // ---- Live Demo: real localStorage-backed expense list ----
+  const STORAGE_KEY = 'TEST-M1-STORY-030-expenses';
+
+  function loadExpenses() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function saveExpenses(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+  function formatCurrency(n) {
+    return '$' + Number(n).toFixed(2);
+  }
+  function formatDate(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;');
+  }
+  function todayOffset(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function expenseRowHTML(e) {
+    return `<li class="expense-row">
+      <div class="expense-primary">
+        <span class="expense-amount"><span class="sr-only">Amount:</span> ${formatCurrency(e.amount)}</span>
+        <span class="chip"><span class="sr-only">Category:</span> ${escapeHtml(e.category)}</span>
+      </div>
+      <p class="expense-description"><span class="sr-only">Description:</span> ${escapeHtml(e.description)}</p>
+      <div class="expense-date u-text-sm u-text-muted"><span class="sr-only">Date:</span> <time datetime="${escapeAttr(e.date)}">${formatDate(e.date)}</time></div>
+    </li>`;
+  }
+
+  function renderLiveDemo() {
+    const list = loadExpenses();
+    const emptyEl = document.getElementById('live-empty');
+    const listWrap = document.getElementById('live-list-wrap');
+    if (list.length === 0) {
+      emptyEl.style.display = '';
+      listWrap.style.display = 'none';
+    } else {
+      emptyEl.style.display = 'none';
+      listWrap.style.display = '';
+      document.getElementById('live-list').innerHTML = list.map(expenseRowHTML).join('');
+      document.getElementById('live-count').textContent = list.length + (list.length === 1 ? ' expense' : ' expenses');
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('live-toast');
+    toast.textContent = msg;
+    toast.style.display = '';
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  }
+
+  function showAddForm() {
+    const dateInput = document.getElementById('live-date');
+    if (!dateInput.value) dateInput.value = todayOffset(0);
+    document.getElementById('live-add-form-wrap').style.display = '';
+    document.getElementById('live-amount').focus();
+  }
+  function hideAddForm() {
+    document.getElementById('live-add-form-wrap').style.display = 'none';
+    document.getElementById('live-add-form').reset();
+    clearFieldErrors();
+  }
+  document.getElementById('live-add-toggle').addEventListener('click', showAddForm);
+  document.getElementById('live-empty-add-btn').addEventListener('click', showAddForm);
+  document.getElementById('live-cancel-btn').addEventListener('click', hideAddForm);
+
+  function clearFieldErrors() {
+    ['amount', 'date', 'category', 'description'].forEach(function (name) {
+      const input = document.getElementById('live-' + name);
+      const error = document.getElementById('live-' + name + '-error');
+      input.removeAttribute('aria-invalid');
+      error.hidden = true;
+      error.textContent = '';
+    });
+  }
+  function showFieldError(input, message) {
+    input.setAttribute('aria-invalid', 'true');
+    const error = document.getElementById(input.id + '-error');
+    error.hidden = false;
+    error.textContent = message;
+  }
+
+  document.getElementById('live-add-form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    clearFieldErrors();
+    const amountInput = document.getElementById('live-amount');
+    const dateInput = document.getElementById('live-date');
+    const categoryInput = document.getElementById('live-category');
+    const descInput = document.getElementById('live-description');
+
+    const amount = parseFloat(amountInput.value);
+    let valid = true;
+    if (!amountInput.value || isNaN(amount) || amount <= 0) {
+      showFieldError(amountInput, 'Enter an amount greater than $0.00');
+      valid = false;
+    }
+    if (!dateInput.value) {
+      showFieldError(dateInput, 'Select a date');
+      valid = false;
+    }
+    if (!categoryInput.value) {
+      showFieldError(categoryInput, 'Select a category');
+      valid = false;
+    }
+    if (!descInput.value.trim()) {
+      showFieldError(descInput, 'Enter a short description');
+      valid = false;
+    }
+    if (!valid) return;
+
+    const saveBtn = document.getElementById('live-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    setTimeout(function () {
+      const list = loadExpenses();
+      list.unshift({
+        amount: amount,
+        date: dateInput.value,
+        category: categoryInput.value,
+        description: descInput.value.trim(),
+        addedAt: Date.now()
+      });
+      saveExpenses(list);
+      renderLiveDemo();
+      hideAddForm();
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save expense';
+      showToast('Expense added — it now appears at the top of the list.');
+    }, 350);
+  });
+
+  document.getElementById('live-seed-btn').addEventListener('click', function () {
+    const samples = [
+      { amount: 54.20, date: todayOffset(0), category: 'Groceries', description: 'Farmers market produce run', addedAt: Date.now() },
+      { amount: 12.00, date: todayOffset(-1), category: 'Transport', description: 'Rideshare to the airport', addedAt: Date.now() - 1 },
+      { amount: 89.99, date: todayOffset(-3), category: 'Utilities', description: 'Internet bill — September', addedAt: Date.now() - 2 }
+    ];
+    saveExpenses(samples);
+    renderLiveDemo();
+    showToast('Sample expenses loaded.');
+  });
+
+  let clearArmed = false;
+  let clearTimer = null;
+  document.getElementById('live-clear-btn').addEventListener('click', function () {
+    const btn = this;
+    if (!clearArmed) {
+      clearArmed = true;
+      btn.textContent = 'Click again to confirm — this cannot be undone';
+      clearTimer = setTimeout(function () {
+        clearArmed = false;
+        btn.textContent = 'Clear all expenses';
+      }, 3000);
+      return;
+    }
+    clearTimeout(clearTimer);
+    clearArmed = false;
+    btn.textContent = 'Clear all expenses';
+    saveExpenses([]);
+    renderLiveDemo();
+    showToast('All expenses cleared.');
+  });
+
+  renderLiveDemo();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

@@ -9,6 +9,8 @@ function setup() {
   return root;
 }
 
+beforeEach(() => localStorage.clear());
+
 test('AC1: Add Expense button opens a modal with amount, date, category, and description fields', () => {
   const root = setup();
   fireEvent.click(getByRole(root, 'button', { name: 'Add Expense' }));
@@ -115,4 +117,62 @@ test('AC7: dismissing the modal via the close button creates no expense', () => 
 
   expect(modal.hidden).toBe(true);
   expect(root.querySelectorAll('#expense-list li').length).toBe(0);
+});
+
+test('List AC1/AC2: with no stored expenses, the list area shows "No expenses yet" and a prompt to add the first expense', () => {
+  const root = setup();
+
+  expect(queryByText(root, 'No expenses yet')).toBeTruthy();
+  const prompt = getByRole(root, 'button', { name: /Add your first expense/ });
+  expect(prompt).toBeTruthy();
+  expect(root.querySelectorAll('#expense-list li').length).toBe(0);
+});
+
+test('List AC3: a stored expense is rendered with its amount, date, category, and description', () => {
+  localStorage.setItem('expenses', JSON.stringify([
+    { amount: 128.4, date: '2026-09-17', category: 'Housing', description: 'Monthly rent' },
+  ]));
+  const root = setup();
+
+  const items = getAllByRole(root, 'listitem');
+  expect(items).toHaveLength(1);
+  expect(items[0].textContent).toContain('$128.40');
+  expect(items[0].textContent).toContain('Housing');
+  expect(items[0].textContent).toContain('Monthly rent');
+  expect(items[0].textContent).toContain('Sep 17, 2026');
+});
+
+test('List AC4: multiple stored expenses render in most-recently-added-first order', () => {
+  localStorage.setItem('expenses', JSON.stringify([
+    { amount: 20, date: '2026-09-02', category: 'Transport', description: 'newest' },
+    { amount: 10, date: '2026-09-01', category: 'Other', description: 'oldest' },
+  ]));
+  const root = setup();
+
+  const items = getAllByRole(root, 'listitem');
+  expect(items[0].textContent).toContain('newest');
+  expect(items[1].textContent).toContain('oldest');
+});
+
+test('List AC5: expenses added in one session reappear in the same order after reloading against the same storage', () => {
+  const root = setup();
+  fireEvent.click(getByRole(root, 'button', { name: 'Add Expense' }));
+  let modal = getByRole(root, 'dialog');
+  fireEvent.change(getByLabelText(modal, 'Amount', { exact: false }), { target: { value: '10' } });
+  fireEvent.change(getByLabelText(modal, 'Date', { exact: false }), { target: { value: '2026-09-01' } });
+  fireEvent.change(getByLabelText(modal, 'Category', { exact: false }), { target: { value: 'Other' } });
+  fireEvent.click(getByRole(modal, 'button', { name: 'Save expense' }));
+
+  fireEvent.click(getByRole(root, 'button', { name: 'Add Expense' }));
+  modal = getByRole(root, 'dialog');
+  fireEvent.change(getByLabelText(modal, 'Amount', { exact: false }), { target: { value: '20' } });
+  fireEvent.change(getByLabelText(modal, 'Date', { exact: false }), { target: { value: '2026-09-02' } });
+  fireEvent.change(getByLabelText(modal, 'Category', { exact: false }), { target: { value: 'Transport' } });
+  fireEvent.click(getByRole(modal, 'button', { name: 'Save expense' }));
+
+  // simulate refreshing the page: re-render against the same localStorage
+  const reloadedRoot = setup();
+  const items = getAllByRole(reloadedRoot, 'listitem');
+  expect(items[0].textContent).toContain('$20.00');
+  expect(items[1].textContent).toContain('$10.00');
 });
