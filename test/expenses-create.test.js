@@ -5,17 +5,21 @@ const path = require('path');
 const HTML_PATH = path.join(__dirname, '..', 'public', 'index.html');
 
 describe('Create Expense via Modal Form', () => {
-  beforeEach(() => {
+  let api;
+
+  beforeEach(async () => {
     jest.resetModules();
     localStorage.clear();
     document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
-    jest.useFakeTimers();
+    api = {
+      listExpenses: jest.fn(() => Promise.resolve([])),
+      createExpense: jest.fn((data) => Promise.resolve({ ...data, id: 'exp_new' })),
+      updateExpense: jest.fn(),
+    };
     const { initExpensesApp } = require('../public/js/expenses');
-    initExpensesApp(document);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
+    initExpensesApp(document, api);
+    await Promise.resolve();
+    await Promise.resolve();
   });
 
   test('clicking Add expense opens the create modal with every field empty', () => {
@@ -27,27 +31,46 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-field-description').value).toBe('');
   });
 
-  test('submitting a valid expense adds it to the top of the table immediately', () => {
+  test('submitting a valid expense adds it to the top of the table immediately', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
     document.getElementById('create-field-category').value = 'Travel';
     document.getElementById('create-field-description').value = 'Taxi to airport';
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    jest.advanceTimersByTime(350);
+    await Promise.resolve();
+    await Promise.resolve();
     const firstRow = document.querySelector('#expense-tbody tr');
     expect(firstRow.querySelector('.desc-cell').textContent).toBe('Taxi to airport');
     expect(firstRow.querySelector('.col-amount').textContent).toBe('$24.50');
   });
 
-  test('a valid submit shows a success toast', () => {
+  test('a valid submit calls api.createExpense with the entered fields', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
     document.getElementById('create-field-category').value = 'Travel';
     document.getElementById('create-field-description').value = 'Taxi to airport';
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    jest.advanceTimersByTime(350);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(api.createExpense).toHaveBeenCalledWith({
+      amount: 24.5,
+      date: '2026-09-20',
+      category: 'Travel',
+      description: 'Taxi to airport',
+    });
+  });
+
+  test('a valid submit shows a success toast', async () => {
+    document.getElementById('add-expense-btn').click();
+    document.getElementById('create-field-amount').value = '24.50';
+    document.getElementById('create-field-date').value = '2026-09-20';
+    document.getElementById('create-field-category').value = 'Travel';
+    document.getElementById('create-field-description').value = 'Taxi to airport';
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve();
+    await Promise.resolve();
     expect(document.getElementById('toast').hidden).toBe(false);
     expect(document.getElementById('toast-message').textContent).toBe('Expense added');
   });
@@ -77,37 +100,36 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-modal-wrap').hidden).toBe(false);
   });
 
-  test('a localStorage failure on submit shows an error toast', () => {
+  test('AC4: a failed create shows an error toast, re-enables Save, and does not add a row', async () => {
+    api.createExpense.mockImplementation(() => Promise.reject({ status: 500 }));
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
     document.getElementById('create-field-category').value = 'Travel';
     document.getElementById('create-field-description').value = 'Taxi to airport';
-    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('QuotaExceededError');
-    });
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    jest.advanceTimersByTime(350);
+    await Promise.resolve();
+    await Promise.resolve();
+
     expect(document.getElementById('toast').hidden).toBe(false);
-    expect(document.getElementById('toast-message').textContent).toMatch(/couldn.?t save/i);
-    setItemSpy.mockRestore();
+    expect(document.getElementById('toast-message').textContent).toMatch(/Couldn.?t save expense — server error \(500\)/);
+    expect(document.querySelector('.desc-cell')).toBeNull();
   });
 
-  test('a localStorage failure keeps the modal open with entered values intact', () => {
+  test('a failed create keeps the modal open with entered values intact', async () => {
+    api.createExpense.mockImplementation(() => Promise.reject({ status: 500 }));
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
     document.getElementById('create-field-category').value = 'Travel';
     document.getElementById('create-field-description').value = 'Taxi to airport';
-    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('QuotaExceededError');
-    });
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    jest.advanceTimersByTime(350);
+    await Promise.resolve();
+    await Promise.resolve();
+
     expect(document.getElementById('create-modal-wrap').hidden).toBe(false);
     expect(document.getElementById('create-field-amount').value).toBe('24.50');
     expect(document.getElementById('create-field-description').value).toBe('Taxi to airport');
-    setItemSpy.mockRestore();
   });
 
   test('cancelling the create modal adds nothing to the table', () => {
@@ -117,34 +139,6 @@ describe('Create Expense via Modal Form', () => {
     document.getElementById('create-modal-cancel-btn').click();
     expect(document.querySelectorAll('#expense-tbody tr').length).toBe(before);
     expect(document.getElementById('create-modal-wrap').hidden).toBe(true);
-  });
-
-  test('cancelling while a save is in flight does not persist the expense or add it to the table', () => {
-    const before = document.querySelectorAll('#expense-tbody tr').length;
-    document.getElementById('add-expense-btn').click();
-    document.getElementById('create-field-amount').value = '24.50';
-    document.getElementById('create-field-date').value = '2026-09-20';
-    document.getElementById('create-field-category').value = 'Travel';
-    document.getElementById('create-field-description').value = 'Taxi to airport';
-    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    document.getElementById('create-modal-cancel-btn').click();
-    jest.advanceTimersByTime(350);
-
-    expect(document.querySelectorAll('#expense-tbody tr').length).toBe(before);
-    const stored = JSON.parse(localStorage.getItem('expenses'));
-    expect(stored.some((e) => e.description === 'Taxi to airport')).toBe(false);
-  });
-
-  test('a newly created expense is still present in localStorage after the save completes', () => {
-    document.getElementById('add-expense-btn').click();
-    document.getElementById('create-field-amount').value = '24.50';
-    document.getElementById('create-field-date').value = '2026-09-20';
-    document.getElementById('create-field-category').value = 'Travel';
-    document.getElementById('create-field-description').value = 'Taxi to airport';
-    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
-    jest.advanceTimersByTime(350);
-    const stored = JSON.parse(localStorage.getItem('expenses'));
-    expect(stored.some((e) => e.description === 'Taxi to airport')).toBe(true);
   });
 
   test('validateAmount flags more than two decimal places distinctly from "required"', () => {

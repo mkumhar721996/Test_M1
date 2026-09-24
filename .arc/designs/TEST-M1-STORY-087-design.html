@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-087 — SQLite Persistence Layer</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* Page-specific layout only — every value below resolves through design-system tokens.
+     Mirrors public/css/expenses.css (the real app's stylesheet) so this prototype reads
+     as "the same app, now server-backed" rather than a redesign. */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  .btn, .input, select.input { min-height: 44px; }
+
+  .page-header-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: var(--space-3); flex-wrap: wrap;
+  }
+
+  /* ---------- Expense table (matches public/css/expenses.css) ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .expense-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted);
+    text-transform: uppercase; letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .expense-table tbody tr.row-added { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  @media (prefers-reduced-motion: reduce) { .expense-table tbody tr.row-added { animation: none; } }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
+  .btn-sm { padding: var(--space-3) var(--space-4); font-size: var(--font-size-sm); min-height: 0; }
+
+  /* ---------- Skeleton loading rows (AC5: fetch happens before content can appear) ---------- */
+  .skeleton-row td { padding: var(--space-4); border-bottom: 1px solid var(--color-border); }
+  .skeleton-bar {
+    height: 14px; border-radius: var(--radius-sm); background: var(--color-surface);
+    background-image: linear-gradient(90deg, var(--color-surface) 0%, var(--color-border) 50%, var(--color-surface) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-bar { animation: none; } }
+  .loading-caption {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); color: var(--color-fg-muted); border-bottom: 1px solid var(--color-border);
+  }
+  .spinner {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--color-border); border-top-color: var(--color-primary);
+    animation: spin 0.8s linear infinite; flex: 0 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+  /* ---------- Error state (AC3/AC4: explicit failure, never a silent fallback) ---------- */
+  .error-state {
+    text-align: center; padding: var(--space-4) var(--space-3);
+    background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+  }
+  .error-state-icon {
+    margin: 0 auto var(--space-3); width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--color-primary);
+  }
+  .error-state-title {
+    font-family: var(--font-family-base); font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-2);
+  }
+  .error-state-body {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted);
+    max-width: 48ch; margin: 0 auto var(--space-4);
+  }
+  .error-detail {
+    display: inline-block; margin: 0 auto var(--space-4); padding: var(--space-2) var(--space-3);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    font-family: monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+
+  /* ---------- Demo-only controls (clearly marked, not part of the real product) ---------- */
+  .demo-panel {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    background: var(--color-surface); border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); box-shadow: var(--shadow-sm);
+  }
+  .demo-panel-title {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0;
+  }
+  .demo-panel-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  .demo-panel label {
+    display: flex; align-items: center; gap: var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    padding: var(--space-2) 0; min-height: 44px;
+  }
+  .demo-panel input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); cursor: pointer; }
+  .demo-panel-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+
+  .persist-badge {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .persist-badge svg { flex: 0 0 auto; }
+
+  .restart-overlay {
+    position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center;
+    background: var(--color-bg); opacity: 0.92;
+  }
+  .restart-overlay[hidden] { display: none; }
+  .restart-overlay-card {
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg);
+  }
+  .restart-overlay-card .spinner { width: 28px; height: 28px; border-width: 3px; }
+
+  /* ---------- Migration screen ---------- */
+  .migration-card {
+    background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius); padding: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .migration-card h2 {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); margin: 0 0 var(--space-2);
+  }
+  .storage-inspector {
+    font-family: monospace; font-size: var(--font-size-sm); color: var(--color-fg);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: var(--space-3); white-space: pre-wrap; word-break: break-word; margin: var(--space-3) 0 0;
+    min-height: 44px;
+  }
+  .status-row { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) 0 0; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; background: var(--color-fg-muted); }
+  .status-dot.is-present { background: var(--color-primary); }
+  .status-dot.is-absent { background: var(--color-border); }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) { .reference-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1080px) { .reference-grid { grid-template-columns: repeat(3, 1fr); } }
+  .reference-grid h3 {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); margin: 0 0 var(--space-2) 0;
+  }
+  .mini-card {
+    background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius); padding: var(--space-4);
+  }
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. This mirrors the real app shell in
+     public/index.html exactly (same brand, same two nav links, "Employees" still a no-op
+     placeholder). Employees has never had a client-facing page — it is a backend-only
+     Express module (src/employees/routes.js) — so this story does not invent an Employees
+     screen; the same fetch/error/toast contract designed here is simply the pattern any
+     future Employees UI would reuse. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-087</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- State: loading -->
+    <!-- Screen: Expenses — Loading from server
+         Notes:
+           - AC5: on page load the shell requests GET /api/expenses (the new SQLite-backed
+             Express endpoint) — it never reads localStorage for this list. Skeleton rows
+             hold the exact table layout (no layout shift, UI guideline §9) while the
+             request is in flight.
+           - The caption above the rows names the request in plain language so a reviewer
+             can see this is a network fetch, not an instant local read.
+           - This is a static reference frame; see "Expenses — Live demo" for the
+             interactive version that actually resolves this loading state.
+    -->
+    <div class="screen" data-name="Expenses — Loading">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header-row">
+          <div>
+            <h1>Expenses</h1>
+            <p>Review and correct submitted expense records, or add a new one.</p>
+          </div>
+          <button type="button" class="btn btn-primary" disabled>+ Add expense</button>
+        </div>
+
+        <div class="card table-card">
+          <div class="loading-caption"><span class="spinner" aria-hidden="true"></span> Loading expenses from the server…</div>
+          <div class="table-scroll">
+            <table class="expense-table" aria-busy="true">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="skeleton-row"><td><div class="skeleton-bar" style="width:70px;"></div></td><td><div class="skeleton-bar" style="width:90px;"></div></td><td><div class="skeleton-bar" style="width:180px;"></div></td><td class="col-amount"><div class="skeleton-bar" style="width:60px;margin-left:auto;"></div></td><td class="col-actions"><div class="skeleton-bar" style="width:50px;margin-left:auto;"></div></td></tr>
+                <tr class="skeleton-row"><td><div class="skeleton-bar" style="width:70px;"></div></td><td><div class="skeleton-bar" style="width:90px;"></div></td><td><div class="skeleton-bar" style="width:220px;"></div></td><td class="col-amount"><div class="skeleton-bar" style="width:60px;margin-left:auto;"></div></td><td class="col-actions"><div class="skeleton-bar" style="width:50px;margin-left:auto;"></div></td></tr>
+                <tr class="skeleton-row"><td><div class="skeleton-bar" style="width:70px;"></div></td><td><div class="skeleton-bar" style="width:90px;"></div></td><td><div class="skeleton-bar" style="width:150px;"></div></td><td class="col-amount"><div class="skeleton-bar" style="width:60px;margin-left:auto;"></div></td><td class="col-actions"><div class="skeleton-bar" style="width:50px;margin-left:auto;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State: success -->
+    <!-- Screen: Expenses — Live demo (server-backed)
+         Notes:
+           - AC5: the table below is populated by a simulated GET /api/expenses call (a
+             setTimeout stand-in for the real fetch) — open the "Server (simulated)" panel
+             to see the fixture SQLite rows this prototype fetches from.
+           - AC1: click "Simulate server restart" — the request layer is torn down and
+             rebuilt (a full-screen "Restarting server…" transition plays), then the exact
+             same rows reappear from the same simulated SQLite store, proving records
+             survive a restart instead of resetting to a blank in-memory Map.
+           - AC3 / AC4: check "Simulate SQLite I/O error", then click "Reload from server"
+             or try to save the create/edit form — every request now resolves as an HTTP
+             500 from the simulated API. The client shows a specific error toast
+             ("Couldn't load expenses — server error (500). Try again.") and never
+             silently swaps in stale or local data; the table keeps showing its last known
+             good state (or the explicit error screen, if the failure happens on first
+             load — see "Expenses — Load error").
+           - Add/Edit still work exactly as in the current app (public/index.html) —
+             inline validation, optimistic "Saving…" button state, success toast — the
+             only change is that "save" now means "POST/PATCH the Express API", not
+             "write to localStorage".
+    -->
+    <div class="screen" data-name="Expenses — Live demo">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header-row">
+          <div>
+            <h1>Expenses</h1>
+            <p>Review and correct submitted expense records, or add a new one.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
+        </div>
+
+        <div class="demo-panel">
+          <p class="demo-panel-title"><span aria-hidden="true">&#9881;</span> Server (simulated) — demo controls, not part of the real product</p>
+          <div class="demo-panel-row">
+            <span class="persist-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg>
+              SQLite store: <strong id="db-count">4</strong> rows
+            </span>
+            <button type="button" class="btn btn-secondary btn-sm" id="restart-btn">Simulate server restart</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="reload-btn">Reload from server</button>
+          </div>
+          <div class="demo-panel-row">
+            <label for="simulate-failure-checkbox">
+              <input type="checkbox" id="simulate-failure-checkbox" />
+              Simulate SQLite I/O error on the next request
+            </label>
+          </div>
+          <p class="demo-panel-note">This panel stands in for the Express API + SQLite file described in this story. Nothing here calls a real server.</p>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expense-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit modal -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">Edit expense</h2>
+              <p>Update any field, then save to apply the correction.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="edit-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix" aria-hidden="true">$</span>
+                <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" aria-describedby="error-amount" />
+              </div>
+              <p class="field-error" id="error-amount" role="alert" hidden>⚠ Amount is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-date">Date</label>
+              <input class="input" id="field-date" name="date" type="date" aria-describedby="error-date" />
+              <p class="field-error" id="error-date" role="alert" hidden>⚠ Date is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-category">Category</label>
+              <select class="input" id="field-category" name="category" aria-describedby="error-category">
+                <option value="">Select a category</option>
+                <option>Travel</option><option>Meals</option><option>Software</option><option>Office Supplies</option><option>Other</option>
+              </select>
+              <p class="field-error" id="error-category" role="alert" hidden>⚠ Category is required.</p>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="field-description">Description <span style="font-weight: var(--font-weight-regular); color: var(--color-fg-muted);">(optional)</span></label>
+              <textarea class="input" id="field-description" name="description" rows="2"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Create modal -->
+      <div class="modal-overlay" id="create-modal-overlay" hidden></div>
+      <div class="modal-wrap" id="create-modal-wrap" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="create-modal-title">Create expense</h2>
+              <p>Enter the details of a new expense to add it to the list.</p>
+            </div>
+            <button class="icon-btn" id="create-modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="create-form" novalidate>
+            <div class="field">
+              <label class="label" for="create-field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix" aria-hidden="true">$</span>
+                <input class="input amount-input" id="create-field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="create-error-amount create-amount-hint" />
+              </div>
+              <span class="hint" id="create-amount-hint">USD, up to two decimal places</span>
+              <p class="field-error" id="create-error-amount" role="alert" hidden>⚠ Amount is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="create-field-date">Date</label>
+              <input class="input" id="create-field-date" name="date" type="date" aria-describedby="create-error-date" />
+              <p class="field-error" id="create-error-date" role="alert" hidden>⚠ Date is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="create-field-category">Category</label>
+              <select class="input" id="create-field-category" name="category" aria-describedby="create-error-category">
+                <option value="">Select a category</option>
+                <option>Travel</option><option>Meals</option><option>Software</option><option>Office Supplies</option><option>Other</option>
+              </select>
+              <p class="field-error" id="create-error-category" role="alert" hidden>⚠ Category is required.</p>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="create-field-description">Description</label>
+              <textarea class="input" id="create-field-description" name="description" rows="2" aria-describedby="create-error-description"></textarea>
+              <p class="field-error" id="create-error-description" role="alert" hidden>⚠ Description is required.</p>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="create-modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Save expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="restart-overlay" id="restart-overlay" hidden>
+        <div class="restart-overlay-card">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Restarting server…</span>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Expense updated</span>
+      </div>
+    </div>
+
+    <!-- State: error -->
+    <!-- Screen: Expenses — Load error
+         Notes:
+           - AC3: the simulated GET /api/expenses request resolves as an HTTP 500 (a
+             stand-in for a SQLite I/O error), so the table area renders an explicit error
+             state instead of any table content — never an empty list, never a quietly
+             re-shown cached/local copy.
+           - AC4: an error toast fires the moment the request fails, independent of this
+             on-page banner — a reviewer relying only on the toast (e.g. if they glance
+             away from the table) still gets the notification.
+           - Error copy states what happened and how to fix it (UI guideline §5): the
+             request that failed, the status code, and a "Try again" action — never a raw
+             stack trace or a vague "Something went wrong."
+    -->
+    <div class="screen" data-name="Expenses — Load error">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header-row">
+          <div>
+            <h1>Expenses</h1>
+            <p>Review and correct submitted expense records, or add a new one.</p>
+          </div>
+          <button type="button" class="btn btn-primary" disabled>+ Add expense</button>
+        </div>
+
+        <div class="card table-card" style="padding: var(--space-4);">
+          <div class="error-state" role="alert">
+            <div class="error-state-icon" aria-hidden="true">⚠</div>
+            <h2 class="error-state-title">Couldn't load expenses</h2>
+            <p class="error-state-body">The server couldn't read expense records from its database. Your existing data is safe — try again in a moment.</p>
+            <div class="error-detail">GET /api/expenses → 500 Internal Server Error</div>
+            <div>
+              <button type="button" class="btn btn-primary" id="error-retry-btn">Try again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="error-screen-toast" role="status" aria-live="assertive" hidden>
+        <span class="toast-icon" aria-hidden="true">⚠</span>
+        <span>Couldn't load expenses — server error (500). Try again.</span>
+      </div>
+    </div>
+
+    <!-- State: migration -->
+    <!-- Screen: Legacy localStorage cleanup
+         Notes:
+           - AC2: this screen inspects and mutates this browser tab's *real* localStorage
+             (not simulated) under the exact key the current app uses — 'expenses' (see
+             public/js/expenses.js, STORAGE_KEY). It is a faithful, testable stand-in for
+             what runs once when the unified shell loads.
+           - "Simulate a browser that still has old expense data" writes a legacy payload
+             into localStorage['expenses'] and re-checks — the status flips to "Present",
+             mirroring what a returning user's browser looks like today, pre-migration.
+           - "Load app (run migration check)" is the actual behavior under test: it reads
+             the key, and if present, deletes it and shows the confirmation toast — proving
+             the key is gone afterward, on this exact browser storage, not a mock of it.
+           - Deleting the key never touches the expense data itself — that now lives only
+             in SQLite via the API (see "Expenses — Live demo"); this cleanup simply
+             retires the old client-side cache so nothing stale can ever be read from it
+             again.
+    -->
+    <div class="screen" data-name="Legacy localStorage cleanup">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>One-time migration off localStorage</h1>
+          <p>Runs automatically when the unified shell loads — this screen exposes it for review.</p>
+        </div>
+
+        <div class="migration-card">
+          <h2>1. Simulate a returning browser</h2>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Before this story shipped, the app wrote expenses straight into <code>localStorage['expenses']</code>. Click below to recreate that on this page.</p>
+          <div class="demo-panel-row" style="margin-top: var(--space-3);">
+            <button type="button" class="btn btn-secondary btn-sm" id="seed-legacy-btn">Simulate a browser that still has old expense data</button>
+          </div>
+          <div class="status-row">
+            <span class="status-dot" id="legacy-status-dot" aria-hidden="true"></span>
+            <span class="u-text-sm" id="legacy-status-text">Checking localStorage['expenses']…</span>
+          </div>
+          <pre class="storage-inspector" id="legacy-storage-value">(empty)</pre>
+        </div>
+
+        <div class="migration-card">
+          <h2>2. Load the app</h2>
+          <p class="u-text-sm u-text-muted" style="margin:0;">This is the real check that now runs on every page load, before the expenses table fetches from the API.</p>
+          <div class="demo-panel-row" style="margin-top: var(--space-3);">
+            <button type="button" class="btn btn-primary btn-sm" id="run-migration-btn">Load app (run migration check)</button>
+          </div>
+          <div class="status-row">
+            <span class="status-dot" id="post-status-dot" aria-hidden="true"></span>
+            <span class="u-text-sm" id="post-status-text">Not run yet.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="migration-toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" aria-hidden="true">✓</span>
+        <span id="migration-toast-message">Old browser-saved expenses removed — this list now loads from the server.</span>
+      </div>
+    </div>
+
+    <!-- State: reference -->
+    <!-- Screen: Reference states
+         Notes:
+           - Static side-by-side snapshots of every state called out in the acceptance
+             criteria, for a reviewer who wants the whole picture at a glance without
+             driving each interaction individually.
+    -->
+    <div class="screen" data-name="Reference states">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots. Use the other screens to try each flow live.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Persisted across restart</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <div class="mini-card">
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3);">After "Simulate server restart" on the Live demo screen:</p>
+              <div class="toast" style="position: static; margin: 0; max-width: none;">
+                <span aria-hidden="true">✓</span>
+                <span>Server restarted — 4 expenses reloaded from SQLite, nothing was lost.</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Migration key removed</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <div class="mini-card">
+              <div class="status-row" style="margin-top:0;">
+                <span class="status-dot is-absent" aria-hidden="true"></span>
+                <span class="u-text-sm">localStorage['expenses'] — Absent</span>
+              </div>
+              <div class="toast" style="position: static; margin-top: var(--space-3); max-width: none;">
+                <span aria-hidden="true">✓</span>
+                <span>Old browser-saved expenses removed — this list now loads from the server.</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Server error → HTTP status</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <div class="mini-card">
+              <div class="error-detail" style="margin:0 0 0 0;">GET /api/expenses → 500 Internal Server Error</div>
+              <div class="error-detail" style="margin: var(--space-2) 0 0;">POST /api/expenses → 500 Internal Server Error</div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Error toast, no silent fallback</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="mini-card">
+              <div class="toast" style="position: static; margin: 0; max-width: none;">
+                <span aria-hidden="true">⚠</span>
+                <span>Couldn't save expense — server error (500). Try again.</span>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">
+                The table keeps its last known-good rows (or the explicit error screen on
+                first load) — it never quietly swaps in stale or local data instead.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Fetched from the API, not localStorage</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <div class="mini-card">
+              <div class="loading-caption" style="border-bottom:none; padding: 0 0 var(--space-3);">
+                <span class="spinner" aria-hidden="true"></span> GET /api/expenses
+              </div>
+              <table class="expense-table" style="min-width:0;">
+                <tbody>
+                  <tr><td>09/02/2026</td><td><span class="chip">Travel</span></td><td class="desc-cell">Flight to Chicago client site</td><td class="col-amount">$482.50</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  const screenEnterHandlers = {};
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    const name = screens[cur].dataset.name;
+    document.getElementById('screen-label').textContent = `${cur + 1} / ${screens.length}: ${name}`;
+    if (typeof screenEnterHandlers[name] === 'function') screenEnterHandlers[name]();
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ================= Live demo (simulated SQLite-backed Express API) =================
+  const INITIAL_ROWS = [
+    { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
+    { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
+    { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
+    { id: 'exp_004', date: '2026-09-14', category: 'Office Supplies', description: 'Replacement laptop charger', amount: 34.99 },
+  ];
+  // Stands in for the SQLite file on disk: survives "server restarts" below because it
+  // lives outside any function that gets torn down and rebuilt.
+  let simulatedDb = INITIAL_ROWS.map((r) => ({ ...r }));
+  let nextDbId = simulatedDb.length + 1;
+
+  function apiRequest(action) {
+    const simulateFailure = document.getElementById('simulate-failure-checkbox').checked;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (simulateFailure) {
+          reject({ status: 500, message: 'SQLite I/O error' });
+        } else {
+          resolve(action());
+        }
+      }, 350);
+    });
+  }
+  function apiGetExpenses() { return apiRequest(() => simulatedDb.map((r) => ({ ...r }))); }
+  function apiCreateExpense(data) {
+    return apiRequest(() => {
+      const row = { id: 'exp_' + String(nextDbId++).padStart(3, '0'), ...data };
+      simulatedDb = [row, ...simulatedDb];
+      return row;
+    });
+  }
+  function apiUpdateExpense(id, data) {
+    return apiRequest(() => {
+      simulatedDb = simulatedDb.map((r) => (r.id === id ? { ...r, ...data } : r));
+      return simulatedDb.find((r) => r.id === id);
+    });
+  }
+
+  function formatUSD(amount) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  }
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let expenses = [];
+  let editingId = null;
+  let lastAddedId = null;
+
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const form = document.getElementById('edit-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+  const fieldAmount = document.getElementById('field-amount');
+  const fieldDate = document.getElementById('field-date');
+  const fieldCategory = document.getElementById('field-category');
+  const fieldDescription = document.getElementById('field-description');
+  const errorAmount = document.getElementById('error-amount');
+  const errorDate = document.getElementById('error-date');
+  const errorCategory = document.getElementById('error-category');
+
+  const toast = document.getElementById('toast');
+  const toastIcon = document.getElementById('toast-icon');
+  const toastMessage = document.getElementById('toast-message');
+  let toastTimer = null;
+  function showToast(kind, message) {
+    toastIcon.textContent = kind === 'error' ? '⚠' : '✓';
+    toastMessage.textContent = message;
+    toast.hidden = false;
+    toast.setAttribute('aria-live', kind === 'error' ? 'assertive' : 'polite');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+  }
+
+  function renderList() {
+    const tbody = document.getElementById('expense-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    document.getElementById('db-count').textContent = String(simulatedDb.length);
+
+    if (expenses.length === 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'empty-row';
+      tr.innerHTML = '<td colspan="5" style="text-align:center;color:var(--color-fg-muted);padding:var(--space-4);">No expenses yet.</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+    expenses.forEach((exp) => {
+      const tr = document.createElement('tr');
+      if (exp.id === lastAddedId) tr.className = 'row-added';
+      tr.innerHTML = `
+        <td>${escapeHtml(formatDateDisplay(exp.date))}</td>
+        <td><span class="chip">${escapeHtml(exp.category)}</span></td>
+        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
+        <td class="col-amount">${formatUSD(exp.amount)}</td>
+        <td class="col-actions"><button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    lastAddedId = null;
+    tbody.querySelectorAll('[data-edit-id]').forEach((btn) => {
+      btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
+    });
+  }
+
+  function loadFromServer() {
+    apiGetExpenses().then((rows) => {
+      expenses = rows;
+      renderList();
+    }).catch((err) => {
+      showToast('error', `Couldn't load expenses — server error (${err.status}). Try again.`);
+    });
+  }
+
+  document.getElementById('reload-btn').addEventListener('click', loadFromServer);
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    const overlayEl = document.getElementById('restart-overlay');
+    overlayEl.hidden = false;
+    setTimeout(() => {
+      overlayEl.hidden = true;
+      loadFromServer();
+      showToast('success', `Server restarted — ${simulatedDb.length} expenses reloaded from SQLite, nothing was lost.`);
+    }, 900);
+  });
+
+  function setFieldError(fieldEl, errorEl, hasError, message) {
+    errorEl.hidden = !hasError;
+    if (hasError && message) errorEl.textContent = '⚠ ' + message;
+    fieldEl.classList.toggle('input-invalid', hasError);
+    fieldEl.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+  }
+  function clearAllErrors() {
+    setFieldError(fieldAmount, errorAmount, false);
+    setFieldError(fieldDate, errorDate, false);
+    setFieldError(fieldCategory, errorCategory, false);
+  }
+
+  function openEditModal(id) {
+    const exp = expenses.find((e) => e.id === id);
+    if (!exp) return;
+    editingId = id;
+    fieldAmount.value = exp.amount.toFixed(2);
+    fieldDate.value = exp.date;
+    fieldCategory.value = exp.category;
+    fieldDescription.value = exp.description;
+    clearAllErrors();
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    fieldAmount.focus();
+  }
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    editingId = null;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save changes';
+  }
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const amountRaw = fieldAmount.value.trim();
+    const dateValue = fieldDate.value.trim();
+    const categoryValue = fieldCategory.value;
+    const amountValue = parseFloat(amountRaw);
+    const errors = {
+      amount: (amountRaw === '' || Number.isNaN(amountValue) || amountValue <= 0) ? 'Amount is required.' : null,
+      date: dateValue === '' ? 'Date is required.' : null,
+      category: categoryValue === '' ? 'Category is required.' : null,
+    };
+    setFieldError(fieldAmount, errorAmount, Boolean(errors.amount));
+    setFieldError(fieldDate, errorDate, Boolean(errors.date));
+    setFieldError(fieldCategory, errorCategory, Boolean(errors.category));
+    if (errors.amount || errors.date || errors.category) return;
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    const targetId = editingId;
+    apiUpdateExpense(targetId, {
+      amount: Math.round(amountValue * 100) / 100,
+      date: dateValue,
+      category: categoryValue,
+      description: fieldDescription.value.trim(),
+    }).then(() => {
+      closeModal();
+      loadFromServer();
+      showToast('success', 'Expense updated');
+    }).catch((err) => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save changes';
+      showToast('error', `Couldn't save expense — server error (${err.status}). Try again.`);
+    });
+  });
+
+  // ---------- Create modal ----------
+  const createOverlay = document.getElementById('create-modal-overlay');
+  const createModalWrap = document.getElementById('create-modal-wrap');
+  const createForm = document.getElementById('create-form');
+  const createSaveBtn = document.getElementById('create-modal-save-btn');
+  const createFieldAmount = document.getElementById('create-field-amount');
+  const createFieldDate = document.getElementById('create-field-date');
+  const createFieldCategory = document.getElementById('create-field-category');
+  const createFieldDescription = document.getElementById('create-field-description');
+  const createErrorAmount = document.getElementById('create-error-amount');
+  const createErrorDate = document.getElementById('create-error-date');
+  const createErrorCategory = document.getElementById('create-error-category');
+  const createErrorDescription = document.getElementById('create-error-description');
+
+  function clearAllCreateErrors() {
+    setFieldError(createFieldAmount, createErrorAmount, false);
+    setFieldError(createFieldDate, createErrorDate, false);
+    setFieldError(createFieldCategory, createErrorCategory, false);
+    setFieldError(createFieldDescription, createErrorDescription, false);
+  }
+  function openCreateModal() {
+    createForm.reset();
+    clearAllCreateErrors();
+    createOverlay.hidden = false;
+    createModalWrap.hidden = false;
+    createFieldAmount.focus();
+  }
+  function closeCreateModal() {
+    createOverlay.hidden = true;
+    createModalWrap.hidden = true;
+    createSaveBtn.disabled = false;
+    createSaveBtn.textContent = 'Save expense';
+  }
+  document.getElementById('add-expense-btn').addEventListener('click', openCreateModal);
+  document.getElementById('create-modal-close-btn').addEventListener('click', closeCreateModal);
+  document.getElementById('create-modal-cancel-btn').addEventListener('click', closeCreateModal);
+  createOverlay.addEventListener('click', closeCreateModal);
+
+  function validateAmount(raw) {
+    const trimmed = (raw || '').trim();
+    if (trimmed === '') return 'Amount is required.';
+    if (!/^\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid amount, e.g. 24.50.';
+    const decimalMatch = trimmed.match(/\.(\d+)$/);
+    if (decimalMatch && decimalMatch[1].length > 2) return 'Amount can have at most 2 decimal places.';
+    if (parseFloat(trimmed) <= 0) return 'Enter an amount greater than $0.00.';
+    return '';
+  }
+
+  createForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const amountRaw = createFieldAmount.value;
+    const dateValue = createFieldDate.value.trim();
+    const categoryValue = createFieldCategory.value;
+    const descriptionValue = createFieldDescription.value.trim();
+    const errors = {
+      amount: validateAmount(amountRaw) || null,
+      date: dateValue === '' ? 'Date is required.' : null,
+      category: categoryValue === '' ? 'Category is required.' : null,
+      description: descriptionValue === '' ? 'Description is required.' : null,
+    };
+    setFieldError(createFieldAmount, createErrorAmount, Boolean(errors.amount), errors.amount);
+    setFieldError(createFieldDate, createErrorDate, Boolean(errors.date), errors.date);
+    setFieldError(createFieldCategory, createErrorCategory, Boolean(errors.category), errors.category);
+    setFieldError(createFieldDescription, createErrorDescription, Boolean(errors.description), errors.description);
+    if (errors.amount || errors.date || errors.category || errors.description) return;
+
+    createSaveBtn.disabled = true;
+    createSaveBtn.textContent = 'Saving…';
+    apiCreateExpense({
+      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+      date: dateValue,
+      category: categoryValue,
+      description: descriptionValue,
+    }).then((row) => {
+      lastAddedId = row.id;
+      closeCreateModal();
+      loadFromServer();
+      showToast('success', 'Expense added');
+    }).catch((err) => {
+      createSaveBtn.disabled = false;
+      createSaveBtn.textContent = 'Save expense';
+      showToast('error', `Couldn't save expense — server error (${err.status}). Try again.`);
+    });
+  });
+
+  // Kick off the initial "page load" fetch for the Live demo screen.
+  loadFromServer();
+
+  // ================= Expenses — Load error screen =================
+  (function () {
+    const t = document.getElementById('error-screen-toast');
+    let flashTimer = null;
+    function flashErrorToast() {
+      t.hidden = false;
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(() => { t.hidden = true; }, 3500);
+    }
+    document.getElementById('error-retry-btn').addEventListener('click', flashErrorToast);
+    // Fire whenever a reviewer arrives at this screen, same as a real failed page load would.
+    screenEnterHandlers['Expenses — Load error'] = flashErrorToast;
+  })();
+
+  // ================= Legacy localStorage migration screen =================
+  const LEGACY_KEY = 'expenses';
+  const legacyDot = document.getElementById('legacy-status-dot');
+  const legacyText = document.getElementById('legacy-status-text');
+  const legacyValue = document.getElementById('legacy-storage-value');
+  const postDot = document.getElementById('post-status-dot');
+  const postText = document.getElementById('post-status-text');
+  const migrationToast = document.getElementById('migration-toast');
+
+  function refreshLegacyInspector() {
+    let raw = null;
+    try { raw = localStorage.getItem(LEGACY_KEY); } catch (e) { /* storage unavailable */ }
+    if (raw) {
+      legacyDot.className = 'status-dot is-present';
+      legacyText.textContent = "localStorage['expenses'] — Present";
+      legacyValue.textContent = raw;
+    } else {
+      legacyDot.className = 'status-dot is-absent';
+      legacyText.textContent = "localStorage['expenses'] — Absent";
+      legacyValue.textContent = '(empty)';
+    }
+  }
+
+  document.getElementById('seed-legacy-btn').addEventListener('click', () => {
+    try {
+      localStorage.setItem(LEGACY_KEY, JSON.stringify([
+        { id: 'exp_001', date: '2026-08-11', category: 'Meals', description: 'Legacy client-only record', amount: 22.10 },
+      ]));
+    } catch (e) { /* storage unavailable */ }
+    refreshLegacyInspector();
+  });
+
+  document.getElementById('run-migration-btn').addEventListener('click', () => {
+    let hadKey = false;
+    try { hadKey = localStorage.getItem(LEGACY_KEY) !== null; } catch (e) { /* storage unavailable */ }
+    if (hadKey) {
+      try { localStorage.removeItem(LEGACY_KEY); } catch (e) { /* storage unavailable */ }
+      postDot.className = 'status-dot is-absent';
+      postText.textContent = 'Key found and removed — expenses now load only from the server.';
+      migrationToast.hidden = false;
+      clearTimeout(refreshLegacyInspector._t);
+      setTimeout(() => { migrationToast.hidden = true; }, 3500);
+    } else {
+      postDot.className = 'status-dot is-absent';
+      postText.textContent = 'No legacy key found — nothing to clean up.';
+    }
+    refreshLegacyInspector();
+  });
+
+  refreshLegacyInspector();
+
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

@@ -61,8 +61,11 @@
     </div>
 
     <div class="card table-card">
-      <div class="table-scroll">
-        <table class="expense-table">
+      <div class="loading-caption" id="expenses-loading-caption" hidden>
+        <span class="spinner" aria-hidden="true"></span> Loading expenses from the server…
+      </div>
+      <div class="table-scroll" id="expenses-table-scroll">
+        <table class="expense-table" id="expense-table">
           <thead>
             <tr>
               <th scope="col">Date</th>
@@ -76,6 +79,15 @@
             <!-- rendered by JS -->
           </tbody>
         </table>
+      </div>
+      <div class="error-state" id="expenses-error-state" role="alert" hidden>
+        <div class="error-state-icon" aria-hidden="true">⚠</div>
+        <h2 class="error-state-title">Couldn't load expenses</h2>
+        <p class="error-state-body">The server couldn't read expense records from its database. Your existing data is safe — try again in a moment.</p>
+        <div class="error-detail" id="expenses-error-detail"></div>
+        <div>
+          <button type="button" class="btn btn-primary" id="expenses-error-retry-btn">Try again</button>
+        </div>
       </div>
     </div>
   </div>

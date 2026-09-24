@@ -4,13 +4,28 @@ const path = require('path');
 
 const HTML_PATH = path.join(__dirname, '..', 'public', 'index.html');
 
+function fixtureExpenses() {
+  return [
+    { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
+    { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
+    { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
+  ];
+}
+
 describe('Filter Expenses by Category and Date Range', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.resetModules();
     localStorage.clear();
     document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+    const api = {
+      listExpenses: () => Promise.resolve(fixtureExpenses()),
+      createExpense: jest.fn(),
+      updateExpense: jest.fn(),
+    };
     const { initExpensesApp } = require('../public/js/expenses');
-    initExpensesApp(document);
+    initExpensesApp(document, api);
+    await Promise.resolve();
+    await Promise.resolve();
   });
 
   test('the category dropdown and both date pickers are visible on page load with no toggle', () => {
