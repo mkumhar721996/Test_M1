@@ -8,77 +8,106 @@
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/expenses.css" />
 <script src="./js/expenses.js" defer></script>
+<script src="./js/nav.js" defer></script>
 </head>
 <body class="u-surface">
 
   <div class="app-topbar">
     <span class="brand">Expense Tracker</span>
-    <nav class="app-nav">
-      <a href="#" class="active" aria-current="page">Expenses</a>
-      <a href="#" onclick="return false;">Employees</a>
+    <nav class="app-nav" aria-label="Primary">
+      <a href="#/expenses" class="active" aria-current="page" data-nav="expenses">Expenses</a>
+      <a href="#/employees" data-nav="employees">Employees</a>
     </nav>
   </div>
 
-  <div class="page">
-    <div class="page-header page-header-row">
-      <div>
-        <h1>Expenses</h1>
-        <p>Review and correct submitted expense records, or add a new one.</p>
+  <section id="section-expenses" class="app-section" data-section="expenses">
+    <div class="page">
+      <div class="page-header page-header-row">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
       </div>
-      <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
-    </div>
 
-    <form role="search" aria-label="Filter expenses" class="filter-bar" onsubmit="return false;">
-      <div class="filter-field">
-        <label class="label" for="filter-category">Category</label>
-        <select class="input" id="filter-category" aria-label="Category">
-          <option value="">All categories</option>
-          <option>Travel</option>
-          <option>Meals</option>
-          <option>Software</option>
-          <option>Office Supplies</option>
-          <option>Other</option>
-        </select>
+      <form role="search" aria-label="Filter expenses" class="filter-bar" onsubmit="return false;">
+        <div class="filter-field">
+          <label class="label" for="filter-category">Category</label>
+          <select class="input" id="filter-category" aria-label="Category">
+            <option value="">All categories</option>
+            <option>Travel</option>
+            <option>Meals</option>
+            <option>Software</option>
+            <option>Office Supplies</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-start-date">From</label>
+          <input class="input" type="date" id="filter-start-date" aria-label="Start date" />
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-end-date">To</label>
+          <input class="input" type="date" id="filter-end-date" aria-label="End date" />
+        </div>
+        <div class="filter-field filter-actions-field">
+          <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
+        </div>
+      </form>
+      <p class="filter-hint" id="date-order-hint" hidden>
+        <span class="filter-hint-icon" aria-hidden="true">&#9888;</span>Start date is after end
+        date — no expenses will fall in range.
+      </p>
+      <div class="filter-result-row">
+        <p class="list-count" id="result-count" aria-live="polite"></p>
       </div>
-      <div class="filter-field">
-        <label class="label" for="filter-start-date">From</label>
-        <input class="input" type="date" id="filter-start-date" aria-label="Start date" />
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-end-date">To</label>
-        <input class="input" type="date" id="filter-end-date" aria-label="End date" />
-      </div>
-      <div class="filter-field filter-actions-field">
-        <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
-      </div>
-    </form>
-    <p class="filter-hint" id="date-order-hint" hidden>
-      <span class="filter-hint-icon" aria-hidden="true">&#9888;</span>Start date is after end
-      date — no expenses will fall in range.
-    </p>
-    <div class="filter-result-row">
-      <p class="list-count" id="result-count" aria-live="polite"></p>
-    </div>
 
-    <div class="card table-card">
-      <div class="table-scroll">
-        <table class="expense-table">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Category</th>
-              <th scope="col">Description</th>
-              <th scope="col" class="col-amount">Amount</th>
-              <th scope="col" class="col-actions">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="expense-tbody">
-            <!-- rendered by JS -->
-          </tbody>
-        </table>
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expense-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section id="section-employees" class="app-section" data-section="employees" hidden>
+    <div class="page">
+      <div class="page-header">
+        <h1>Employees</h1>
+        <p>Manage the people who submit and approve expenses.</p>
+      </div>
+      <div class="card placeholder-card">
+        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="9" cy="8" r="3"></circle>
+          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path>
+          <circle cx="17" cy="9" r="2.5"></circle>
+          <path d="M15.5 14.2c1.9.4 3.5 2 3.5 5.8"></path>
+        </svg>
+        <p class="placeholder-title">Employees is coming soon</p>
+        <p class="placeholder-body">
+          We're building out employee records, roles, and approval routing. For now this
+          section is a placeholder — check back soon for the full experience.
+        </p>
+        <span class="placeholder-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l2.5 2.5"></path></svg>
+          In development
+        </span>
+      </div>
+    </div>
+  </section>
 
   <!-- Edit modal: hidden until an "Edit" action is activated -->
   <div class="modal-overlay" id="modal-overlay" hidden></div>
