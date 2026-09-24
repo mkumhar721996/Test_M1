@@ -62,6 +62,75 @@ describe('Edit Expense via Modal Form', () => {
     expect(row.querySelector('.col-amount').textContent).toBe('$512.50');
   });
 
+  test('the table reflects every updated field (date, category, description, amount) immediately after saving', () => {
+    document.querySelector('[data-edit-id="exp_002"]').click();
+    document.getElementById('field-amount').value = '120.00';
+    document.getElementById('field-date').value = '2026-09-20';
+    document.getElementById('field-category').value = 'Software';
+    document.getElementById('field-description').value = 'Updated description';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    const row = document.querySelector('[data-edit-id="exp_002"]').closest('tr');
+    expect(row.children[0].textContent).toBe('09/20/2026');
+    expect(row.querySelector('.chip').textContent).toBe('Software');
+    expect(row.querySelector('.desc-cell').textContent).toBe('Updated description');
+    expect(row.querySelector('.col-amount').textContent).toBe('$120.00');
+  });
+
+  test('a successful save shows a success toast', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '512.50';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toBe('Expense updated');
+  });
+
+  test('submitting with both Amount and Category invalid shows an inline error for each, leaving the valid Date field alone', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '';
+    document.getElementById('field-category').value = '';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    expect(document.getElementById('error-amount').hidden).toBe(false);
+    expect(document.getElementById('error-category').hidden).toBe(false);
+    expect(document.getElementById('error-date').hidden).toBe(true);
+  });
+
+  test('submitting with an invalid field does not update the stored or rendered expense', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_001').amount).toBe(482.5);
+    const row = document.querySelector('[data-edit-id="exp_001"]').closest('tr');
+    expect(row.querySelector('.col-amount').textContent).toBe('$482.50');
+  });
+
+  test('the close (X) button discards in-progress edits, same as Cancel', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '999.99';
+    document.getElementById('modal-close-btn').click();
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_001').amount).toBe(482.5);
+    expect(document.getElementById('modal-wrap').hidden).toBe(true);
+  });
+
+  test('an edited expense still shows its updated values after the page is reloaded', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '512.50';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+    jest.resetModules();
+    const { initExpensesApp: reInit } = require('../public/js/expenses');
+    reInit(document);
+
+    const row = document.querySelector('[data-edit-id="exp_001"]').closest('tr');
+    expect(row.querySelector('.col-amount').textContent).toBe('$512.50');
+  });
+
   test('cancelling the modal discards in-progress edits to the record', () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '999.99';
