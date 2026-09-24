@@ -4,6 +4,7 @@ const employeesRouter = require('./employees/routes');
 const workflowsRouter = require('./workflows/routes');
 const runsRouter = require('./runs/routes');
 const hiresRouter = require('./hires/routes');
+const authRouter = require('./auth/routes');
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use('/employees', employeesRouter);
 app.use('/workflows', workflowsRouter);
 app.use('/runs', runsRouter);
 app.use('/hires', hiresRouter);
+app.use('/auth', authRouter);
 
 app.use((err, req, res, next) => {
   res.status(500).json({ error: 'internal server error' });

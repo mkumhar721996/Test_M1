@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Expense Tracker</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/auth.css" />
+<script src="./js/sign-in.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+  <div class="auth-wrap">
+    <div class="card auth-card">
+      <div id="signin-banner" hidden class="reset-banner" role="status">
+        <span class="status-icon is-success reset-banner-icon" aria-hidden="true">✓</span>
+        <span><strong>Password updated.</strong> Sign in with your new password.</span>
+      </div>
+      <h1>Sign in</h1>
+      <p class="lede">Access your Expense Tracker account.</p>
+      <div class="field">
+        <label class="label" for="si-email">Email or phone number</label>
+        <input class="input" id="si-email" type="text" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label class="label" for="si-password">Password</label>
+        <input class="input" id="si-password" type="password" placeholder="••••••••" />
+      </div>
+      <button type="button" class="btn btn-primary btn-block" id="signin-submit-btn">Sign in</button>
+      <div class="form-footer">
+        <a class="link-btn" href="./forgot-password.html" id="go-forgot-btn">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
