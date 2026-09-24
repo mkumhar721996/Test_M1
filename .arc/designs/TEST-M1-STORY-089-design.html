@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-089 — Employees Nav Placeholder Routing</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* Page-specific layout only — every value below resolves through design-system tokens.
+     app-topbar/app-nav/page/card classes come from prototype-utils.css; only the expense
+     table and placeholder card need page-specific rules here, mirroring TEST-M1-STORY-094's
+     table pattern so this screen reads as the same app, not a new visual language. */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* Bump shared controls to a real 44px touch target without redefining tokens. */
+  .btn { min-height: 44px; }
+
+  /* ---------- Expense table (matches the existing Expenses section) ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .expense-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
+
+  /* ---------- Employees placeholder (AC3, AC4) ---------- */
+  .placeholder-card {
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+  }
+  .placeholder-icon {
+    margin: 0 auto var(--space-3);
+    width: 48px;
+    height: 48px;
+    color: var(--color-fg-muted);
+  }
+  .placeholder-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2);
+  }
+  .placeholder-body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+  .placeholder-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-3);
+    padding: var(--space-1) var(--space-3);
+    background: var(--chip-default-background);
+    color: var(--chip-default-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Nav-click flash (visible feedback per UI guideline §4) ---------- */
+  .app-nav a { transition: color 150ms ease-out, border-color 150ms ease-out; }
+  @media (prefers-reduced-motion: reduce) {
+    .app-nav a { transition: none; }
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: top bar — Expenses · Employees (Expense Tracker MVP; matches the nav
+     structure already established by the Expenses screens, so the re-enabled Employees
+     link reads as part of the same shell rather than a new surface). -->
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-089</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">&larr; Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">Next &rarr;</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+  <!-- State: expenses-active -->
+  <!-- Screen: Expenses (current section)
+       Notes:
+         - This is the starting point: the unified shell with the Expenses nav link active
+           and the expense table rendered, same as today.
+         - The Employees nav link is re-enabled here (no longer a dead/disabled link) —
+           click it to exercise AC1: the app navigates to the Employees section with no
+           JS error (open devtools console to confirm nothing is thrown).
+         - Clicking Employees also updates the URL hash to "#/employees", standing in for
+           real client-side routing (AC1 says "the browser navigates").
+         - This screen is the target of AC6 ("navigates back to the expenses table") when
+           reached from the placeholder screen.
+  -->
+  <div class="screen" data-name="Expenses (current section)">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav" aria-label="Primary">
+        <a href="#/expenses" class="active" aria-current="page" data-nav="expenses">Expenses</a>
+        <a href="#/employees" data-nav="employees">Employees</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <div class="page-header page-header-row" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" disabled>+ Add expense</button>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>09/22/2026</td>
+                <td><span class="chip">Office Supplies</span></td>
+                <td class="desc-cell">Printer paper &amp; ink</td>
+                <td class="col-amount">$27.60</td>
+              </tr>
+              <tr>
+                <td>09/20/2026</td>
+                <td><span class="chip">Meals</span></td>
+                <td class="desc-cell">Coffee with vendor</td>
+                <td class="col-amount">$12.40</td>
+              </tr>
+              <tr>
+                <td>09/18/2026</td>
+                <td><span class="chip">Software</span></td>
+                <td class="desc-cell">Notion team plan</td>
+                <td class="col-amount">$48.00</td>
+              </tr>
+              <tr>
+                <td>09/12/2026</td>
+                <td><span class="chip">Travel</span></td>
+                <td class="desc-cell">Rideshare to airport</td>
+                <td class="col-amount">$38.75</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- State: employees-placeholder -->
+  <!-- Screen: Employees (placeholder section)
+       Notes:
+         - AC2: renders inside the same shell — identical topbar, brand, and nav as the
+           Expenses screen. Nothing about the chrome changes, only the page body.
+         - AC3: the card carries a clear "Coming soon" heading plus a supporting sentence
+           so a reviewer or user immediately understands this is a stub, not a bug.
+         - AC4: deliberately no table, no "+ Add" button, no chips/rows/amounts — nothing
+           that reads as expense-specific UI.
+         - AC5: the Expenses nav link stays visible and reachable in the same position.
+         - AC6: clicking Expenses navigates back to the "Expenses (current section)"
+           screen and restores the hash to "#/expenses".
+         - The "Employees" nav item is marked active/current here, same active-state
+           treatment (underline + fg color) the Expenses link gets on its own screen —
+           consistent "you are here" signal per UI guideline §7.
+  -->
+  <div class="screen" data-name="Employees (placeholder section)">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav" aria-label="Primary">
+        <a href="#/expenses" data-nav="expenses">Expenses</a>
+        <a href="#/employees" class="active" aria-current="page" data-nav="employees">Employees</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <h1>Employees</h1>
+        <p>Manage the people who submit and approve expenses.</p>
+      </div>
+
+      <div class="card placeholder-card">
+        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="9" cy="8" r="3"></circle>
+          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path>
+          <circle cx="17" cy="9" r="2.5"></circle>
+          <path d="M15.5 14.2c1.9.4 3.5 2 3.5 5.8"></path>
+        </svg>
+        <p class="placeholder-title">Employees is coming soon</p>
+        <p class="placeholder-body">
+          We're building out employee records, roles, and approval routing. For now this
+          section is a placeholder — check back soon for the full experience.
+        </p>
+        <span class="placeholder-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l2.5 2.5"></path></svg>
+          In development
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---- Reviewer bar wiring ----
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  const HASHES = ['#/expenses', '#/employees'];
+  let cur = 0;
+
+  function show(i, opts) {
+    opts = opts || {};
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    if (!opts.skipHash) {
+      history.replaceState(null, '', HASHES[cur]);
+    }
+  }
+
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ---- Simulated client-side routing (AC1, AC6) ----
+  // Every nav link in every screen shares data-nav="expenses|employees"; clicking any of
+  // them "navigates" by swapping which screen is visible and updating location.hash — no
+  // network call, no page reload, no thrown error.
+  document.querySelectorAll('[data-nav]').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = this.dataset.nav === 'employees' ? 1 : 0;
+      show(target);
+    });
+  });
+
+  window.addEventListener('hashchange', () => {
+    const idx = HASHES.indexOf(location.hash);
+    if (idx !== -1) show(idx, { skipHash: true });
+  });
+
+  // Deep-link support: opening the file with #/employees already in the URL lands on
+  // the placeholder screen directly.
+  const initial = HASHES.indexOf(location.hash);
+  show(initial !== -1 ? initial : 0, { skipHash: true });
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
