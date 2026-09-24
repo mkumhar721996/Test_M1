@@ -2,26 +2,6 @@ const { escapeHtml, formatDateDisplay } = require('./utils');
 
 const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
-const INITIAL_EXPENSES = [
-  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
-  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
-  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
-];
-
-function loadExpenses() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) { /* ignore malformed storage */ }
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
-  } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
-  return INITIAL_EXPENSES.map((e) => ({ ...e }));
-}
-
-function persistExpenses(list) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
 
 function formatUSD(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -66,12 +46,43 @@ function filterExpenses(list, { category = '', start = '', end = '' } = {}) {
   });
 }
 
-function initExpensesApp(doc = document) {
-  let expenses = loadExpenses();
+function migrateLegacyExpenseStorage(doc = document) {
+  let hadKey = false;
+  try {
+    hadKey = localStorage.getItem(STORAGE_KEY) !== null;
+  } catch (e) { /* storage unavailable */ }
+  if (hadKey) {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) { /* storage unavailable */ }
+  }
+  return hadKey;
+}
+
+function createDefaultApi() {
+  const withStatus = (promise) => promise.then((res) => (
+    res.ok ? res.json() : Promise.reject({ status: res.status })
+  ));
+  return {
+    listExpenses: () => withStatus(fetch('/api/expenses')),
+    createExpense: (data) => withStatus(fetch('/api/expenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })),
+    updateExpense: (id, data) => withStatus(fetch(`/api/expenses/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })),
+  };
+}
+
+function initExpensesApp(doc = document, api = createDefaultApi()) {
+  let expenses = [];
   let editingId = null;
   let lastUpdatedId = null;
   let lastAddedId = null;
-  let nextId = expenses.length + 1;
 
   const overlay = doc.getElementById('modal-overlay');
   const modalWrap = doc.getElementById('modal-wrap');
@@ -96,6 +107,46 @@ function initExpensesApp(doc = document) {
   const filterEndInput = doc.getElementById('filter-end-date');
   const dateOrderHint = doc.getElementById('date-order-hint');
   const resultCount = doc.getElementById('result-count');
+
+  const loadingCaption = doc.getElementById('expenses-loading-caption');
+  const tableScroll = doc.getElementById('expenses-table-scroll');
+  const expenseTable = doc.getElementById('expense-table');
+  const errorState = doc.getElementById('expenses-error-state');
+  const errorDetail = doc.getElementById('expenses-error-detail');
+  const errorRetryBtn = doc.getElementById('expenses-error-retry-btn');
+  const addExpenseBtn = doc.getElementById('add-expense-btn');
+
+  function showToast(kind, message) {
+    doc.getElementById('toast-icon').textContent = kind === 'error' ? '⚠' : '✓';
+    toastMessage.textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
+  }
+
+  function setLoadingState() {
+    loadingCaption.hidden = false;
+    tableScroll.hidden = false;
+    errorState.hidden = true;
+    expenseTable.setAttribute('aria-busy', 'true');
+    addExpenseBtn.disabled = true;
+  }
+
+  function setLoadedState() {
+    loadingCaption.hidden = true;
+    tableScroll.hidden = false;
+    errorState.hidden = true;
+    expenseTable.removeAttribute('aria-busy');
+    addExpenseBtn.disabled = false;
+  }
+
+  function setErrorState(status) {
+    loadingCaption.hidden = true;
+    tableScroll.hidden = true;
+    errorState.hidden = false;
+    errorDetail.textContent = `GET /api/expenses → ${status} Internal Server Error`;
+    addExpenseBtn.disabled = true;
+  }
 
   function renderList(list) {
     const tbody = doc.getElementById('expense-tbody');
@@ -161,6 +212,21 @@ function initExpensesApp(doc = document) {
       : total + ' expenses';
   }
 
+  function loadExpensesFromServer() {
+    setLoadingState();
+    return api.listExpenses().then((rows) => {
+      expenses = rows;
+      setLoadedState();
+      applyFiltersAndRender();
+    }).catch((err) => {
+      const status = err && err.status;
+      setErrorState(status);
+      showToast('error', `Couldn't load expenses — server error (${status}). Try again.`);
+    });
+  }
+
+  errorRetryBtn.addEventListener('click', loadExpensesFromServer);
+
   filterCategorySelect.addEventListener('change', applyFiltersAndRender);
   filterStartInput.addEventListener('input', applyFiltersAndRender);
   filterEndInput.addEventListener('input', applyFiltersAndRender);
@@ -222,14 +288,6 @@ function initExpensesApp(doc = document) {
     showToast('success', 'Changes discarded — record unchanged');
   }
 
-  function showToast(kind, message) {
-    doc.getElementById('toast-icon').textContent = kind === 'error' ? '⚠' : '✓';
-    toastMessage.textContent = message;
-    toast.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
-  }
-
   doc.getElementById('modal-close-btn').addEventListener('click', cancelEdit);
   doc.getElementById('modal-cancel-btn').addEventListener('click', cancelEdit);
   overlay.addEventListener('click', cancelEdit);
@@ -257,38 +315,27 @@ function initExpensesApp(doc = document) {
     saveBtn.textContent = 'Saving…';
 
     const targetId = editingId;
+    const changes = {
+      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+      date: dateValue,
+      category: categoryValue,
+      description: fieldDescription.value.trim(),
+    };
 
-    setTimeout(() => {
+    api.updateExpense(targetId, changes).then((updated) => {
       if (editingId !== targetId) return;
-
       const idx = expenses.findIndex((e) => e.id === targetId);
-      if (idx === -1) return;
-
-      const updated = {
-        ...expenses[idx],
-        amount: Math.round(parseFloat(amountRaw) * 100) / 100,
-        date: dateValue,
-        category: categoryValue,
-        description: fieldDescription.value.trim(),
-      };
-      try {
-        persistExpenses([
-          ...expenses.slice(0, idx),
-          updated,
-          ...expenses.slice(idx + 1),
-        ]);
-      } catch (err) {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save changes';
-        showToast('error', 'Expense could not be saved — please try again');
-        return;
-      }
-      expenses[idx] = updated;
-      lastUpdatedId = expenses[idx].id;
+      if (idx !== -1) expenses[idx] = updated;
+      lastUpdatedId = targetId;
       closeModal();
       applyFiltersAndRender();
       showToast('success', 'Expense updated');
-    }, 350);
+    }).catch((err) => {
+      if (editingId !== targetId) return;
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save changes';
+      showToast('error', `Couldn't save expense — server error (${err && err.status}). Try again.`);
+    });
   });
 
   // ---------- Create modal ----------
@@ -307,7 +354,6 @@ function initExpensesApp(doc = document) {
   const createErrorCategory = doc.getElementById('create-error-category');
   const createErrorDescription = doc.getElementById('create-error-description');
   const createModalPanel = createModalWrap.querySelector('.modal-panel');
-  let createSaveTimer = null;
   let createModalOpenerEl = null;
 
   function clearAllCreateErrors() {
@@ -339,8 +385,6 @@ function initExpensesApp(doc = document) {
     createSaveBtn.disabled = false;
     createSaveBtn.textContent = 'Save expense';
     doc.removeEventListener('keydown', onCreateModalKeydown);
-    clearTimeout(createSaveTimer);
-    createSaveTimer = null;
     if (createModalOpenerEl && typeof createModalOpenerEl.focus === 'function') {
       createModalOpenerEl.focus();
     }
@@ -377,7 +421,7 @@ function initExpensesApp(doc = document) {
     closeCreateModal();
   }
 
-  doc.getElementById('add-expense-btn').addEventListener('click', openCreateModal);
+  addExpenseBtn.addEventListener('click', openCreateModal);
   doc.getElementById('create-modal-close-btn').addEventListener('click', cancelCreate);
   doc.getElementById('create-modal-cancel-btn').addEventListener('click', cancelCreate);
   createOverlay.addEventListener('click', cancelCreate);
@@ -414,48 +458,44 @@ function initExpensesApp(doc = document) {
     createSaveBtn.disabled = true;
     createSaveBtn.textContent = 'Saving…';
 
-    const newExpense = {
-      id: 'exp_' + String(nextId++).padStart(3, '0'),
+    const newExpenseData = {
       amount: Math.round(parseFloat(amountRaw) * 100) / 100,
       date: dateValue,
       category: categoryValue,
       description: descriptionValue,
     };
 
-    createSaveTimer = setTimeout(() => {
-      try {
-        persistExpenses([newExpense, ...expenses]);
-      } catch (err) {
-        createSaveBtn.disabled = false;
-        createSaveBtn.textContent = 'Save expense';
-        showToast('error', "Couldn't save expense — please try again");
-        return;
-      }
-      expenses = [newExpense, ...expenses];
-      lastAddedId = newExpense.id;
+    api.createExpense(newExpenseData).then((created) => {
+      expenses = [created, ...expenses];
+      lastAddedId = created.id;
       closeCreateModal();
       applyFiltersAndRender();
       showToast('success', 'Expense added');
-    }, 350);
+    }).catch((err) => {
+      createSaveBtn.disabled = false;
+      createSaveBtn.textContent = 'Save expense';
+      showToast('error', `Couldn't save expense — server error (${err && err.status}). Try again.`);
+    });
   });
 
-  applyFiltersAndRender();
+  loadExpensesFromServer();
 }
 
 module.exports = {
   STORAGE_KEY,
   CATEGORIES,
-  INITIAL_EXPENSES,
-  loadExpenses,
-  persistExpenses,
   formatUSD,
   validateExpenseFields,
   validateAmount,
   validateCreateExpenseFields,
   filterExpenses,
+  migrateLegacyExpenseStorage,
   initExpensesApp,
 };
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => initExpensesApp());
+  window.addEventListener('DOMContentLoaded', () => {
+    migrateLegacyExpenseStorage(document);
+    initExpensesApp();
+  });
 }

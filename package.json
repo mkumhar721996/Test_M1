@@ -6,6 +6,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "better-sqlite3": "^11.10.0",
     "express": "^4.22.3"
   },
   "devDependencies": {

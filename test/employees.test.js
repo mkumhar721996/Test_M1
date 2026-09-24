@@ -18,3 +18,15 @@ test('GET /employees/:id returns the employee information unchanged', async () =
   expect(getRes.status).toBe(200);
   expect(getRes.body).toEqual(createRes.body);
 });
+
+test('AC3: a SQLite failure on POST /employees responds with an HTTP error status', async () => {
+  const { getDb } = require('../src/db/connection');
+  const prepareSpy = jest.spyOn(getDb(), 'prepare').mockImplementation(() => {
+    throw new Error('SQLITE_IOERR: disk I/O error');
+  });
+
+  const res = await request(app).post('/employees').send({ name: 'A', email: 'a@x.com', jobTitle: 'Eng' });
+  expect(res.status).toBe(500);
+
+  prepareSpy.mockRestore();
+});
