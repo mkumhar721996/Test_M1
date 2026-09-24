@@ -11,12 +11,11 @@ const INITIAL_EXPENSES = [
 function loadExpenses() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) { /* ignore malformed storage */ }
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
-  } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
-  return INITIAL_EXPENSES.map((e) => ({ ...e }));
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
 }
 
 function persistExpenses(list) {
@@ -98,16 +97,19 @@ function initExpensesApp(doc = document) {
   const resultCount = doc.getElementById('result-count');
 
   function renderList(list) {
+    const tableWrap = doc.getElementById('expense-table-wrap');
+    const emptyState = doc.getElementById('expense-empty-state');
     const tbody = doc.getElementById('expense-tbody');
     tbody.innerHTML = '';
 
     if (expenses.length === 0) {
-      const tr = doc.createElement('tr');
-      tr.className = 'empty-row';
-      tr.innerHTML = '<td colspan="5">No expenses yet.</td>';
-      tbody.appendChild(tr);
+      tableWrap.hidden = true;
+      emptyState.hidden = false;
       return;
     }
+
+    tableWrap.hidden = false;
+    emptyState.hidden = true;
 
     if (list.length === 0) {
       const tr = doc.createElement('tr');
@@ -378,6 +380,7 @@ function initExpensesApp(doc = document) {
   }
 
   doc.getElementById('add-expense-btn').addEventListener('click', openCreateModal);
+  doc.getElementById('empty-add-expense-btn').addEventListener('click', openCreateModal);
   doc.getElementById('create-modal-close-btn').addEventListener('click', cancelCreate);
   doc.getElementById('create-modal-cancel-btn').addEventListener('click', cancelCreate);
   createOverlay.addEventListener('click', cancelCreate);

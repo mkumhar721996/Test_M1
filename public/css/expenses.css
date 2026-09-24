@@ -141,10 +141,31 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .col-actions { text-align: right; white-space: nowrap; }
 .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
-.empty-row td {
+
+/* ---------- Guided empty state ---------- */
+.empty-state {
   text-align: center;
+  padding: calc(var(--space-4) * 2) var(--space-4);
+}
+.empty-state-icon {
+  margin: 0 auto var(--space-3);
+  width: 56px;
+  height: 56px;
   color: var(--color-fg-muted);
-  padding: var(--space-4);
+}
+.empty-state-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2);
+}
+.empty-state-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  max-width: 42ch;
+  margin: 0 auto var(--space-4);
 }
 
 .btn-sm {
