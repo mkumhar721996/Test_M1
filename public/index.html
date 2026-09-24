@@ -10,11 +10,6 @@
 <script src="./js/expenses.js" defer></script>
 </head>
 <body class="u-surface">
-<!-- TODO(rebase): uncertain merge — please review. This page was rewritten by
-     STORY-031/032 to the table+modal UI backed by ./js/expenses.js. This
-     branch's src/main.js div#root + app.js/storage.js/currency.js/validation.js
-     wiring targeted an older prototype markup that no longer exists here;
-     kept the live table markup and dropped the stale script-tag wiring. -->
 
   <div class="app-topbar">
     <span class="brand">Expense Tracker</span>
@@ -25,9 +20,12 @@
   </div>
 
   <div class="page">
-    <div class="page-header">
-      <h1>Expenses</h1>
-      <p>Review and correct submitted expense records.</p>
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Expenses</h1>
+        <p>Review and correct submitted expense records, or add a new one.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
     </div>
 
     <div class="card table-card">
@@ -104,8 +102,65 @@
     </div>
   </div>
 
+  <!-- Create modal: hidden until "+ Add expense" is activated. Own ids/overlay/wrap
+       so it can coexist in the DOM with the edit modal above without collisions. -->
+  <div class="modal-overlay" id="create-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="create-modal-wrap" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-modal-title">Create expense</h2>
+          <p>Enter the details of a new expense to add it to the list.</p>
+        </div>
+        <button class="icon-btn" id="create-modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+
+      <form id="create-form" novalidate>
+        <div class="field">
+          <label class="label" for="create-field-amount">Amount</label>
+          <div class="amount-input-wrap">
+            <span class="amount-prefix" aria-hidden="true">$</span>
+            <input class="input amount-input" id="create-field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="create-error-amount create-amount-hint" />
+          </div>
+          <span class="hint" id="create-amount-hint">USD, up to two decimal places</span>
+          <p class="field-error" id="create-error-amount" role="alert" hidden>⚠ Amount is required.</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="create-field-date">Date</label>
+          <input class="input" id="create-field-date" name="date" type="date" aria-describedby="create-error-date" />
+          <p class="field-error" id="create-error-date" role="alert" hidden>⚠ Date is required.</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="create-field-category">Category</label>
+          <select class="input" id="create-field-category" name="category" aria-describedby="create-error-category">
+            <option value="">Select a category</option>
+            <option>Travel</option>
+            <option>Meals</option>
+            <option>Software</option>
+            <option>Office Supplies</option>
+            <option>Other</option>
+          </select>
+          <p class="field-error" id="create-error-category" role="alert" hidden>⚠ Category is required.</p>
+        </div>
+
+        <div class="field" style="margin-bottom: 0;">
+          <label class="label" for="create-field-description">Description</label>
+          <textarea class="input" id="create-field-description" name="description" rows="2" aria-describedby="create-error-description"></textarea>
+          <p class="field-error" id="create-error-description" role="alert" hidden>⚠ Description is required.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="create-modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Save expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden>
-    <span aria-hidden="true">✓</span>
+    <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
     <span id="toast-message">Expense updated</span>
   </div>
 

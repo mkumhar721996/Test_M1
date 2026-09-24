@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-091 — Create Expense</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note (same gap flagged in TEST-M1-STORY-032): tokens.json has no
+    dedicated error/danger color — only color-fg, color-fg-muted, color-primary/-fg,
+    color-surface, color-bg, color-border. Inline validation errors and the error toast
+    below are signalled with an icon (⚠) + bold text + an emphasized border using the
+    existing --color-primary token, never color alone (UI guideline §3). Success vs.
+    error toasts are told apart by icon (✓ / ⚠) and message text, not by color, for the
+    same reason. If sdlc.design-system-bootstrap later adds e.g. `color-danger`, the
+    `.field-error` / `.input-invalid` / `.toast-error` rules below are the only place to
+    swap it in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Expense list table (page-specific: not yet promoted to prototype-utils.css) ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .expense-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .expense-table tbody tr.row-added { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .expense-table tbody tr.row-added { animation: none; }
+  }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
+  .empty-row td {
+    text-align: center;
+    color: var(--color-fg-muted);
+    padding: var(--space-4);
+  }
+
+  /* ---------- Amount field with $ prefix (page-specific, matches edit-modal pattern) ---------- */
+  .amount-input-wrap { position: relative; }
+  .amount-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+  }
+  .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
+
+  /* ---------- Inline field validation (page-specific: no shared token yet, see note above) ---------- */
+  .input-invalid {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* ---------- Toast icon variants (color stays the token default; icon + text carry meaning) ---------- */
+  .toast .toast-icon { flex: 0 0 auto; }
+
+  /* ---------- Demo-only affordance for AC7/AC8 (storage-failure simulation) ---------- */
+  .demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+    box-shadow: var(--shadow-sm);
+  }
+  .demo-note-icon {
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-base);
+  }
+  .demo-note label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .demo-note input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1080px) {
+    .reference-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .mini-modal {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. This project (Test_M1) has no
+     existing frontend beyond a small Express API with an "employees" module (see
+     TEST-M1-STORY-030/032 prototypes), so the nav is a minimal project-appropriate top
+     bar, not the arc platform's own chrome. Matches the nav already established by
+     TEST-M1-STORY-032, whose edit-modal pattern this story's create modal reuses. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-091</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Expense List (interactive)
+         Notes:
+           - "+ Add expense" in the top bar is the control named in AC1. Click it to open
+             the create-expense modal with every field empty — it reuses the exact modal
+             markup/behavior pattern from TEST-M1-STORY-032's edit modal (same
+             .modal-overlay/.modal-wrap/.modal-panel classes, now promoted into the shared
+             prototype-utils.css), just retitled "Create expense" and starting blank
+             instead of pre-populated (AC1).
+           - Fill in Amount, Date, Category and Description and click "Save expense" to see
+             the new row appear at the top of the table immediately, with a brief highlight
+             flash, plus a success toast (AC2, AC3).
+           - Type an amount with 3+ decimal places (e.g. 12.345) and save to see the
+             amount-specific inline error "Amount can have at most 2 decimal places."
+             (AC4) — this is distinct from the generic "Amount is required" error.
+           - Leave any field(s) empty/invalid and click "Save expense" to see inline,
+             field-level errors under every offending field; the modal stays open and the
+             table is not touched (AC5, AC6).
+           - The "Simulate storage failure" checkbox is a demo-only affordance (clearly
+             marked, not part of the real product) that lets a reviewer exercise AC7/AC8
+             without needing to break real browser storage: check it, submit a fully valid
+             form, and see an error toast while the modal stays open with every value you
+             typed still intact (AC7, AC8).
+           - Cancel, the × button, a backdrop click, or Esc all discard the in-progress
+             entry — no row is added and the table is unchanged (AC9).
+           - Data is written to real localStorage under `test-m1-story-091-expenses` —
+             reload this file (F5 / Cmd+R) to confirm a newly created expense is still
+             present after reload (AC10). "Reset demo data" restores the four original
+             fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="Expense List">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>Expenses</h1>
+            <p>Review submitted expense records, or add a new one.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="expense-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create modal: hidden until "+ Add expense" is activated -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">Create expense</h2>
+              <p>Enter the details of a new expense to add it to the list.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <div class="demo-note">
+            <span class="demo-note-icon" aria-hidden="true">&#9888;</span>
+            <label for="simulate-failure-checkbox">
+              <input type="checkbox" id="simulate-failure-checkbox" />
+              Simulate storage failure (demo only, for AC7/AC8)
+            </label>
+          </div>
+
+          <form id="create-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix" aria-hidden="true">$</span>
+                <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="error-amount amount-hint" />
+              </div>
+              <span class="hint" id="amount-hint">USD, up to two decimal places</span>
+              <p class="field-error" id="error-amount" role="alert" hidden>⚠ Amount is required.</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-date">Date</label>
+              <input class="input" id="field-date" name="date" type="date" aria-describedby="error-date" />
+              <p class="field-error" id="error-date" role="alert" hidden>⚠ Date is required.</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-category">Category</label>
+              <select class="input" id="field-category" name="category" aria-describedby="error-category">
+                <option value="">Select a category</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Office Supplies</option>
+                <option>Other</option>
+              </select>
+              <p class="field-error" id="error-category" role="alert" hidden>⚠ Category is required.</p>
+            </div>
+
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="field-description">Description</label>
+              <textarea class="input" id="field-description" name="description" rows="2" aria-describedby="error-description"></textarea>
+              <p class="field-error" id="error-description" role="alert" hidden>⚠ Description is required.</p>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Save expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Expense added</span>
+      </div>
+    </div>
+
+    <!-- Screen: Create Modal — Reference States
+         Notes:
+           - Static side-by-side reference of the key states called out in the ACs, for
+             reviewers who want a quick look without driving the interaction on screen 1.
+           - "Empty (opened)" — every field starts blank when the modal opens (AC1).
+           - "Missing/invalid fields" — submitted with nothing filled in; every offending
+             field shows its own inline error and the modal stays open (AC5, AC6).
+           - "Amount decimal-place error" — submitted with "12.345" in Amount; the
+             error is specific to the 2-decimal-place rule, distinct from "required"
+             (AC4).
+           - "Added + success toast" — modal has closed, the new row is at the top of the
+             table, and a success toast confirms the save (AC2, AC3).
+           - "Storage failure" — a valid form was submitted but the simulated save failed;
+             an error toast appears and the modal remains open with every entered value
+             intact (AC7, AC8).
+    -->
+    <div class="screen" data-name="Create Modal — Reference States">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Create modal — reference states</h1>
+          <p>Non-interactive snapshots. Use screen 1 to try the real flow.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Empty (opened)</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <div class="mini-modal">
+              <div class="field">
+                <label class="label">Amount</label>
+                <div class="amount-input-wrap">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input" type="text" value="" placeholder="0.00" readonly />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Date</label>
+                <input class="input" type="text" value="" placeholder="mm/dd/yyyy" readonly />
+              </div>
+              <div class="field">
+                <label class="label">Category</label>
+                <input class="input" type="text" value="Select a category" readonly />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Description</label>
+                <input class="input" type="text" value="" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Missing/invalid fields</h3>
+            <span class="ac-tag">Satisfies AC5, AC6</span>
+            <div class="mini-modal">
+              <div class="field">
+                <label class="label">Amount</label>
+                <div class="amount-input-wrap">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input input-invalid" type="text" value="" placeholder="0.00" />
+                </div>
+                <p class="field-error">⚠ Amount is required.</p>
+              </div>
+              <div class="field">
+                <label class="label">Date</label>
+                <input class="input input-invalid" type="text" value="" placeholder="mm/dd/yyyy" />
+                <p class="field-error">⚠ Date is required.</p>
+              </div>
+              <div class="field">
+                <label class="label">Category</label>
+                <input class="input input-invalid" type="text" value="Select a category" readonly />
+                <p class="field-error">⚠ Category is required.</p>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Description</label>
+                <input class="input input-invalid" type="text" value="" />
+                <p class="field-error">⚠ Description is required.</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Amount decimal-place error</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="mini-modal">
+              <div class="field">
+                <label class="label">Amount</label>
+                <div class="amount-input-wrap">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input input-invalid" type="text" value="12.345" />
+                </div>
+                <p class="field-error">⚠ Amount can have at most 2 decimal places.</p>
+              </div>
+              <div class="field">
+                <label class="label">Date</label>
+                <input class="input" type="text" value="09/24/2026" readonly />
+              </div>
+              <div class="field">
+                <label class="label">Category</label>
+                <input class="input" type="text" value="Software" readonly />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Description</label>
+                <input class="input" type="text" value="Annual license renewal" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Added + success toast</h3>
+            <span class="ac-tag">Satisfies AC2, AC3</span>
+            <div class="mini-modal">
+              <p class="u-text-sm u-text-muted" style="margin: 0 0 var(--space-3) 0;">
+                Modal has closed. The list now shows:
+              </p>
+              <table class="expense-table" style="min-width: 0;">
+                <tbody>
+                  <tr>
+                    <td>09/24/2026</td>
+                    <td>Software</td>
+                    <td class="desc-cell">Annual license renewal</td>
+                    <td class="col-amount">$149.00</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="toast" style="position: static; margin-top: var(--space-4); max-width: none;">
+                <span aria-hidden="true">✓</span>
+                <span>Expense added</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Storage failure</h3>
+            <span class="ac-tag">Satisfies AC7, AC8</span>
+            <div class="mini-modal">
+              <div class="field">
+                <label class="label">Amount</label>
+                <div class="amount-input-wrap">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input" type="text" value="149.00" readonly />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Date</label>
+                <input class="input" type="text" value="09/24/2026" readonly />
+              </div>
+              <div class="field">
+                <label class="label">Category</label>
+                <input class="input" type="text" value="Software" readonly />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Description</label>
+                <input class="input" type="text" value="Annual license renewal" readonly />
+              </div>
+              <div class="toast" style="position: static; margin-top: var(--space-4); max-width: none;">
+                <span aria-hidden="true">⚠</span>
+                <span>Couldn't save expense — please try again</span>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">
+                Modal stays open; every value above is exactly what was typed — nothing is
+                cleared or reset after the failed save.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-091-expenses';
+  const INITIAL_EXPENSES = [
+    { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
+    { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
+    { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
+    { id: 'exp_004', date: '2026-09-14', category: 'Office Supplies', description: 'Replacement laptop charger', amount: 34.99 },
+  ];
+
+  function loadExpenses() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_EXPENSES.map(e => ({ ...e }));
+  }
+
+  function persistExpenses(list) {
+    // Demo-only failure injection for AC7/AC8 — see #simulate-failure-checkbox.
+    if (document.getElementById('simulate-failure-checkbox').checked) {
+      throw new Error('Simulated localStorage failure');
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function formatUSD(amount) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  }
+
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let expenses = loadExpenses();
+  let lastAddedId = null;
+  let nextId = expenses.length + 1;
+
+  // ---------- List rendering ----------
+  function renderList() {
+    const tbody = document.getElementById('expense-tbody');
+    tbody.innerHTML = '';
+
+    if (expenses.length === 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'empty-row';
+      tr.innerHTML = '<td colspan="4">No expenses yet. Click "+ Add expense" to create one.</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    expenses.forEach(exp => {
+      const tr = document.createElement('tr');
+      if (exp.id === lastAddedId) tr.className = 'row-added';
+      tr.innerHTML = `
+        <td>${formatDateDisplay(exp.date)}</td>
+        <td><span class="chip">${escapeHtml(exp.category)}</span></td>
+        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
+        <td class="col-amount">${formatUSD(exp.amount)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastAddedId = null;
+  }
+
+  // ---------- Modal ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const form = document.getElementById('create-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  const fieldAmount = document.getElementById('field-amount');
+  const fieldDate = document.getElementById('field-date');
+  const fieldCategory = document.getElementById('field-category');
+  const fieldDescription = document.getElementById('field-description');
+  const simulateFailureCheckbox = document.getElementById('simulate-failure-checkbox');
+
+  function openCreateModal() {
+    form.reset();
+    clearAllErrors();
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+    fieldAmount.focus();
+  }
+
+  let saveTimer = null;
+
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save expense';
+    document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelCreate();
+    }
+  }
+
+  function cancelCreate() {
+    closeModal();
+    showToast('success', 'No expense added — dialog closed');
+  }
+
+  document.getElementById('add-expense-btn').addEventListener('click', openCreateModal);
+  document.getElementById('modal-close-btn').addEventListener('click', cancelCreate);
+  document.getElementById('modal-cancel-btn').addEventListener('click', cancelCreate);
+  overlay.addEventListener('click', cancelCreate);
+
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldAmount, document.getElementById('error-amount'), '');
+    setFieldError(fieldDate, document.getElementById('error-date'), '');
+    setFieldError(fieldCategory, document.getElementById('error-category'), '');
+    setFieldError(fieldDescription, document.getElementById('error-description'), '');
+  }
+
+  // Validates amount as USD with at most 2 decimal places (AC4), distinct from the
+  // generic "required/invalid" message (AC5).
+  function validateAmount(raw) {
+    const trimmed = raw.trim();
+    if (trimmed === '') return 'Amount is required.';
+    if (!/^\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid amount, e.g. 24.50.';
+    const decimalMatch = trimmed.match(/\.(\d+)$/);
+    if (decimalMatch && decimalMatch[1].length > 2) {
+      return 'Amount can have at most 2 decimal places.';
+    }
+    if (parseFloat(trimmed) <= 0) return 'Enter an amount greater than $0.00.';
+    return '';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    const amountRaw = fieldAmount.value;
+    const dateValue = fieldDate.value.trim();
+    const categoryValue = fieldCategory.value;
+    const descriptionValue = fieldDescription.value.trim();
+
+    const amountError = validateAmount(amountRaw);
+    const dateError = dateValue === '' ? 'Date is required.' : '';
+    const categoryError = categoryValue === '' ? 'Category is required.' : '';
+    const descriptionError = descriptionValue === '' ? 'Description is required.' : '';
+
+    setFieldError(fieldAmount, document.getElementById('error-amount'), amountError);
+    setFieldError(fieldDate, document.getElementById('error-date'), dateError);
+    setFieldError(fieldCategory, document.getElementById('error-category'), categoryError);
+    setFieldError(fieldDescription, document.getElementById('error-description'), descriptionError);
+
+    if (amountError || dateError || categoryError || descriptionError) {
+      // AC5/AC6: modal stays open, inline errors below each offending field, table untouched.
+      const firstInvalid = amountError ? fieldAmount
+        : dateError ? fieldDate
+        : categoryError ? fieldCategory
+        : fieldDescription;
+      firstInvalid.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    const newExpense = {
+      id: 'exp_' + String(nextId++).padStart(3, '0'),
+      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+      date: dateValue,
+      category: categoryValue,
+      description: descriptionValue,
+    };
+
+    // Simulated latency — no real network call.
+    saveTimer = setTimeout(() => {
+      try {
+        persistExpenses([newExpense, ...expenses]);
+      } catch (err) {
+        // AC7/AC8: error toast, modal stays open with every entered value intact.
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save expense';
+        showToast('error', "Couldn't save expense — please try again");
+        return;
+      }
+      expenses = [newExpense, ...expenses];
+      lastAddedId = newExpense.id;
+      closeModal();
+      renderList();
+      showToast('success', 'Expense added');
+    }, 350);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(kind, message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-icon').textContent = kind === 'error' ? '⚠' : '✓';
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+  }
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    expenses = loadExpenses();
+    nextId = expenses.length + 1;
+    lastAddedId = null;
+    simulateFailureCheckbox.checked = false;
+    renderList();
+    showToast('success', 'Demo data reset');
+  });
+
+  renderList();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (modalWrap.hidden === false) return; // let Esc close the modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
