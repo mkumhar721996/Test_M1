@@ -192,3 +192,49 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 
 /* ---------- Toast icon variants (color stays the token default; icon + text carry meaning) ---------- */
 .toast .toast-icon { flex: 0 0 auto; }
+
+/* ---------- Employees placeholder (AC3, AC4) ---------- */
+.placeholder-card {
+  text-align: center;
+  padding: var(--space-4) var(--space-3);
+}
+.placeholder-icon {
+  margin: 0 auto var(--space-3);
+  width: 48px;
+  height: 48px;
+  color: var(--color-fg-muted);
+}
+.placeholder-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2);
+}
+.placeholder-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  max-width: 46ch;
+  margin: 0 auto;
+}
+.placeholder-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---------- Nav-click flash (visible feedback per UI guideline §4) ---------- */
+.app-nav a { transition: color 150ms ease-out, border-color 150ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .app-nav a { transition: none; }
+}
