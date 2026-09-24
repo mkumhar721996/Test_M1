@@ -12,6 +12,9 @@ body { margin: 0; min-height: 100dvh; }
 /* App shell (.app-topbar, .app-nav, .page, .page-header) and modal/toast
    primitives live in design-system/prototype-utils.css, shared with hire-profile.css. */
 
+/* Bump shared controls to a real 44px touch target without redefining tokens. */
+.btn, .input { min-height: 44px; }
+
 /* ---------- Page header with "Add expense" action ---------- */
 .page-header-row {
   display: flex;
@@ -19,6 +22,82 @@ body { margin: 0; min-height: 100dvh; }
   justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
+}
+
+/* ---------- Filter bar (always visible, no toggle — AC1) ---------- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  flex: 1 1 160px;
+}
+.filter-field.filter-actions-field {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.filter-hint {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  font-weight: var(--font-weight-bold);
+  margin: var(--space-1) 0 0;
+}
+.filter-hint-icon { margin-right: var(--space-1); }
+.filter-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+.list-count {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* No-match filtered-empty state (AC5) — deliberately distinct from .empty-row above:
+   rendered with an icon + heading + body about the active filters, not about creating
+   a first record. */
+.no-match-row td {
+  padding: var(--space-4);
+  border-bottom: none;
+}
+.no-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+.no-match-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--color-fg-muted);
+}
+.no-match-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.no-match-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0;
+  max-width: 42ch;
 }
 
 /* ---------- Expense list ---------- */

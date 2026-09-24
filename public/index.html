@@ -28,6 +28,38 @@
       <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
     </div>
 
+    <form role="search" aria-label="Filter expenses" class="filter-bar" onsubmit="return false;">
+      <div class="filter-field">
+        <label class="label" for="filter-category">Category</label>
+        <select class="input" id="filter-category" aria-label="Category">
+          <option value="">All categories</option>
+          <option>Travel</option>
+          <option>Meals</option>
+          <option>Software</option>
+          <option>Office Supplies</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="label" for="filter-start-date">From</label>
+        <input class="input" type="date" id="filter-start-date" aria-label="Start date" />
+      </div>
+      <div class="filter-field">
+        <label class="label" for="filter-end-date">To</label>
+        <input class="input" type="date" id="filter-end-date" aria-label="End date" />
+      </div>
+      <div class="filter-field filter-actions-field">
+        <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
+      </div>
+    </form>
+    <p class="filter-hint" id="date-order-hint" hidden>
+      <span class="filter-hint-icon" aria-hidden="true">&#9888;</span>Start date is after end
+      date — no expenses will fall in range.
+    </p>
+    <div class="filter-result-row">
+      <p class="list-count" id="result-count" aria-live="polite"></p>
+    </div>
+
     <div class="card table-card">
       <div class="table-scroll">
         <table class="expense-table">

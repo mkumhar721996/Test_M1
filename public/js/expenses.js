@@ -57,6 +57,15 @@ function validateCreateExpenseFields({ amount, date, category, description }) {
   };
 }
 
+function filterExpenses(list, { category = '', start = '', end = '' } = {}) {
+  return list.filter((exp) => {
+    if (category && exp.category !== category) return false;
+    if (start && exp.date < start) return false;
+    if (end && exp.date > end) return false;
+    return true;
+  });
+}
+
 function initExpensesApp(doc = document) {
   let expenses = loadExpenses();
   let editingId = null;
@@ -82,7 +91,13 @@ function initExpensesApp(doc = document) {
   const toastMessage = doc.getElementById('toast-message');
   let toastTimer = null;
 
-  function renderList() {
+  const filterCategorySelect = doc.getElementById('filter-category');
+  const filterStartInput = doc.getElementById('filter-start-date');
+  const filterEndInput = doc.getElementById('filter-end-date');
+  const dateOrderHint = doc.getElementById('date-order-hint');
+  const resultCount = doc.getElementById('result-count');
+
+  function renderList(list) {
     const tbody = doc.getElementById('expense-tbody');
     tbody.innerHTML = '';
 
@@ -94,7 +109,19 @@ function initExpensesApp(doc = document) {
       return;
     }
 
-    expenses.forEach((exp) => {
+    if (list.length === 0) {
+      const tr = doc.createElement('tr');
+      tr.className = 'no-match-row';
+      tr.innerHTML = '<td colspan="5"><div class="no-match">' +
+        '<svg class="no-match-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 5h16l-6 8v5l-4 2v-7L4 5z"></path></svg>' +
+        '<p class="no-match-title">No matching expenses</p>' +
+        '<p class="no-match-body">No expenses match the selected category and date range. Try widening the range or choosing a different category.</p>' +
+        '</div></td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    list.forEach((exp) => {
       const tr = doc.createElement('tr');
       if (exp.id === lastUpdatedId) tr.className = 'row-updated';
       if (exp.id === lastAddedId) tr.className = 'row-added';
@@ -117,6 +144,32 @@ function initExpensesApp(doc = document) {
       btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
     });
   }
+
+  function applyFiltersAndRender() {
+    const filters = {
+      category: filterCategorySelect.value,
+      start: filterStartInput.value,
+      end: filterEndInput.value,
+    };
+    dateOrderHint.hidden = !(filters.start && filters.end && filters.start > filters.end);
+    const filtered = filterExpenses(expenses, filters);
+    renderList(filtered);
+    const total = expenses.length;
+    const filtersActive = Boolean(filters.category || filters.start || filters.end);
+    resultCount.textContent = filtersActive
+      ? filtered.length + ' of ' + total + ' expenses match the current filters'
+      : total + ' expenses';
+  }
+
+  filterCategorySelect.addEventListener('change', applyFiltersAndRender);
+  filterStartInput.addEventListener('input', applyFiltersAndRender);
+  filterEndInput.addEventListener('input', applyFiltersAndRender);
+  doc.getElementById('clear-filters-btn').addEventListener('click', () => {
+    filterCategorySelect.value = '';
+    filterStartInput.value = '';
+    filterEndInput.value = '';
+    applyFiltersAndRender();
+  });
 
   function setFieldError(fieldEl, errorEl, hasError, message) {
     errorEl.hidden = !hasError;
@@ -233,7 +286,7 @@ function initExpensesApp(doc = document) {
       expenses[idx] = updated;
       lastUpdatedId = expenses[idx].id;
       closeModal();
-      renderList();
+      applyFiltersAndRender();
       showToast('success', 'Expense updated');
     }, 350);
   });
@@ -381,12 +434,12 @@ function initExpensesApp(doc = document) {
       expenses = [newExpense, ...expenses];
       lastAddedId = newExpense.id;
       closeCreateModal();
-      renderList();
+      applyFiltersAndRender();
       showToast('success', 'Expense added');
     }, 350);
   });
 
-  renderList();
+  applyFiltersAndRender();
 }
 
 module.exports = {
@@ -399,6 +452,7 @@ module.exports = {
   validateExpenseFields,
   validateAmount,
   validateCreateExpenseFields,
+  filterExpenses,
   initExpensesApp,
 };
 
