@@ -184,6 +184,24 @@ describe('Delete Expense', () => {
     expect(document.getElementById('delete-summary').textContent).toMatch(/Flight to Chicago client site/);
   });
 
+  test('a malicious category/description is rendered as text in the delete confirmation, not executed as HTML', () => {
+    localStorage.setItem('expenses', JSON.stringify([
+      { id: 'exp_xss', date: '2026-09-02', category: '<img src=x onerror="window.__pwned = true">', description: '<img src=x onerror="window.__pwned2 = true">', amount: 10 },
+    ]));
+    jest.resetModules();
+    const { initExpensesApp } = require('../public/js/expenses');
+    initExpensesApp(document);
+
+    document.querySelector('[data-delete-id="exp_xss"]').click();
+
+    expect(window.__pwned).toBeUndefined();
+    expect(window.__pwned2).toBeUndefined();
+    const summary = document.getElementById('delete-summary');
+    expect(summary.querySelector('img')).toBeNull();
+    expect(summary.textContent).toContain('<img src=x onerror="window.__pwned = true">');
+    expect(summary.textContent).toContain('<img src=x onerror="window.__pwned2 = true">');
+  });
+
   test('confirming deletion removes the row immediately', () => {
     document.querySelector('[data-delete-id="exp_001"]').click();
     document.getElementById('confirm-delete-btn').click();
@@ -202,6 +220,15 @@ describe('Delete Expense', () => {
   test('cancelling leaves the record in the table', () => {
     document.querySelector('[data-delete-id="exp_001"]').click();
     document.getElementById('delete-modal-cancel-btn').click();
+    expect(document.querySelector('[data-delete-id="exp_001"]')).not.toBeNull();
+    expect(JSON.parse(localStorage.getItem('expenses')).find((e) => e.id === 'exp_001')).toBeTruthy();
+  });
+
+  test('cancelling while a confirmed deletion is in flight does not delete the record once the delay elapses', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    document.getElementById('delete-modal-cancel-btn').click();
+    jest.advanceTimersByTime(350);
     expect(document.querySelector('[data-delete-id="exp_001"]')).not.toBeNull();
     expect(JSON.parse(localStorage.getItem('expenses')).find((e) => e.id === 'exp_001')).toBeTruthy();
   });

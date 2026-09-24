@@ -171,7 +171,9 @@ function initExpensesApp(doc = document) {
 
   doc.getElementById('modal-close-btn').addEventListener('click', cancelEdit);
   doc.getElementById('modal-cancel-btn').addEventListener('click', cancelEdit);
-  overlay.addEventListener('click', cancelEdit);
+  modalWrap.addEventListener('click', (e) => {
+    if (e.target === modalWrap) cancelEdit();
+  });
 
   function openDeleteModal(id) {
     const exp = expenses.find((e) => e.id === id);
@@ -214,7 +216,9 @@ function initExpensesApp(doc = document) {
 
   doc.getElementById('delete-modal-close-btn').addEventListener('click', cancelDelete);
   doc.getElementById('delete-modal-cancel-btn').addEventListener('click', cancelDelete);
-  deleteOverlay.addEventListener('click', cancelDelete);
+  deleteModalWrap.addEventListener('click', (e) => {
+    if (e.target === deleteModalWrap) cancelDelete();
+  });
 
   confirmDeleteBtn.addEventListener('click', () => {
     const targetId = pendingDeleteId;
@@ -224,6 +228,8 @@ function initExpensesApp(doc = document) {
     confirmDeleteBtn.textContent = 'Deleting…';
 
     setTimeout(() => {
+      if (pendingDeleteId !== targetId) return;
+
       const idx = expenses.findIndex((e) => e.id === targetId);
       if (idx === -1) { closeDeleteModal(); return; }
 

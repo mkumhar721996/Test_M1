@@ -917,7 +917,9 @@
 
   document.getElementById('modal-close-btn').addEventListener('click', cancelDelete);
   document.getElementById('modal-cancel-btn').addEventListener('click', cancelDelete);
-  overlay.addEventListener('click', cancelDelete);
+  modalWrap.addEventListener('click', function (e) {
+    if (e.target === modalWrap) cancelDelete();
+  });
 
   confirmBtn.addEventListener('click', function () {
     const targetId = pendingDeleteId;
