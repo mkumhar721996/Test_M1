@@ -4,6 +4,27 @@ const path = require('path');
 
 const HTML_PATH = path.join(__dirname, '..', 'public', 'index.html');
 
+describe('Expense List Rendering', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    localStorage.clear();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+  });
+
+  test('a malicious category value is rendered as text, not executed as HTML', () => {
+    localStorage.setItem('expenses', JSON.stringify([
+      { id: 'exp_xss', date: '2026-09-02', category: '<img src=x onerror="window.__pwned = true">', description: 'Test', amount: 10 },
+    ]));
+    const { initExpensesApp } = require('../public/js/expenses');
+    initExpensesApp(document);
+
+    expect(window.__pwned).toBeUndefined();
+    const chip = document.querySelector('#expense-tbody .chip');
+    expect(chip.querySelector('img')).toBeNull();
+    expect(chip.textContent).toBe('<img src=x onerror="window.__pwned = true">');
+  });
+});
+
 describe('Edit Expense via Modal Form', () => {
   beforeEach(() => {
     jest.resetModules();

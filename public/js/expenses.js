@@ -87,7 +87,7 @@ function initExpensesApp(doc = document) {
       if (exp.id === lastUpdatedId) tr.className = 'row-updated';
       tr.innerHTML = `
         <td>${formatDateDisplay(exp.date)}</td>
-        <td><span class="chip">${exp.category}</span></td>
+        <td><span class="chip">${escapeHtml(doc, exp.category)}</span></td>
         <td class="desc-cell">${escapeHtml(doc, exp.description) || '—'}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
