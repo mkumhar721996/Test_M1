@@ -11,6 +11,7 @@ const jobsRouter = require('./jobs/routes');
 const serviceCatalogRouter = require('./serviceCatalog/routes');
 const repairRequestsRouter = require('./repairRequests/routes');
 const leaveRouter = require('./leave/routes');
+const authRouter = require('./auth/routes');
 const { requestMetrics } = require('./observability/metrics');
 const { errorHandler } = require('./observability/errorHandler');
 
@@ -29,6 +30,7 @@ app.use('/jobs', jobsRouter);
 app.use('/service-catalog', serviceCatalogRouter);
 app.use('/repair-requests', requestMetrics, repairRequestsRouter);
 app.use('/leave', requestMetrics, leaveRouter);
+app.use('/auth', authRouter);
 
 app.use(errorHandler);
 
