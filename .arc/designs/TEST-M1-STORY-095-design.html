@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-095 — Forgot password: request reset via email/SMS and set a new password</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Auth shell (unauthenticated screens only) ---------- */
+  .auth-topbar {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .auth-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .auth-wrap {
+    min-height: calc(100dvh - 53px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-4);
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    margin-top: var(--space-4);
+  }
+  .auth-card h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .auth-card > p.lede {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-4) 0;
+  }
+  .field { margin-bottom: var(--space-4); }
+  .field .hint {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+  .field-error-text {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: var(--space-1) 0 0 0;
+  }
+  .input.has-error {
+    border: 2px solid var(--color-fg);
+  }
+  .btn-block { width: 100%; }
+  .btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .form-footer {
+    margin-top: var(--space-4);
+    text-align: center;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* Prototype-only helper panel, visually distinct so it's never mistaken for real UI */
+  .demo-panel {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .demo-panel strong { color: var(--color-fg); }
+  .demo-panel .demo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  .demo-panel .demo-actions button {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-panel .demo-actions button:hover { border-color: var(--color-primary); }
+
+  /* Status icon blocks — meaning conveyed by icon + label text, never color alone */
+  .status-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: var(--space-3);
+    border: 1px solid var(--color-border);
+  }
+  .status-icon.is-success { background: var(--color-primary); color: var(--color-primary-fg); }
+  .status-icon.is-error { background: var(--color-surface); color: var(--color-fg); border: 2px solid var(--color-fg); }
+  .status-icon.is-info { background: var(--color-surface); color: var(--color-fg); }
+
+  .otp-input {
+    letter-spacing: 0.4em;
+    font-size: var(--font-size-lg);
+    text-align: center;
+    font-family: var(--font-family-base);
+  }
+
+  .checklist { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    padding: 2px 0;
+  }
+  .checklist li .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .checklist li.met { color: var(--color-fg); }
+  .checklist li.met .mark { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+
+  .channel-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-top: var(--space-1);
+  }
+  .channel-chip { text-transform: uppercase; letter-spacing: 0.04em; font-weight: var(--font-weight-bold); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .screen[hidden] { display: none; }
+</style>
+</head>
+<!-- App nav: none. These are unauthenticated screens (sign-in / forgot-password / reset
+     password) that render before the app shell exists, so the authenticated top bar used
+     elsewhere in this project (brand + "Expenses · Employees", see
+     TEST-M1-STORY-030/091) does not apply here. Each screen instead shows a minimal
+     auth-only header with just the product brand, consistent with the rest of this
+     project's "Expense Tracker" identity. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-095</span>
+    <button id="prev-btn" type="button">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn" type="button">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Sign In
+         Notes:
+           - Entry point only, for context. "Forgot password?" is the control that starts
+             this story's flow.
+           - Arriving back here after a successful reset (AC10) shows a one-time banner
+             confirming the password was changed, styled with an icon + label (not color
+             alone) per the info/success status pattern used across this prototype.
+    -->
+    <div class="screen" data-name="Sign in">
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <div id="signin-banner" hidden class="demo-panel" style="border-style:solid; margin-top:0; margin-bottom: var(--space-4);">
+            <div style="display:flex; gap:var(--space-2); align-items:flex-start;">
+              <span class="status-icon is-success" style="width:28px;height:28px;font-size:14px;margin-bottom:0;flex-shrink:0;">✓</span>
+              <span><strong>Password updated.</strong> Sign in with your new password.</span>
+            </div>
+          </div>
+          <h1>Sign in</h1>
+          <p class="lede">Access your Expense Tracker account.</p>
+          <div class="field">
+            <label class="label" for="si-email">Email or phone number</label>
+            <input class="input" id="si-email" type="text" placeholder="you@example.com" />
+          </div>
+          <div class="field">
+            <label class="label" for="si-password">Password</label>
+            <input class="input" id="si-password" type="password" placeholder="••••••••" />
+          </div>
+          <button type="button" class="btn btn-primary btn-block">Sign in</button>
+          <div class="form-footer">
+            <button type="button" class="link-btn" id="go-forgot-btn">Forgot password?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Forgot Password — Request
+         Notes:
+           - Single field accepts either an email address or a phone number (per the
+             story's flow step 1); the channel (email link vs. SMS code) is inferred from
+             the format of what's entered.
+           - Submitting always leads to the same generic "Check your email or phone"
+             confirmation regardless of whether an account exists for that contact — this
+             satisfies AC1 (never reveal account existence).
+           - The dashed "Prototype controls" panel below is demo-only scaffolding (styled
+             distinctly so it reads as out-of-band, same convention as the "Simulate
+             storage failure" control in TEST-M1-STORY-091) — it lets a reviewer pick which
+             downstream state to preview without needing a real backend.
+    -->
+    <div class="screen" data-name="Forgot password – Request" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <h1>Forgot password</h1>
+          <p class="lede">Enter the email address or phone number on your account and we'll send you instructions to reset your password.</p>
+          <div class="field">
+            <label class="label" for="fp-contact">Email or phone number</label>
+            <input class="input" id="fp-contact" type="text" placeholder="you@example.com or +1 555 010 0100" value="works@example.com" />
+            <p class="hint" id="fp-hint">We'll email a reset link, or text a one-time code, depending on what you enter.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="fp-submit-btn">Send reset instructions</button>
+          <div class="form-footer">
+            <button type="button" class="link-btn" id="fp-back-btn">Back to sign in</button>
+          </div>
+
+          <div class="demo-panel">
+            <strong>Prototype controls</strong> — not part of the real product.
+            <div>Try any value below, then click "Send reset instructions" above:</div>
+            <div class="demo-actions">
+              <button type="button" data-fill="works@example.com">works@example.com (email)</button>
+              <button type="button" data-fill="+1 555 010 0100">+1 555 010 0100 (SMS)</button>
+              <button type="button" data-fill="unknown@example.com">unknown@example.com (no account — AC1)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Check Your Email or Phone (generic confirmation)
+         Notes:
+           - Satisfies AC1: identical message whether or not the contact matches a real
+             account. Satisfies AC2: the copy names the credential type (reset link for
+             email, one-time code for SMS) and its expiry window, and which of those was
+             actually sent is driven only by the format of the input (never by whether an
+             account exists).
+           - Email path: "Simulate opening the link" continues straight to Set new
+             password (AC3); "Simulate an expired/used link" routes to the error screen
+             (AC4).
+           - SMS path: "Enter code" continues to the dedicated code-entry screen.
+           - "Resend" re-runs the same request without leaving this screen.
+    -->
+    <div class="screen" data-name="Check your email or phone" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <div class="status-icon is-info">✉</div>
+          <h1>Check your <span id="confirm-channel-noun">email</span></h1>
+          <p class="lede" id="confirm-message">
+            If an account exists for <strong id="confirm-contact">works@example.com</strong>, we've sent a
+            password reset link to that email address. It expires in 15 minutes and can only be used once.
+          </p>
+
+          <button type="button" class="btn btn-primary btn-block" id="confirm-continue-btn">Simulate: open reset link</button>
+          <div class="u-stack" style="margin-top: var(--space-3);">
+            <button type="button" class="btn btn-secondary btn-block" id="confirm-expired-btn">Simulate: open an expired/used link</button>
+          </div>
+
+          <div class="form-footer">
+            Didn't get it?
+            <button type="button" class="link-btn" id="confirm-resend-btn">Send again</button>
+            ·
+            <button type="button" class="link-btn" id="confirm-back-btn">Back to sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Enter Reset Code (SMS)
+         Notes:
+           - Reached only from the SMS branch of the confirmation screen.
+           - Entering any 6-digit code other than "000000" simulates a valid, unused,
+             unexpired code and proceeds to Set new password (AC3).
+           - Entering "000000" simulates an invalid/expired/reused code and routes to the
+             error screen (AC4), which offers "Request a new code" (AC5).
+    -->
+    <div class="screen" data-name="Enter reset code" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <h1>Enter your code</h1>
+          <p class="lede">We texted a 6-digit code to <strong id="otp-contact">+1 555 010 0100</strong>. Enter it below to continue.</p>
+          <div class="field">
+            <label class="label" for="otp-input">One-time code</label>
+            <input class="input otp-input" id="otp-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" />
+            <p class="hint">Prototype: enter any 6 digits to continue, or <code>000000</code> to see the expired/invalid error.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="otp-verify-btn">Verify code</button>
+          <div class="form-footer">
+            Didn't get a code?
+            <button type="button" class="link-btn" id="otp-resend-btn">Send a new code</button>
+            ·
+            <button type="button" class="link-btn" id="otp-back-btn">Back to sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reset Link/Code Error
+         Notes:
+           - Covers all three error triggers from the AC in one shared screen: invalid,
+             expired, and already-used links/codes (AC4) — copy is deliberately generic
+             ("no longer valid") since the app should not reveal which specific case
+             occurred (that distinction has no user-actionable difference and could leak
+             information about account state).
+           - Always presents a primary "Request a new reset link" action that returns to
+             the Forgot password request screen (AC5).
+    -->
+    <div class="screen" data-name="Reset link/code error" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <div class="status-icon is-error">⚠</div>
+          <h1>This link is no longer valid</h1>
+          <p class="lede">This password reset link or code has expired, was already used, or is invalid. For your security, each reset link/code can only be used once.</p>
+          <button type="button" class="btn btn-primary btn-block" id="error-retry-btn">Request a new reset link</button>
+          <div class="form-footer">
+            <button type="button" class="link-btn" id="error-back-btn">Back to sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Set New Password
+         Notes:
+           - This is the destination after a valid link/code (AC3).
+           - Complexity checklist updates live as the user types (min 8 characters, one
+             uppercase, one lowercase, one number, one special character); submitting a
+             password that fails any rule shows an inline, specific validation error and
+             preserves both fields (AC6).
+           - Submitting mismatched "New password" / "Confirm new password" values shows an
+             inline mismatch error without clearing either field (AC7).
+           - A valid, matching submission simulates the update (setTimeout) and advances to
+             the Success screen (AC8, AC9).
+    -->
+    <div class="screen" data-name="Set new password" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <h1>Set a new password</h1>
+          <p class="lede">Choose a new password for your account.</p>
+
+          <div class="field">
+            <label class="label" for="pw-new">New password</label>
+            <input class="input" id="pw-new" type="password" placeholder="••••••••" autocomplete="new-password" />
+            <ul class="checklist" id="pw-checklist">
+              <li data-rule="len"><span class="mark">○</span> At least 8 characters</li>
+              <li data-rule="upper"><span class="mark">○</span> One uppercase letter</li>
+              <li data-rule="lower"><span class="mark">○</span> One lowercase letter</li>
+              <li data-rule="num"><span class="mark">○</span> One number</li>
+              <li data-rule="special"><span class="mark">○</span> One special character (!@#$%^&amp;*)</li>
+            </ul>
+            <p class="field-error-text" id="pw-new-error" hidden>⚠ <span>Password does not meet the requirements above.</span></p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="pw-confirm">Confirm new password</label>
+            <input class="input" id="pw-confirm" type="password" placeholder="••••••••" autocomplete="new-password" />
+            <p class="field-error-text" id="pw-confirm-error" hidden>⚠ <span>Passwords do not match.</span></p>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-block" id="pw-submit-btn">Set new password</button>
+          <div class="form-footer">
+            <button type="button" class="link-btn" id="pw-back-btn">Back to sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Password Updated (success)
+         Notes:
+           - Confirms the reset succeeded (AC9) and auto-redirects to Sign in after a short
+             delay, matching "Return to sign in" as the explicit action too (AC10).
+    -->
+    <div class="screen" data-name="Password updated" hidden>
+      <div class="auth-topbar"><span class="brand">Expense Tracker</span></div>
+      <div class="auth-wrap">
+        <div class="card auth-card">
+          <div class="status-icon is-success">✓</div>
+          <h1>Password updated</h1>
+          <p class="lede">Your password has been changed successfully. You can now sign in with your new password.</p>
+          <button type="button" class="btn btn-primary btn-block" id="success-signin-btn">Go to sign in</button>
+          <p class="hint" id="success-countdown" style="margin-top: var(--space-3); text-align:center;">Redirecting to sign in in 3s…</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Inline fixture / demo state ----------
+  const state = {
+    contact: 'works@example.com',
+    channel: 'email', // 'email' | 'phone'
+  };
+
+  function detectChannel(value) {
+    return value.includes('@') ? 'email' : 'phone';
+  }
+
+  // ---------- Screen navigation ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => { s.hidden = j !== cur; });
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    window.scrollTo(0, 0);
+  }
+  function showByName(name) {
+    const idx = screens.findIndex(s => s.dataset.name === name);
+    if (idx !== -1) show(idx);
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  function setLoading(btn, isLoading, labelWhileLoading) {
+    if (isLoading) {
+      btn.dataset.originalLabel = btn.textContent;
+      btn.textContent = labelWhileLoading;
+      btn.disabled = true;
+    } else {
+      btn.textContent = btn.dataset.originalLabel || btn.textContent;
+      btn.disabled = false;
+    }
+  }
+
+  // ---------- Sign in ----------
+  document.getElementById('go-forgot-btn').addEventListener('click', () => showByName('Forgot password – Request'));
+
+  // ---------- Forgot password – Request ----------
+  const fpContactInput = document.getElementById('fp-contact');
+  const fpSubmitBtn = document.getElementById('fp-submit-btn');
+
+  document.querySelectorAll('.demo-panel [data-fill]').forEach(btn => {
+    btn.addEventListener('click', () => { fpContactInput.value = btn.dataset.fill; fpContactInput.focus(); });
+  });
+
+  document.getElementById('fp-back-btn').addEventListener('click', () => showByName('Sign in'));
+
+  fpSubmitBtn.addEventListener('click', () => {
+    const value = fpContactInput.value.trim();
+    if (!value) { fpContactInput.focus(); return; }
+    state.contact = value;
+    state.channel = detectChannel(value);
+    setLoading(fpSubmitBtn, true, 'Sending…');
+    setTimeout(() => {
+      setLoading(fpSubmitBtn, false);
+      renderConfirmScreen();
+      showByName('Check your email or phone');
+    }, 350);
+  });
+
+  // ---------- Check your email or phone ----------
+  function renderConfirmScreen() {
+    const isEmail = state.channel === 'email';
+    document.getElementById('confirm-channel-noun').textContent = isEmail ? 'email' : 'phone';
+    document.getElementById('confirm-contact').textContent = state.contact;
+    document.getElementById('confirm-message').innerHTML = isEmail
+      ? `If an account exists for <strong>${state.contact}</strong>, we've sent a password reset link to that email address. It expires in 15 minutes and can only be used once.`
+      : `If an account exists for <strong>${state.contact}</strong>, we've sent a one-time code by SMS to that phone number. It expires in 10 minutes and can only be used once.`;
+    document.getElementById('confirm-continue-btn').textContent = isEmail ? 'Simulate: open reset link' : 'Continue to enter code';
+    document.getElementById('otp-contact').textContent = state.contact;
+  }
+
+  document.getElementById('confirm-continue-btn').addEventListener('click', () => {
+    if (state.channel === 'email') {
+      showByName('Set new password');
+    } else {
+      showByName('Enter reset code');
+    }
+  });
+  document.getElementById('confirm-expired-btn').addEventListener('click', () => showByName('Reset link/code error'));
+  document.getElementById('confirm-resend-btn').addEventListener('click', (e) => {
+    setLoading(e.target, true, 'Sending…');
+    setTimeout(() => setLoading(e.target, false), 350);
+  });
+  document.getElementById('confirm-back-btn').addEventListener('click', () => showByName('Sign in'));
+
+  // ---------- Enter reset code (SMS) ----------
+  const otpInput = document.getElementById('otp-input');
+  const otpVerifyBtn = document.getElementById('otp-verify-btn');
+  otpInput.addEventListener('input', () => {
+    otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 6);
+  });
+  otpVerifyBtn.addEventListener('click', () => {
+    const code = otpInput.value.trim();
+    if (code.length !== 6) { otpInput.focus(); return; }
+    setLoading(otpVerifyBtn, true, 'Verifying…');
+    setTimeout(() => {
+      setLoading(otpVerifyBtn, false);
+      if (code === '000000') {
+        showByName('Reset link/code error');
+      } else {
+        showByName('Set new password');
+      }
+    }, 350);
+  });
+  document.getElementById('otp-resend-btn').addEventListener('click', (e) => {
+    setLoading(e.target, true, 'Sending…');
+    setTimeout(() => setLoading(e.target, false), 350);
+  });
+  document.getElementById('otp-back-btn').addEventListener('click', () => showByName('Sign in'));
+
+  // ---------- Reset link/code error ----------
+  document.getElementById('error-retry-btn').addEventListener('click', () => showByName('Forgot password – Request'));
+  document.getElementById('error-back-btn').addEventListener('click', () => showByName('Sign in'));
+
+  // ---------- Set new password ----------
+  const pwNew = document.getElementById('pw-new');
+  const pwConfirm = document.getElementById('pw-confirm');
+  const pwSubmitBtn = document.getElementById('pw-submit-btn');
+  const pwNewError = document.getElementById('pw-new-error');
+  const pwConfirmError = document.getElementById('pw-confirm-error');
+
+  const rules = {
+    len: v => v.length >= 8,
+    upper: v => /[A-Z]/.test(v),
+    lower: v => /[a-z]/.test(v),
+    num: v => /[0-9]/.test(v),
+    special: v => /[!@#$%^&*]/.test(v),
+  };
+
+  function passwordMeetsComplexity(v) {
+    return Object.values(rules).every(fn => fn(v));
+  }
+
+  function updateChecklist() {
+    const v = pwNew.value;
+    Object.keys(rules).forEach(key => {
+      const li = document.querySelector(`#pw-checklist li[data-rule="${key}"]`);
+      const met = rules[key](v);
+      li.classList.toggle('met', met);
+      li.querySelector('.mark').textContent = met ? '✓' : '○';
+    });
+  }
+  pwNew.addEventListener('input', () => {
+    updateChecklist();
+    pwNewError.hidden = true;
+    pwNew.classList.remove('has-error');
+  });
+  pwConfirm.addEventListener('input', () => {
+    pwConfirmError.hidden = true;
+    pwConfirm.classList.remove('has-error');
+  });
+
+  pwSubmitBtn.addEventListener('click', () => {
+    const newVal = pwNew.value;
+    const confirmVal = pwConfirm.value;
+    let hasError = false;
+
+    if (!passwordMeetsComplexity(newVal)) {
+      pwNewError.hidden = false;
+      pwNew.classList.add('has-error');
+      hasError = true;
+    }
+    if (newVal !== confirmVal || confirmVal === '') {
+      pwConfirmError.hidden = false;
+      pwConfirm.classList.add('has-error');
+      hasError = true;
+    }
+    if (hasError) return; // inputs preserved — nothing is cleared
+
+    setLoading(pwSubmitBtn, true, 'Updating…');
+    setTimeout(() => {
+      setLoading(pwSubmitBtn, false);
+      showByName('Password updated');
+      startSuccessRedirect();
+    }, 400);
+  });
+  document.getElementById('pw-back-btn').addEventListener('click', () => showByName('Sign in'));
+
+  // ---------- Success + redirect ----------
+  let redirectTimer = null;
+  function startSuccessRedirect() {
+    let secondsLeft = 3;
+    const countdownEl = document.getElementById('success-countdown');
+    countdownEl.textContent = `Redirecting to sign in in ${secondsLeft}s…`;
+    clearInterval(redirectTimer);
+    redirectTimer = setInterval(() => {
+      secondsLeft -= 1;
+      if (secondsLeft <= 0) {
+        clearInterval(redirectTimer);
+        goToSignInWithBanner();
+      } else {
+        countdownEl.textContent = `Redirecting to sign in in ${secondsLeft}s…`;
+      }
+    }, 1000);
+  }
+  function goToSignInWithBanner() {
+    document.getElementById('signin-banner').hidden = false;
+    showByName('Sign in');
+  }
+  document.getElementById('success-signin-btn').addEventListener('click', () => {
+    clearInterval(redirectTimer);
+    goToSignInWithBanner();
+  });
+
+  // ---------- Init ----------
+  updateChecklist();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
