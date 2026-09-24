@@ -26,12 +26,12 @@ describe('Shared API client module', () => {
     expect(typeof apiClient.expenses.remove).toBe('function');
   });
 
-  test('AC2: the client exposes create/read/update/delete for the Employee domain', () => {
+  test('AC2: the client exposes create/read/update/delete for the Employee domain (hires)', () => {
     const apiClient = require('../public/js/apiClient');
-    expect(typeof apiClient.employees.create).toBe('function');
-    expect(typeof apiClient.employees.read).toBe('function');
-    expect(typeof apiClient.employees.update).toBe('function');
-    expect(typeof apiClient.employees.remove).toBe('function');
+    expect(typeof apiClient.hires.create).toBe('function');
+    expect(typeof apiClient.hires.read).toBe('function');
+    expect(typeof apiClient.hires.update).toBe('function');
+    expect(typeof apiClient.hires.remove).toBe('function');
   });
 
   test('AC3: a failed expense save rejects with a structured error', async () => {
@@ -51,7 +51,7 @@ describe('Shared API client module', () => {
       status: 404,
       json: () => Promise.resolve({ error: 'hire not found' }),
     }));
-    await expect(apiClient.employees.read('missing')).rejects.toMatchObject({
+    await expect(apiClient.hires.read('missing')).rejects.toMatchObject({
       status: 404,
       message: 'hire not found',
     });
@@ -63,5 +63,15 @@ describe('Shared API client module', () => {
       status: 404,
       message: expect.any(String),
     });
+  });
+
+  test('creating an expense after a delete does not reuse an existing id', async () => {
+    const apiClient = require('../public/js/apiClient');
+    await apiClient.expenses.remove('exp_002');
+    const created = await apiClient.expenses.create({ amount: 1, date: '2026-09-20', category: 'Travel', description: 'x' });
+    const all = apiClient.expenses.list();
+    const idCounts = all.reduce((counts, e) => ({ ...counts, [e.id]: (counts[e.id] || 0) + 1 }), {});
+    expect(idCounts[created.id]).toBe(1);
+    expect(created.id).not.toBe('exp_002');
   });
 });

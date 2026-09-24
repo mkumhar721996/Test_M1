@@ -386,11 +386,11 @@ function initHireProfileApp(doc, initialHire, api) {
 
 function createDefaultApi(hireId) {
   return {
-    saveStage: (hireStage) => apiClient.employees.update(hireId, { hireStage }),
-    updateRoleDepartment: (changes) => apiClient.employees.update(hireId, changes),
-    updateContact: (changes) => apiClient.employees.update(hireId, changes),
-    deactivate: () => apiClient.employees.remove(hireId),
-    reactivate: () => apiClient.employees.reactivate(hireId),
+    saveStage: (hireStage) => apiClient.hires.update(hireId, { hireStage }),
+    updateRoleDepartment: (changes) => apiClient.hires.update(hireId, changes),
+    updateContact: (changes) => apiClient.hires.update(hireId, changes),
+    deactivate: () => apiClient.hires.remove(hireId),
+    reactivate: () => apiClient.hires.reactivate(hireId),
   };
 }
 
@@ -398,7 +398,7 @@ module.exports = { initHireProfileApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    apiClient.employees.list()
+    apiClient.hires.list()
       .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id)));
   });
 }

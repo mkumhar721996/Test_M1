@@ -38,13 +38,21 @@ function writeExpenses(list) {
   localStorage.setItem(EXPENSES_STORAGE_KEY, JSON.stringify(list));
 }
 
+function nextExpenseId(current) {
+  const maxSeen = current.reduce((max, e) => {
+    const n = parseInt(String(e.id).replace('exp_', ''), 10);
+    return Number.isFinite(n) && n > max ? n : max;
+  }, 0);
+  return 'exp_' + String(maxSeen + 1).padStart(3, '0');
+}
+
 const expenses = {
   list: () => readExpenses(),
   read: (id) => readExpenses().find((e) => e.id === id),
   create: (fields) => new Promise((resolve, reject) => {
     try {
       const current = readExpenses();
-      const created = { ...fields, id: 'exp_' + String(current.length + 1).padStart(3, '0') };
+      const created = { ...fields, id: nextExpenseId(current) };
       writeExpenses([created, ...current]);
       resolve(created);
     } catch (e) {
@@ -76,7 +84,7 @@ const expenses = {
   }),
 };
 
-const employees = {
+const hires = {
   list: () => requestJson('/hires'),
   read: (id) => requestJson(`/hires/${id}`),
   create: (data) => requestJson('/hires', {
@@ -93,4 +101,4 @@ const employees = {
   reactivate: (id) => requestJson(`/hires/${id}/reactivate`, { method: 'POST' }),
 };
 
-module.exports = { expenses, employees, createApiError };
+module.exports = { expenses, hires, createApiError };
