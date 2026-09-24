@@ -1,27 +1,7 @@
 const { escapeHtml, formatDateDisplay } = require('./utils');
+const apiClient = require('./apiClient');
 
-const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
-const INITIAL_EXPENSES = [
-  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
-  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
-  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
-];
-
-function loadExpenses() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) { /* ignore malformed storage */ }
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
-  } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
-  return INITIAL_EXPENSES.map((e) => ({ ...e }));
-}
-
-function persistExpenses(list) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
 
 function formatUSD(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -67,11 +47,10 @@ function filterExpenses(list, { category = '', start = '', end = '' } = {}) {
 }
 
 function initExpensesApp(doc = document) {
-  let expenses = loadExpenses();
+  let expenses = apiClient.expenses.list();
   let editingId = null;
   let lastUpdatedId = null;
   let lastAddedId = null;
-  let nextId = expenses.length + 1;
 
   const overlay = doc.getElementById('modal-overlay');
   const modalWrap = doc.getElementById('modal-wrap');
@@ -261,33 +240,24 @@ function initExpensesApp(doc = document) {
     setTimeout(() => {
       if (editingId !== targetId) return;
 
-      const idx = expenses.findIndex((e) => e.id === targetId);
-      if (idx === -1) return;
-
-      const updated = {
-        ...expenses[idx],
+      apiClient.expenses.update(targetId, {
         amount: Math.round(parseFloat(amountRaw) * 100) / 100,
         date: dateValue,
         category: categoryValue,
         description: fieldDescription.value.trim(),
-      };
-      try {
-        persistExpenses([
-          ...expenses.slice(0, idx),
-          updated,
-          ...expenses.slice(idx + 1),
-        ]);
-      } catch (err) {
+      }).then((updated) => {
+        const idx = expenses.findIndex((e) => e.id === targetId);
+        if (idx === -1) return;
+        expenses[idx] = updated;
+        lastUpdatedId = updated.id;
+        closeModal();
+        applyFiltersAndRender();
+        showToast('success', 'Expense updated');
+      }).catch(() => {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save changes';
         showToast('error', 'Expense could not be saved — please try again');
-        return;
-      }
-      expenses[idx] = updated;
-      lastUpdatedId = expenses[idx].id;
-      closeModal();
-      applyFiltersAndRender();
-      showToast('success', 'Expense updated');
+      });
     }, 350);
   });
 
@@ -414,28 +384,23 @@ function initExpensesApp(doc = document) {
     createSaveBtn.disabled = true;
     createSaveBtn.textContent = 'Saving…';
 
-    const newExpense = {
-      id: 'exp_' + String(nextId++).padStart(3, '0'),
-      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
-      date: dateValue,
-      category: categoryValue,
-      description: descriptionValue,
-    };
-
     createSaveTimer = setTimeout(() => {
-      try {
-        persistExpenses([newExpense, ...expenses]);
-      } catch (err) {
+      apiClient.expenses.create({
+        amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+        date: dateValue,
+        category: categoryValue,
+        description: descriptionValue,
+      }).then((created) => {
+        expenses = [created, ...expenses];
+        lastAddedId = created.id;
+        closeCreateModal();
+        applyFiltersAndRender();
+        showToast('success', 'Expense added');
+      }).catch(() => {
         createSaveBtn.disabled = false;
         createSaveBtn.textContent = 'Save expense';
         showToast('error', "Couldn't save expense — please try again");
-        return;
-      }
-      expenses = [newExpense, ...expenses];
-      lastAddedId = newExpense.id;
-      closeCreateModal();
-      applyFiltersAndRender();
-      showToast('success', 'Expense added');
+      });
     }, 350);
   });
 
@@ -443,11 +408,7 @@ function initExpensesApp(doc = document) {
 }
 
 module.exports = {
-  STORAGE_KEY,
   CATEGORIES,
-  INITIAL_EXPENSES,
-  loadExpenses,
-  persistExpenses,
   formatUSD,
   validateExpenseFields,
   validateAmount,

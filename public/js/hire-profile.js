@@ -1,4 +1,5 @@
 const { escapeHtml, formatDateDisplay } = require('./utils');
+const apiClient = require('./apiClient');
 
 const TASKS_TOTAL = 5;
 const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
@@ -384,27 +385,20 @@ function initHireProfileApp(doc, initialHire, api) {
 }
 
 function createDefaultApi(hireId) {
-  const patch = (changes) => fetch(`/hires/${hireId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(changes),
-  }).then((res) => res.json());
-
   return {
-    saveStage: (hireStage) => patch({ hireStage }),
-    updateRoleDepartment: (changes) => patch(changes),
-    updateContact: (changes) => patch(changes),
-    deactivate: () => fetch(`/hires/${hireId}/deactivate`, { method: 'POST' }).then((res) => res.json()),
-    reactivate: () => fetch(`/hires/${hireId}/reactivate`, { method: 'POST' }).then((res) => res.json()),
+    saveStage: (hireStage) => apiClient.employees.update(hireId, { hireStage }),
+    updateRoleDepartment: (changes) => apiClient.employees.update(hireId, changes),
+    updateContact: (changes) => apiClient.employees.update(hireId, changes),
+    deactivate: () => apiClient.employees.remove(hireId),
+    reactivate: () => apiClient.employees.reactivate(hireId),
   };
 }
 
-module.exports = { initHireProfileApp };
+module.exports = { initHireProfileApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/hires')
-      .then((res) => res.json())
+    apiClient.employees.list()
       .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id)));
   });
 }

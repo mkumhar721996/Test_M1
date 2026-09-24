@@ -27,7 +27,7 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-field-description').value).toBe('');
   });
 
-  test('submitting a valid expense adds it to the top of the table immediately', () => {
+  test('submitting a valid expense adds it to the top of the table immediately', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
@@ -35,12 +35,13 @@ describe('Create Expense via Modal Form', () => {
     document.getElementById('create-field-description').value = 'Taxi to airport';
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const firstRow = document.querySelector('#expense-tbody tr');
     expect(firstRow.querySelector('.desc-cell').textContent).toBe('Taxi to airport');
     expect(firstRow.querySelector('.col-amount').textContent).toBe('$24.50');
   });
 
-  test('a valid submit shows a success toast', () => {
+  test('a valid submit shows a success toast', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
@@ -48,6 +49,7 @@ describe('Create Expense via Modal Form', () => {
     document.getElementById('create-field-description').value = 'Taxi to airport';
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     expect(document.getElementById('toast').hidden).toBe(false);
     expect(document.getElementById('toast-message').textContent).toBe('Expense added');
   });
@@ -77,7 +79,7 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-modal-wrap').hidden).toBe(false);
   });
 
-  test('a localStorage failure on submit shows an error toast', () => {
+  test('a localStorage failure on submit shows an error toast', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
@@ -88,12 +90,13 @@ describe('Create Expense via Modal Form', () => {
     });
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     expect(document.getElementById('toast').hidden).toBe(false);
     expect(document.getElementById('toast-message').textContent).toMatch(/couldn.?t save/i);
     setItemSpy.mockRestore();
   });
 
-  test('a localStorage failure keeps the modal open with entered values intact', () => {
+  test('a localStorage failure keeps the modal open with entered values intact', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
@@ -104,6 +107,7 @@ describe('Create Expense via Modal Form', () => {
     });
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     expect(document.getElementById('create-modal-wrap').hidden).toBe(false);
     expect(document.getElementById('create-field-amount').value).toBe('24.50');
     expect(document.getElementById('create-field-description').value).toBe('Taxi to airport');
@@ -135,7 +139,7 @@ describe('Create Expense via Modal Form', () => {
     expect(stored.some((e) => e.description === 'Taxi to airport')).toBe(false);
   });
 
-  test('a newly created expense is still present in localStorage after the save completes', () => {
+  test('a newly created expense is still present in localStorage after the save completes', async () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
     document.getElementById('create-field-date').value = '2026-09-20';
@@ -143,6 +147,7 @@ describe('Create Expense via Modal Form', () => {
     document.getElementById('create-field-description').value = 'Taxi to airport';
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const stored = JSON.parse(localStorage.getItem('expenses'));
     expect(stored.some((e) => e.description === 'Taxi to airport')).toBe(true);
   });

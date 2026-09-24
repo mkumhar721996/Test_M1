@@ -36,28 +36,31 @@ describe('Edit Expense via Modal Form', () => {
     expect(document.getElementById('error-amount').textContent).toMatch(/Amount is required/);
   });
 
-  test('submitting with all required fields valid closes the modal', () => {
+  test('submitting with all required fields valid closes the modal', async () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     expect(document.getElementById('modal-wrap').hidden).toBe(true);
   });
 
-  test('a valid submit persists the updated record to localStorage', () => {
+  test('a valid submit persists the updated record to localStorage', async () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const stored = JSON.parse(localStorage.getItem('expenses'));
     expect(stored.find((e) => e.id === 'exp_001').amount).toBe(512.5);
   });
 
-  test('the list row shows the updated amount immediately after saving', () => {
+  test('the list row shows the updated amount immediately after saving', async () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const row = document.querySelector('[data-edit-id="exp_001"]').closest('tr');
     expect(row.querySelector('.col-amount').textContent).toBe('$512.50');
   });
@@ -154,11 +157,12 @@ describe('Edit Expense via Modal Form', () => {
     expect(formatUSD(15)).toBe('$15.00');
   });
 
-  test('the saved row displays the amount as USD with two decimals', () => {
+  test('the saved row displays the amount as USD with two decimals', async () => {
     document.querySelector('[data-edit-id="exp_003"]').click();
     document.getElementById('field-amount').value = '9';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const row = document.querySelector('[data-edit-id="exp_003"]').closest('tr');
     expect(row.querySelector('.col-amount').textContent).toBe('$9.00');
   });
@@ -191,7 +195,7 @@ describe('Edit Expense via Modal Form', () => {
     expect(document.getElementById('modal-wrap').hidden).toBe(false);
   });
 
-  test('a localStorage failure on save keeps the modal open, re-enables the save button, and shows an error toast', () => {
+  test('a localStorage failure on save keeps the modal open, re-enables the save button, and shows an error toast', async () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
@@ -200,6 +204,7 @@ describe('Edit Expense via Modal Form', () => {
 
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
 
     expect(document.getElementById('modal-wrap').hidden).toBe(false);
     const saveBtn = document.getElementById('modal-save-btn');
