@@ -65,7 +65,7 @@ describe('Edit Expense via Modal Form', () => {
     expect(row.querySelector('.col-amount').textContent).toBe('$512.50');
   });
 
-  test('the table reflects every updated field (date, category, description, amount) immediately after saving', () => {
+  test('the table reflects every updated field (date, category, description, amount) immediately after saving', async () => {
     document.querySelector('[data-edit-id="exp_002"]').click();
     document.getElementById('field-amount').value = '120.00';
     document.getElementById('field-date').value = '2026-09-20';
@@ -73,6 +73,7 @@ describe('Edit Expense via Modal Form', () => {
     document.getElementById('field-description').value = 'Updated description';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     const row = document.querySelector('[data-edit-id="exp_002"]').closest('tr');
     expect(row.children[0].textContent).toBe('09/20/2026');
     expect(row.querySelector('.chip').textContent).toBe('Software');
@@ -80,11 +81,12 @@ describe('Edit Expense via Modal Form', () => {
     expect(row.querySelector('.col-amount').textContent).toBe('$120.00');
   });
 
-  test('a successful save shows a success toast', () => {
+  test('a successful save shows a success toast', async () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '512.50';
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     expect(document.getElementById('toast').hidden).toBe(false);
     expect(document.getElementById('toast-message').textContent).toBe('Expense updated');
   });
@@ -204,6 +206,7 @@ describe('Edit Expense via Modal Form', () => {
 
     document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    await Promise.resolve();
     await Promise.resolve();
 
     expect(document.getElementById('modal-wrap').hidden).toBe(false);
