@@ -66,7 +66,9 @@ const expenses = {
   remove: (id) => new Promise((resolve, reject) => {
     try {
       const current = readExpenses();
-      writeExpenses(current.filter((e) => e.id !== id));
+      const idx = current.findIndex((e) => e.id === id);
+      if (idx === -1) { reject(createApiError(`Expense ${id} not found.`, 404)); return; }
+      writeExpenses([...current.slice(0, idx), ...current.slice(idx + 1)]);
       resolve(null);
     } catch (e) {
       reject(createApiError('Expense could not be deleted.', null));

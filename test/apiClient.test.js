@@ -56,4 +56,12 @@ describe('Shared API client module', () => {
       message: 'hire not found',
     });
   });
+
+  test('removing a non-existent expense rejects with a structured 404 error, consistent with update', async () => {
+    const apiClient = require('../public/js/apiClient');
+    await expect(apiClient.expenses.remove('exp_does_not_exist')).rejects.toMatchObject({
+      status: 404,
+      message: expect.any(String),
+    });
+  });
 });
