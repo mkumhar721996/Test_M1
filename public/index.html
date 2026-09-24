@@ -60,7 +60,7 @@
       <p class="list-count" id="result-count" aria-live="polite"></p>
     </div>
 
-    <div class="card table-card">
+    <div class="card table-card" id="expense-table-wrap">
       <div class="table-scroll">
         <table class="expense-table">
           <thead>
@@ -76,6 +76,18 @@
             <!-- rendered by JS -->
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <div class="card" id="expense-empty-state" hidden>
+      <div class="empty-state" role="status">
+        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+        <h2 class="empty-state-title">No expenses yet</h2>
+        <p class="empty-state-body">Start tracking your spending — add your first expense to see it listed here.</p>
+        <button type="button" class="btn btn-primary" id="empty-add-expense-btn">+ Add your first expense</button>
       </div>
     </div>
   </div>

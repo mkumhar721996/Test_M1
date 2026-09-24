@@ -9,7 +9,8 @@ describe('Filter Expenses by Category and Date Range', () => {
     jest.resetModules();
     localStorage.clear();
     document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
-    const { initExpensesApp } = require('../public/js/expenses');
+    const { initExpensesApp, INITIAL_EXPENSES, STORAGE_KEY } = require('../public/js/expenses');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
     initExpensesApp(document);
   });
 
