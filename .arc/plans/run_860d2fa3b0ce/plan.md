@@ -327,7 +327,7 @@ tests:
       let captured;
       jest.spyOn(notifyClient, 'sendResetEmail').mockImplementation(async (args) => { captured = args; return args; });
       await request(app).post('/auth/forgot-password').send({ contact: 'works@example.com' });
-      await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'Another1!', confirmPassword: 'Another1!' });
+      await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'test-password-1', confirmPassword: 'test-password-1' });
       const res = await request(app).post('/auth/reset/verify').send({ credential: captured.credential });
       expect(res.status).toBe(400);
     });
@@ -388,7 +388,7 @@ tests:
       let captured;
       jest.spyOn(notifyClient, 'sendResetEmail').mockImplementation(async (args) => { captured = args; return args; });
       await request(app).post('/auth/forgot-password').send({ contact: 'works@example.com' });
-      const res = await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'GoodPassw0rd!', confirmPassword: 'Different1!' });
+      const res = await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'test-password-2', confirmPassword: 'test-password-3' });
       expect(res.status).toBe(422);
       expect(res.body.error).toBe('password_mismatch');
     });
@@ -418,9 +418,9 @@ tests:
       let captured;
       jest.spyOn(notifyClient, 'sendResetEmail').mockImplementation(async (args) => { captured = args; return args; });
       await request(app).post('/auth/forgot-password').send({ contact: 'works@example.com' });
-      await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'BrandNew1!', confirmPassword: 'BrandNew1!' });
+      await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'test-password-4', confirmPassword: 'test-password-4' });
       const { verifyLogin } = require('../src/auth/store');
-      expect(verifyLogin('works@example.com', 'BrandNew1!')).toBe(true);
+      expect(verifyLogin('works@example.com', 'test-password-4')).toBe(true);
       expect(verifyLogin('works@example.com', 'OldPassw0rd!')).toBe(false);
     });
     ```
@@ -432,7 +432,7 @@ tests:
       let captured;
       jest.spyOn(notifyClient, 'sendResetEmail').mockImplementation(async (args) => { captured = args; return args; });
       await request(app).post('/auth/forgot-password').send({ contact: 'works@example.com' });
-      const res = await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'BrandNew1!', confirmPassword: 'BrandNew1!' });
+      const res = await request(app).post('/auth/reset/confirm').send({ credential: captured.credential, newPassword: 'test-password-4', confirmPassword: 'test-password-4' });
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
     });
