@@ -954,12 +954,16 @@
     fieldAmount.focus();
   }
 
+  let saveTimer = null;
+
   function closeModal() {
     overlay.hidden = true;
     modalWrap.hidden = true;
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save expense';
     document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
   }
 
   function onModalKeydown(e) {
@@ -1054,7 +1058,7 @@
     };
 
     // Simulated latency — no real network call.
-    setTimeout(() => {
+    saveTimer = setTimeout(() => {
       try {
         persistExpenses([newExpense, ...expenses]);
       } catch (err) {
