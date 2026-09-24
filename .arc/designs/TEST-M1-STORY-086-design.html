@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="arc-dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-086 — Canonical UI Shell</title>
+
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+
+<!--
+  TEST-M1-STORY-086: Canonical UI Shell
+  ======================================
+  This story retires public/app.js (the orphaned list+card render path), removes
+  the "TODO(rebase): uncertain merge" comment from public/index.html, and makes
+  the table+modal implementation already proven in public/js/expenses.js
+  (TEST-M1-STORY-030/031/032/091) the one and only live frontend.
+
+  Because most of this story's acceptance criteria are about DOM/script/CSS
+  *composition* rather than new visuals (AC2-AC7), the table+modal screens below
+  are intentionally the SAME product UI already shipped — this prototype is not
+  proposing new visual design, it is confirming "this, and only this, is what
+  index.html renders" and adding one review-only screen (5) that makes the
+  otherwise-invisible structural acceptance criteria inspectable by a
+  non-technical reviewer.
+
+  Screens:
+    1. Expenses Table — Populated      (AC1, AC2)
+    2. Expenses Table — Empty State    (AC1, AC2)
+    3. Create Expense — Validation     (AC1, AC2)
+    4. Edit Expense                    (AC1, AC2)
+    5. Shell Architecture Audit        (AC3, AC4, AC5, AC6, AC7 — review aid, not shipped UI)
+-->
+
+<!-- App nav: top bar — Expenses · Employees (existing .app-topbar/.app-nav component,
+     already live in public/index.html; "Employees" is an inert placeholder link, unchanged
+     by this story). Kept identical across screens 1-4 so reviewers see the real, unchanged
+     app chrome. Screen 5 is a review-only annotation screen and intentionally does not use
+     product chrome — see its own note. -->
+
+<style>
+  /* ---- Page-specific rules mirroring public/css/expenses.css (the canonical stylesheet
+     this story keeps). Reproduced here because prototypes are self-contained; the shipped
+     app links css/expenses.css directly, as shown in the Screen 5 "after" panel. ---- */
+
+  .page-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  .expense-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .expense-table tbody tr.row-added { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .expense-table tbody tr.row-added { animation: none; }
+  }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
+  .empty-row td { text-align: center; color: var(--color-fg-muted); padding: var(--space-4); }
+  .empty-state-cta { margin-top: var(--space-3); }
+
+  .btn-sm { padding: var(--space-3) var(--space-4); font-size: var(--font-size-sm); min-height: 0; }
+
+  .field { margin-bottom: var(--space-4); }
+  .hint { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .amount-input-wrap { position: relative; }
+  .amount-prefix {
+    position: absolute; left: var(--space-3); top: 50%; transform: translateY(-50%);
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-md);
+  }
+  .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
+
+  /* ---- Screen 5: review-only audit panel. Deliberately distinct from product chrome
+     (no .app-topbar) so reviewers don't mistake it for a shipping screen. ---- */
+  .audit-wrap { max-width: 980px; margin: 0 auto; padding: var(--space-4); }
+  .audit-banner {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .audit-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 800px) {
+    .audit-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .audit-col-title {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-family-base); font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .audit-tag {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg-muted);
+  }
+  pre.audit-code {
+    margin: 0;
+    padding: var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-base);
+    color: var(--color-fg-muted);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  pre.audit-code .removed { color: var(--color-fg-muted); text-decoration: line-through; opacity: 0.65; }
+  pre.audit-code .added { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .audit-checklist {
+    list-style: none; margin: var(--space-3) 0 0 0; padding: 0;
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  .audit-checklist li {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .audit-checklist .chip { flex: 0 0 auto; }
+  .audit-ac-strip {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+
+  /* ---- Reviewer bar ---- */
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); cursor: pointer;
+    padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm);
+    min-height: 44px;
+  }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-086</span>
+  <button id="prev-btn" type="button">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+  <button id="next-btn" type="button">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+  <!-- State: table-populated -->
+  <!--
+    Screen: Expenses Table — Populated
+    Notes:
+      - This is the whole page. There is no card/list rendering path anywhere in the DOM
+        (AC2) — the only repeating-record markup is <table class="expense-table">.
+      - "+ Add expense" opens the Create modal in place (AC1); "Edit" opens the Edit modal.
+      - Category is shown as a plain .chip (existing design-system chip component, no new
+        color introduced) — matches the shipped public/js/expenses.js row template exactly.
+  -->
+  <div class="screen" data-name="Expenses Table — Populated">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Expenses</a>
+        <a href="#" onclick="return false;">Employees</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <div class="page-header page-header-row">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" data-open-create="1">+ Add expense</button>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-1"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="edit-overlay-1" hidden></div>
+    <div class="modal-wrap" id="edit-wrap-1" role="dialog" aria-modal="true" aria-labelledby="edit-title-1" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="edit-title-1">Edit expense</h2>
+            <p>Update any field, then save to apply the correction.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-edit="1" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form data-form="edit-1" novalidate>
+          <div class="field">
+            <label class="label" for="edit-amount-1">Amount</label>
+            <div class="amount-input-wrap">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input" id="edit-amount-1" type="text" inputmode="decimal" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="edit-date-1">Date</label>
+            <input class="input" id="edit-date-1" type="date" />
+          </div>
+          <div class="field">
+            <label class="label" for="edit-category-1">Category</label>
+            <select class="input" id="edit-category-1">
+              <option value="">Select a category</option>
+              <option>Travel</option><option>Meals</option><option>Software</option>
+              <option>Office Supplies</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="edit-desc-1">Description <span style="color:var(--color-fg-muted);">(optional)</span></label>
+            <textarea class="input" id="edit-desc-1" rows="2"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-edit="1">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-save-edit="1">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="create-overlay-1" hidden></div>
+    <div class="modal-wrap" id="create-wrap-1" role="dialog" aria-modal="true" aria-labelledby="create-title-1" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="create-title-1">Create expense</h2>
+            <p>Enter the details of a new expense to add it to the list.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-create="1" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form data-form="create-1" novalidate>
+          <div class="field">
+            <label class="label" for="create-amount-1">Amount</label>
+            <div class="amount-input-wrap">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input" id="create-amount-1" type="text" inputmode="decimal" placeholder="0.00" />
+            </div>
+            <span class="hint">USD, up to two decimal places</span>
+          </div>
+          <div class="field">
+            <label class="label" for="create-date-1">Date</label>
+            <input class="input" id="create-date-1" type="date" />
+          </div>
+          <div class="field">
+            <label class="label" for="create-category-1">Category</label>
+            <select class="input" id="create-category-1">
+              <option value="">Select a category</option>
+              <option>Travel</option><option>Meals</option><option>Software</option>
+              <option>Office Supplies</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="create-desc-1">Description</label>
+            <textarea class="input" id="create-desc-1" rows="2"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-create="1">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-save-create="1">Save expense</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast-1" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>&nbsp;<span data-toast-msg="1">Expense updated</span>
+    </div>
+  </div>
+
+  <!-- State: table-empty -->
+  <!--
+    Screen: Expenses Table — Empty State
+    Notes:
+      - Same table+modal shell as screen 1, rendered with zero records (AC1/AC2 hold for
+        every data state, not just the happy path — the empty state is still a <table>
+        row, never a card/list fallback).
+      - Empty state names the action ("Add your first expense") per guideline §5 —
+        an invitation to act, not a dead end.
+      - Clicking "+ Add expense" here demonstrates the transition straight from empty to
+        populated (no separate loading skeleton needed — table shape doesn't change).
+  -->
+  <div class="screen" data-name="Expenses Table — Empty State">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Expenses</a>
+        <a href="#" onclick="return false;">Employees</a>
+      </nav>
+    </div>
+    <div class="page">
+      <div class="page-header page-header-row">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" data-open-create="2">+ Add expense</button>
+      </div>
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-2">
+              <tr class="empty-row">
+                <td colspan="5">
+                  No expenses yet — add your first one to start tracking spend.
+                  <div class="empty-state-cta">
+                    <button type="button" class="btn btn-secondary btn-sm" data-open-create="2">+ Add expense</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="create-overlay-2" hidden></div>
+    <div class="modal-wrap" id="create-wrap-2" role="dialog" aria-modal="true" aria-labelledby="create-title-2" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="create-title-2">Create expense</h2>
+            <p>Enter the details of a new expense to add it to the list.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-create="2" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form data-form="create-2" novalidate>
+          <div class="field">
+            <label class="label" for="create-amount-2">Amount</label>
+            <div class="amount-input-wrap">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input" id="create-amount-2" type="text" inputmode="decimal" placeholder="0.00" />
+            </div>
+            <span class="hint">USD, up to two decimal places</span>
+          </div>
+          <div class="field">
+            <label class="label" for="create-date-2">Date</label>
+            <input class="input" id="create-date-2" type="date" />
+          </div>
+          <div class="field">
+            <label class="label" for="create-category-2">Category</label>
+            <select class="input" id="create-category-2">
+              <option value="">Select a category</option>
+              <option>Travel</option><option>Meals</option><option>Software</option>
+              <option>Office Supplies</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="create-desc-2">Description</label>
+            <textarea class="input" id="create-desc-2" rows="2"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-create="2">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-save-create="2">Save expense</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast-2" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>&nbsp;<span data-toast-msg="2">Expense added</span>
+    </div>
+  </div>
+
+  <!-- State: create-validation -->
+  <!--
+    Screen: Create Expense — Validation Errors
+    Notes:
+      - Opens with the Create modal already submitted-and-blocked, so a reviewer can see
+        all four inline errors at once without re-clicking through the flow.
+      - Errors follow guideline §6: visible labels always, specific inline messages, input
+        preserved (this demo starts blank on purpose to show the error state clearly).
+      - Errors are signalled with icon (⚠) + bold text + emphasized border, never color
+        alone — matches the design-system gap note in expenses.css (no dedicated
+        danger token yet).
+      - Filling all fields and saving demonstrates the same 350ms simulated-latency
+        pattern as the shipped modal (disabled + relabelled submit button, then toast).
+  -->
+  <div class="screen" data-name="Create Expense — Validation Errors">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Expenses</a>
+        <a href="#" onclick="return false;">Employees</a>
+      </nav>
+    </div>
+    <div class="page">
+      <div class="page-header page-header-row">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" disabled>+ Add expense</button>
+      </div>
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th><th scope="col">Category</th><th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th><th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-3"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="create-overlay-3"></div>
+    <div class="modal-wrap" id="create-wrap-3" role="dialog" aria-modal="true" aria-labelledby="create-title-3">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="create-title-3">Create expense</h2>
+            <p>Enter the details of a new expense to add it to the list.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-create="3" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form data-form="create-3" novalidate>
+          <div class="field">
+            <label class="label" for="create-amount-3">Amount</label>
+            <div class="amount-input-wrap">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input input-invalid" id="create-amount-3" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="create-error-amount-3" />
+            </div>
+            <span class="hint">USD, up to two decimal places</span>
+            <p class="field-error" id="create-error-amount-3" role="alert">⚠ Amount is required.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="create-date-3">Date</label>
+            <input class="input input-invalid" id="create-date-3" type="date" aria-describedby="create-error-date-3" />
+            <p class="field-error" id="create-error-date-3" role="alert">⚠ Date is required.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="create-category-3">Category</label>
+            <select class="input input-invalid" id="create-category-3" aria-describedby="create-error-category-3">
+              <option value="">Select a category</option>
+              <option>Travel</option><option>Meals</option><option>Software</option>
+              <option>Office Supplies</option><option>Other</option>
+            </select>
+            <p class="field-error" id="create-error-category-3" role="alert">⚠ Category is required.</p>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="create-desc-3">Description</label>
+            <textarea class="input input-invalid" id="create-desc-3" rows="2" aria-describedby="create-error-desc-3"></textarea>
+            <p class="field-error" id="create-error-desc-3" role="alert">⚠ Description is required.</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-create="3">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-save-create="3">Save expense</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast-3" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>&nbsp;<span data-toast-msg="3">Expense added</span>
+    </div>
+  </div>
+
+  <!-- State: edit-expense -->
+  <!--
+    Screen: Edit Expense
+    Notes:
+      - Pre-filled from an existing row ("Team lunch — Q3 kickoff"), matching
+        public/js/expenses.js openEditModal() field population exactly.
+      - Description is optional here (differs from Create, which requires it) — this
+        asymmetry is intentional and already live; carried over unchanged.
+      - Save changes uses the same disabled+relabel+350ms+toast pattern as Create.
+  -->
+  <div class="screen" data-name="Edit Expense">
+    <div class="app-topbar">
+      <span class="brand">Expense Tracker</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Expenses</a>
+        <a href="#" onclick="return false;">Employees</a>
+      </nav>
+    </div>
+    <div class="page">
+      <div class="page-header page-header-row">
+        <div>
+          <h1>Expenses</h1>
+          <p>Review and correct submitted expense records, or add a new one.</p>
+        </div>
+        <button type="button" class="btn btn-primary" disabled>+ Add expense</button>
+      </div>
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th><th scope="col">Category</th><th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th><th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-4"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="edit-overlay-4"></div>
+    <div class="modal-wrap" id="edit-wrap-4" role="dialog" aria-modal="true" aria-labelledby="edit-title-4">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="edit-title-4">Edit expense</h2>
+            <p>Update any field, then save to apply the correction.</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-edit="4" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form data-form="edit-4" novalidate>
+          <div class="field">
+            <label class="label" for="edit-amount-4">Amount</label>
+            <div class="amount-input-wrap">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input" id="edit-amount-4" type="text" inputmode="decimal" value="96.18" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="edit-date-4">Date</label>
+            <input class="input" id="edit-date-4" type="date" value="2026-09-05" />
+          </div>
+          <div class="field">
+            <label class="label" for="edit-category-4">Category</label>
+            <select class="input" id="edit-category-4">
+              <option value="">Select a category</option>
+              <option>Travel</option><option selected>Meals</option><option>Software</option>
+              <option>Office Supplies</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="edit-desc-4">Description <span style="color:var(--color-fg-muted);">(optional)</span></label>
+            <textarea class="input" id="edit-desc-4" rows="2">Team lunch — Q3 kickoff</textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-edit="4">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-save-edit="4">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast-4" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>&nbsp;<span data-toast-msg="4">Expense updated</span>
+    </div>
+  </div>
+
+  <!-- State: shell-architecture-audit -->
+  <!--
+    Screen: Shell Architecture Audit (Before / After)
+    Notes:
+      - This screen is a REVIEW AID, not shipped UI — it exists only so a reviewer can sign
+        off on AC3-AC7, which are about <head> composition, not visuals. It deliberately
+        skips the .app-topbar chrome so it can't be mistaken for a real app screen.
+      - "Before" reproduces the dual-implementation head this story inherits (see
+        .arc/plans/run_9df68d5bf4da/plan.md's discovery note): app.js wired alongside
+        expenses.js, a "TODO(rebase)" comment marking the ambiguity, styles.css linked
+        alongside expenses.css, and currency.js/validation.js existing only as orphaned
+        files required by tests, never by index.html.
+      - "After" is what this story's build must land: one script path (currency.js +
+        validation.js + expenses.js, in dependency order), one stylesheet path
+        (design-system tokens + prototype-utils + expenses.css), no TODO comment, no
+        app.js tag, no styles.css.
+      - The checklist below maps each row directly to an AC so a reviewer can tick through
+        them without reading code.
+  -->
+  <div class="screen" data-name="Shell Architecture Audit (Before / After)">
+    <div class="audit-wrap">
+      <div class="audit-banner">
+        <span aria-hidden="true">📋</span>
+        <span>Review aid only — this comparison does not ship. It exists to make the structural (non-visual) acceptance criteria of this story inspectable before hand-off.</span>
+      </div>
+
+      <div class="audit-grid">
+        <div class="card">
+          <p class="audit-col-title">Before <span class="audit-tag">(current index.html — dual implementation)</span></p>
+          <pre class="audit-code">&lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;link rel="stylesheet" href="css/expenses.css"&gt;
+&lt;script src="app.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/expenses.js" defer&gt;&lt;/script&gt;
+
+<span class="removed">&lt;!-- TODO(rebase): uncertain merge — keeping
+     both list+card (app.js) and table+modal
+     (expenses.js) render paths until owner
+     confirms which one ships --&gt;</span>
+
+&lt;div id="root"&gt;&lt;!-- app.js list+card mount --&gt;&lt;/div&gt;
+&lt;table class="expense-table"&gt;...&lt;/table&gt;
+
+<span class="removed">currency.js, validation.js:
+  required only by test/currency.test.js and
+  test/validation.test.js — no &lt;script&gt; tag
+  in index.html at all</span></pre>
+        </div>
+
+        <div class="card">
+          <p class="audit-col-title">After <span class="audit-tag">(this story's target — canonical shell)</span></p>
+          <pre class="audit-code">&lt;link rel="stylesheet" href="/design-system/tokens.css"&gt;
+&lt;link rel="stylesheet" href="/design-system/prototype-utils.css"&gt;
+&lt;link rel="stylesheet" href="css/expenses.css"&gt;
+
+<span class="added">&lt;script src="js/currency.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/validation.js" defer&gt;&lt;/script&gt;</span>
+&lt;script src="js/expenses.js" defer&gt;&lt;/script&gt;
+
+&lt;table class="expense-table"&gt;...&lt;/table&gt;
+&lt;div class="modal-wrap" id="create-modal-wrap"&gt;...&lt;/div&gt;
+&lt;div class="modal-wrap" id="modal-wrap"&gt;...&lt;/div&gt;
+
+<span class="added">No #root, no .expense-list, no .expense-row —
+list+card markup is fully removed, not just
+hidden.</span></pre>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: var(--space-4);">
+        <p class="card-title">Acceptance criteria checklist</p>
+        <ul class="audit-checklist">
+          <li><span class="chip">✓ AC1</span> Only the table+modal UI from expenses.js renders when index.html is served — see screens 1–4.</li>
+          <li><span class="chip">✓ AC2</span> No list+card DOM (no <code>#root</code>, <code>.expense-list</code>, <code>.expense-row</code>) is present anywhere in the page.</li>
+          <li><span class="chip">✓ AC3</span> The "TODO(rebase): uncertain merge" comment is removed from index.html.</li>
+          <li><span class="chip">✓ AC4</span> No <code>&lt;script src="app.js"&gt;</code> tag remains — app.js is retired, not just unwired.</li>
+          <li><span class="chip">✓ AC5</span> Only three stylesheets are referenced: design-system tokens.css, prototype-utils.css, and expenses.css. styles.css is not linked.</li>
+          <li><span class="chip">✓ AC6</span> With styles.css unlinked, none of its rules (e.g. its own <code>.expense-row</code>/<code>.modal-dialog</code> selectors) can match anything in the page.</li>
+          <li><span class="chip">✓ AC7</span> currency.js and validation.js are loaded via <code>&lt;script&gt;</code> tags in index.html itself — not only <code>require()</code>'d by test files.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  // ---------------- Reviewer bar wiring ----------------
+  var screens = Array.from(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+    document.getElementById('screen-label').textContent = (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+  }
+  document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+  document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+
+  // ---------------- Fixture data ----------------
+  var FIXTURES = {
+    populated: [
+      { date: 'Sep 2, 2026', category: 'Travel', description: 'Flight to Chicago client site', amount: '$482.50' },
+      { date: 'Sep 5, 2026', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: '$96.18' },
+      { date: 'Sep 10, 2026', category: 'Software', description: 'Figma seat renewal', amount: '$15.00' }
+    ]
+  };
+
+  function renderRows(tbodyId, rows) {
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    tbody.innerHTML = rows.map(function (r) {
+      return '<tr><td>' + r.date + '</td>' +
+        '<td><span class="chip">' + r.category + '</span></td>' +
+        '<td class="desc-cell">' + r.description + '</td>' +
+        '<td class="col-amount">' + r.amount + '</td>' +
+        '<td class="col-actions"><button class="btn btn-secondary btn-sm" type="button" disabled>Edit</button></td></tr>';
+    }).join('');
+  }
+  renderRows('tbody-1', FIXTURES.populated);
+  renderRows('tbody-3', FIXTURES.populated);
+  renderRows('tbody-4', FIXTURES.populated);
+
+  // ---------------- Generic modal open/close helpers ----------------
+  function wireModal(suffix, kind) {
+    var overlay = document.getElementById(kind + '-overlay-' + suffix);
+    var wrap = document.getElementById(kind + '-wrap-' + suffix);
+    if (!overlay || !wrap) return;
+    document.querySelectorAll('[data-open-' + kind + '="' + suffix + '"]').forEach(function (btn) {
+      btn.addEventListener('click', function () { overlay.hidden = false; wrap.hidden = false; });
+    });
+    document.querySelectorAll('[data-close-' + kind + '="' + suffix + '"]').forEach(function (btn) {
+      btn.addEventListener('click', function () { overlay.hidden = true; wrap.hidden = true; });
+    });
+    overlay.addEventListener('click', function () { overlay.hidden = true; wrap.hidden = true; });
+  }
+  wireModal('1', 'create');
+  wireModal('1', 'edit');
+  wireModal('2', 'create');
+
+  function showToast(suffix, message) {
+    var toast = document.getElementById('toast-' + suffix);
+    var msg = document.querySelector('[data-toast-msg="' + suffix + '"]');
+    if (!toast || !msg) return;
+    msg.textContent = message;
+    toast.hidden = false;
+    setTimeout(function () { toast.hidden = true; }, 2600);
+  }
+
+  // ---------------- Screen 1: edit row opens edit-1 prefilled ----------------
+  document.getElementById('tbody-1').querySelectorAll('button.btn-secondary').forEach(function (btn, idx) {
+    btn.disabled = false;
+    btn.addEventListener('click', function () {
+      var row = FIXTURES.populated[idx];
+      document.getElementById('edit-amount-1').value = row.amount.replace('$', '');
+      document.getElementById('edit-date-1').value = '2026-09-0' + (idx * 3 + 2);
+      document.getElementById('edit-category-1').value = row.category;
+      document.getElementById('edit-desc-1').value = row.description;
+      document.getElementById('edit-overlay-1').hidden = false;
+      document.getElementById('edit-wrap-1').hidden = false;
+    });
+  });
+
+  // ---------------- Screen 1: create-1 save flow ----------------
+  document.querySelector('[data-form="create-1"]').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = document.querySelector('[data-save-create="1"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Save expense';
+      document.getElementById('create-overlay-1').hidden = true;
+      document.getElementById('create-wrap-1').hidden = true;
+      var tbody = document.getElementById('tbody-1');
+      var tr = document.createElement('tr');
+      tr.className = 'row-added';
+      tr.innerHTML = '<td>' + (document.getElementById('create-date-1').value || 'Today') + '</td>' +
+        '<td><span class="chip">' + (document.getElementById('create-category-1').value || 'Other') + '</span></td>' +
+        '<td class="desc-cell">' + (document.getElementById('create-desc-1').value || '—') + '</td>' +
+        '<td class="col-amount">$' + (document.getElementById('create-amount-1').value || '0.00') + '</td>' +
+        '<td class="col-actions"><button class="btn btn-secondary btn-sm" type="button" disabled>Edit</button></td>';
+      tbody.insertBefore(tr, tbody.firstChild);
+      document.querySelector('[data-form="create-1"]').reset();
+      showToast('1', 'Expense added');
+    }, 350);
+  });
+
+  // ---------------- Screen 1: edit-1 save flow ----------------
+  document.querySelector('[data-form="edit-1"]').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = document.querySelector('[data-save-edit="1"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Save changes';
+      document.getElementById('edit-overlay-1').hidden = true;
+      document.getElementById('edit-wrap-1').hidden = true;
+      showToast('1', 'Expense updated');
+    }, 350);
+  });
+
+  // ---------------- Screen 2: create-2 save flow (empty -> populated) ----------------
+  document.querySelector('[data-form="create-2"]').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = document.querySelector('[data-save-create="2"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Save expense';
+      document.getElementById('create-overlay-2').hidden = true;
+      document.getElementById('create-wrap-2').hidden = true;
+      var tbody = document.getElementById('tbody-2');
+      tbody.innerHTML = '<tr class="row-added"><td>' + (document.getElementById('create-date-2').value || 'Today') + '</td>' +
+        '<td><span class="chip">' + (document.getElementById('create-category-2').value || 'Other') + '</span></td>' +
+        '<td class="desc-cell">' + (document.getElementById('create-desc-2').value || '—') + '</td>' +
+        '<td class="col-amount">$' + (document.getElementById('create-amount-2').value || '0.00') + '</td>' +
+        '<td class="col-actions"><button class="btn btn-secondary btn-sm" type="button" disabled>Edit</button></td></tr>';
+      showToast('2', 'Expense added');
+    }, 350);
+  });
+
+  // ---------------- Screen 3: create-3 (errors already shown); re-submitting with all
+  // fields filled clears the errors and simulates a successful save ----------------
+  document.querySelector('[data-form="create-3"]').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var amount = document.getElementById('create-amount-3');
+    var date = document.getElementById('create-date-3');
+    var category = document.getElementById('create-category-3');
+    var desc = document.getElementById('create-desc-3');
+    var fields = [
+      [amount, document.getElementById('create-error-amount-3'), amount.value.trim() !== ''],
+      [date, document.getElementById('create-error-date-3'), date.value.trim() !== ''],
+      [category, document.getElementById('create-error-category-3'), category.value !== ''],
+      [desc, document.getElementById('create-error-desc-3'), desc.value.trim() !== '']
+    ];
+    var allValid = true;
+    fields.forEach(function (f) {
+      var el = f[0], err = f[1], valid = f[2];
+      el.classList.toggle('input-invalid', !valid);
+      err.hidden = valid;
+      if (!valid) allValid = false;
+    });
+    if (!allValid) return;
+
+    var btn = document.querySelector('[data-save-create="3"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Save expense';
+      document.getElementById('create-overlay-3').hidden = true;
+      document.getElementById('create-wrap-3').hidden = true;
+      showToast('3', 'Expense added');
+    }, 350);
+  });
+
+  // ---------------- Screen 4: edit-4 save flow ----------------
+  document.querySelector('[data-form="edit-4"]').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = document.querySelector('[data-save-edit="4"]');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Save changes';
+      document.getElementById('edit-overlay-4').hidden = true;
+      document.getElementById('edit-wrap-4').hidden = true;
+      showToast('4', 'Expense updated');
+    }, 350);
+  });
+})();
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
