@@ -253,6 +253,7 @@ function initExpensesApp(doc = document) {
   const createErrorDate = doc.getElementById('create-error-date');
   const createErrorCategory = doc.getElementById('create-error-category');
   const createErrorDescription = doc.getElementById('create-error-description');
+  let createSaveTimer = null;
 
   function clearAllCreateErrors() {
     setFieldError(createFieldAmount, createErrorAmount, false);
@@ -276,6 +277,8 @@ function initExpensesApp(doc = document) {
     createSaveBtn.disabled = false;
     createSaveBtn.textContent = 'Save expense';
     doc.removeEventListener('keydown', onCreateModalKeydown);
+    clearTimeout(createSaveTimer);
+    createSaveTimer = null;
   }
 
   function onCreateModalKeydown(e) {
@@ -334,7 +337,7 @@ function initExpensesApp(doc = document) {
       description: descriptionValue,
     };
 
-    setTimeout(() => {
+    createSaveTimer = setTimeout(() => {
       try {
         persistExpenses([newExpense, ...expenses]);
       } catch (err) {

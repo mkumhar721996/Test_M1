@@ -119,6 +119,22 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-modal-wrap').hidden).toBe(true);
   });
 
+  test('cancelling while a save is in flight does not persist the expense or add it to the table', () => {
+    const before = document.querySelectorAll('#expense-tbody tr').length;
+    document.getElementById('add-expense-btn').click();
+    document.getElementById('create-field-amount').value = '24.50';
+    document.getElementById('create-field-date').value = '2026-09-20';
+    document.getElementById('create-field-category').value = 'Travel';
+    document.getElementById('create-field-description').value = 'Taxi to airport';
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    document.getElementById('create-modal-cancel-btn').click();
+    jest.advanceTimersByTime(350);
+
+    expect(document.querySelectorAll('#expense-tbody tr').length).toBe(before);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.some((e) => e.description === 'Taxi to airport')).toBe(false);
+  });
+
   test('a newly created expense is still present in localStorage after the save completes', () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-field-amount').value = '24.50';
