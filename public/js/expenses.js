@@ -40,6 +40,7 @@ function initExpensesApp(doc = document) {
   let expenses = loadExpenses();
   let editingId = null;
   let lastUpdatedId = null;
+  let pendingDeleteId = null;
 
   const overlay = doc.getElementById('modal-overlay');
   const modalWrap = doc.getElementById('modal-wrap');
@@ -57,19 +58,29 @@ function initExpensesApp(doc = document) {
 
   const toast = doc.getElementById('toast');
   const toastMessage = doc.getElementById('toast-message');
+  const toastIcon = doc.getElementById('toast-icon');
   let toastTimer = null;
+
+  const listWrap = doc.getElementById('list-wrap');
+  const emptyWrap = doc.getElementById('empty-wrap');
+
+  const deleteOverlay = doc.getElementById('delete-modal-overlay');
+  const deleteModalWrap = doc.getElementById('delete-modal-wrap');
+  const deleteSummary = doc.getElementById('delete-summary');
+  const confirmDeleteBtn = doc.getElementById('confirm-delete-btn');
 
   function renderList() {
     const tbody = doc.getElementById('expense-tbody');
     tbody.innerHTML = '';
 
     if (expenses.length === 0) {
-      const tr = doc.createElement('tr');
-      tr.className = 'empty-row';
-      tr.innerHTML = '<td colspan="5">No expenses yet.</td>';
-      tbody.appendChild(tr);
+      listWrap.hidden = true;
+      emptyWrap.hidden = false;
       return;
     }
+
+    listWrap.hidden = false;
+    emptyWrap.hidden = true;
 
     expenses.forEach((exp) => {
       const tr = doc.createElement('tr');
@@ -81,6 +92,7 @@ function initExpensesApp(doc = document) {
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
           <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-delete-id="${exp.id}">Delete</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -90,6 +102,9 @@ function initExpensesApp(doc = document) {
 
     tbody.querySelectorAll('[data-edit-id]').forEach((btn) => {
       btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
+    });
+    tbody.querySelectorAll('[data-delete-id]').forEach((btn) => {
+      btn.addEventListener('click', () => openDeleteModal(btn.getAttribute('data-delete-id')));
     });
   }
 
@@ -140,11 +155,15 @@ function initExpensesApp(doc = document) {
 
   function cancelEdit() {
     closeModal();
-    showToast('Changes discarded — record unchanged');
+    showToast('Changes discarded — record unchanged', 'success');
   }
 
-  function showToast(message) {
+  function showToast(message, variant = 'success') {
     toastMessage.textContent = message;
+    toastIcon.textContent = variant === 'error' ? '⚠' : '✓';
+    toast.dataset.variant = variant;
+    toast.setAttribute('role', variant === 'error' ? 'alert' : 'status');
+    toast.setAttribute('aria-live', variant === 'error' ? 'assertive' : 'polite');
     toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
@@ -153,6 +172,75 @@ function initExpensesApp(doc = document) {
   doc.getElementById('modal-close-btn').addEventListener('click', cancelEdit);
   doc.getElementById('modal-cancel-btn').addEventListener('click', cancelEdit);
   overlay.addEventListener('click', cancelEdit);
+
+  function openDeleteModal(id) {
+    const exp = expenses.find((e) => e.id === id);
+    if (!exp) return;
+    pendingDeleteId = id;
+
+    deleteSummary.innerHTML = `
+      <p style="margin:0;color:var(--color-fg);">
+        ${formatDateDisplay(exp.date)} · ${escapeHtml(doc, exp.category)}<br>
+        ${escapeHtml(doc, exp.description) || '—'}<br>
+        <strong>${formatUSD(exp.amount)}</strong>
+      </p>
+    `;
+
+    deleteOverlay.hidden = false;
+    deleteModalWrap.hidden = false;
+    doc.addEventListener('keydown', onDeleteModalKeydown);
+    confirmDeleteBtn.focus();
+  }
+
+  function closeDeleteModal() {
+    deleteOverlay.hidden = true;
+    deleteModalWrap.hidden = true;
+    pendingDeleteId = null;
+    confirmDeleteBtn.disabled = false;
+    confirmDeleteBtn.textContent = 'Delete expense';
+    doc.removeEventListener('keydown', onDeleteModalKeydown);
+  }
+
+  function onDeleteModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelDelete();
+    }
+  }
+
+  function cancelDelete() {
+    closeDeleteModal();
+  }
+
+  doc.getElementById('delete-modal-close-btn').addEventListener('click', cancelDelete);
+  doc.getElementById('delete-modal-cancel-btn').addEventListener('click', cancelDelete);
+  deleteOverlay.addEventListener('click', cancelDelete);
+
+  confirmDeleteBtn.addEventListener('click', () => {
+    const targetId = pendingDeleteId;
+    if (!targetId) return;
+
+    confirmDeleteBtn.disabled = true;
+    confirmDeleteBtn.textContent = 'Deleting…';
+
+    setTimeout(() => {
+      const idx = expenses.findIndex((e) => e.id === targetId);
+      if (idx === -1) { closeDeleteModal(); return; }
+
+      const remaining = [...expenses.slice(0, idx), ...expenses.slice(idx + 1)];
+      try {
+        persistExpenses(remaining);
+      } catch (err) {
+        closeDeleteModal();
+        showToast('Expense could not be deleted — please try again', 'error');
+        return;
+      }
+      expenses = remaining;
+      closeDeleteModal();
+      renderList();
+      showToast('Expense deleted', 'success');
+    }, 350);
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -200,14 +288,14 @@ function initExpensesApp(doc = document) {
       } catch (err) {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save changes';
-        showToast('Expense could not be saved — please try again');
+        showToast('Expense could not be saved — please try again', 'error');
         return;
       }
       expenses[idx] = updated;
       lastUpdatedId = expenses[idx].id;
       closeModal();
       renderList();
-      showToast('Expense updated');
+      showToast('Expense updated', 'success');
     }, 350);
   });
 

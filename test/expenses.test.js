@@ -142,3 +142,108 @@ describe('Edit Expense via Modal Form', () => {
     setItemSpy.mockRestore();
   });
 });
+
+describe('Delete Expense', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    localStorage.clear();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+    jest.useFakeTimers();
+    const { initExpensesApp } = require('../public/js/expenses');
+    initExpensesApp(document);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('activating Delete opens a confirmation prompt naming the record', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    expect(document.getElementById('delete-modal-wrap').hidden).toBe(false);
+    expect(document.getElementById('delete-summary').textContent).toMatch(/Flight to Chicago client site/);
+  });
+
+  test('confirming deletion removes the row immediately', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    jest.advanceTimersByTime(350);
+    expect(document.querySelector('[data-delete-id="exp_001"]')).toBeNull();
+  });
+
+  test('confirming deletion shows a success toast', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toBe('Expense deleted');
+  });
+
+  test('cancelling leaves the record in the table', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('delete-modal-cancel-btn').click();
+    expect(document.querySelector('[data-delete-id="exp_001"]')).not.toBeNull();
+    expect(JSON.parse(localStorage.getItem('expenses')).find((e) => e.id === 'exp_001')).toBeTruthy();
+  });
+
+  test('a localStorage failure on confirm shows an error toast', () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('toast-message').textContent).toMatch(/could not be deleted/i);
+    expect(document.getElementById('toast').dataset.variant).toBe('error');
+    setItemSpy.mockRestore();
+  });
+
+  test('a localStorage failure on confirm leaves the record in the table', () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    jest.advanceTimersByTime(350);
+    expect(document.querySelector('[data-delete-id="exp_001"]')).not.toBeNull();
+    setItemSpy.mockRestore();
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.some((e) => e.id === 'exp_001')).toBe(true);
+  });
+
+  test('deleting the last expense shows the empty-state message', () => {
+    ['exp_001', 'exp_002', 'exp_003'].forEach((id) => {
+      document.querySelector(`[data-delete-id="${id}"]`).click();
+      document.getElementById('confirm-delete-btn').click();
+      jest.advanceTimersByTime(350);
+    });
+    expect(document.getElementById('empty-wrap').hidden).toBe(false);
+    expect(document.getElementById('list-wrap').hidden).toBe(true);
+    expect(document.getElementById('empty-wrap').textContent).toMatch(/No expenses yet/);
+  });
+
+  test('deleting the last expense also shows the action button', () => {
+    ['exp_001', 'exp_002', 'exp_003'].forEach((id) => {
+      document.querySelector(`[data-delete-id="${id}"]`).click();
+      document.getElementById('confirm-delete-btn').click();
+      jest.advanceTimersByTime(350);
+    });
+    const addBtn = document.getElementById('empty-add-btn');
+    expect(addBtn).not.toBeNull();
+    expect(document.getElementById('empty-wrap').contains(addBtn)).toBe(true);
+    expect(document.getElementById('empty-wrap').hidden).toBe(false);
+  });
+
+  test('a deleted expense is gone after reload', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    document.getElementById('confirm-delete-btn').click();
+    jest.advanceTimersByTime(350);
+
+    jest.resetModules();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+    const { initExpensesApp: reinit } = require('../public/js/expenses');
+    reinit(document);
+
+    expect(document.querySelector('[data-delete-id="exp_001"]')).toBeNull();
+    expect(JSON.parse(localStorage.getItem('expenses')).some((e) => e.id === 'exp_001')).toBe(false);
+  });
+});

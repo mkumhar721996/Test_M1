@@ -30,23 +30,35 @@
       <p>Review and correct submitted expense records.</p>
     </div>
 
-    <div class="card table-card">
-      <div class="table-scroll">
-        <table class="expense-table">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Category</th>
-              <th scope="col">Description</th>
-              <th scope="col" class="col-amount">Amount</th>
-              <th scope="col" class="col-actions">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="expense-tbody">
-            <!-- rendered by JS -->
-          </tbody>
-        </table>
+    <div id="list-wrap">
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="expense-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-amount">Amount</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expense-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
+    </div>
+
+    <div id="empty-wrap" class="empty-state" role="status" hidden>
+      <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+        <path d="M8 8h8M8 12h8M8 16h5"></path>
+      </svg>
+      <h2 class="empty-state-title">No expenses yet</h2>
+      <p class="empty-state-body">Every expense has been deleted. Add a new one to start tracking your spending again.</p>
+      <button type="button" class="btn btn-primary" id="empty-add-btn" disabled title="Add Expense is not available yet">+ Add expense</button>
     </div>
   </div>
 
@@ -104,8 +116,31 @@
     </div>
   </div>
 
+  <!-- Delete modal: hidden until a "Delete" action is activated -->
+  <div class="modal-overlay" id="delete-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="delete-modal-wrap" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="delete-modal-title">Delete expense?</h2>
+          <p id="delete-modal-desc">This will permanently remove the record below. This can't be undone.</p>
+        </div>
+        <button class="icon-btn" id="delete-modal-close-btn" type="button" aria-label="Close dialog without deleting">✕</button>
+      </div>
+
+      <div class="delete-summary" id="delete-summary">
+        <!-- filled by JS with the record about to be deleted -->
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="delete-modal-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-delete-btn">Delete expense</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden>
-    <span aria-hidden="true">✓</span>
+    <span aria-hidden="true" id="toast-icon">✓</span>
     <span id="toast-message">Expense updated</span>
   </div>
 

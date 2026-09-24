@@ -46,12 +46,49 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 }
 .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .col-actions { text-align: right; white-space: nowrap; }
+.col-actions .btn + .btn { margin-left: var(--space-2); }
 .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
-.empty-row td {
+
+/* ---------- Empty state ---------- */
+.empty-state {
   text-align: center;
-  color: var(--color-fg-muted);
-  padding: var(--space-4);
+  padding: var(--space-4) var(--space-3);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
 }
+.empty-state-icon {
+  margin: 0 auto var(--space-3);
+  width: 56px;
+  height: 56px;
+  color: var(--color-fg-muted);
+}
+.empty-state-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2);
+}
+.empty-state-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  max-width: 42ch;
+  margin: 0 auto var(--space-4);
+}
+
+/* ---------- Delete confirmation summary ---------- */
+.delete-summary {
+  background: var(--color-bg);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+/* ---------- Error toast ---------- */
+.toast[data-variant="error"] { border-left-color: var(--color-fg); }
 
 .btn-sm {
   padding: var(--space-3) var(--space-4);
