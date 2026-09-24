@@ -88,6 +88,7 @@ describe('Create Expense via Modal Form', () => {
     });
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     jest.advanceTimersByTime(350);
+    expect(document.getElementById('toast').hidden).toBe(false);
     expect(document.getElementById('toast-message').textContent).toMatch(/couldn.?t save/i);
     setItemSpy.mockRestore();
   });

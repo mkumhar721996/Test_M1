@@ -12,6 +12,15 @@ body { margin: 0; min-height: 100dvh; }
 /* App shell (.app-topbar, .app-nav, .page, .page-header) and modal/toast
    primitives live in design-system/prototype-utils.css, shared with hire-profile.css. */
 
+/* ---------- Page header with "Add expense" action ---------- */
+.page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 /* ---------- Expense list ---------- */
 .table-card { padding: 0; overflow: hidden; }
 .table-scroll { overflow-x: auto; }
@@ -41,8 +50,14 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
   0% { background: var(--color-surface); }
   100% { background: transparent; }
 }
+.expense-table tbody tr.row-added { animation: flash-added 1.6s ease-out; }
+@keyframes flash-added {
+  0% { background: var(--color-surface); }
+  100% { background: transparent; }
+}
 @media (prefers-reduced-motion: reduce) {
   .expense-table tbody tr.row-updated { animation: none; }
+  .expense-table tbody tr.row-added { animation: none; }
 }
 .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .col-actions { text-align: right; white-space: nowrap; }
@@ -72,6 +87,14 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 }
 .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
 
+.hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+}
+
 .input-invalid {
   border-color: var(--color-primary);
   border-width: 2px;
@@ -87,3 +110,6 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
   color: var(--color-fg);
 }
 .field-error[hidden] { display: none; }
+
+/* ---------- Toast icon variants (color stays the token default; icon + text carry meaning) ---------- */
+.toast .toast-icon { flex: 0 0 auto; }

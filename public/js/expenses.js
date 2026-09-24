@@ -36,10 +36,33 @@ function validateExpenseFields({ amount, date, category }) {
   };
 }
 
+function validateAmount(raw) {
+  const trimmed = (raw || '').trim();
+  if (trimmed === '') return 'Amount is required.';
+  if (!/^\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid amount, e.g. 24.50.';
+  const decimalMatch = trimmed.match(/\.(\d+)$/);
+  if (decimalMatch && decimalMatch[1].length > 2) {
+    return 'Amount can have at most 2 decimal places.';
+  }
+  if (parseFloat(trimmed) <= 0) return 'Enter an amount greater than $0.00.';
+  return '';
+}
+
+function validateCreateExpenseFields({ amount, date, category, description }) {
+  return {
+    amount: validateAmount(amount) || null,
+    date: date === '' ? 'Date is required.' : null,
+    category: category === '' ? 'Category is required.' : null,
+    description: (description || '').trim() === '' ? 'Description is required.' : null,
+  };
+}
+
 function initExpensesApp(doc = document) {
   let expenses = loadExpenses();
   let editingId = null;
   let lastUpdatedId = null;
+  let lastAddedId = null;
+  let nextId = expenses.length + 1;
 
   const overlay = doc.getElementById('modal-overlay');
   const modalWrap = doc.getElementById('modal-wrap');
@@ -74,6 +97,7 @@ function initExpensesApp(doc = document) {
     expenses.forEach((exp) => {
       const tr = doc.createElement('tr');
       if (exp.id === lastUpdatedId) tr.className = 'row-updated';
+      if (exp.id === lastAddedId) tr.className = 'row-added';
       tr.innerHTML = `
         <td>${formatDateDisplay(exp.date)}</td>
         <td><span class="chip">${exp.category}</span></td>
@@ -87,14 +111,16 @@ function initExpensesApp(doc = document) {
     });
 
     lastUpdatedId = null;
+    lastAddedId = null;
 
     tbody.querySelectorAll('[data-edit-id]').forEach((btn) => {
       btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
     });
   }
 
-  function setFieldError(fieldEl, errorEl, hasError) {
+  function setFieldError(fieldEl, errorEl, hasError, message) {
     errorEl.hidden = !hasError;
+    if (hasError && message) errorEl.textContent = '⚠ ' + message;
     fieldEl.classList.toggle('input-invalid', hasError);
     fieldEl.setAttribute('aria-invalid', hasError ? 'true' : 'false');
   }
@@ -140,10 +166,11 @@ function initExpensesApp(doc = document) {
 
   function cancelEdit() {
     closeModal();
-    showToast('Changes discarded — record unchanged');
+    showToast('success', 'Changes discarded — record unchanged');
   }
 
-  function showToast(message) {
+  function showToast(kind, message) {
+    doc.getElementById('toast-icon').textContent = kind === 'error' ? '⚠' : '✓';
     toastMessage.textContent = message;
     toast.hidden = false;
     clearTimeout(toastTimer);
@@ -200,14 +227,127 @@ function initExpensesApp(doc = document) {
       } catch (err) {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save changes';
-        showToast('Expense could not be saved — please try again');
+        showToast('error', 'Expense could not be saved — please try again');
         return;
       }
       expenses[idx] = updated;
       lastUpdatedId = expenses[idx].id;
       closeModal();
       renderList();
-      showToast('Expense updated');
+      showToast('success', 'Expense updated');
+    }, 350);
+  });
+
+  // ---------- Create modal ----------
+  const createOverlay = doc.getElementById('create-modal-overlay');
+  const createModalWrap = doc.getElementById('create-modal-wrap');
+  const createForm = doc.getElementById('create-form');
+  const createSaveBtn = doc.getElementById('create-modal-save-btn');
+
+  const createFieldAmount = doc.getElementById('create-field-amount');
+  const createFieldDate = doc.getElementById('create-field-date');
+  const createFieldCategory = doc.getElementById('create-field-category');
+  const createFieldDescription = doc.getElementById('create-field-description');
+
+  const createErrorAmount = doc.getElementById('create-error-amount');
+  const createErrorDate = doc.getElementById('create-error-date');
+  const createErrorCategory = doc.getElementById('create-error-category');
+  const createErrorDescription = doc.getElementById('create-error-description');
+
+  function clearAllCreateErrors() {
+    setFieldError(createFieldAmount, createErrorAmount, false);
+    setFieldError(createFieldDate, createErrorDate, false);
+    setFieldError(createFieldCategory, createErrorCategory, false);
+    setFieldError(createFieldDescription, createErrorDescription, false);
+  }
+
+  function openCreateModal() {
+    createForm.reset();
+    clearAllCreateErrors();
+    createOverlay.hidden = false;
+    createModalWrap.hidden = false;
+    doc.addEventListener('keydown', onCreateModalKeydown);
+    createFieldAmount.focus();
+  }
+
+  function closeCreateModal() {
+    createOverlay.hidden = true;
+    createModalWrap.hidden = true;
+    createSaveBtn.disabled = false;
+    createSaveBtn.textContent = 'Save expense';
+    doc.removeEventListener('keydown', onCreateModalKeydown);
+  }
+
+  function onCreateModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelCreate();
+    }
+  }
+
+  function cancelCreate() {
+    closeCreateModal();
+  }
+
+  doc.getElementById('add-expense-btn').addEventListener('click', openCreateModal);
+  doc.getElementById('create-modal-close-btn').addEventListener('click', cancelCreate);
+  doc.getElementById('create-modal-cancel-btn').addEventListener('click', cancelCreate);
+  createOverlay.addEventListener('click', cancelCreate);
+
+  createForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const amountRaw = createFieldAmount.value;
+    const dateValue = createFieldDate.value.trim();
+    const categoryValue = createFieldCategory.value;
+    const descriptionValue = createFieldDescription.value.trim();
+
+    const errors = validateCreateExpenseFields({
+      amount: amountRaw,
+      date: dateValue,
+      category: categoryValue,
+      description: descriptionValue,
+    });
+
+    setFieldError(createFieldAmount, createErrorAmount, Boolean(errors.amount), errors.amount);
+    setFieldError(createFieldDate, createErrorDate, Boolean(errors.date), errors.date);
+    setFieldError(createFieldCategory, createErrorCategory, Boolean(errors.category), errors.category);
+    setFieldError(createFieldDescription, createErrorDescription, Boolean(errors.description), errors.description);
+
+    if (errors.amount || errors.date || errors.category || errors.description) {
+      const firstInvalid = errors.amount ? createFieldAmount
+        : errors.date ? createFieldDate
+        : errors.category ? createFieldCategory
+        : createFieldDescription;
+      firstInvalid.focus();
+      return;
+    }
+
+    createSaveBtn.disabled = true;
+    createSaveBtn.textContent = 'Saving…';
+
+    const newExpense = {
+      id: 'exp_' + String(nextId++).padStart(3, '0'),
+      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+      date: dateValue,
+      category: categoryValue,
+      description: descriptionValue,
+    };
+
+    setTimeout(() => {
+      try {
+        persistExpenses([newExpense, ...expenses]);
+      } catch (err) {
+        createSaveBtn.disabled = false;
+        createSaveBtn.textContent = 'Save expense';
+        showToast('error', "Couldn't save expense — please try again");
+        return;
+      }
+      expenses = [newExpense, ...expenses];
+      lastAddedId = newExpense.id;
+      closeCreateModal();
+      renderList();
+      showToast('success', 'Expense added');
     }, 350);
   });
 
@@ -222,6 +362,8 @@ module.exports = {
   persistExpenses,
   formatUSD,
   validateExpenseFields,
+  validateAmount,
+  validateCreateExpenseFields,
   initExpensesApp,
 };
 
