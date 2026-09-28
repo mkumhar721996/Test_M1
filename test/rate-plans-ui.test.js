@@ -97,7 +97,7 @@ describe('Rate Plans UI', () => {
     const { initRatePlansApp } = require('../public/js/rate-plans');
     initRatePlansApp(document, [older, newer], ROOM_TYPES_FIXTURE, {});
     expect(document.getElementById('rp-tbody').textContent).toContain('overlaps with');
-    expect(document.getElementById('rp-tbody').textContent).toContain('Holiday Flash Sale');
+    expect(document.getElementById('rp-tbody').textContent).toContain('Holiday Flash Sale applies (created more recently)');
   });
 
   test('AC5/AC6 UI: submitting the editor with a blank name shows the inline error and adds nothing to the list', () => {

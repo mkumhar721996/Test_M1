@@ -386,10 +386,20 @@ module.exports = { initRatePlansApp, createDefaultApi, computeOverlapsForPlan };
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
     Promise.all([
-      fetch('/rate-plans').then((res) => res.json()),
-      fetch('/rate-plans/room-types').then((res) => res.json()),
+      fetch('/rate-plans').then((res) => (res.ok ? res.json() : Promise.reject({ status: res.status }))),
+      fetch('/rate-plans/room-types').then((res) => (res.ok ? res.json() : Promise.reject({ status: res.status }))),
     ]).then(([plans, roomTypes]) => {
       initRatePlansApp(document, plans, roomTypes, createDefaultApi());
+    }).catch((err) => {
+      console.error('Failed to load rate plans:', err);
+      const container = document.getElementById('rate-plans-screen');
+      container.innerHTML = `<div class="page">
+        <div class="card empty-state">
+          <span class="icon" aria-hidden="true">⚠</span>
+          <h3>Couldn't load rate plans</h3>
+          <p>Something went wrong while loading this page. Please refresh to try again.</p>
+        </div>
+      </div>`;
     });
   });
 }

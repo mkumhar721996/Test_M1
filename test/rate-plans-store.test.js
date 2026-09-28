@@ -1,13 +1,25 @@
-const {
-  RatePlanValidationError,
-  createRatePlan,
-  getRatePlan,
-  listRatePlans,
-  updateRatePlan,
-  deleteRatePlan,
-  listRoomTypes,
-  resolvePrice,
-} = require('../src/ratePlans/store');
+let RatePlanValidationError;
+let createRatePlan;
+let getRatePlan;
+let listRatePlans;
+let updateRatePlan;
+let deleteRatePlan;
+let listRoomTypes;
+let resolvePrice;
+
+beforeEach(() => {
+  jest.resetModules();
+  ({
+    RatePlanValidationError,
+    createRatePlan,
+    getRatePlan,
+    listRatePlans,
+    updateRatePlan,
+    deleteRatePlan,
+    listRoomTypes,
+    resolvePrice,
+  } = require('../src/ratePlans/store'));
+});
 
 test('AC1: creating a rate plan with a name, date range, and one price is saved and listed', () => {
   const plan = createRatePlan({
