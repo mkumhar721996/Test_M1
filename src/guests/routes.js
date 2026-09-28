@@ -24,7 +24,7 @@ router.get('/search', requireStaffAuth, (req, res, next) => {
   }
 });
 
-router.post('/search/client-error', (req, res) => {
+router.post('/search/client-error', requireStaffAuth, (req, res) => {
   console.error(JSON.stringify({
     action: 'guest_search_client_error',
     message: (req.body && req.body.message) || 'unknown error',

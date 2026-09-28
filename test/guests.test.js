@@ -55,7 +55,12 @@ test('security: GET /guests/search with wrong credentials returns 401', async ()
   expect(res.status).toBe(401);
 });
 
-test('POST /guests/search/client-error accepts a telemetry report without requiring auth', async () => {
-  const res = await request(app).post('/guests/search/client-error').send({ message: 'search failed' });
+test('POST /guests/search/client-error accepts a telemetry report from an authenticated staff member', async () => {
+  const res = await request(app).post('/guests/search/client-error').auth(STAFF_USERNAME, STAFF_PASSWORD).send({ message: 'search failed' });
   expect(res.status).toBe(204);
+});
+
+test('security: POST /guests/search/client-error with no credentials returns 401, preventing unauthenticated log-spam', async () => {
+  const res = await request(app).post('/guests/search/client-error').send({ message: 'spam' });
+  expect(res.status).toBe(401);
 });
