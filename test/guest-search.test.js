@@ -84,8 +84,8 @@ describe('Guest Search', () => {
     expect(api.search).toHaveBeenLastCalledWith('Amara', true);
   });
 
-  test('toggling "include inactive" before any search has run does not call the api', () => {
-    const api = { search: jest.fn() };
+  test('toggling "include inactive" before any search has run does not call the api, but the toggle still works for the next real search', async () => {
+    const api = { search: jest.fn().mockResolvedValue([]) };
     const { initGuestSearchApp } = require('../public/js/guest-search');
     initGuestSearchApp(document, api);
 
@@ -93,6 +93,13 @@ describe('Guest Search', () => {
     document.getElementById('include-inactive').dispatchEvent(new Event('change'));
 
     expect(api.search).not.toHaveBeenCalled();
+
+    document.getElementById('search-query').value = 'Amara';
+    document.getElementById('search-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(api.search).toHaveBeenCalledWith('Amara', true);
   });
 
   test('security: a malicious query string is HTML-escaped in the "no results" message, never injected as markup', async () => {
