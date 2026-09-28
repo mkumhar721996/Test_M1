@@ -180,15 +180,22 @@ function createDefaultApi() {
   };
 }
 
-module.exports = { initRoomsApp, createDefaultApi };
+function bootRoomsApp(doc, fetchImpl) {
+  return Promise.all([
+    fetchImpl('/rooms').then((res) => res.json()),
+    fetchImpl('/room-types').then((res) => res.json()),
+  ]).then(([rooms, roomTypes]) => {
+    initRoomsApp(doc, rooms, roomTypes, createDefaultApi());
+  }).catch((err) => {
+    doc.body.textContent = 'Failed to load rooms. Please refresh the page.';
+    console.error(err);
+  });
+}
+
+module.exports = { initRoomsApp, createDefaultApi, bootRoomsApp };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    Promise.all([
-      fetch('/rooms').then((res) => res.json()),
-      fetch('/room-types').then((res) => res.json()),
-    ]).then(([rooms, roomTypes]) => {
-      initRoomsApp(document, rooms, roomTypes, createDefaultApi());
-    });
+    bootRoomsApp(document, fetch);
   });
 }

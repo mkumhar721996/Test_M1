@@ -84,4 +84,22 @@ describe('Rooms UI', () => {
     expect(document.getElementById('rooms-table-wrap').hidden).toBe(false);
     expect(document.getElementById('rooms-empty').hidden).toBe(true);
   });
+
+  test('boot: a failed initial fetch shows a friendly error instead of a blank page', async () => {
+    const { bootRoomsApp } = require('../public/js/rooms');
+    const failingFetch = jest.fn().mockRejectedValue(new Error('network down'));
+    await bootRoomsApp(document, failingFetch);
+    expect(document.body.textContent).toContain('Failed to load rooms');
+  });
+
+  test('boot: a successful initial fetch initializes the app with the fetched data', async () => {
+    const roomTypes = [{ id: 'rt_standard_king', name: 'Standard King' }];
+    const rooms = [{ id: 'room_1', identifier: '101', roomTypeId: 'rt_standard_king', status: 'available' }];
+    const okFetch = jest.fn()
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(rooms) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(roomTypes) });
+    const { bootRoomsApp } = require('../public/js/rooms');
+    await bootRoomsApp(document, okFetch);
+    expect(document.getElementById('room-tbody').textContent).toContain('101');
+  });
 });
