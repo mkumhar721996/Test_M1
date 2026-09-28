@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Duplicate Guest Detection &amp; Linking — Design Prototype</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* App nav: top bar — Profiles · Runs · Settings (matches the existing Onboarding app shell) */
+
+  body { margin: 0; min-height: 100dvh; }
+  * { box-sizing: border-box; }
+
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; font-weight: var(--font-weight-bold);
+    cursor: pointer; padding: var(--space-2) var(--space-2); min-height: 44px;
+  }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  .profiles-table { width: 100%; border-collapse: collapse; font-family: var(--font-family-base); font-size: var(--font-size-md); }
+  .profiles-table th, .profiles-table td { text-align: left; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+  .profiles-table th { font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-bold); }
+  .profiles-table tbody tr:last-child td { border-bottom: none; }
+
+  .row-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    margin-left: var(--space-2); padding: var(--space-1) var(--space-2);
+    border: 1px dashed var(--color-primary); border-radius: var(--radius-sm);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); white-space: nowrap;
+  }
+
+  .profile-status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+  .profile-status-chip--active { border-color: var(--color-primary); color: var(--color-fg); }
+
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 44px; }
+
+  .modal-panel-wide { width: min(92vw, 560px); }
+  .demo-panel { margin: 0 auto; }
+
+  .quick-fill-row {
+    display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2);
+    margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border);
+  }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+  .field-error {
+    margin: var(--space-1) 0 0 0; font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); color: var(--color-fg); font-weight: var(--font-weight-bold);
+  }
+  .field-error[hidden] { display: none; }
+
+  /* Design-system gap note: tokens.json has no dedicated warning/success/danger
+     color — every signal below is carried by icon + label + border style
+     (dashed = needs a decision, solid = confirmed), never by hue alone. */
+  .duplicate-banner {
+    display: flex; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-primary); border-radius: var(--radius-md);
+  }
+  .duplicate-banner strong { display: block; font-family: var(--font-family-base); color: var(--color-fg); }
+  .duplicate-banner p { margin: var(--space-1) 0 0 0; }
+
+  .match-card { margin-bottom: var(--space-3); }
+  .match-card:last-child { margin-bottom: 0; }
+  .match-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap; }
+  .match-card-name { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .match-chip { border: 1px dashed var(--color-primary); flex-shrink: 0; }
+  .match-card-contact { margin: var(--space-2) 0; }
+  .match-card-actions { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+
+  .dup-proceed-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+  .dup-confirm-inline { margin-top: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg); }
+  .dup-confirm-inline[hidden] { display: none; }
+  .dup-confirm-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
+
+  .confirm-banner { display: flex; gap: var(--space-3); padding: var(--space-4); margin-bottom: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-primary); }
+  .confirm-banner strong { display: block; font-family: var(--font-family-base); color: var(--color-fg); }
+  .confirm-banner p { margin: var(--space-1) 0 0 0; }
+
+  .summary-list { border-top: 1px solid var(--color-border); }
+  .summary-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-md); }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .k { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .summary-row .v { color: var(--color-fg); text-align: right; }
+
+  .demo-toggle-row { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); flex-wrap: wrap; }
+
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Fixture data: existing hire profiles a new submission is checked against -->
+<script type="application/json" id="fixture-data">
+{
+  "profiles": [
+    { "id": "hire_2031", "name": "Jordan Reyes", "email": "jordan.reyes@example.com", "phone": "(312) 555-0148", "department": "Engineering", "role": "Software Engineer II", "status": "active" },
+    { "id": "hire_1988", "name": "Morgan Lee", "email": "morgan.lee@example.com", "phone": "(415) 555-0199", "department": "Design", "role": "Product Designer", "status": "active" },
+    { "id": "hire_2104", "name": "Casey Kim", "email": "casey.kim@example.com", "phone": "(206) 555-0122", "department": "Sales", "role": "Account Executive", "status": "active" },
+    { "id": "hire_1875", "name": "Sam Okafor", "email": "sam.okafor@example.com", "phone": "(773) 555-0110", "department": "Operations", "role": "Ops Coordinator", "status": "deactivated" }
+  ],
+  "samples": {
+    "emailMatch": { "name": "Jordan Reyes", "email": "jordan.reyes@example.com", "phone": "(773) 555-0261", "department": "Engineering", "role": "Senior Software Engineer", "startDate": "2026-11-02" },
+    "multiMatch": { "name": "Alex Morgan", "email": "casey.kim@example.com", "phone": "(415) 555-0199", "department": "Sales", "role": "Account Executive", "startDate": "2026-12-01" },
+    "noMatch": { "name": "Priya Natarajan", "email": "priya.natarajan@example.com", "phone": "(512) 555-0177", "department": "Marketing", "role": "Marketing Specialist", "startDate": "2026-11-20" }
+  }
+}
+</script>
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-102</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: default (list + working "Add hire profile" modal) -->
+<!--
+  Screen: Profiles list
+  Notes:
+    - Entry point. "+ Add hire profile" opens the fully working modal used for the
+      live walkthrough of AC1–AC7 (quick-fill samples included since this is a
+      prototype, not a real form).
+    - The table re-renders after Link / Proceed-anyway / plain create, so a
+      reviewer can see the resulting record without leaving this screen.
+-->
+<div class="screen" data-name="Profiles list">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Hire profiles</h1>
+        <p>Every candidate and new hire on file. Add a profile below — we'll check for existing matches before it's saved.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="add-hire-btn">+ Add hire profile</button>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="profiles-table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Department</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="profiles-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add hire profile modal -->
+  <div class="modal-overlay" id="create-overlay" hidden></div>
+  <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+    <div class="modal-panel modal-panel-wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-modal-title">Add hire profile</h2>
+          <p>Enter the candidate's details. We'll check for existing matches before saving.</p>
+        </div>
+        <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+
+      <!-- Step: details (AC6, AC7 when no match; AC1 triggers the next step) -->
+      <div id="step-details">
+        <div class="quick-fill-row">
+          <span class="u-text-sm u-text-muted">Prototype shortcut — try a sample:</span>
+          <button type="button" class="btn btn-secondary btn-sm" data-sample="emailMatch">Matches an email on file</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-sample="multiMatch">Matches two profiles</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-sample="noMatch">No existing match</button>
+        </div>
+
+        <form id="create-form" novalidate>
+          <div class="field">
+            <label class="label" for="f-name">Full name</label>
+            <input class="input" id="f-name" name="name" type="text" aria-describedby="err-name" />
+            <p class="field-error" id="err-name" role="alert" hidden>⚠ Full name is required.</p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="f-email">Email</label>
+              <input class="input" id="f-email" name="email" type="email" aria-describedby="err-email" />
+              <p class="field-error" id="err-email" role="alert" hidden>⚠ Email is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="f-phone">Phone</label>
+              <input class="input" id="f-phone" name="phone" type="tel" aria-describedby="err-phone" />
+              <p class="field-error" id="err-phone" role="alert" hidden>⚠ Phone is required.</p>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="f-department">Department</label>
+              <select class="input" id="f-department" name="department" aria-describedby="err-department">
+                <option value="">Select a department</option>
+                <option>Engineering</option>
+                <option>Design</option>
+                <option>Sales</option>
+                <option>Marketing</option>
+                <option>Operations</option>
+              </select>
+              <p class="field-error" id="err-department" role="alert" hidden>⚠ Department is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="f-role">Role</label>
+              <input class="input" id="f-role" name="role" type="text" aria-describedby="err-role" />
+              <p class="field-error" id="err-role" role="alert" hidden>⚠ Role is required.</p>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="f-start-date">Start date</label>
+            <input class="input" id="f-start-date" name="startDate" type="date" aria-describedby="err-start-date" />
+            <p class="field-error" id="err-start-date" role="alert" hidden>⚠ Start date is required.</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="create-submit-btn">Save profile</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step: possible duplicates found (AC1; Link satisfies AC2/AC3, Proceed satisfies AC4/AC5) -->
+      <div id="step-duplicates" hidden>
+        <div class="duplicate-banner" role="alert">
+          <span aria-hidden="true">⚠</span>
+          <div>
+            <strong id="dup-banner-title">Possible duplicate found</strong>
+            <p id="dup-banner-copy" class="u-text-sm u-text-muted">The email or phone number you entered matches an existing profile.</p>
+          </div>
+        </div>
+
+        <div id="dup-cards"><!-- match cards rendered by JS --></div>
+
+        <div class="dup-proceed-row">
+          <button type="button" class="btn btn-secondary" id="dup-edit-btn">← Edit details</button>
+          <button type="button" class="btn btn-secondary" id="dup-proceed-btn">Proceed anyway — create new profile</button>
+        </div>
+
+        <div class="dup-confirm-inline" id="dup-proceed-confirm" hidden>
+          <p class="u-text-sm">Create a separate profile for <strong id="dup-confirm-name"></strong> even though it may match the profile(s) above?</p>
+          <div class="dup-confirm-actions">
+            <button type="button" class="btn btn-secondary" id="dup-proceed-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="dup-proceed-confirm-btn">Yes, create new profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+</div>
+
+<!-- State: default -->
+<!--
+  Screen: Add hire profile — details
+  Notes:
+    - Static illustration of the form's default and validation-error states,
+      reachable without interacting with the live modal on screen 1.
+    - Labels are always visible (not placeholders); errors are inline, specific,
+      and keep whatever the user typed.
+-->
+<div class="screen" data-name="Add hire profile — details">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Add hire profile</h1>
+      <p>Enter the candidate's details. We'll check for existing matches before saving.</p>
+    </div>
+
+    <div class="demo-toggle-row">
+      <button type="button" class="btn btn-secondary btn-sm" id="demo1-show-errors">Show: empty submission</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="demo1-show-default">Show: default state</button>
+    </div>
+
+    <div class="modal-panel modal-panel-wide demo-panel">
+      <form id="demo1-form" novalidate>
+        <div class="field">
+          <label class="label" for="demo1-name">Full name</label>
+          <input class="input" id="demo1-name" type="text" />
+          <p class="field-error" id="demo1-err-name" hidden>⚠ Full name is required.</p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="label" for="demo1-email">Email</label>
+            <input class="input" id="demo1-email" type="email" />
+            <p class="field-error" id="demo1-err-email" hidden>⚠ Email is required.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="demo1-phone">Phone</label>
+            <input class="input" id="demo1-phone" type="tel" />
+            <p class="field-error" id="demo1-err-phone" hidden>⚠ Phone is required.</p>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="demo1-start">Start date</label>
+          <input class="input" id="demo1-start" type="date" />
+          <p class="field-error" id="demo1-err-start" hidden>⚠ Start date is required.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary">Cancel</button>
+          <button type="button" class="btn btn-primary">Save profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- State: 1 match -->
+<!--
+  Screen: Add hire profile — possible duplicates (AC1)
+  Notes:
+    - Toggle between a single match and two simultaneous matches (one on email,
+      one on phone) — both are real outcomes of the same detection rule, just
+      shown here without needing to drive the live form on screen 1.
+    - "Link to this profile" designates the existing profile as the record to
+      use and creates nothing new (AC2, AC3).
+    - "Proceed anyway" asks for one explicit confirmation, names the
+      consequence, then creates a new profile and dismisses this screen (AC4, AC5).
+-->
+<div class="screen" data-name="Add hire profile — possible duplicates">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Add hire profile</h1>
+      <p>Enter the candidate's details. We'll check for existing matches before saving.</p>
+    </div>
+
+    <div class="demo-toggle-row">
+      <button type="button" class="btn btn-secondary btn-sm" id="demo2-show-single">Example: 1 match</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="demo2-show-multi">Example: 2 matches</button>
+    </div>
+
+    <div class="modal-panel modal-panel-wide demo-panel">
+      <div class="duplicate-banner" role="alert">
+        <span aria-hidden="true">⚠</span>
+        <div>
+          <strong id="demo2-banner-title">Possible duplicate found</strong>
+          <p id="demo2-banner-copy" class="u-text-sm u-text-muted"></p>
+        </div>
+      </div>
+      <div id="demo2-cards"><!-- rendered by JS --></div>
+      <div class="dup-proceed-row">
+        <button type="button" class="btn btn-secondary">← Edit details</button>
+        <button type="button" class="btn btn-secondary" id="demo2-proceed-btn">Proceed anyway — create new profile</button>
+      </div>
+      <div class="dup-confirm-inline" id="demo2-proceed-confirm" hidden>
+        <p class="u-text-sm">Create a separate profile even though it may match the profile(s) above?</p>
+        <div class="dup-confirm-actions">
+          <button type="button" class="btn btn-secondary" id="demo2-proceed-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="show(4)">Yes, create new profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- State: linked -->
+<!--
+  Screen: Linked to existing profile (AC2, AC3)
+  Notes: content is refreshed by the live flow on screen 1 when a reviewer
+  clicks "Link to this profile"; the copy below is the default example.
+-->
+<div class="screen" data-name="Linked to existing profile">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header"><h1>Linked to existing profile</h1></div>
+    <div class="confirm-banner">
+      <span aria-hidden="true">🔗</span>
+      <div>
+        <strong id="linked-title">Jordan Reyes's existing profile is now the record to use.</strong>
+        <p class="u-text-sm u-text-muted">No new profile was created. The details you entered were discarded in favor of the existing profile below.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title" style="margin-bottom: var(--space-3);">Existing profile</h3>
+      <div class="summary-list" id="linked-summary"><!-- rendered by JS --></div>
+    </div>
+    <div style="margin-top: var(--space-4);">
+      <button type="button" class="btn btn-primary" onclick="show(0)">Back to profiles list</button>
+    </div>
+  </div>
+</div>
+
+<!-- State: created (proceeded anyway) -->
+<!--
+  Screen: New profile created — proceeded anyway (AC4, AC5)
+-->
+<div class="screen" data-name="New profile created — proceeded anyway">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header"><h1>New profile created</h1></div>
+    <div class="confirm-banner">
+      <span aria-hidden="true">✓</span>
+      <div>
+        <strong id="proceed-title">Profile created for Alex Morgan.</strong>
+        <p class="u-text-sm u-text-muted">You chose to proceed anyway, so a separate profile was created and the duplicate warning was dismissed.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title" style="margin-bottom: var(--space-3);">New profile</h3>
+      <div class="summary-list" id="proceed-summary"><!-- rendered by JS --></div>
+    </div>
+    <div style="margin-top: var(--space-4);">
+      <button type="button" class="btn btn-primary" onclick="show(0)">Back to profiles list</button>
+    </div>
+  </div>
+</div>
+
+<!-- State: created (no duplicate) -->
+<!--
+  Screen: Profile created — no duplicate found (AC6, AC7)
+-->
+<div class="screen" data-name="Profile created — no duplicate found">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header"><h1>Profile created</h1></div>
+    <div class="confirm-banner">
+      <span aria-hidden="true">✓</span>
+      <div>
+        <strong id="nomatch-title">Profile created for Priya Natarajan.</strong>
+        <p class="u-text-sm u-text-muted">No existing profile matched the email or phone entered, so it was created immediately — no duplicate warning was shown.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title" style="margin-bottom: var(--space-3);">New profile</h3>
+      <div class="summary-list" id="nomatch-summary"><!-- rendered by JS --></div>
+    </div>
+    <div style="margin-top: var(--space-4);">
+      <button type="button" class="btn btn-primary" onclick="show(0)">Back to profiles list</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function () {
+  const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+  const SAMPLES = fixture.samples;
+  let profiles = fixture.profiles.map(p => ({ ...p }));
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function normalizePhone(p) { return String(p || '').replace(/\D/g, ''); }
+
+  function findDuplicates(candidate, list) {
+    const email = String(candidate.email || '').trim().toLowerCase();
+    const phone = normalizePhone(candidate.phone);
+    const matches = [];
+    list.forEach(p => {
+      const reasons = [];
+      if (email && p.email.trim().toLowerCase() === email) reasons.push('email');
+      if (phone && normalizePhone(p.phone) === phone) reasons.push('phone');
+      if (reasons.length) matches.push({ profile: p, reasons });
+    });
+    return matches;
+  }
+
+  function reasonLabel(reasons) {
+    if (reasons.length === 2) return 'Matched on email &amp; phone';
+    return reasons[0] === 'email' ? 'Matched on email' : 'Matched on phone';
+  }
+
+  function matchCardHtml(match, linkable) {
+    const p = match.profile;
+    const statusLabel = p.status === 'active' ? 'Active profile' : 'Deactivated profile';
+    const linkBtn = linkable
+      ? `<div class="match-card-actions"><button type="button" class="btn btn-primary btn-sm" data-link-id="${escapeHtml(p.id)}">Link to this profile</button></div>`
+      : `<div class="match-card-actions"><button type="button" class="btn btn-primary btn-sm" onclick="show(3)">Link to this profile</button></div>`;
+    return `
+      <div class="card match-card">
+        <div class="match-card-header">
+          <div>
+            <h3 class="match-card-name">${escapeHtml(p.name)}</h3>
+            <p class="u-text-sm u-text-muted">${escapeHtml(p.role)} · ${escapeHtml(p.department)} · ${statusLabel}</p>
+          </div>
+          <span class="chip match-chip">${reasonLabel(match.reasons)}</span>
+        </div>
+        <p class="u-text-sm match-card-contact">${escapeHtml(p.email)} · ${escapeHtml(p.phone)}</p>
+        ${linkBtn}
+      </div>`;
+  }
+
+  function bannerCopy(matches) {
+    if (matches.length === 1) {
+      return {
+        title: 'Possible duplicate found',
+        copy: 'The email or phone number you entered matches an existing profile. Link to it instead of creating a new one, or proceed if this is a different person.'
+      };
+    }
+    return {
+      title: matches.length + ' possible duplicates found',
+      copy: 'The email or phone number you entered matches ' + matches.length + ' existing profiles. Link to one instead of creating a new one, or proceed if this is a different person.'
+    };
+  }
+
+  // ---------- Screen 0: Profiles list + live "Add hire profile" modal ----------
+
+  function renderProfilesTable() {
+    const tbody = document.getElementById('profiles-tbody');
+    tbody.innerHTML = profiles.map(p => `
+      <tr>
+        <td>${escapeHtml(p.name)}${p.tag === 'linked' ? '<span class="row-tag">🔗 Linked just now</span>' : ''}${p.tag === 'new' ? '<span class="row-tag">＋ New</span>' : ''}</td>
+        <td>${escapeHtml(p.email)}</td>
+        <td>${escapeHtml(p.phone)}</td>
+        <td>${escapeHtml(p.department)}</td>
+        <td><span class="profile-status-chip ${p.status === 'active' ? 'profile-status-chip--active' : ''}">${p.status === 'active' ? '● Active' : '— Deactivated'}</span></td>
+      </tr>`).join('');
+  }
+
+  const overlay = document.getElementById('create-overlay');
+  const modal = document.getElementById('create-modal');
+  const stepDetails = document.getElementById('step-details');
+  const stepDuplicates = document.getElementById('step-duplicates');
+  const form = document.getElementById('create-form');
+  const submitBtn = document.getElementById('create-submit-btn');
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+
+  function showToast(message) {
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
+  }
+
+  function fieldIds() {
+    return ['name', 'email', 'phone', 'department', 'role', 'start-date'];
+  }
+
+  function resetForm() {
+    ['f-name', 'f-email', 'f-phone', 'f-department', 'f-role', 'f-start-date'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    fieldIds().forEach(id => { document.getElementById('err-' + id).hidden = true; });
+    stepDetails.hidden = false;
+    stepDuplicates.hidden = true;
+    document.getElementById('dup-proceed-confirm').hidden = true;
+  }
+
+  function openModal() {
+    resetForm();
+    overlay.hidden = false;
+    modal.hidden = false;
+    document.getElementById('f-name').focus();
+  }
+  function closeModal() {
+    overlay.hidden = true;
+    modal.hidden = true;
+  }
+
+  document.getElementById('add-hire-btn').onclick = openModal;
+  document.getElementById('create-close-btn').onclick = closeModal;
+  document.getElementById('create-cancel-btn').onclick = closeModal;
+  document.getElementById('dup-edit-btn').onclick = () => {
+    stepDuplicates.hidden = true;
+    stepDetails.hidden = false;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+
+  document.querySelectorAll('[data-sample]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = SAMPLES[btn.dataset.sample];
+      document.getElementById('f-name').value = s.name;
+      document.getElementById('f-email').value = s.email;
+      document.getElementById('f-phone').value = s.phone;
+      document.getElementById('f-department').value = s.department;
+      document.getElementById('f-role').value = s.role;
+      document.getElementById('f-start-date').value = s.startDate;
+      fieldIds().forEach(id => { document.getElementById('err-' + id).hidden = true; });
+    });
+  });
+
+  function validate(data) {
+    const errors = {};
+    if (!data.name.trim()) errors['name'] = true;
+    if (!data.email.trim()) errors['email'] = true;
+    if (!data.phone.trim()) errors['phone'] = true;
+    if (!data.department.trim()) errors['department'] = true;
+    if (!data.role.trim()) errors['role'] = true;
+    if (!data.startDate.trim()) errors['start-date'] = true;
+    return errors;
+  }
+
+  function showErrors(errors) {
+    fieldIds().forEach(id => {
+      document.getElementById('err-' + id).hidden = !errors[id];
+    });
+  }
+
+  let pendingCandidate = null;
+  let pendingMatches = [];
+
+  function renderDuplicateStep(matches, candidate) {
+    const { title, copy } = bannerCopy(matches);
+    document.getElementById('dup-banner-title').textContent = title;
+    document.getElementById('dup-banner-copy').innerHTML = copy;
+    document.getElementById('dup-cards').innerHTML = matches.map(m => matchCardHtml(m, true)).join('');
+    document.getElementById('dup-confirm-name').textContent = candidate.name;
+    document.getElementById('dup-proceed-confirm').hidden = true;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const data = {
+      name: document.getElementById('f-name').value,
+      email: document.getElementById('f-email').value,
+      phone: document.getElementById('f-phone').value,
+      department: document.getElementById('f-department').value,
+      role: document.getElementById('f-role').value,
+      startDate: document.getElementById('f-start-date').value
+    };
+    const errors = validate(data);
+    showErrors(errors);
+    if (Object.keys(errors).length) {
+      const firstErrorId = fieldIds().find(id => errors[id]);
+      if (firstErrorId) document.getElementById('err-' + firstErrorId).previousElementSibling.focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Checking for duplicates…';
+
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Save profile';
+
+      const matches = findDuplicates(data, profiles);
+      if (matches.length === 0) {
+        const created = { ...data, id: 'hire_' + Math.random().toString(36).slice(2, 7), status: 'active', tag: 'new' };
+        profiles.unshift(created);
+        renderProfilesTable();
+        closeModal();
+        populateNoMatchScreen(created);
+        showToast('Profile created for ' + created.name + '.');
+        show(5);
+      } else {
+        pendingCandidate = data;
+        pendingMatches = matches;
+        renderDuplicateStep(matches, data);
+        stepDetails.hidden = true;
+        stepDuplicates.hidden = false;
+      }
+    }, 300);
+  });
+
+  document.getElementById('dup-cards').addEventListener('click', e => {
+    const btn = e.target.closest('[data-link-id]');
+    if (!btn) return;
+    const profile = profiles.find(p => p.id === btn.dataset.linkId);
+    btn.disabled = true;
+    btn.textContent = 'Linking…';
+    setTimeout(() => {
+      profile.tag = 'linked';
+      renderProfilesTable();
+      closeModal();
+      populateLinkedScreen(profile);
+      showToast('Linked to ' + profile.name + '’s existing profile.');
+      show(3);
+    }, 250);
+  });
+
+  document.getElementById('dup-proceed-btn').addEventListener('click', () => {
+    document.getElementById('dup-proceed-confirm').hidden = false;
+  });
+  document.getElementById('dup-proceed-cancel-btn').addEventListener('click', () => {
+    document.getElementById('dup-proceed-confirm').hidden = true;
+  });
+  document.getElementById('dup-proceed-confirm-btn').addEventListener('click', function () {
+    const confirmBtn = this;
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Creating…';
+    setTimeout(() => {
+      const created = { ...pendingCandidate, id: 'hire_' + Math.random().toString(36).slice(2, 7), status: 'active', tag: 'new' };
+      profiles.unshift(created);
+      renderProfilesTable();
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Yes, create new profile';
+      closeModal();
+      populateProceedScreen(created);
+      showToast('Profile created for ' + created.name + '. Duplicate warning dismissed.');
+      show(4);
+    }, 300);
+  });
+
+  renderProfilesTable();
+
+  // ---------- Screen: confirmation summaries (shared by live flow + defaults) ----------
+
+  function summaryRows(p) {
+    return [
+      ['Name', p.name], ['Email', p.email], ['Phone', p.phone],
+      ['Department', p.department], ['Role', p.role]
+    ].map(([k, v]) => `<div class="summary-row"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(v)}</span></div>`).join('');
+  }
+
+  function populateLinkedScreen(profile) {
+    document.getElementById('linked-title').textContent = profile.name + '’s existing profile is now the record to use.';
+    document.getElementById('linked-summary').innerHTML = summaryRows(profile);
+  }
+  function populateProceedScreen(profile) {
+    document.getElementById('proceed-title').textContent = 'Profile created for ' + profile.name + '.';
+    document.getElementById('proceed-summary').innerHTML = summaryRows(profile);
+  }
+  function populateNoMatchScreen(profile) {
+    document.getElementById('nomatch-title').textContent = 'Profile created for ' + profile.name + '.';
+    document.getElementById('nomatch-summary').innerHTML = summaryRows(profile);
+  }
+
+  // Seed the confirmation screens with plausible defaults so Prev/Next alone
+  // shows a complete example before any live action has run.
+  populateLinkedScreen(fixture.profiles.find(p => p.id === 'hire_2031'));
+  populateProceedScreen(SAMPLES.multiMatch);
+  populateNoMatchScreen(SAMPLES.noMatch);
+
+  // ---------- Screen 1 demo: Add hire profile — details (static) ----------
+
+  document.getElementById('demo1-show-errors').addEventListener('click', () => {
+    ['name', 'email', 'phone', 'start'].forEach(f => { document.getElementById('demo1-err-' + f).hidden = false; });
+  });
+  document.getElementById('demo1-show-default').addEventListener('click', () => {
+    ['name', 'email', 'phone', 'start'].forEach(f => { document.getElementById('demo1-err-' + f).hidden = true; });
+  });
+
+  // ---------- Screen 2 demo: Add hire profile — possible duplicates (static) ----------
+
+  const demo2Single = findDuplicates(SAMPLES.emailMatch, fixture.profiles);
+  const demo2Multi = findDuplicates(SAMPLES.multiMatch, fixture.profiles);
+
+  function renderDemo2(matches) {
+    const { title, copy } = bannerCopy(matches);
+    document.getElementById('demo2-banner-title').textContent = title;
+    document.getElementById('demo2-banner-copy').innerHTML = copy;
+    document.getElementById('demo2-cards').innerHTML = matches.map(m => matchCardHtml(m, false)).join('');
+    document.getElementById('demo2-proceed-confirm').hidden = true;
+  }
+  document.getElementById('demo2-show-single').addEventListener('click', () => renderDemo2(demo2Single));
+  document.getElementById('demo2-show-multi').addEventListener('click', () => renderDemo2(demo2Multi));
+  document.getElementById('demo2-proceed-btn').addEventListener('click', () => {
+    document.getElementById('demo2-proceed-confirm').hidden = false;
+  });
+  document.getElementById('demo2-proceed-cancel-btn').addEventListener('click', () => {
+    document.getElementById('demo2-proceed-confirm').hidden = true;
+  });
+  renderDemo2(demo2Single);
+
+  // ---------- Reviewer bar wiring ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  window.show = function (i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  };
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && modal.hidden) show(cur + 1);
+    if (e.key === 'ArrowLeft' && modal.hidden) show(cur - 1);
+  });
+  show(0);
+})();
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
