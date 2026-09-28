@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guest Profiles — Guest Services</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/guest-profiles.css" />
+<script src="./js/guest-profiles.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <!-- Screen: Guest Directory -->
+  <div id="directory-screen">
+    <div class="app-topbar">
+      <span class="brand">Guest Services</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Guests</a>
+        <a href="#" onclick="return false;">Bookings</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <h1>Guest profiles</h1>
+        <p>The authoritative record of every guest's name, contact details, preferences, and booking history.</p>
+      </div>
+
+      <div class="toolbar">
+        <div class="field search-field">
+          <label class="label" for="search-input">Search guests</label>
+          <input class="input" id="search-input" type="search" placeholder="Name, email, phone, or ID" autocomplete="off" />
+        </div>
+        <form class="lookup-field" id="lookup-form" novalidate>
+          <div class="field">
+            <label class="label" for="lookup-input">Open profile by ID</label>
+            <input class="input" id="lookup-input" type="text" placeholder="e.g. GST-1002" autocomplete="off" />
+          </div>
+          <button class="btn btn-secondary" id="lookup-btn" type="submit">Open</button>
+        </form>
+        <button class="btn btn-primary" id="new-guest-btn" type="button">+ New guest profile</button>
+      </div>
+
+      <div class="card table-card" id="directory-table-wrap">
+        <div class="table-scroll">
+          <table class="guest-table">
+            <thead>
+              <tr>
+                <th scope="col">Guest</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last updated</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="guest-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card empty-state" id="directory-empty" hidden>
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No guests match "<span class="empty-query"></span>"</h3>
+        <p>Try a different name, email, phone number, or guest ID.</p>
+        <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
+      </div>
+
+      <div class="card not-found-panel" id="directory-not-found" hidden role="alert">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <h3>No guest profile found for ID "<span class="nf-id"></span>"</h3>
+        <p>Double-check the ID and try again. No profile data is shown, and nothing was changed — this response also covers update and delete attempts against a missing ID, since a profile must be opened before it can be edited or deactivated.</p>
+        <button class="btn btn-secondary" id="nf-back-btn" type="button">Back to full directory</button>
+      </div>
+    </div>
+
+    <!-- Create guest modal (AC1) -->
+    <div class="modal-overlay" id="create-overlay" hidden></div>
+    <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="create-modal-title">New guest profile</h2>
+            <p>Name and at least one contact detail are required.</p>
+          </div>
+          <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form id="create-form" novalidate>
+          <div class="field">
+            <label class="label" for="field-name">Full name</label>
+            <input class="input" id="field-name" name="name" type="text" aria-describedby="error-name" />
+            <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="field-email">Email</label>
+            <input class="input" id="field-email" name="email" type="email" aria-describedby="error-contact" />
+          </div>
+          <div class="field">
+            <label class="label" for="field-phone">Phone</label>
+            <input class="input" id="field-phone" name="phone" type="tel" aria-describedby="error-contact" />
+            <p class="field-error-text" id="error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="field-room">Room preference <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+            <input class="input" id="field-room" name="roomType" type="text" placeholder="e.g. Ocean view" />
+          </div>
+          <div class="field">
+            <label class="label" for="field-dietary">Dietary notes <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+            <input class="input" id="field-dietary" name="dietary" type="text" placeholder="e.g. Vegetarian" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="field-comm">Preferred contact method <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+            <select class="input" id="field-comm" name="communication">
+              <option value="">No preference set</option>
+              <option value="Email">Email</option>
+              <option value="Phone">Phone</option>
+              <option value="SMS">SMS</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="create-save-btn">Create profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <!-- Screen: Guest Profile -->
+  <div id="profile-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Guest Services</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Guests</a>
+        <a href="#" onclick="return false;">Bookings</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+      </div>
+    </div>
+
+    <div class="page">
+      <button class="back-link" id="profile-back-btn" type="button">← Back to guest directory</button>
+
+      <div id="profile-content">
+        <div class="profile-header-row">
+          <div>
+            <h1 id="profile-name" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+            <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="profile-meta"></p>
+          </div>
+          <div class="profile-actions">
+            <span id="profile-status-chip"></span>
+          </div>
+        </div>
+
+        <div class="deactivated-banner" id="deactivated-banner" hidden>
+          <span aria-hidden="true">◌</span>
+          <span>This profile is deactivated. It's excluded from active guest searches, but booking history and the audit trail remain fully available below — and it can be reactivated at any time.</span>
+        </div>
+
+        <div class="profile-actions" style="margin-bottom:var(--space-4);">
+          <button class="btn btn-secondary" id="edit-profile-btn" type="button">Edit profile</button>
+          <button class="btn btn-secondary" id="deactivate-profile-btn" type="button">Deactivate profile</button>
+          <button class="btn btn-secondary" id="reactivate-profile-btn" type="button" hidden>Reactivate profile</button>
+        </div>
+
+        <div class="layout-grid">
+          <!-- Contact & preferences: view mode -->
+          <div class="card" id="details-view-mode">
+            <h2 class="card-title">Contact &amp; preferences</h2>
+            <div class="kv-list" id="kv-list"><!-- rendered by JS --></div>
+          </div>
+
+          <!-- Contact & preferences: edit mode -->
+          <div class="card" id="details-edit-mode" hidden>
+            <h2 class="card-title">Edit contact &amp; preferences</h2>
+            <p class="u-text-muted" style="margin:0 0 var(--space-3) 0;font-size:var(--font-size-sm);">Only the fields you change will be updated.</p>
+            <form id="edit-form" novalidate>
+              <div class="field">
+                <label class="label" for="edit-name">Full name</label>
+                <input class="input" id="edit-name" name="name" type="text" aria-describedby="edit-error-name" />
+                <p class="field-error-text" id="edit-error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="edit-email">Email</label>
+                <input class="input" id="edit-email" name="email" type="email" aria-describedby="edit-error-contact" />
+              </div>
+              <div class="field">
+                <label class="label" for="edit-phone">Phone</label>
+                <input class="input" id="edit-phone" name="phone" type="tel" aria-describedby="edit-error-contact" />
+                <p class="field-error-text" id="edit-error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="edit-room">Room preference</label>
+                <input class="input" id="edit-room" name="roomType" type="text" />
+              </div>
+              <div class="field">
+                <label class="label" for="edit-dietary">Dietary notes</label>
+                <input class="input" id="edit-dietary" name="dietary" type="text" />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="edit-comm">Preferred contact method</label>
+                <select class="input" id="edit-comm" name="communication">
+                  <option value="">No preference set</option>
+                  <option value="Email">Email</option>
+                  <option value="Phone">Phone</option>
+                  <option value="SMS">SMS</option>
+                </select>
+              </div>
+              <div class="modal-actions" style="margin-top:var(--space-4);">
+                <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Booking history (AC3, AC6) -->
+          <div class="card">
+            <h2 class="card-title">Booking history</h2>
+            <div id="booking-history"><!-- rendered by JS --></div>
+          </div>
+
+          <!-- Audit trail (AC9) -->
+          <div class="card">
+            <h2 class="card-title">Audit trail</h2>
+            <ul class="audit-list" id="audit-list"><!-- rendered by JS --></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deactivate confirm modal (AC5) -->
+    <div class="modal-overlay" id="deactivate-overlay" hidden></div>
+    <div class="modal-wrap" id="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="deactivate-modal-title">Deactivate profile?</h2>
+          <button class="icon-btn" id="deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <div class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span id="deactivate-consequence-copy"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="deactivate-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="deactivate-confirm-btn">Deactivate profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reactivate confirm modal (AC7, AC8) -->
+    <div class="modal-overlay" id="reactivate-overlay" hidden></div>
+    <div class="modal-wrap" id="reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="reactivate-modal-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="reactivate-modal-title">Reactivate profile?</h2>
+          <button class="icon-btn" id="reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <div class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span id="reactivate-consequence-copy"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="reactivate-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="reactivate-confirm-btn">Reactivate profile</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="profile-toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>
+      <span id="profile-toast-message"></span>
+    </div>
+  </div>
+
+</body>
+</html>
