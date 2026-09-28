@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-100 — Guest Profile CRUD &amp; Soft-Delete</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .signed-in-as {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+  .reset-link:hover { color: var(--color-fg); }
+
+  /* ---------- Toolbar (search + lookup) ---------- */
+  .toolbar {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-4);
+  }
+  .toolbar .field { margin-bottom: 0; }
+  .search-field { flex: 1 1 260px; min-width: 220px; }
+  .lookup-field { display: flex; gap: var(--space-2); align-items: flex-end; flex: 0 0 auto; }
+  .lookup-field input { min-width: 160px; }
+
+  /* ---------- Guest table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.guest-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+  .guest-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .guest-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .guest-table tbody tr:last-child td { border-bottom: none; }
+  .guest-row { cursor: pointer; }
+  .guest-row:hover { background: var(--color-bg); }
+  .guest-row:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+  .guest-name-cell { font-weight: var(--font-weight-bold); }
+  .guest-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .new-badge {
+    display: inline-block;
+    margin-left: var(--space-2);
+    padding: 1px var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg);
+    vertical-align: middle;
+  }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .view-link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+  }
+
+  /* ---------- Status chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--upcoming { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--completed { border: 1px solid var(--color-border); color: var(--color-fg); }
+  .status-chip--cancelled { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); text-decoration: line-through; }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; }
+  .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Empty / not-found / error states ---------- */
+  .empty-state, .not-found-panel, .error-state {
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .empty-state .icon, .not-found-panel .icon, .error-state .icon {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+  .empty-state p, .not-found-panel p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .not-found-panel h3, .error-state h3, .empty-state h3 {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Consequence note (destructive confirm) ---------- */
+  .consequence-note {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-3);
+  }
+
+  /* ---------- Deactivated banner on profile ---------- */
+  .deactivated-banner {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .deactivated-banner[hidden] { display: none; }
+
+  /* ---------- Key/value rows ---------- */
+  .kv-list { border-top: 1px solid var(--color-border); }
+  .kv-row {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.2s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) { .kv-row { transition: none; } }
+  @media (max-width: 480px) {
+    .kv-row { grid-template-columns: 1fr; gap: var(--space-1); }
+  }
+  .kv-row--changed { background: var(--color-surface); border-radius: var(--radius-sm); }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .kv-updated-tag {
+    display: inline-block;
+    margin-left: var(--space-2);
+    padding: 1px var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+
+  /* ---------- Booking history ---------- */
+  table.booking-table { width: 100%; border-collapse: collapse; }
+  .booking-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .booking-table td {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+  }
+  .booking-table tr:last-child td { border-bottom: none; }
+  .no-bookings-note { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Audit trail ---------- */
+  .audit-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-border); }
+  .audit-item {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .audit-item:last-child { border-bottom: none; }
+  .audit-actor { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .audit-action { color: var(--color-fg); }
+  .audit-just-now {
+    display: inline-block;
+    margin-left: var(--space-2);
+    padding: 1px var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+
+  /* ---------- Forms ---------- */
+  .field-error-text {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Guest profile layout ---------- */
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-3);
+    min-height: 44px;
+  }
+  .profile-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .profile-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .layout-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
+  @media (min-width: 820px) {
+    .layout-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
+  .card-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap; }
+  .full-span { grid-column: 1 / -1; }
+  fieldset.plain-fieldset { border: none; margin: 0; padding: 0; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .diff-grid h4 { margin: 0 0 var(--space-2) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .diff-row { padding: var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .diff-changed { border: 2px solid var(--color-primary); border-radius: var(--radius-sm); padding: var(--space-1) var(--space-2); display: inline-block; }
+
+  /* Error/not-found emphasis uses border WIDTH + icon + label, never a new hue — tokens.json
+     has no dedicated error/danger color, so introducing one here would be a design-system gap,
+     not a page-level decision. Flagging for design-system owners if a future story needs it. */
+</style>
+</head>
+<!-- App nav: top bar — Guests (active) · Bookings. This project has no existing frontend
+     shell beyond small task-specific tools, so the nav is a minimal, product-appropriate top
+     bar (front-desk staff console), not the arc platform's own chrome. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-100</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "staffName": "Priya Nair",
+    "nextIdSeq": 1005,
+    "guests": [
+      {
+        "id": "GST-1001",
+        "name": "Maria Alvarez",
+        "email": "maria.alvarez@example.com",
+        "phone": "(555) 214-7788",
+        "status": "active",
+        "createdAt": "2025-11-03T09:12:00.000Z",
+        "updatedAt": "2026-09-20T14:05:00.000Z",
+        "preferences": { "roomType": "Ocean view", "dietary": "Vegetarian", "communication": "Email" },
+        "bookingHistory": [
+          { "id": "BK-3081", "dates": "Jun 12–15, 2026", "item": "Oceanview Suite", "status": "Upcoming" },
+          { "id": "BK-2790", "dates": "Jan 4–7, 2026", "item": "Garden Room", "status": "Completed" }
+        ],
+        "auditLog": [
+          { "ts": "2025-11-03T09:12:00.000Z", "actor": "Jordan Ruiz", "action": "created profile" },
+          { "ts": "2026-09-20T14:05:00.000Z", "actor": "Priya Nair", "action": "updated contact details" }
+        ]
+      },
+      {
+        "id": "GST-1002",
+        "name": "Daniel Kim",
+        "email": "",
+        "phone": "(555) 998-2231",
+        "status": "active",
+        "createdAt": "2026-02-18T11:40:00.000Z",
+        "updatedAt": "2026-02-18T11:40:00.000Z",
+        "preferences": { "roomType": "High floor", "dietary": "—", "communication": "Phone" },
+        "bookingHistory": [
+          { "id": "BK-3102", "dates": "Oct 1–3, 2026", "item": "Standard King", "status": "Upcoming" }
+        ],
+        "auditLog": [
+          { "ts": "2026-02-18T11:40:00.000Z", "actor": "Priya Nair", "action": "created profile" }
+        ]
+      },
+      {
+        "id": "GST-1003",
+        "name": "Wei Zhang",
+        "email": "wei.zhang@example.com",
+        "phone": "",
+        "status": "deactivated",
+        "createdAt": "2024-06-09T08:00:00.000Z",
+        "updatedAt": "2026-08-01T16:22:00.000Z",
+        "preferences": { "roomType": "—", "dietary": "Nut allergy", "communication": "Email" },
+        "bookingHistory": [
+          { "id": "BK-1904", "dates": "May 2–4, 2025", "item": "Garden Room", "status": "Completed" }
+        ],
+        "auditLog": [
+          { "ts": "2024-06-09T08:00:00.000Z", "actor": "Jordan Ruiz", "action": "created profile" },
+          { "ts": "2026-08-01T16:22:00.000Z", "actor": "Priya Nair", "action": "deactivated profile" }
+        ]
+      },
+      {
+        "id": "GST-1004",
+        "name": "Sofia Torres",
+        "email": "sofia.torres@example.com",
+        "phone": "(555) 340-9012",
+        "status": "active",
+        "createdAt": "2023-12-01T10:00:00.000Z",
+        "updatedAt": "2026-05-14T12:00:00.000Z",
+        "preferences": { "roomType": "Poolside", "dietary": "Gluten-free", "communication": "SMS" },
+        "bookingHistory": [
+          { "id": "BK-0812", "dates": "Dec 20–26, 2025", "item": "Poolside Cabana Suite", "status": "Completed" },
+          { "id": "BK-1450", "dates": "Mar 2–4, 2025", "item": "Standard King", "status": "Completed" },
+          { "id": "BK-2200", "dates": "Jul 10, 2025", "item": "Day Spa Package", "status": "Cancelled" }
+        ],
+        "auditLog": [
+          { "ts": "2023-12-01T10:00:00.000Z", "actor": "Jordan Ruiz", "action": "created profile" },
+          { "ts": "2026-05-14T12:00:00.000Z", "actor": "Priya Nair", "action": "updated preferences" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Guest Directory (interactive)
+         Notes:
+           - Search filters the visible list by name, email, phone, or ID (empty-state design
+             when a search matches nothing).
+           - "Open profile by ID" looks a guest up by identifier directly — enter an existing
+             ID (e.g. GST-1002) to jump straight to that profile (AC2), or an unknown one
+             (e.g. GST-9999) to see the not-found response (AC10). Because staff must open a
+             profile by ID before they can edit or soft-delete it, this same not-found response
+             is also what blocks an update or delete attempt against a missing ID — there is no
+             separate edit/delete surface reachable without first loading the record
+             (AC11, AC12).
+           - "+ New guest profile" opens the create form. Leaving out both email and phone
+             shows an inline, specific validation error and keeps the entered name (AC1).
+           - A newly created guest appears at the top of the list with a "New" badge — click it,
+             or look it up by its new ID, to confirm it's immediately retrievable (AC2).
+           - "Reset demo data" restores the four original fixture guests if you want to start over.
+    -->
+    <div class="screen" data-name="Guest Directory">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+          <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Guest profiles</h1>
+          <p>The authoritative record of every guest's name, contact details, preferences, and booking history.</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="field search-field">
+            <label class="label" for="search-input">Search guests</label>
+            <input class="input" id="search-input" type="search" placeholder="Name, email, phone, or ID" autocomplete="off" />
+          </div>
+          <form class="lookup-field" id="lookup-form" novalidate>
+            <div class="field">
+              <label class="label" for="lookup-input">Open profile by ID</label>
+              <input class="input" id="lookup-input" type="text" placeholder="e.g. GST-1002" autocomplete="off" />
+            </div>
+            <button class="btn btn-secondary" id="lookup-btn" type="submit">Open</button>
+          </form>
+          <button class="btn btn-primary" id="new-guest-btn" type="button">+ New guest profile</button>
+        </div>
+
+        <!-- State: directory-loading / directory-success / directory-empty (rendered by JS) -->
+        <div class="card table-card" id="directory-table-wrap">
+          <div class="table-scroll">
+            <table class="guest-table">
+              <thead>
+                <tr>
+                  <th scope="col">Guest</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Last updated</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="guest-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- State: directory-empty (search yields no matches) -->
+        <div class="card empty-state" id="directory-empty" hidden>
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>No guests match "<span class="empty-query"></span>"</h3>
+          <p>Try a different name, email, phone number, or guest ID.</p>
+          <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
+        </div>
+
+        <!-- State: not-found (ID lookup for a guest that doesn't exist) -->
+        <div class="card not-found-panel" id="directory-not-found" hidden role="alert">
+          <span class="icon" aria-hidden="true">⚠</span>
+          <h3>No guest profile found for ID "<span class="nf-id"></span>"</h3>
+          <p>Double-check the ID and try again. No profile data is shown, and nothing was changed — this response also covers update and delete attempts against a missing ID, since a profile must be opened before it can be edited or deactivated.</p>
+          <button class="btn btn-secondary" id="nf-back-btn" type="button">Back to full directory</button>
+        </div>
+      </div>
+
+      <!-- Create guest modal (AC1) -->
+      <div class="modal-overlay" id="create-overlay" hidden></div>
+      <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="create-modal-title">New guest profile</h2>
+              <p>Name and at least one contact detail are required.</p>
+            </div>
+            <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="create-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-name">Full name</label>
+              <input class="input" id="field-name" name="name" type="text" aria-describedby="error-name" />
+              <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-email">Email</label>
+              <input class="input" id="field-email" name="email" type="email" aria-describedby="error-contact" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-phone">Phone</label>
+              <input class="input" id="field-phone" name="phone" type="tel" aria-describedby="error-contact" />
+              <p class="field-error-text" id="error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-room">Room preference <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <input class="input" id="field-room" name="roomType" type="text" placeholder="e.g. Ocean view" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-dietary">Dietary notes <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <input class="input" id="field-dietary" name="dietary" type="text" placeholder="e.g. Vegetarian" />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="field-comm">Preferred contact method <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <select class="input" id="field-comm" name="communication">
+                <option value="">No preference set</option>
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="SMS">SMS</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="create-save-btn">Create profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Guest Profile (interactive)
+         Notes:
+           - Opened from the directory (row click, "View profile", or "Open profile by ID");
+             defaults here to Maria Alvarez so Prev/Next alone still shows a complete profile
+             (AC3): name, contact details, preferences, and booking history all in one view.
+           - "Edit profile" swaps the contact/preferences panel into a form. Change just the
+             phone number and save — only that field updates; name, email, and preferences are
+             left exactly as they were (AC4). The changed row is briefly highlighted.
+           - "Deactivate profile" asks for confirmation and names the consequence, then flips
+             the status chip to Deactivated (AC5). Booking history and the audit trail stay
+             fully visible and retrievable underneath (AC6).
+           - "Reactivate profile" (shown once deactivated) asks for confirmation, flips the
+             status back to Active (AC7), and every action — edit, deactivate, booking — is
+             immediately usable again, exactly as for any other active profile (AC8).
+           - Every save, deactivate, and reactivate appends a new row to "Audit trail" naming
+             the acting staff member and the time of the change (AC9).
+    -->
+    <div class="screen" data-name="Guest Profile">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <button class="back-link" id="profile-back-btn" type="button">← Back to guest directory</button>
+
+        <!-- State: profile-loading (skeleton, ~250ms) -->
+        <div id="profile-loading" hidden>
+          <div class="card u-stack">
+            <div class="skeleton-bar" style="width:40%;height:24px;"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar short"></div>
+          </div>
+        </div>
+
+        <!-- State: profile-success (active or deactivated) -->
+        <div id="profile-content">
+          <div class="profile-header-row">
+            <div>
+              <h1 id="profile-name" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+              <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="profile-meta"></p>
+            </div>
+            <div class="profile-actions">
+              <span id="profile-status-chip"></span>
+            </div>
+          </div>
+
+          <div class="deactivated-banner" id="deactivated-banner" hidden>
+            <span aria-hidden="true">◌</span>
+            <span>This profile is deactivated. It's excluded from active guest searches, but booking history and the audit trail remain fully available below — and it can be reactivated at any time.</span>
+          </div>
+
+          <div class="profile-actions" style="margin-bottom:var(--space-4);">
+            <button class="btn btn-secondary" id="edit-profile-btn" type="button">Edit profile</button>
+            <button class="btn btn-secondary" id="deactivate-profile-btn" type="button">Deactivate profile</button>
+            <button class="btn btn-secondary" id="reactivate-profile-btn" type="button" hidden>Reactivate profile</button>
+          </div>
+
+          <div class="layout-grid">
+            <!-- Contact & preferences: view mode -->
+            <div class="card" id="details-view-mode">
+              <h2 class="card-title">Contact &amp; preferences</h2>
+              <div class="kv-list" id="kv-list"><!-- rendered by JS --></div>
+            </div>
+
+            <!-- Contact & preferences: edit mode -->
+            <div class="card" id="details-edit-mode" hidden>
+              <h2 class="card-title">Edit contact &amp; preferences</h2>
+              <p class="u-text-muted" style="margin:0 0 var(--space-3) 0;font-size:var(--font-size-sm);">Only the fields you change will be updated.</p>
+              <form id="edit-form" novalidate>
+                <div class="field">
+                  <label class="label" for="edit-name">Full name</label>
+                  <input class="input" id="edit-name" name="name" type="text" aria-describedby="edit-error-name" />
+                  <p class="field-error-text" id="edit-error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="edit-email">Email</label>
+                  <input class="input" id="edit-email" name="email" type="email" aria-describedby="edit-error-contact" />
+                </div>
+                <div class="field">
+                  <label class="label" for="edit-phone">Phone</label>
+                  <input class="input" id="edit-phone" name="phone" type="tel" aria-describedby="edit-error-contact" />
+                  <p class="field-error-text" id="edit-error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="edit-room">Room preference</label>
+                  <input class="input" id="edit-room" name="roomType" type="text" />
+                </div>
+                <div class="field">
+                  <label class="label" for="edit-dietary">Dietary notes</label>
+                  <input class="input" id="edit-dietary" name="dietary" type="text" />
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label class="label" for="edit-comm">Preferred contact method</label>
+                  <select class="input" id="edit-comm" name="communication">
+                    <option value="">No preference set</option>
+                    <option value="Email">Email</option>
+                    <option value="Phone">Phone</option>
+                    <option value="SMS">SMS</option>
+                  </select>
+                </div>
+                <div class="modal-actions" style="margin-top:var(--space-4);">
+                  <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+                  <button type="submit" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Booking history (AC3, AC6: always shown, active or deactivated) -->
+            <div class="card">
+              <h2 class="card-title">Booking history</h2>
+              <div id="booking-history"><!-- rendered by JS --></div>
+            </div>
+
+            <!-- Audit trail (AC9) -->
+            <div class="card">
+              <h2 class="card-title">Audit trail</h2>
+              <ul class="audit-list" id="audit-list"><!-- rendered by JS --></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deactivate confirm modal (AC5) -->
+      <div class="modal-overlay" id="deactivate-overlay" hidden></div>
+      <div class="modal-wrap" id="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <h2 id="deactivate-modal-title">Deactivate profile?</h2>
+            <button class="icon-btn" id="deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span id="deactivate-consequence-copy"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="deactivate-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="deactivate-confirm-btn">Deactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reactivate confirm modal (AC7, AC8) -->
+      <div class="modal-overlay" id="reactivate-overlay" hidden></div>
+      <div class="modal-wrap" id="reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="reactivate-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <h2 id="reactivate-modal-title">Reactivate profile?</h2>
+            <button class="icon-btn" id="reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span id="reactivate-consequence-copy"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="reactivate-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="reactivate-confirm-btn">Reactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="profile-toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="profile-toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every AC-relevant edge case, for reviewers who
+             want a quick scan without driving the full interaction on screens 1–2.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of key states called out in the acceptance criteria.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: create-validation-error -->
+          <div class="mini-card">
+            <h3>New guest — validation error</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <div class="field">
+              <label class="label">Full name</label>
+              <input class="input" type="text" value="Chidi Okafor" readonly />
+            </div>
+            <div class="field">
+              <label class="label">Email</label>
+              <input class="input" type="text" value="" placeholder="" readonly />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label">Phone</label>
+              <input class="input" type="text" value="" placeholder="" readonly />
+              <p class="field-error-text">⚠ Add an email or phone number so we can reach this guest.</p>
+            </div>
+          </div>
+
+          <!-- State: not-found -->
+          <div class="mini-card not-found-panel">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>No guest profile found for ID "GST-9999"</h3>
+            <span class="ac-tag">Satisfies AC10, AC11, AC12</span>
+            <p>Applies identically whether staff tried to view, update, or soft-delete this ID — no profile data is shown and nothing is changed.</p>
+          </div>
+
+          <!-- State: partial-update -->
+          <div class="mini-card">
+            <h3>Update — only supplied fields change</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="diff-grid">
+              <div>
+                <h4>Before</h4>
+                <p class="diff-row">Name: Daniel Kim</p>
+                <p class="diff-row">Phone: (555) 998-2231</p>
+                <p class="diff-row">Room: High floor</p>
+              </div>
+              <div>
+                <h4>After</h4>
+                <p class="diff-row">Name: Daniel Kim</p>
+                <p class="diff-row"><span class="diff-changed">Phone: (555) 401-7765</span></p>
+                <p class="diff-row">Room: High floor</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: deactivated-profile -->
+          <div class="mini-card">
+            <h3>Deactivated profile</h3>
+            <span class="ac-tag">Satisfies AC5, AC6</span>
+            <p style="margin:0 0 var(--space-2) 0;"><span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span></p>
+            <div class="deactivated-banner" style="margin-bottom:var(--space-3);">
+              <span aria-hidden="true">◌</span>
+              <span>Wei Zhang's profile is deactivated.</span>
+            </div>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">Booking history (1 stay) and audit trail remain fully retrievable below the fold.</p>
+          </div>
+
+          <!-- State: reactivated-profile -->
+          <div class="mini-card">
+            <h3>Reactivated profile</h3>
+            <span class="ac-tag">Satisfies AC7, AC8</span>
+            <p style="margin:0 0 var(--space-2) 0;"><span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span></p>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">Wei Zhang is searchable, editable, and bookable again — treated identically to any other active profile.</p>
+          </div>
+
+          <!-- State: audit-trail -->
+          <div class="mini-card">
+            <h3>Audit trail entry</h3>
+            <span class="ac-tag">Satisfies AC9</span>
+            <ul class="audit-list">
+              <li class="audit-item"><span class="audit-actor">Priya Nair</span> <span class="audit-action">reactivated profile</span><span class="audit-just-now">Just now</span><br /><span>Sep 28, 2026 · 9:41 AM</span></li>
+              <li class="audit-item"><span class="audit-actor">Priya Nair</span> <span class="audit-action">deactivated profile</span><br /><span>Aug 1, 2026 · 4:22 PM</span></li>
+              <li class="audit-item"><span class="audit-actor">Jordan Ruiz</span> <span class="audit-action">created profile</span><br /><span>Jun 9, 2024 · 8:00 AM</span></li>
+            </ul>
+          </div>
+
+          <!-- State: empty-directory (design baseline) -->
+          <div class="mini-card empty-state">
+            <span class="icon" aria-hidden="true">◎</span>
+            <h3>No guest profiles yet</h3>
+            <span class="ac-tag">Design baseline — empty state</span>
+            <p>Create the first profile to start building your guest directory.</p>
+            <button class="btn btn-primary" type="button" disabled>+ New guest profile</button>
+          </div>
+
+          <!-- State: directory-error (design baseline) -->
+          <div class="mini-card error-state">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>Couldn't load guest profiles</h3>
+            <span class="ac-tag">Design baseline — error state</span>
+            <p>A connection problem stopped the directory from loading.</p>
+            <button class="btn btn-secondary" type="button" disabled>Retry</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var STAFF_NAME = FIXTURE.staffName;
+    var nextIdSeq = FIXTURE.nextIdSeq;
+    var guests = JSON.parse(JSON.stringify(FIXTURE.guests));
+    var currentGuestId = null;
+    var lastMutationTs = null;
+    var toastTimer = null;
+    var profileToastTimer = null;
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function nowIso() { return new Date().toISOString(); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtDateTime(iso) {
+      var d = new Date(iso);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+    function fmtDate(iso) {
+      var d = new Date(iso);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+    function findGuest(id) {
+      var needle = String(id).trim().toLowerCase();
+      for (var i = 0; i < guests.length; i++) {
+        if (guests[i].id.toLowerCase() === needle) return guests[i];
+      }
+      return null;
+    }
+    function statusChipHtml(status) {
+      if (status === 'active') {
+        return '<span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span>';
+      }
+      return '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span>';
+    }
+    function bookingStatusChipHtml(status) {
+      if (status === 'Upcoming') return '<span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span>';
+      if (status === 'Cancelled') return '<span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span>';
+      return '<span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span>';
+    }
+    function contactSummary(g) {
+      var parts = [];
+      if (g.email) parts.push(g.email);
+      if (g.phone) parts.push(g.phone);
+      return parts.length ? parts.join(' · ') : '—';
+    }
+    function showToast(el, msgEl, msg, timerName) {
+      msgEl.textContent = msg;
+      el.hidden = false;
+      if (timerName === 'directory') { clearTimeout(toastTimer); toastTimer = setTimeout(function () { el.hidden = true; }, 3200); }
+      else { clearTimeout(profileToastTimer); profileToastTimer = setTimeout(function () { el.hidden = true; }, 3200); }
+    }
+
+    /* ---------------- Guest Directory ---------------- */
+    var tableWrap = document.getElementById('directory-table-wrap');
+    var emptyEl = document.getElementById('directory-empty');
+    var notFoundEl = document.getElementById('directory-not-found');
+    var tbody = document.getElementById('guest-tbody');
+
+    function renderDirectoryLoading() {
+      tableWrap.hidden = false; emptyEl.hidden = true; notFoundEl.hidden = true;
+      var rows = '';
+      for (var i = 0; i < 3; i++) {
+        rows += '<tr class="skeleton-row"><td><div class="skeleton-bar"></div></td><td><div class="skeleton-bar"></div></td><td><div class="skeleton-bar short"></div></td><td><div class="skeleton-bar short"></div></td><td></td></tr>';
+      }
+      tbody.innerHTML = rows;
+    }
+
+    function renderDirectory(list) {
+      notFoundEl.hidden = true;
+      if (list.length === 0) {
+        tableWrap.hidden = true;
+        emptyEl.hidden = false;
+        emptyEl.querySelector('.empty-query').textContent = document.getElementById('search-input').value.trim();
+        return;
+      }
+      tableWrap.hidden = false;
+      emptyEl.hidden = true;
+      tbody.innerHTML = list.map(function (g) {
+        return '<tr class="guest-row" tabindex="0" role="button" data-id="' + g.id + '" aria-label="View profile for ' + escapeHtml(g.name) + '">' +
+          '<td class="guest-name-cell">' + escapeHtml(g.name) + (g.__new ? '<span class="new-badge">New</span>' : '') + '<span class="guest-id">' + g.id + '</span></td>' +
+          '<td>' + escapeHtml(contactSummary(g)) + '</td>' +
+          '<td>' + statusChipHtml(g.status) + '</td>' +
+          '<td>' + fmtDateTime(g.updatedAt) + '</td>' +
+          '<td class="col-actions"><button type="button" class="view-link-btn" data-id="' + g.id + '">View profile →</button></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function applySearchFilter() {
+      var q = document.getElementById('search-input').value.trim().toLowerCase();
+      if (!q) { renderDirectory(guests); return; }
+      var filtered = guests.filter(function (g) {
+        return g.name.toLowerCase().indexOf(q) !== -1 ||
+          (g.email && g.email.toLowerCase().indexOf(q) !== -1) ||
+          (g.phone && g.phone.indexOf(q) !== -1) ||
+          g.id.toLowerCase().indexOf(q) !== -1;
+      });
+      renderDirectory(filtered);
+    }
+
+    document.getElementById('search-input').addEventListener('input', applySearchFilter);
+    document.getElementById('clear-search-btn').addEventListener('click', function () {
+      document.getElementById('search-input').value = '';
+      renderDirectory(guests);
+    });
+
+    tbody.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-id]');
+      if (btn) openProfile(btn.getAttribute('data-id'));
+    });
+    tbody.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('guest-row')) {
+        e.preventDefault();
+        openProfile(e.target.getAttribute('data-id'));
+      }
+    });
+
+    function showNotFound(id) {
+      tableWrap.hidden = true;
+      emptyEl.hidden = true;
+      notFoundEl.hidden = false;
+      notFoundEl.querySelector('.nf-id').textContent = id;
+    }
+    document.getElementById('nf-back-btn').addEventListener('click', function () {
+      document.getElementById('lookup-input').value = '';
+      document.getElementById('search-input').value = '';
+      renderDirectory(guests);
+    });
+
+    document.getElementById('lookup-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var idVal = document.getElementById('lookup-input').value.trim();
+      if (!idVal) return;
+      var btn = document.getElementById('lookup-btn');
+      btn.disabled = true; btn.textContent = 'Looking up…';
+      await wait(250);
+      btn.disabled = false; btn.textContent = 'Open';
+      var g = findGuest(idVal);
+      if (g) { document.getElementById('lookup-input').value = ''; openProfile(g.id); }
+      else { showNotFound(idVal); }
+    });
+
+    /* ---------------- Create guest ---------------- */
+    var createOverlay = document.getElementById('create-overlay');
+    var createModal = document.getElementById('create-modal');
+    var createForm = document.getElementById('create-form');
+
+    function clearCreateErrors() {
+      document.getElementById('error-name').hidden = true;
+      document.getElementById('error-contact').hidden = true;
+      document.getElementById('field-name').classList.remove('input-error');
+      document.getElementById('field-email').classList.remove('input-error');
+      document.getElementById('field-phone').classList.remove('input-error');
+    }
+    function openCreateModal() {
+      createForm.reset();
+      clearCreateErrors();
+      createOverlay.hidden = false; createModal.hidden = false;
+      document.getElementById('field-name').focus();
+    }
+    function closeCreateModal() { createOverlay.hidden = true; createModal.hidden = true; }
+    document.getElementById('new-guest-btn').addEventListener('click', openCreateModal);
+    document.getElementById('create-close-btn').addEventListener('click', closeCreateModal);
+    document.getElementById('create-cancel-btn').addEventListener('click', closeCreateModal);
+    createOverlay.addEventListener('click', closeCreateModal);
+
+    createForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      clearCreateErrors();
+      var name = document.getElementById('field-name').value.trim();
+      var email = document.getElementById('field-email').value.trim();
+      var phone = document.getElementById('field-phone').value.trim();
+      var valid = true;
+      if (!name) {
+        document.getElementById('error-name').hidden = false;
+        document.getElementById('field-name').classList.add('input-error');
+        valid = false;
+      }
+      if (!email && !phone) {
+        document.getElementById('error-contact').hidden = false;
+        document.getElementById('field-email').classList.add('input-error');
+        document.getElementById('field-phone').classList.add('input-error');
+        valid = false;
+      }
+      if (!valid) return;
+
+      var saveBtn = document.getElementById('create-save-btn');
+      saveBtn.disabled = true; saveBtn.textContent = 'Creating…';
+      await wait(300);
+      saveBtn.disabled = false; saveBtn.textContent = 'Create profile';
+
+      var id = 'GST-' + (nextIdSeq++);
+      var iso = nowIso();
+      var newGuest = {
+        id: id, name: name, email: email, phone: phone, status: 'active',
+        createdAt: iso, updatedAt: iso,
+        preferences: {
+          roomType: document.getElementById('field-room').value.trim() || '—',
+          dietary: document.getElementById('field-dietary').value.trim() || '—',
+          communication: document.getElementById('field-comm').value || '—'
+        },
+        bookingHistory: [],
+        auditLog: [{ ts: iso, actor: STAFF_NAME, action: 'created profile' }],
+        __new: true
+      };
+      guests.unshift(newGuest);
+      closeCreateModal();
+      document.getElementById('search-input').value = '';
+      renderDirectory(guests);
+      showToast(document.getElementById('toast'), document.getElementById('toast-message'), 'Guest profile created — ID ' + id, 'directory');
+    });
+
+    document.getElementById('reset-data-btn').addEventListener('click', function () {
+      guests = JSON.parse(JSON.stringify(FIXTURE.guests));
+      nextIdSeq = FIXTURE.nextIdSeq;
+      currentGuestId = null;
+      document.getElementById('search-input').value = '';
+      document.getElementById('lookup-input').value = '';
+      renderDirectory(guests);
+    });
+
+    /* ---------------- Guest Profile ---------------- */
+    var profileLoading = document.getElementById('profile-loading');
+    var profileContent = document.getElementById('profile-content');
+
+    function renderProfileLoading() {
+      profileLoading.hidden = false;
+      profileContent.hidden = true;
+    }
+
+    function renderProfileView(g, changedFields) {
+      changedFields = changedFields || [];
+      profileLoading.hidden = true;
+      profileContent.hidden = false;
+
+      document.getElementById('profile-name').textContent = g.name;
+      document.getElementById('profile-meta').textContent = g.id + ' · Member since ' + fmtDate(g.createdAt) + ' · Last updated ' + fmtDateTime(g.updatedAt);
+      document.getElementById('profile-status-chip').innerHTML = statusChipHtml(g.status);
+
+      var banner = document.getElementById('deactivated-banner');
+      banner.hidden = g.status !== 'deactivated';
+
+      document.getElementById('deactivate-profile-btn').hidden = g.status !== 'active';
+      document.getElementById('reactivate-profile-btn').hidden = g.status !== 'deactivated';
+
+      var rows = [
+        ['Email', g.email || '—', 'email'],
+        ['Phone', g.phone || '—', 'phone'],
+        ['Room preference', g.preferences.roomType || '—', 'roomType'],
+        ['Dietary notes', g.preferences.dietary || '—', 'dietary'],
+        ['Preferred contact', g.preferences.communication || '—', 'communication']
+      ];
+      document.getElementById('kv-list').innerHTML = rows.map(function (r) {
+        var changed = changedFields.indexOf(r[2]) !== -1;
+        return '<div class="kv-row' + (changed ? ' kv-row--changed' : '') + '">' +
+          '<span class="kv-label">' + r[0] + '</span>' +
+          '<span class="kv-value">' + escapeHtml(r[1]) + (changed ? '<span class="kv-updated-tag">Updated</span>' : '') + '</span>' +
+          '</div>';
+      }).join('');
+
+      var bookingsEl = document.getElementById('booking-history');
+      if (g.bookingHistory.length === 0) {
+        bookingsEl.innerHTML = '<p class="no-bookings-note">No bookings on file yet.</p>';
+      } else {
+        bookingsEl.innerHTML = '<table class="booking-table"><thead><tr><th scope="col">Dates</th><th scope="col">Booking</th><th scope="col">Status</th></tr></thead><tbody>' +
+          g.bookingHistory.map(function (b) {
+            return '<tr><td>' + escapeHtml(b.dates) + '</td><td>' + escapeHtml(b.item) + '</td><td>' + bookingStatusChipHtml(b.status) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      }
+
+      var auditEl = document.getElementById('audit-list');
+      var entries = g.auditLog.slice().reverse();
+      auditEl.innerHTML = entries.map(function (a) {
+        var justNow = a.ts === lastMutationTs;
+        return '<li class="audit-item"><span class="audit-actor">' + escapeHtml(a.actor) + '</span> <span class="audit-action">' + escapeHtml(a.action) + '</span>' +
+          (justNow ? '<span class="audit-just-now">Just now</span>' : '') +
+          '<br /><span>' + fmtDateTime(a.ts) + '</span></li>';
+      }).join('');
+    }
+
+    async function openProfile(id) {
+      currentGuestId = id;
+      show(1);
+      exitEditMode();
+      renderProfileLoading();
+      await wait(250);
+      var g = findGuest(id);
+      renderProfileView(g);
+    }
+
+    document.getElementById('profile-back-btn').addEventListener('click', function () {
+      exitEditMode();
+      show(0);
+      document.getElementById('search-input').value = '';
+      renderDirectory(guests);
+    });
+
+    /* Edit mode */
+    var detailsViewMode = document.getElementById('details-view-mode');
+    var detailsEditMode = document.getElementById('details-edit-mode');
+
+    function enterEditMode(g) {
+      document.getElementById('edit-name').value = g.name;
+      document.getElementById('edit-email').value = g.email || '';
+      document.getElementById('edit-phone').value = g.phone || '';
+      document.getElementById('edit-room').value = g.preferences.roomType === '—' ? '' : g.preferences.roomType;
+      document.getElementById('edit-dietary').value = g.preferences.dietary === '—' ? '' : g.preferences.dietary;
+      document.getElementById('edit-comm').value = g.preferences.communication === '—' ? '' : g.preferences.communication;
+      document.getElementById('edit-error-name').hidden = true;
+      document.getElementById('edit-error-contact').hidden = true;
+      document.getElementById('edit-name').classList.remove('input-error');
+      document.getElementById('edit-email').classList.remove('input-error');
+      document.getElementById('edit-phone').classList.remove('input-error');
+      detailsViewMode.hidden = true;
+      detailsEditMode.hidden = false;
+    }
+    function exitEditMode() {
+      detailsViewMode.hidden = false;
+      detailsEditMode.hidden = true;
+    }
+
+    document.getElementById('edit-profile-btn').addEventListener('click', function () {
+      enterEditMode(findGuest(currentGuestId));
+    });
+    document.getElementById('edit-cancel-btn').addEventListener('click', exitEditMode);
+
+    document.getElementById('edit-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var g = findGuest(currentGuestId);
+      document.getElementById('edit-error-name').hidden = true;
+      document.getElementById('edit-error-contact').hidden = true;
+      document.getElementById('edit-name').classList.remove('input-error');
+      document.getElementById('edit-email').classList.remove('input-error');
+      document.getElementById('edit-phone').classList.remove('input-error');
+
+      var name = document.getElementById('edit-name').value.trim();
+      var email = document.getElementById('edit-email').value.trim();
+      var phone = document.getElementById('edit-phone').value.trim();
+      var roomType = document.getElementById('edit-room').value.trim() || '—';
+      var dietary = document.getElementById('edit-dietary').value.trim() || '—';
+      var communication = document.getElementById('edit-comm').value || '—';
+
+      var valid = true;
+      if (!name) {
+        document.getElementById('edit-error-name').hidden = false;
+        document.getElementById('edit-name').classList.add('input-error');
+        valid = false;
+      }
+      if (!email && !phone) {
+        document.getElementById('edit-error-contact').hidden = false;
+        document.getElementById('edit-email').classList.add('input-error');
+        document.getElementById('edit-phone').classList.add('input-error');
+        valid = false;
+      }
+      if (!valid) return;
+
+      var saveBtn = document.getElementById('edit-save-btn');
+      saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+      await wait(300);
+      saveBtn.disabled = false; saveBtn.textContent = 'Save changes';
+
+      var changed = [];
+      if (name !== g.name) { g.name = name; changed.push('name'); }
+      if (email !== (g.email || '')) { g.email = email; changed.push('email'); }
+      if (phone !== (g.phone || '')) { g.phone = phone; changed.push('phone'); }
+      if (roomType !== g.preferences.roomType) { g.preferences.roomType = roomType; changed.push('roomType'); }
+      if (dietary !== g.preferences.dietary) { g.preferences.dietary = dietary; changed.push('dietary'); }
+      if (communication !== g.preferences.communication) { g.preferences.communication = communication; changed.push('communication'); }
+
+      exitEditMode();
+
+      if (changed.length === 0) {
+        showToast(document.getElementById('profile-toast'), document.getElementById('profile-toast-message'), 'No changes to save', 'profile');
+        renderProfileView(g);
+        return;
+      }
+
+      var iso = nowIso();
+      g.updatedAt = iso;
+      var labels = { name: 'name', email: 'email', phone: 'phone number', roomType: 'room preference', dietary: 'dietary notes', communication: 'preferred contact method' };
+      var changedLabels = changed.map(function (f) { return labels[f]; });
+      var actionText = changedLabels.length === 1 ? ('updated ' + changedLabels[0]) : ('updated ' + changedLabels.slice(0, -1).join(', ') + ' and ' + changedLabels[changedLabels.length - 1]);
+      g.auditLog.push({ ts: iso, actor: STAFF_NAME, action: actionText });
+      lastMutationTs = iso;
+
+      renderProfileView(g, changed);
+      showToast(document.getElementById('profile-toast'), document.getElementById('profile-toast-message'), 'Profile updated', 'profile');
+    });
+
+    /* Deactivate / Reactivate */
+    var deactivateOverlay = document.getElementById('deactivate-overlay');
+    var deactivateModal = document.getElementById('deactivate-modal');
+    var reactivateOverlay = document.getElementById('reactivate-overlay');
+    var reactivateModal = document.getElementById('reactivate-modal');
+
+    function closeDeactivateModal() { deactivateOverlay.hidden = true; deactivateModal.hidden = true; }
+    function closeReactivateModal() { reactivateOverlay.hidden = true; reactivateModal.hidden = true; }
+
+    document.getElementById('deactivate-profile-btn').addEventListener('click', function () {
+      var g = findGuest(currentGuestId);
+      document.getElementById('deactivate-consequence-copy').textContent =
+        'Deactivating ' + g.name + "'s profile marks it inactive and removes it from active guest searches. Booking history and the audit trail stay fully intact, and you can reactivate this profile anytime.";
+      deactivateOverlay.hidden = false; deactivateModal.hidden = false;
+    });
+    document.getElementById('deactivate-close-btn').addEventListener('click', closeDeactivateModal);
+    document.getElementById('deactivate-cancel-btn').addEventListener('click', closeDeactivateModal);
+    deactivateOverlay.addEventListener('click', closeDeactivateModal);
+
+    document.getElementById('deactivate-confirm-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Deactivating…';
+      await wait(300);
+      btn.disabled = false; btn.textContent = 'Deactivate profile';
+      var g = findGuest(currentGuestId);
+      var iso = nowIso();
+      g.status = 'deactivated';
+      g.updatedAt = iso;
+      g.auditLog.push({ ts: iso, actor: STAFF_NAME, action: 'deactivated profile' });
+      lastMutationTs = iso;
+      closeDeactivateModal();
+      renderProfileView(g);
+      showToast(document.getElementById('profile-toast'), document.getElementById('profile-toast-message'), 'Guest profile deactivated', 'profile');
+    });
+
+    document.getElementById('reactivate-profile-btn').addEventListener('click', function () {
+      var g = findGuest(currentGuestId);
+      document.getElementById('reactivate-consequence-copy').textContent =
+        'Reactivating ' + g.name + "'s profile returns it to Active. It becomes searchable, editable, and bookable again, exactly like any other active profile.";
+      reactivateOverlay.hidden = false; reactivateModal.hidden = false;
+    });
+    document.getElementById('reactivate-close-btn').addEventListener('click', closeReactivateModal);
+    document.getElementById('reactivate-cancel-btn').addEventListener('click', closeReactivateModal);
+    reactivateOverlay.addEventListener('click', closeReactivateModal);
+
+    document.getElementById('reactivate-confirm-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Reactivating…';
+      await wait(300);
+      btn.disabled = false; btn.textContent = 'Reactivate profile';
+      var g = findGuest(currentGuestId);
+      var iso = nowIso();
+      g.status = 'active';
+      g.updatedAt = iso;
+      g.auditLog.push({ ts: iso, actor: STAFF_NAME, action: 'reactivated profile' });
+      lastMutationTs = iso;
+      closeReactivateModal();
+      renderProfileView(g);
+      showToast(document.getElementById('profile-toast'), document.getElementById('profile-toast-message'), 'Guest profile reactivated', 'profile');
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!createModal.hidden) closeCreateModal();
+      if (!deactivateModal.hidden) closeDeactivateModal();
+      if (!reactivateModal.hidden) closeReactivateModal();
+    });
+
+    /* ---------------- Initial render ---------------- */
+    renderDirectoryLoading();
+    setTimeout(function () { renderDirectory(guests); }, 300);
+    renderProfileView(findGuest('GST-1001'));
+    currentGuestId = 'GST-1001';
+  </script>
+
+  <script>
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    let cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+      document.getElementById('screen-label').textContent =
+        `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    }
+    document.getElementById('prev-btn').onclick = () => show(cur - 1);
+    document.getElementById('next-btn').onclick = () => show(cur + 1);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
