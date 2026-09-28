@@ -77,6 +77,16 @@ describe('Pipeline dashboard — arc run-detail deep links', () => {
     expect(document.querySelector('.arc-link-absent')).not.toBeNull();
   });
 
+  test('AC4/Security: a non-https or non-arc arcRunUrl is treated as unavailable, never rendered as a clickable link', () => {
+    const hire = fixtureHire({ run: { id: 'run_3', status: 'active', tasksDone: 0, arcRunUrl: 'javascript:alert(document.cookie)' } });
+    const { initPipelineApp } = require('../public/js/pipeline');
+    initPipelineApp(document, [hire]);
+    expect(document.querySelector('[data-arc-link]')).toBeNull();
+    const btn = document.querySelector('.arc-link-btn');
+    expect(btn.tagName).toBe('BUTTON');
+    expect(btn.disabled).toBe(true);
+  });
+
   test('AC5: no re-run/prompt-tuning/eval controls or iframes are embedded on the detail screen', () => {
     const hire = fixtureHire();
     const { initPipelineApp } = require('../public/js/pipeline');

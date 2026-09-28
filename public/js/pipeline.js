@@ -1,6 +1,28 @@
-const { escapeHtml } = require('./utils');
+const ARC_HOSTNAME = 'arc.example.com';
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
 
 const TASKS_TOTAL = 5;
+
+function isValidArcUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && parsed.hostname === ARC_HOSTNAME;
+  } catch {
+    return false;
+  }
+}
+
+const DISABLED_ARC_LINK_MARKUP = `
+  <button class="btn btn-secondary arc-link-btn" type="button" disabled aria-disabled="true">
+    <span aria-hidden="true">↗</span> View run in arc
+  </button>
+  <p class="arc-link-caption">Not clickable yet — available once arc issues a run URL for this hire.</p>
+`;
 
 function arcLinkMarkup(doc, run) {
   if (!run) {
@@ -8,18 +30,21 @@ function arcLinkMarkup(doc, run) {
       <p class="arc-link-absent"><strong>No arc run yet.</strong> A deep link will appear here once this hire’s pipeline starts.</p>
     `;
   }
-  if (!run.arcRunUrl) {
-    return `
-      <button class="btn btn-secondary arc-link-btn" type="button" disabled aria-disabled="true">
-        <span aria-hidden="true">↗</span> View run in arc
-      </button>
-      <p class="arc-link-caption">Not clickable yet — available once arc issues a run URL for this hire.</p>
-    `;
+  if (!run.arcRunUrl || !isValidArcUrl(run.arcRunUrl)) {
+    return DISABLED_ARC_LINK_MARKUP;
   }
+  // Built via real DOM properties (not string interpolation) so the browser's own
+  // attribute serializer — not manual escaping — governs how the URL ends up in the
+  // markup, closing off quote/attribute-breakout injection through arcRunUrl.
+  const link = doc.createElement('a');
+  link.className = 'btn btn-secondary arc-link-btn';
+  link.href = run.arcRunUrl;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.setAttribute('data-arc-link', '');
+  link.innerHTML = '<span aria-hidden="true">↗</span> View run in arc';
   return `
-    <a class="btn btn-secondary arc-link-btn" href="${escapeHtml(doc, run.arcRunUrl)}" target="_blank" rel="noopener noreferrer" data-arc-link>
-      <span aria-hidden="true">↗</span> View run in arc
-    </a>
+    ${link.outerHTML}
     <p class="arc-link-caption">Opens in a new tab using this run's own URL — no onboarding credentials are shared.</p>
   `;
 }
@@ -63,10 +88,10 @@ function initPipelineApp(doc, initialHires) {
       <div class="card hire-row">
         <div class="hire-main">
           <div class="hire-name-row">
-            <span class="hire-name">${escapeHtml(doc, hire.name)}</span>
-            <span class="hire-status-label u-text-sm u-text-muted">${escapeHtml(doc, statusLabel(hire))}</span>
+            <span class="hire-name">${escapeHtml(hire.name)}</span>
+            <span class="hire-status-label u-text-sm u-text-muted">${escapeHtml(statusLabel(hire))}</span>
           </div>
-          <p class="hire-role">${escapeHtml(doc, hire.role)}${hire.department ? ` — ${escapeHtml(doc, hire.department)}` : ''}</p>
+          <p class="hire-role">${escapeHtml(hire.role)}${hire.department ? ` — ${escapeHtml(hire.department)}` : ''}</p>
           <button class="open-detail-btn" type="button" data-open-detail="${hire.id}">View pipeline detail →</button>
         </div>
         <div class="arc-link-cell">${arcLinkMarkup(doc, hire.run)}</div>
@@ -97,25 +122,25 @@ function initPipelineApp(doc, initialHires) {
     detailBodyEl.innerHTML = `
       <div class="page-header">
         <div>
-          <h1>${escapeHtml(doc, hire.name)}</h1>
-          <p>${escapeHtml(doc, hire.role)}${hire.department ? ` — ${escapeHtml(doc, hire.department)}` : ''}</p>
+          <h1>${escapeHtml(hire.name)}</h1>
+          <p>${escapeHtml(hire.role)}${hire.department ? ` — ${escapeHtml(hire.department)}` : ''}</p>
         </div>
-        <span class="hire-status-label u-text-sm u-text-muted">${escapeHtml(doc, statusLabel(hire))}</span>
+        <span class="hire-status-label u-text-sm u-text-muted">${escapeHtml(statusLabel(hire))}</span>
       </div>
 
       <div class="layout-grid">
         <div class="card">
           <h2 class="card-title">Onboarding summary</h2>
           <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Owned entirely by onboarding — arc has no controls here.</p>
-          <div class="summary-row"><span class="k">Hire stage</span><span class="v">${escapeHtml(doc, hire.hireStage === 'offer_accepted' ? 'Offer accepted' : 'Draft')}</span></div>
-          <div class="summary-row"><span class="k">Profile status</span><span class="v">${escapeHtml(doc, hire.profileStatus === 'active' ? 'Active' : 'Deactivated')}</span></div>
+          <div class="summary-row"><span class="k">Hire stage</span><span class="v">${escapeHtml(hire.hireStage === 'offer_accepted' ? 'Offer accepted' : 'Draft')}</span></div>
+          <div class="summary-row"><span class="k">Profile status</span><span class="v">${escapeHtml(hire.profileStatus === 'active' ? 'Active' : 'Deactivated')}</span></div>
           <div class="summary-row"><span class="k">Tasks complete</span><span class="v">${hire.run ? `${hire.run.tasksDone} of ${TASKS_TOTAL}` : '—'}</span></div>
         </div>
 
         <div class="card">
           <h2 class="card-title">Arc pipeline run</h2>
           <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Arc runs and scores this hire's onboarding pipeline.</p>
-          ${hire.run && hire.run.id ? `<div class="summary-row"><span class="k">Run ID</span><span class="v">${escapeHtml(doc, hire.run.id)}</span></div>` : ''}
+          ${hire.run && hire.run.id ? `<div class="summary-row"><span class="k">Run ID</span><span class="v">${escapeHtml(hire.run.id)}</span></div>` : ''}
           <div style="margin-top: var(--space-3);">${arcLinkMarkup(doc, hire.run)}</div>
 
           <div class="boundary-card">
