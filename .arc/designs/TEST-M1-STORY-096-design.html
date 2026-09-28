@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-096 — Room Type Management</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .role-select-wrap { display: flex; align-items: center; gap: var(--space-2); }
+  .role-select-wrap label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+  .role-select-wrap select.input { width: auto; min-width: 220px; }
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+    min-height: 44px;
+  }
+  .reset-link:hover { color: var(--color-fg); }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+  .toolbar-links { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+
+  /* ---------- Permission-denied banner (AC9, AC10) ---------- */
+  .permission-banner {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 2px solid var(--color-fg);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .permission-banner[hidden] { display: none; }
+  .permission-banner strong { display: block; margin-bottom: var(--space-1); }
+  .permission-banner .icon-btn { margin-left: auto; }
+
+  /* ---------- Room type table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.rt-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .rt-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .rt-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .rt-table tbody tr:last-child td { border-bottom: none; }
+  .rt-table tbody tr { transition: background-color 0.2s ease-out; }
+  @media (prefers-reduced-motion: reduce) { .rt-table tbody tr { transition: none; } }
+  .rt-row--changed { background: var(--color-bg); }
+  .rt-name-cell { font-weight: var(--font-weight-bold); }
+  .rt-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .amenity-list-cell { display: flex; flex-wrap: wrap; gap: var(--space-1); max-width: 260px; }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .row-action-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+  }
+
+  /* ---------- Status chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--inactive { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; }
+  .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Empty / error states ---------- */
+  .empty-state, .error-state {
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .empty-state .icon, .error-state .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state h3, .error-state h3 {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Consequence note (destructive confirm) ---------- */
+  .consequence-note {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-3);
+  }
+
+  /* ---------- Forms ---------- */
+  .field-error-text {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Amenity tag input ---------- */
+  .amenity-input-row { display: flex; gap: var(--space-2); }
+  .amenity-input-row .input { flex: 1; }
+  .amenity-chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); min-height: 32px; }
+  .chip-removable { display: inline-flex; align-items: center; gap: var(--space-1); padding-right: var(--space-1); }
+  .chip-remove-btn {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    cursor: pointer;
+    font-size: var(--font-size-md);
+    line-height: 1;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+  }
+  .chip-remove-btn:hover { color: var(--color-fg); }
+
+  /* ---------- Booking screen ---------- */
+  .booking-form-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .booking-form-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  }
+  .rate-preview-card { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); }
+  .rate-preview-card[hidden] { display: none; }
+  .rate-preview-title { margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .rate-preview-line { margin: 0 0 var(--space-2) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  table.occupancy-table { width: 100%; border-collapse: collapse; }
+  .occupancy-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .occupancy-table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .occupancy-table tr:last-child td { border-bottom: none; }
+  .unaffected-tag {
+    display: inline-block;
+    margin-top: var(--space-1);
+    padding: 1px var(--space-2);
+    border: 1px dashed var(--color-fg-muted);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+
+  /* Error/not-found emphasis uses border WIDTH + icon + label, never a new hue — tokens.json
+     has no dedicated error/danger color, so introducing one here would be a design-system gap,
+     not a page-level decision. Flagging for design-system owners if a future story needs it. */
+</style>
+</head>
+<!-- App nav: top bar — Room Types · Bookings. This project has no existing frontend shell
+     beyond small task-specific tools, so the nav is a minimal, product-appropriate top bar
+     (front-desk / back-office console), not the arc platform's own chrome. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-096</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "nextIdSeq": 105,
+    "nextBookingSeq": 4046,
+    "roomTypes": [
+      {
+        "id": "RT-101",
+        "name": "Standard King",
+        "capacity": 2,
+        "amenities": ["Wi-Fi", "Air conditioning", "Flat-screen TV"],
+        "baseRate": 129.00,
+        "status": "active",
+        "updatedAt": "2026-01-14T10:00:00.000Z"
+      },
+      {
+        "id": "RT-102",
+        "name": "Garden Room",
+        "capacity": 2,
+        "amenities": ["Wi-Fi", "Garden view", "Mini fridge"],
+        "baseRate": 149.00,
+        "status": "inactive",
+        "updatedAt": "2026-06-02T09:30:00.000Z"
+      },
+      {
+        "id": "RT-103",
+        "name": "Oceanview Suite",
+        "capacity": 4,
+        "amenities": ["Wi-Fi", "Ocean view", "Balcony", "Mini bar", "Air conditioning"],
+        "baseRate": 289.00,
+        "status": "active",
+        "updatedAt": "2026-03-21T15:20:00.000Z"
+      },
+      {
+        "id": "RT-104",
+        "name": "Poolside Cabana Suite",
+        "capacity": 3,
+        "amenities": ["Wi-Fi", "Pool access", "Air conditioning"],
+        "baseRate": 219.00,
+        "status": "active",
+        "updatedAt": "2025-11-30T12:00:00.000Z"
+      }
+    ],
+    "occupancy": [
+      { "id": "BK-4021", "guest": "Amara Chen", "dates": "Oct 12–15, 2026", "roomTypeId": "RT-102", "rateAtBooking": 149.00 },
+      { "id": "BK-4032", "guest": "Liam Brooks", "dates": "Nov 2–4, 2026", "roomTypeId": "RT-104", "rateAtBooking": 219.00 },
+      { "id": "BK-4045", "guest": "Priya Shah", "dates": "Dec 5–8, 2026", "roomTypeId": "RT-101", "rateAtBooking": 129.00 }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Room Type Catalogue (interactive)
+         Notes:
+           - "Viewing as" switches between a Staff and a Front-desk agent (non-staff) session.
+             As Staff, "+ Add room type", "Edit", and "Deactivate"/"Reactivate" work normally.
+             As Front-desk agent, clicking any of those same controls does not open a dialog or
+             change any data — it shows an inline banner reading "You do not have permission to
+             perform this action" right on this screen (AC9, AC10).
+           - "+ Add room type" opens a form requiring name, maximum guests, at least one
+             amenity, and a base rate. Leaving any of those blank shows a field-specific inline
+             error and the record is not saved (AC8). A capacity of 0 or a base rate like
+             "abc" is rejected the same way, on the specific field (AC11). Naming a new type
+             the same as an existing one — active or inactive, any case — is also rejected
+             inline (AC12); try "garden room" to see this against the already-inactive Garden
+             Room.
+           - Saving a valid new room type adds it to the table immediately (AC1) and makes it
+             selectable on the Bookings screen right away (AC2).
+           - "Edit" opens the same form pre-filled; changing any field and saving updates the
+             row immediately, and the change is reflected on the Bookings screen too (AC3).
+           - "Deactivate" asks for confirmation and names the consequence, then flips the row to
+             an "Inactive" chip — the row stays fully visible in this list (AC5) but the type
+             drops out of the Bookings screen's room type picker (AC4). Existing future
+             bookings that already reference it are untouched (AC6) — check the Bookings
+             screen after deactivating Poolside Cabana Suite.
+           - "Preview empty catalogue" swaps in the empty-state design without touching the
+             underlying data, so the empty-state message can be reviewed on demand (AC7).
+    -->
+    <div class="screen" data-name="Room Type Catalogue">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Room types</a>
+          <a href="#" id="nav-to-bookings">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <div class="role-select-wrap">
+            <label class="label" for="role-select" style="margin-bottom:0;">Viewing as</label>
+            <select class="input" id="role-select">
+              <option value="staff">Staff — Jordan Ruiz</option>
+              <option value="non-staff">Front-desk agent — Casey Lin</option>
+            </select>
+          </div>
+          <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Room types</h1>
+          <p>The catalogue of bookable categories used everywhere else in the system — name, capacity, amenities, and nightly base rate.</p>
+        </div>
+
+        <!-- State: permission-denied (AC9, AC10) -->
+        <div class="permission-banner" id="permission-banner" role="alert" hidden>
+          <span aria-hidden="true">⚠</span>
+          <span>
+            <strong>You do not have permission to perform this action</strong>
+            <span id="permission-banner-detail">Only staff accounts can create, edit, or deactivate room types.</span>
+          </span>
+          <button class="icon-btn" id="permission-banner-close" type="button" aria-label="Dismiss">✕</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-links">
+            <button class="reset-link" id="preview-empty-btn" type="button">Preview empty catalogue</button>
+            <button class="reset-link" id="show-catalogue-btn" type="button" hidden>Show full catalogue</button>
+          </div>
+          <button class="btn btn-primary" id="add-room-type-btn" type="button">+ Add room type</button>
+        </div>
+
+        <!-- State: rt-loading (skeleton, ~250ms) -->
+        <div class="card table-card" id="rt-loading">
+          <table class="rt-table">
+            <tbody>
+              <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width:60%;"></div></td></tr>
+              <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar short"></div></td></tr>
+              <tr class="skeleton-row"><td colspan="6"><div class="skeleton-bar" style="width:50%;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- State: rt-success -->
+        <div class="card table-card" id="rt-table-wrap" hidden>
+          <div class="table-scroll">
+            <table class="rt-table">
+              <thead>
+                <tr>
+                  <th scope="col">Room type</th>
+                  <th scope="col">Capacity</th>
+                  <th scope="col">Amenities</th>
+                  <th scope="col">Base rate</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rt-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- State: rt-empty (AC7) -->
+        <div class="card empty-state" id="rt-empty" hidden>
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>No room types yet</h3>
+          <p>Add a room type to start building your bookable catalogue.</p>
+          <button class="btn btn-primary" id="empty-add-room-type-btn" type="button">+ Add room type</button>
+        </div>
+      </div>
+
+      <!-- Create / edit room type modal (AC1, AC3, AC8, AC11, AC12) -->
+      <div class="modal-overlay" id="rt-overlay" hidden></div>
+      <div class="modal-wrap" id="rt-modal" role="dialog" aria-modal="true" aria-labelledby="rt-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="rt-modal-title">Add room type</h2>
+              <p id="rt-modal-desc">Name, maximum guests, at least one amenity, and a base rate are all required.</p>
+            </div>
+            <button class="icon-btn" id="rt-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="rt-form" novalidate>
+            <div class="field">
+              <label class="label" for="rt-name">Room type name</label>
+              <input class="input" id="rt-name" name="name" type="text" placeholder="e.g. Deluxe Twin" aria-describedby="rt-name-error" />
+              <p class="field-error-text" id="rt-name-error" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label class="label" for="rt-capacity">Maximum guests</label>
+              <input class="input" id="rt-capacity" name="capacity" type="text" inputmode="numeric" placeholder="e.g. 2" aria-describedby="rt-capacity-error" />
+              <p class="field-error-text" id="rt-capacity-error" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label class="label" for="rt-amenity-input">Amenities</label>
+              <div class="amenity-input-row">
+                <input class="input" id="rt-amenity-input" type="text" placeholder="e.g. Wi-Fi" aria-describedby="rt-amenities-error" />
+                <button type="button" class="btn btn-secondary" id="rt-amenity-add-btn">Add</button>
+              </div>
+              <p class="field-hint">Press Enter, comma, or "Add" to add each amenity separately.</p>
+              <div class="amenity-chip-list" id="rt-amenity-chips" aria-live="polite"></div>
+              <p class="field-error-text" id="rt-amenities-error" role="alert" hidden></p>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="rt-base-rate">Base rate (USD per night)</label>
+              <input class="input" id="rt-base-rate" name="baseRate" type="text" inputmode="decimal" placeholder="e.g. 149.00" aria-describedby="rt-base-rate-error" />
+              <p class="field-error-text" id="rt-base-rate-error" role="alert" hidden></p>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="rt-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="rt-save-btn">Save room type</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Deactivate / reactivate confirm modal (AC4, AC5, AC6) -->
+      <div class="modal-overlay" id="status-overlay" hidden></div>
+      <div class="modal-wrap" id="status-modal" role="dialog" aria-modal="true" aria-labelledby="status-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <h2 id="status-modal-title">Deactivate room type?</h2>
+            <button class="icon-btn" id="status-close-btn" type="button" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span id="status-consequence-copy"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="status-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="status-confirm-btn">Deactivate room type</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="rt-toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="rt-toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Bookings (interactive)
+         Notes:
+           - The "Room type" picker only lists active room types — create a new one on the
+             Room Types screen and it appears here right away (AC2); deactivate one and it
+             drops out of this list right away (AC4).
+           - "Upcoming bookings" lists existing future occupancy records. Amara Chen's booking
+             references Garden Room, which is already inactive in this catalogue, and Liam
+             Brooks' references Poolside Cabana Suite if you deactivate it live — both keep
+             their original guest, dates, and rate, unaffected by the room type's status
+             (AC6).
+    -->
+    <div class="screen" data-name="Bookings">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-to-catalogue">Room types</a>
+          <a href="#" class="active" aria-current="page">Bookings</a>
+        </nav>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Create a booking</h1>
+          <p>Choose from the room types currently open for new reservations.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--space-4);">
+          <h2 class="card-title">New booking</h2>
+          <div class="booking-form-grid">
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="booking-room-type">Room type</label>
+              <select class="input" id="booking-room-type"></select>
+              <p class="field-hint">Only active room types are offered here.</p>
+            </div>
+            <div class="rate-preview-card" id="rate-preview">
+              <p class="rate-preview-title" id="rate-preview-name"></p>
+              <p class="rate-preview-line" id="rate-preview-capacity"></p>
+              <div class="amenity-list-cell" id="rate-preview-amenities" style="margin-bottom:var(--space-2);"></div>
+              <p class="rate-preview-line" id="rate-preview-rate" style="margin-bottom:0;"></p>
+            </div>
+          </div>
+          <div class="modal-actions" style="justify-content:flex-start;margin-top:var(--space-4);">
+            <button class="btn btn-primary" id="check-availability-btn" type="button">Check availability</button>
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <div style="padding:var(--space-4) var(--space-4) 0;">
+            <h2 class="card-title">Upcoming bookings</h2>
+          </div>
+          <div class="table-scroll">
+            <table class="occupancy-table">
+              <thead>
+                <tr>
+                  <th scope="col">Booking</th>
+                  <th scope="col">Guest</th>
+                  <th scope="col">Dates</th>
+                  <th scope="col">Room type</th>
+                  <th scope="col">Rate booked</th>
+                </tr>
+              </thead>
+              <tbody id="occupancy-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="booking-toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="booking-toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every AC-relevant edge case, for reviewers who
+             want a quick scan without driving the full interaction on screens 1–2.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Room types</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of key states called out in the acceptance criteria.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: missing-required-field -->
+          <div class="mini-card">
+            <h3>Missing required field</h3>
+            <span class="ac-tag">Satisfies AC8</span>
+            <div class="field">
+              <label class="label">Room type name</label>
+              <input class="input" type="text" value="Deluxe Twin" readonly />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label">Maximum guests</label>
+              <input class="input input-error" type="text" value="" readonly />
+              <p class="field-error-text">⚠ Enter the maximum number of guests.</p>
+            </div>
+          </div>
+
+          <!-- State: invalid-capacity-and-rate -->
+          <div class="mini-card">
+            <h3>Invalid capacity &amp; base rate</h3>
+            <span class="ac-tag">Satisfies AC11</span>
+            <div class="field">
+              <label class="label">Maximum guests</label>
+              <input class="input input-error" type="text" value="0" readonly />
+              <p class="field-error-text">⚠ Capacity must be a whole number greater than zero.</p>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label">Base rate (USD per night)</label>
+              <input class="input input-error" type="text" value="abc" readonly />
+              <p class="field-error-text">⚠ Base rate must be a number greater than 0, e.g. 149.00.</p>
+            </div>
+          </div>
+
+          <!-- State: duplicate-name -->
+          <div class="mini-card">
+            <h3>Duplicate name (case-insensitive)</h3>
+            <span class="ac-tag">Satisfies AC12</span>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label">Room type name</label>
+              <input class="input input-error" type="text" value="garden room" readonly />
+              <p class="field-error-text">⚠ This name is already in use by another room type (including inactive ones). Choose a different name.</p>
+            </div>
+          </div>
+
+          <!-- State: permission-denied -->
+          <div class="mini-card">
+            <h3>Non-staff attempts a change</h3>
+            <span class="ac-tag">Satisfies AC9, AC10</span>
+            <div class="permission-banner" style="margin-bottom:0;">
+              <span aria-hidden="true">⚠</span>
+              <span>
+                <strong>You do not have permission to perform this action</strong>
+                <span>Only staff accounts can create, edit, or deactivate room types. Signed in as Casey Lin — Front-desk agent.</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- State: inactive-row -->
+          <div class="mini-card">
+            <h3>Deactivated room type — still listed</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <p style="margin:0 0 var(--space-2) 0;"><span class="status-chip status-chip--inactive"><span aria-hidden="true">◌</span> Inactive</span></p>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">Garden Room remains fully visible in the catalogue table with its name, capacity, amenities, and rate — just no longer offered for new bookings.</p>
+          </div>
+
+          <!-- State: unaffected-occupancy -->
+          <div class="mini-card">
+            <h3>Existing booking, unaffected</h3>
+            <span class="ac-tag">Satisfies AC6</span>
+            <table class="occupancy-table" style="min-width:0;">
+              <tbody>
+                <tr>
+                  <td>BK-4021 · Amara Chen<br /><span style="color:var(--color-fg-muted);font-size:var(--font-size-sm);">Oct 12–15, 2026</span></td>
+                  <td>Garden Room<br /><span class="unaffected-tag">Deactivated — booking unaffected</span></td>
+                  <td>$149.00 / night</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- State: empty-catalogue -->
+          <div class="mini-card empty-state">
+            <span class="icon" aria-hidden="true">◎</span>
+            <h3>No room types yet</h3>
+            <span class="ac-tag">Satisfies AC7</span>
+            <p>Add a room type to start building your bookable catalogue.</p>
+            <button class="btn btn-primary" type="button" disabled>+ Add room type</button>
+          </div>
+
+          <!-- State: catalogue-error (design baseline) -->
+          <div class="mini-card error-state">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>Couldn't load room types</h3>
+            <span class="ac-tag">Design baseline — error state</span>
+            <p>A connection problem stopped the catalogue from loading.</p>
+            <button class="btn btn-secondary" type="button" disabled>Retry</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var roomTypes, occupancy, nextIdSeq, nextBookingSeq;
+    var currentRole = 'staff';
+    var editingId = null;
+    var currentAmenities = [];
+    var statusAction = null; // { id, toStatus: 'active'|'inactive' }
+    var previewEmpty = false;
+    var rtToastTimer = null;
+    var bookingToastTimer = null;
+
+    function loadFixture() {
+      roomTypes = JSON.parse(JSON.stringify(FIXTURE.roomTypes));
+      occupancy = JSON.parse(JSON.stringify(FIXTURE.occupancy));
+      nextIdSeq = FIXTURE.nextIdSeq;
+      nextBookingSeq = FIXTURE.nextBookingSeq;
+    }
+    loadFixture();
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtRate(n) { return '$' + Number(n).toFixed(2) + ' / night'; }
+    function findRoomType(id) {
+      for (var i = 0; i < roomTypes.length; i++) { if (roomTypes[i].id === id) return roomTypes[i]; }
+      return null;
+    }
+    function statusChipHtml(status) {
+      if (status === 'active') return '<span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span>';
+      return '<span class="status-chip status-chip--inactive"><span aria-hidden="true">◌</span> Inactive</span>';
+    }
+    function amenitiesHtml(list) {
+      return list.map(function (a) { return '<span class="chip">' + escapeHtml(a) + '</span>'; }).join('');
+    }
+
+    /* ---------- Role / permission handling (AC9, AC10) ---------- */
+    var roleSelect = document.getElementById('role-select');
+    var permissionBanner = document.getElementById('permission-banner');
+    var permissionBannerDetail = document.getElementById('permission-banner-detail');
+    roleSelect.onchange = function () {
+      currentRole = roleSelect.value;
+      hidePermissionBanner();
+    };
+    document.getElementById('permission-banner-close').onclick = hidePermissionBanner;
+    function hidePermissionBanner() { permissionBanner.hidden = true; }
+    function showPermissionBanner(actionLabel) {
+      permissionBannerDetail.textContent = 'Only staff accounts can ' + actionLabel + ' room types. Signed in as Casey Lin — Front-desk agent.';
+      permissionBanner.hidden = false;
+      permissionBanner.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function requireStaff(actionLabel) {
+      if (currentRole !== 'staff') { showPermissionBanner(actionLabel); return false; }
+      return true;
+    }
+
+    /* ---------- Reset demo data ---------- */
+    document.getElementById('reset-data-btn').onclick = function () {
+      loadFixture();
+      previewEmpty = false;
+      hidePermissionBanner();
+      renderCatalogue();
+      renderBookingScreen();
+      showRtToast('Demo data reset to its original state.');
+    };
+
+    /* ---------- Empty-state preview toggle (AC7) ---------- */
+    var previewEmptyBtn = document.getElementById('preview-empty-btn');
+    var showCatalogueBtn = document.getElementById('show-catalogue-btn');
+    previewEmptyBtn.onclick = function () { previewEmpty = true; renderCatalogue(); };
+    showCatalogueBtn.onclick = function () { previewEmpty = false; renderCatalogue(); };
+
+    /* ---------- Catalogue rendering ---------- */
+    var rtLoading = document.getElementById('rt-loading');
+    var rtTableWrap = document.getElementById('rt-table-wrap');
+    var rtEmpty = document.getElementById('rt-empty');
+    var rtTbody = document.getElementById('rt-tbody');
+
+    function renderCatalogue(highlightId) {
+      previewEmptyBtn.hidden = previewEmpty;
+      showCatalogueBtn.hidden = !previewEmpty;
+
+      var list = previewEmpty ? [] : roomTypes;
+      if (list.length === 0) {
+        rtTableWrap.hidden = true;
+        rtEmpty.hidden = false;
+        return;
+      }
+      rtEmpty.hidden = true;
+      rtTableWrap.hidden = false;
+      rtTbody.innerHTML = list.map(function (rt) {
+        var rowClass = rt.id === highlightId ? ' class="rt-row--changed"' : '';
+        var actionBtn = rt.status === 'active'
+          ? '<button class="row-action-btn" data-action="deactivate" data-id="' + rt.id + '" type="button">Deactivate</button>'
+          : '<button class="row-action-btn" data-action="reactivate" data-id="' + rt.id + '" type="button">Reactivate</button>';
+        return '<tr' + rowClass + '>' +
+          '<td class="rt-name-cell">' + escapeHtml(rt.name) + '<span class="rt-id">' + rt.id + '</span></td>' +
+          '<td>' + rt.capacity + ' guests</td>' +
+          '<td><div class="amenity-list-cell">' + amenitiesHtml(rt.amenities) + '</div></td>' +
+          '<td>' + fmtRate(rt.baseRate) + '</td>' +
+          '<td>' + statusChipHtml(rt.status) + '</td>' +
+          '<td class="col-actions">' +
+            '<button class="row-action-btn" data-action="edit" data-id="' + rt.id + '" type="button">Edit</button>' +
+            actionBtn +
+          '</td>' +
+          '</tr>';
+      }).join('');
+
+      Array.prototype.forEach.call(rtTbody.querySelectorAll('[data-action="edit"]'), function (btn) {
+        btn.onclick = function () { onEditClick(btn.getAttribute('data-id')); };
+      });
+      Array.prototype.forEach.call(rtTbody.querySelectorAll('[data-action="deactivate"]'), function (btn) {
+        btn.onclick = function () { onStatusClick(btn.getAttribute('data-id'), 'inactive'); };
+      });
+      Array.prototype.forEach.call(rtTbody.querySelectorAll('[data-action="reactivate"]'), function (btn) {
+        btn.onclick = function () { onStatusClick(btn.getAttribute('data-id'), 'active'); };
+      });
+
+      if (highlightId) {
+        setTimeout(function () {
+          var el = rtTbody.querySelector('tr.rt-row--changed');
+          if (el) el.classList.remove('rt-row--changed');
+        }, 1600);
+      }
+    }
+
+    async function initialLoad() {
+      rtLoading.hidden = false;
+      rtTableWrap.hidden = true;
+      rtEmpty.hidden = true;
+      await wait(280);
+      rtLoading.hidden = true;
+      renderCatalogue();
+    }
+
+    /* ---------- Create / edit modal (AC1, AC3, AC8, AC11, AC12) ---------- */
+    var rtOverlay = document.getElementById('rt-overlay');
+    var rtModal = document.getElementById('rt-modal');
+    var rtModalTitle = document.getElementById('rt-modal-title');
+    var rtModalDesc = document.getElementById('rt-modal-desc');
+    var rtForm = document.getElementById('rt-form');
+    var rtNameInput = document.getElementById('rt-name');
+    var rtCapacityInput = document.getElementById('rt-capacity');
+    var rtBaseRateInput = document.getElementById('rt-base-rate');
+    var rtAmenityInput = document.getElementById('rt-amenity-input');
+    var rtAmenityChips = document.getElementById('rt-amenity-chips');
+    var rtSaveBtn = document.getElementById('rt-save-btn');
+
+    document.getElementById('add-room-type-btn').onclick = function () { openCreateModal(); };
+    document.getElementById('empty-add-room-type-btn').onclick = function () { openCreateModal(); };
+
+    function openCreateModal() {
+      if (!requireStaff('create')) return;
+      editingId = null;
+      rtModalTitle.textContent = 'Add room type';
+      rtModalDesc.textContent = 'Name, maximum guests, at least one amenity, and a base rate are all required.';
+      rtSaveBtn.textContent = 'Save room type';
+      rtForm.reset();
+      currentAmenities = [];
+      renderAmenityChips();
+      clearFieldErrors();
+      openModal(rtOverlay, rtModal);
+      rtNameInput.focus();
+    }
+
+    function onEditClick(id) {
+      if (!requireStaff('edit')) return;
+      var rt = findRoomType(id);
+      if (!rt) return;
+      editingId = id;
+      rtModalTitle.textContent = 'Edit room type';
+      rtModalDesc.textContent = 'Update any field below. Changes save immediately and apply everywhere this room type is used.';
+      rtSaveBtn.textContent = 'Save changes';
+      rtNameInput.value = rt.name;
+      rtCapacityInput.value = String(rt.capacity);
+      rtBaseRateInput.value = rt.baseRate.toFixed(2);
+      currentAmenities = rt.amenities.slice();
+      renderAmenityChips();
+      clearFieldErrors();
+      openModal(rtOverlay, rtModal);
+      rtNameInput.focus();
+    }
+
+    document.getElementById('rt-close-btn').onclick = function () { closeModal(rtOverlay, rtModal); };
+    document.getElementById('rt-cancel-btn').onclick = function () { closeModal(rtOverlay, rtModal); };
+
+    function addAmenityFromInput() {
+      var raw = rtAmenityInput.value;
+      raw.split(',').forEach(function (piece) {
+        var val = piece.trim();
+        if (!val) return;
+        var exists = currentAmenities.some(function (a) { return a.toLowerCase() === val.toLowerCase(); });
+        if (!exists) currentAmenities.push(val);
+      });
+      rtAmenityInput.value = '';
+      renderAmenityChips();
+    }
+    document.getElementById('rt-amenity-add-btn').onclick = addAmenityFromInput;
+    rtAmenityInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addAmenityFromInput();
+      }
+    });
+    function renderAmenityChips() {
+      rtAmenityChips.innerHTML = currentAmenities.map(function (a, i) {
+        return '<span class="chip chip-removable">' + escapeHtml(a) +
+          '<button type="button" class="chip-remove-btn" data-idx="' + i + '" aria-label="Remove ' + escapeHtml(a) + '">✕</button></span>';
+      }).join('');
+      Array.prototype.forEach.call(rtAmenityChips.querySelectorAll('.chip-remove-btn'), function (btn) {
+        btn.onclick = function () {
+          currentAmenities.splice(Number(btn.getAttribute('data-idx')), 1);
+          renderAmenityChips();
+        };
+      });
+    }
+
+    function clearFieldErrors() {
+      ['rt-name-error', 'rt-capacity-error', 'rt-amenities-error', 'rt-base-rate-error'].forEach(function (id) {
+        var el = document.getElementById(id);
+        el.hidden = true;
+        el.textContent = '';
+      });
+      [rtNameInput, rtCapacityInput, rtBaseRateInput].forEach(function (input) { input.classList.remove('input-error'); });
+    }
+
+    function validateForm() {
+      clearFieldErrors();
+      var errors = {};
+      var name = rtNameInput.value.trim();
+      var capacityRaw = rtCapacityInput.value.trim();
+      var baseRateRaw = rtBaseRateInput.value.trim();
+
+      if (!name) {
+        errors.name = 'Enter a room type name.';
+      } else {
+        var dup = roomTypes.some(function (rt) {
+          return rt.id !== editingId && rt.name.trim().toLowerCase() === name.toLowerCase();
+        });
+        if (dup) errors.name = 'This name is already in use by another room type (including inactive ones). Choose a different name.';
+      }
+
+      if (!capacityRaw) {
+        errors.capacity = 'Enter the maximum number of guests.';
+      } else if (!/^\d+$/.test(capacityRaw) || parseInt(capacityRaw, 10) <= 0) {
+        errors.capacity = 'Capacity must be a whole number greater than zero.';
+      }
+
+      if (currentAmenities.length === 0) {
+        errors.amenities = 'Add at least one amenity.';
+      }
+
+      if (!baseRateRaw) {
+        errors.baseRate = 'Enter a base rate.';
+      } else if (!/^\d+(\.\d{1,2})?$/.test(baseRateRaw) || parseFloat(baseRateRaw) <= 0) {
+        errors.baseRate = 'Base rate must be a number greater than 0, e.g. 149.00.';
+      }
+
+      if (errors.name) { showFieldError('rt-name-error', rtNameInput, errors.name); }
+      if (errors.capacity) { showFieldError('rt-capacity-error', rtCapacityInput, errors.capacity); }
+      if (errors.amenities) { showFieldError('rt-amenities-error', null, errors.amenities); }
+      if (errors.baseRate) { showFieldError('rt-base-rate-error', rtBaseRateInput, errors.baseRate); }
+
+      return {
+        valid: Object.keys(errors).length === 0,
+        name: name,
+        capacity: parseInt(capacityRaw, 10),
+        baseRate: parseFloat(baseRateRaw)
+      };
+    }
+    function showFieldError(errorId, input, msg) {
+      var el = document.getElementById(errorId);
+      el.textContent = '⚠ ' + msg;
+      el.hidden = false;
+      if (input) input.classList.add('input-error');
+    }
+
+    rtForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!requireStaff(editingId ? 'edit' : 'create')) return;
+      var result = validateForm();
+      if (!result.valid) return;
+
+      rtSaveBtn.disabled = true;
+      var originalLabel = rtSaveBtn.textContent;
+      rtSaveBtn.textContent = 'Saving…';
+      await wait(300);
+
+      var newId;
+      if (editingId) {
+        var rt = findRoomType(editingId);
+        rt.name = result.name;
+        rt.capacity = result.capacity;
+        rt.amenities = currentAmenities.slice();
+        rt.baseRate = result.baseRate;
+        rt.updatedAt = new Date().toISOString();
+        newId = editingId;
+        showRtToast('“' + result.name + '” updated. Changes apply immediately.');
+      } else {
+        newId = 'RT-' + (nextIdSeq++);
+        roomTypes.unshift({
+          id: newId,
+          name: result.name,
+          capacity: result.capacity,
+          amenities: currentAmenities.slice(),
+          baseRate: result.baseRate,
+          status: 'active',
+          updatedAt: new Date().toISOString()
+        });
+        showRtToast('“' + result.name + '” created. It’s active and open for bookings.');
+      }
+
+      rtSaveBtn.disabled = false;
+      rtSaveBtn.textContent = originalLabel;
+      closeModal(rtOverlay, rtModal);
+      renderCatalogue(newId);
+      renderBookingScreen();
+    });
+
+    /* ---------- Deactivate / reactivate modal (AC4, AC5, AC6) ---------- */
+    var statusOverlay = document.getElementById('status-overlay');
+    var statusModal = document.getElementById('status-modal');
+    var statusModalTitle = document.getElementById('status-modal-title');
+    var statusConsequenceCopy = document.getElementById('status-consequence-copy');
+    var statusConfirmBtn = document.getElementById('status-confirm-btn');
+
+    function onStatusClick(id, toStatus) {
+      var actionLabel = toStatus === 'inactive' ? 'deactivate' : 'reactivate';
+      if (!requireStaff(actionLabel)) return;
+      var rt = findRoomType(id);
+      if (!rt) return;
+      statusAction = { id: id, toStatus: toStatus };
+      if (toStatus === 'inactive') {
+        statusModalTitle.textContent = 'Deactivate room type?';
+        statusConsequenceCopy.textContent = '“' + rt.name + '” will no longer appear as an option for new bookings. It stays visible here with an Inactive indicator, and any existing future bookings that reference it are unaffected.';
+        statusConfirmBtn.textContent = 'Deactivate room type';
+      } else {
+        statusModalTitle.textContent = 'Reactivate room type?';
+        statusConsequenceCopy.textContent = '“' + rt.name + '” will become available for new bookings again, alongside every other active room type.';
+        statusConfirmBtn.textContent = 'Reactivate room type';
+      }
+      openModal(statusOverlay, statusModal);
+    }
+    document.getElementById('status-close-btn').onclick = function () { closeModal(statusOverlay, statusModal); };
+    document.getElementById('status-cancel-btn').onclick = function () { closeModal(statusOverlay, statusModal); };
+    statusConfirmBtn.onclick = async function () {
+      if (!statusAction) return;
+      var rt = findRoomType(statusAction.id);
+      var originalLabel = statusConfirmBtn.textContent;
+      statusConfirmBtn.disabled = true;
+      statusConfirmBtn.textContent = statusAction.toStatus === 'inactive' ? 'Deactivating…' : 'Reactivating…';
+      await wait(260);
+      rt.status = statusAction.toStatus;
+      rt.updatedAt = new Date().toISOString();
+      statusConfirmBtn.disabled = false;
+      statusConfirmBtn.textContent = originalLabel;
+      closeModal(statusOverlay, statusModal);
+      var msg = statusAction.toStatus === 'inactive'
+        ? '“' + rt.name + '” deactivated. It no longer appears as an option for new bookings.'
+        : '“' + rt.name + '” reactivated. It’s available for new bookings again.';
+      showRtToast(msg);
+      renderCatalogue(rt.id);
+      renderBookingScreen();
+      statusAction = null;
+    };
+
+    /* ---------- Modal helpers ---------- */
+    function openModal(overlay, modal) { overlay.hidden = false; modal.hidden = false; }
+    function closeModal(overlay, modal) { overlay.hidden = true; modal.hidden = true; }
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!rtModal.hidden) closeModal(rtOverlay, rtModal);
+      if (!statusModal.hidden) closeModal(statusOverlay, statusModal);
+    });
+
+    /* ---------- Toasts ---------- */
+    function showRtToast(msg) {
+      var el = document.getElementById('rt-toast');
+      document.getElementById('rt-toast-message').textContent = msg;
+      el.hidden = false;
+      clearTimeout(rtToastTimer);
+      rtToastTimer = setTimeout(function () { el.hidden = true; }, 3400);
+    }
+    function showBookingToast(msg) {
+      var el = document.getElementById('booking-toast');
+      document.getElementById('booking-toast-message').textContent = msg;
+      el.hidden = false;
+      clearTimeout(bookingToastTimer);
+      bookingToastTimer = setTimeout(function () { el.hidden = true; }, 3400);
+    }
+
+    /* ---------- Bookings screen (AC2, AC4, AC6) ---------- */
+    var bookingRoomTypeSelect = document.getElementById('booking-room-type');
+    var ratePreview = document.getElementById('rate-preview');
+
+    function renderBookingScreen() {
+      var activeTypes = roomTypes.filter(function (rt) { return rt.status === 'active'; });
+      var currentVal = bookingRoomTypeSelect.value;
+      bookingRoomTypeSelect.innerHTML = activeTypes.map(function (rt) {
+        return '<option value="' + rt.id + '">' + escapeHtml(rt.name) + ' — ' + fmtRate(rt.baseRate) + '</option>';
+      }).join('');
+      if (activeTypes.some(function (rt) { return rt.id === currentVal; })) {
+        bookingRoomTypeSelect.value = currentVal;
+      }
+      renderRatePreview();
+
+      var occTbody = document.getElementById('occupancy-tbody');
+      occTbody.innerHTML = occupancy.map(function (b) {
+        var rt = findRoomType(b.roomTypeId);
+        var name = rt ? rt.name : b.roomTypeId;
+        var unaffectedTag = (rt && rt.status === 'inactive')
+          ? '<br /><span class="unaffected-tag">Deactivated — booking unaffected</span>'
+          : '';
+        return '<tr>' +
+          '<td>' + b.id + '</td>' +
+          '<td>' + escapeHtml(b.guest) + '</td>' +
+          '<td>' + escapeHtml(b.dates) + '</td>' +
+          '<td>' + escapeHtml(name) + unaffectedTag + '</td>' +
+          '<td>' + fmtRate(b.rateAtBooking) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function renderRatePreview() {
+      var rt = findRoomType(bookingRoomTypeSelect.value);
+      if (!rt) { ratePreview.hidden = true; return; }
+      ratePreview.hidden = false;
+      document.getElementById('rate-preview-name').textContent = rt.name;
+      document.getElementById('rate-preview-capacity').textContent = 'Sleeps up to ' + rt.capacity + ' guests';
+      document.getElementById('rate-preview-amenities').innerHTML = amenitiesHtml(rt.amenities);
+      document.getElementById('rate-preview-rate').textContent = fmtRate(rt.baseRate);
+    }
+    bookingRoomTypeSelect.onchange = renderRatePreview;
+
+    document.getElementById('check-availability-btn').onclick = async function () {
+      var rt = findRoomType(bookingRoomTypeSelect.value);
+      if (!rt) return;
+      var btn = document.getElementById('check-availability-btn');
+      var originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Checking…';
+      await wait(240);
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      showBookingToast('“' + rt.name + '” is available for booking on your selected dates.');
+    };
+
+    /* ---------- Nav links between screens ---------- */
+    document.getElementById('nav-to-bookings').onclick = function (e) { e.preventDefault(); show(1); };
+    document.getElementById('nav-to-catalogue').onclick = function (e) { e.preventDefault(); show(0); };
+
+    /* ---------- Init ---------- */
+    initialLoad();
+    renderBookingScreen();
+  </script>
+
+  <script>
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
