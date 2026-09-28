@@ -120,4 +120,14 @@ describe('Duplicate Guest Detection & Linking', () => {
     expect(document.getElementById('step-duplicates').hidden).toBe(true);
     expect(document.querySelector('#profiles-tbody').textContent).toContain('Priya Natarajan');
   });
+
+  test('page load: a failed initial /hires fetch shows an error toast instead of leaving the page silently uninitialized', async () => {
+    const { bootHiresListPage } = require('../public/js/hires-list');
+    const failingFetch = jest.fn(() => Promise.reject(new Error('network error')));
+
+    await bootHiresListPage(document, failingFetch);
+
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toBe('Failed to load profiles. Please refresh the page.');
+  });
 });

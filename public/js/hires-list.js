@@ -2,8 +2,18 @@ const { escapeHtml } = require('./utils');
 
 const FIELD_IDS = ['name', 'email', 'phone', 'department', 'role', 'start-date'];
 
-function normalizePhone(phone) {
-  return String(phone || '').replace(/\D/g, '');
+function createToastController(doc) {
+  const toast = doc.getElementById('toast');
+  const toastMessage = doc.getElementById('toast-message');
+  let toastTimer = null;
+  return {
+    show(message) {
+      toastMessage.textContent = message;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
+    },
+  };
 }
 
 function reasonLabel(reasons) {
@@ -27,7 +37,6 @@ function bannerCopy(matches) {
 function initHiresListApp(doc, initialHires, api) {
   let profiles = initialHires.map((p) => ({ ...p }));
   let pendingCandidate = null;
-  let toastTimer = null;
 
   const pageList = doc.getElementById('page-list');
   const screenConfirm = doc.getElementById('screen-confirm');
@@ -37,13 +46,10 @@ function initHiresListApp(doc, initialHires, api) {
   const stepDuplicates = doc.getElementById('step-duplicates');
   const form = doc.getElementById('create-form');
   const submitBtn = doc.getElementById('create-submit-btn');
-  const toast = doc.getElementById('toast');
+  const toastController = createToastController(doc);
 
   function showToast(message) {
-    doc.getElementById('toast-message').textContent = message;
-    toast.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
+    toastController.show(message);
   }
 
   function statusLabel(p) {
@@ -293,12 +299,19 @@ function createDefaultApi() {
   };
 }
 
-module.exports = { initHiresListApp };
+function bootHiresListPage(doc, fetchFn) {
+  return fetchFn('/hires')
+    .then((res) => res.json())
+    .then((hires) => initHiresListApp(doc, hires, createDefaultApi()))
+    .catch(() => {
+      createToastController(doc).show('Failed to load profiles. Please refresh the page.');
+    });
+}
+
+module.exports = { initHiresListApp, bootHiresListPage };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/hires')
-      .then((res) => res.json())
-      .then((hires) => initHiresListApp(document, hires, createDefaultApi()));
+    bootHiresListPage(document, fetch);
   });
 }
