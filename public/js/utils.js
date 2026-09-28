@@ -9,4 +9,10 @@ function formatDateDisplay(iso) {
   return `${m}/${d}/${y}`;
 }
 
-module.exports = { escapeHtml, formatDateDisplay };
+if (typeof module !== 'undefined') {
+  module.exports = { escapeHtml, formatDateDisplay };
+}
+
+if (typeof window !== 'undefined') {
+  window.PrototypeUtils = { escapeHtml, formatDateDisplay };
+}

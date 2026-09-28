@@ -17,6 +17,13 @@ app.use('/hires', hiresRouter);
 app.use('/guests', guestsRouter);
 
 app.use((err, req, res, next) => {
+  // Query params are omitted: routes like /guests/search accept PII (email/phone) as query values.
+  console.error(JSON.stringify({
+    level: 'error',
+    message: err.message,
+    method: req.method,
+    path: req.path,
+  }));
   res.status(500).json({ error: 'internal server error' });
 });
 

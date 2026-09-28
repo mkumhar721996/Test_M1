@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../design-system/tokens.css" />
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/guest-search.css" />
+<script src="./js/utils.js" defer></script>
 <script src="./js/guest-search.js" defer></script>
 </head>
 <body class="u-surface">
@@ -29,13 +30,13 @@
       <div class="search-bar">
         <div class="search-field">
           <label class="label" for="search-query">Search by name, email, or phone</label>
-          <input class="input" type="text" id="search-query" placeholder="e.g. Amara, amara.chen@example.com, (206) 555-0110" autocomplete="off" />
+          <input class="input" type="text" id="search-query" placeholder="e.g. Amara, amara.chen@example.com, (206) 555-0110" autocomplete="off" aria-describedby="empty-query-error" />
         </div>
         <div class="search-actions-field">
           <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
         </div>
       </div>
-      <p class="field-error" id="empty-query-error" hidden>
+      <p class="field-error" id="empty-query-error" aria-live="polite" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
         Enter a name, email, or phone number to search.
       </p>

@@ -1,4 +1,4 @@
-const { escapeHtml } = require('./utils');
+const { escapeHtml } = typeof require !== 'undefined' ? require('./utils') : window.PrototypeUtils;
 
 function statusChipMarkup(status) {
   if (status === 'active') {
@@ -29,7 +29,7 @@ function initGuestSearchApp(doc, api) {
 
   function renderError() {
     resultsPanel.innerHTML = `
-      <div class="state-panel error-panel">
+      <div class="state-panel error-panel" role="alert">
         <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 4.3L2.6 18a1.5 1.5 0 0 0 1.3 2.2h16.2a1.5 1.5 0 0 0 1.3-2.2L13.7 4.3a1.5 1.5 0 0 0-2.6 0z"></path></svg>
         <p class="state-title">Search is unavailable</p>
         <p class="state-body">We couldn't reach the guest directory. No results can be shown right now — please try your search again in a moment.</p>
@@ -69,6 +69,19 @@ function initGuestSearchApp(doc, api) {
     resultCount.textContent = `${results.length}${results.length === 1 ? ' profile found' : ' profiles found'} — responded in ${elapsedMs}ms`;
   }
 
+  function reportClientError(message) {
+    if (typeof fetch !== 'function') return;
+    try {
+      fetch('/guests/search/client-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      }).catch(() => {});
+    } catch (_) {
+      // best-effort telemetry; never block the UI
+    }
+  }
+
   function performSearch(rawQuery) {
     emptyError.hidden = true;
     const query = rawQuery.trim();
@@ -88,8 +101,9 @@ function initGuestSearchApp(doc, api) {
       searchBtn.textContent = 'Search';
       if (results.length === 0) renderNoResults(query);
       else renderResults(results, elapsed);
-    }).catch(() => {
+    }).catch((err) => {
       if (requestId !== currentRequestId) return;
+      reportClientError(err && err.message);
       searchBtn.disabled = false;
       searchBtn.textContent = 'Search';
       renderError();
