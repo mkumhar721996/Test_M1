@@ -17,6 +17,11 @@ function digitsOnly(str) {
   return str.replace(/[^\d]/g, '');
 }
 
+function normalizePhoneDigits(str) {
+  const digits = digitsOnly(str);
+  return digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits;
+}
+
 function isEmailQuery(q) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q);
 }
@@ -35,8 +40,8 @@ function searchGuests({ query, includeInactive = false } = {}) {
   if (isEmailQuery(trimmed)) {
     matches = all.filter((g) => g.email.toLowerCase() === trimmed.toLowerCase());
   } else if (isPhoneQuery(trimmed)) {
-    const qDigits = digitsOnly(trimmed);
-    matches = all.filter((g) => digitsOnly(g.phone) === qDigits);
+    const qDigits = normalizePhoneDigits(trimmed);
+    matches = all.filter((g) => normalizePhoneDigits(g.phone) === qDigits);
   } else {
     const needle = trimmed.toLowerCase();
     matches = all.filter((g) => g.name.toLowerCase().includes(needle));

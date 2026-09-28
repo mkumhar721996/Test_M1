@@ -1,8 +1,4 @@
-function escapeHtml(doc, str) {
-  const div = doc.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
-}
+const { escapeHtml } = require('./utils');
 
 function statusChipMarkup(status) {
   if (status === 'active') {
@@ -122,7 +118,9 @@ function createDefaultApi() {
   };
 }
 
-module.exports = { initGuestSearchApp };
+if (typeof module !== 'undefined') {
+  module.exports = { initGuestSearchApp };
+}
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
