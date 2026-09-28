@@ -95,6 +95,38 @@ describe('Guest Search', () => {
     expect(api.search).not.toHaveBeenCalled();
   });
 
+  test('security: a malicious query string is HTML-escaped in the "no results" message, never injected as markup', async () => {
+    const malicious = '<img src=x onerror=alert(1)>';
+    const api = { search: jest.fn().mockResolvedValue([]) };
+    const { initGuestSearchApp } = require('../public/js/guest-search');
+    initGuestSearchApp(document, api);
+
+    document.getElementById('search-query').value = malicious;
+    document.getElementById('search-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.querySelector('.state-body').querySelector('img')).toBeNull();
+    expect(document.querySelector('.state-body').textContent).toContain(malicious);
+  });
+
+  test('security: a malicious guest name/email/phone from the api is HTML-escaped in the results table', async () => {
+    const malicious = '<img src=x onerror=alert(1)>';
+    const api = { search: jest.fn().mockResolvedValue([
+      { id: 'guest_x', name: malicious, email: malicious, phone: malicious, status: 'active' },
+    ]) };
+    const { initGuestSearchApp } = require('../public/js/guest-search');
+    initGuestSearchApp(document, api);
+
+    document.getElementById('search-query').value = 'anything';
+    document.getElementById('search-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.querySelectorAll('.guest-table img')).toHaveLength(0);
+    expect(document.querySelector('.guest-name').textContent).toBe(malicious);
+  });
+
   test('AC9: each result row shows full name, email, phone, and an active/inactive status chip', async () => {
     const api = { search: jest.fn().mockResolvedValue([
       { id: 'guest_10', name: 'Amara Osei', email: 'amara.osei@example.com', phone: '(404) 555-0151', status: 'inactive' },
