@@ -1,5 +1,5 @@
 const express = require('express');
-const { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, findDuplicateHires } = require('./store');
 
 const router = express.Router();
 
@@ -24,6 +24,16 @@ router.post('/', async (req, res, next) => {
   try {
     const hire = await createHire(req.body);
     res.status(201).json(hire);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/duplicates', (req, res, next) => {
+  try {
+    const { email = '', phone = '' } = req.query;
+    const matches = findDuplicateHires({ email, phone }, listHires());
+    res.status(200).json(matches);
   } catch (err) {
     next(err);
   }

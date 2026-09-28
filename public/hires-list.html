@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hire Profiles — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hires-list.css" />
+<script src="./js/hires-list.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page" id="page-list">
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Hire profiles</h1>
+        <p>Every candidate and new hire on file. Add a profile below — we'll check for existing matches before it's saved.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="add-hire-btn">+ Add hire profile</button>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="profiles-table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Department</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="profiles-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared confirmation screen (Linked / Proceeded anyway / No duplicate found) -->
+  <div class="page" id="screen-confirm" hidden>
+    <div class="page-header"><h1 id="confirm-page-title"></h1></div>
+    <div class="confirm-banner">
+      <span id="confirm-icon" aria-hidden="true"></span>
+      <div>
+        <strong id="confirm-title"></strong>
+        <p id="confirm-subtitle" class="u-text-sm u-text-muted"></p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title" id="confirm-card-title" style="margin-bottom: var(--space-3);"></h3>
+      <div class="summary-list" id="confirm-summary"><!-- rendered by JS --></div>
+    </div>
+    <div style="margin-top: var(--space-4);">
+      <button type="button" class="btn btn-primary" id="confirm-back-btn">Back to profiles list</button>
+    </div>
+  </div>
+
+  <!-- Add hire profile modal -->
+  <div class="modal-overlay" id="create-overlay" hidden></div>
+  <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+    <div class="modal-panel modal-panel-wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-modal-title">Add hire profile</h2>
+          <p>Enter the candidate's details. We'll check for existing matches before saving.</p>
+        </div>
+        <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+
+      <!-- Step: details (AC6, AC7 when no match; AC1 triggers the next step) -->
+      <div id="step-details">
+        <form id="create-form" novalidate>
+          <div class="field">
+            <label class="label" for="f-name">Full name</label>
+            <input class="input" id="f-name" name="name" type="text" aria-describedby="err-name" />
+            <p class="field-error" id="err-name" role="alert" hidden>⚠ Full name is required.</p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="f-email">Email</label>
+              <input class="input" id="f-email" name="email" type="email" aria-describedby="err-email" />
+              <p class="field-error" id="err-email" role="alert" hidden>⚠ Email is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="f-phone">Phone</label>
+              <input class="input" id="f-phone" name="phone" type="tel" aria-describedby="err-phone" />
+              <p class="field-error" id="err-phone" role="alert" hidden>⚠ Phone is required.</p>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="f-department">Department</label>
+              <select class="input" id="f-department" name="department" aria-describedby="err-department">
+                <option value="">Select a department</option>
+                <option>Engineering</option>
+                <option>Design</option>
+                <option>Sales</option>
+                <option>Marketing</option>
+                <option>Operations</option>
+              </select>
+              <p class="field-error" id="err-department" role="alert" hidden>⚠ Department is required.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="f-role">Role</label>
+              <input class="input" id="f-role" name="role" type="text" aria-describedby="err-role" />
+              <p class="field-error" id="err-role" role="alert" hidden>⚠ Role is required.</p>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="f-start-date">Start date</label>
+            <input class="input" id="f-start-date" name="startDate" type="date" aria-describedby="err-start-date" />
+            <p class="field-error" id="err-start-date" role="alert" hidden>⚠ Start date is required.</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="create-submit-btn">Save profile</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step: possible duplicates found (AC1; Link satisfies AC2/AC3, Proceed satisfies AC4/AC5) -->
+      <div id="step-duplicates" hidden>
+        <div class="duplicate-banner" role="alert">
+          <span aria-hidden="true">⚠</span>
+          <div>
+            <strong id="dup-banner-title">Possible duplicate found</strong>
+            <p id="dup-banner-copy" class="u-text-sm u-text-muted">The email or phone number you entered matches an existing profile.</p>
+          </div>
+        </div>
+
+        <div id="dup-cards"><!-- match cards rendered by JS --></div>
+
+        <div class="dup-proceed-row">
+          <button type="button" class="btn btn-secondary" id="dup-edit-btn">← Edit details</button>
+          <button type="button" class="btn btn-secondary" id="dup-proceed-btn">Proceed anyway — create new profile</button>
+        </div>
+
+        <div class="dup-confirm-inline" id="dup-proceed-confirm" hidden>
+          <p class="u-text-sm">Create a separate profile for <strong id="dup-confirm-name"></strong> even though it may match the profile(s) above?</p>
+          <div class="dup-confirm-actions">
+            <button type="button" class="btn btn-secondary" id="dup-proceed-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="dup-proceed-confirm-btn">Yes, create new profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>

@@ -104,4 +104,21 @@ async function reactivateHire(id) {
   return hire;
 }
 
-module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire };
+function normalizePhone(phone) {
+  return String(phone || '').replace(/\D/g, '');
+}
+
+function findDuplicateHires(candidate, list) {
+  const email = String(candidate.email || '').trim().toLowerCase();
+  const phone = normalizePhone(candidate.phone);
+  const matches = [];
+  list.forEach((hire) => {
+    const reasons = [];
+    if (email && hire.email && hire.email.trim().toLowerCase() === email) reasons.push('email');
+    if (phone && normalizePhone(hire.phone) === phone) reasons.push('phone');
+    if (reasons.length) matches.push({ profile: hire, reasons });
+  });
+  return matches;
+}
+
+module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, findDuplicateHires };
