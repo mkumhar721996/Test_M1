@@ -2,26 +2,26 @@ const request = require('supertest');
 const app = require('../src/server');
 
 test('AC1: creating a guest with name and a contact detail assigns a unique id', async () => {
-  const res = await request(app).post('/guests').send({ name: 'Ana Cruz', email: 'ana@example.com', actor: 'Priya Nair' });
+  const res = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Ana Cruz', email: 'ana@example.com', actor: 'Priya Nair' });
   expect(res.status).toBe(201);
   expect(typeof res.body.id).toBe('string');
   expect(res.body.id.length).toBeGreaterThan(0);
 });
 
 test('AC1 (validation): a guest with no email or phone is rejected', async () => {
-  const res = await request(app).post('/guests').send({ name: 'No Contact' });
+  const res = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'No Contact' });
   expect(res.status).toBe(400);
 });
 
 test('AC2: a newly created guest profile is immediately retrievable by id', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Ben Ortiz', phone: '555-1', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Ben Ortiz', phone: '555-0001', actor: 'Priya Nair' });
   const getRes = await request(app).get(`/guests/${createRes.body.id}`);
   expect(getRes.status).toBe(200);
   expect(getRes.body.name).toBe('Ben Ortiz');
 });
 
 test('AC3: GET /guests/:id returns the full profile', async () => {
-  const createRes = await request(app).post('/guests').send({
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({
     name: 'Carla Nunez', email: 'c@x.com', roomType: 'Ocean view', dietary: 'Vegan', communication: 'Email', actor: 'Priya Nair',
   });
   const res = await request(app).get(`/guests/${createRes.body.id}`);
@@ -33,7 +33,7 @@ test('AC3: GET /guests/:id returns the full profile', async () => {
 });
 
 test('AC4: PATCH updates only the supplied field and leaves others unchanged', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Dana Price', email: 'd@x.com', phone: '555-2', roomType: 'High floor', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Dana Price', email: 'd@x.com', phone: '555-0002', roomType: 'High floor', actor: 'Priya Nair' });
   const { id } = createRes.body;
   const patchRes = await request(app).patch(`/guests/${id}`).send({ phone: '555-9999', actor: 'Priya Nair' });
   expect(patchRes.status).toBe(200);
@@ -43,14 +43,14 @@ test('AC4: PATCH updates only the supplied field and leaves others unchanged', a
 });
 
 test('AC5: deactivating an active profile changes status to deactivated', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Eli Frank', email: 'e@x.com', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Eli Frank', email: 'e@x.com', actor: 'Priya Nair' });
   const res = await request(app).post(`/guests/${createRes.body.id}/deactivate`).send({ actor: 'Priya Nair' });
   expect(res.status).toBe(200);
   expect(res.body.status).toBe('deactivated');
 });
 
 test('AC6: booking history remains retrievable after soft-delete', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Faye Kim', email: 'f@x.com', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Faye Kim', email: 'f@x.com', actor: 'Priya Nair' });
   const { id } = createRes.body;
   await request(app).post(`/guests/${id}/deactivate`).send({ actor: 'Priya Nair' });
   const res = await request(app).get(`/guests/${id}`);
@@ -59,7 +59,7 @@ test('AC6: booking history remains retrievable after soft-delete', async () => {
 });
 
 test('AC7: reactivating returns status to active', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Gus Ito', email: 'g@x.com', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Gus Ito', email: 'g@x.com', actor: 'Priya Nair' });
   const { id } = createRes.body;
   await request(app).post(`/guests/${id}/deactivate`).send({ actor: 'Priya Nair' });
   const res = await request(app).post(`/guests/${id}/reactivate`).send({ actor: 'Priya Nair' });
@@ -68,11 +68,11 @@ test('AC7: reactivating returns status to active', async () => {
 });
 
 test('AC8: a reactivated profile can be updated and deactivated again', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Hana Seo', email: 'h@x.com', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Hana Seo', email: 'h@x.com', actor: 'Priya Nair' });
   const { id } = createRes.body;
   await request(app).post(`/guests/${id}/deactivate`).send({ actor: 'Priya Nair' });
   await request(app).post(`/guests/${id}/reactivate`).send({ actor: 'Priya Nair' });
-  const patchRes = await request(app).patch(`/guests/${id}`).send({ phone: '555-3', actor: 'Priya Nair' });
+  const patchRes = await request(app).patch(`/guests/${id}`).send({ phone: '555-0003', actor: 'Priya Nair' });
   expect(patchRes.status).toBe(200);
   const deactivateAgainRes = await request(app).post(`/guests/${id}/deactivate`).send({ actor: 'Priya Nair' });
   expect(deactivateAgainRes.status).toBe(200);
@@ -80,9 +80,9 @@ test('AC8: a reactivated profile can be updated and deactivated again', async ()
 });
 
 test('AC9: every mutating operation appends an audit record with actor and timestamp', async () => {
-  const createRes = await request(app).post('/guests').send({ name: 'Ivy Leon', email: 'i@x.com', actor: 'Priya Nair' });
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Ivy Leon', email: 'i@x.com', actor: 'Priya Nair' });
   const { id } = createRes.body;
-  await request(app).patch(`/guests/${id}`).send({ phone: '555-4', actor: 'Priya Nair' });
+  await request(app).patch(`/guests/${id}`).send({ phone: '555-0004', actor: 'Priya Nair' });
   await request(app).post(`/guests/${id}/deactivate`).send({ actor: 'Priya Nair' });
   await request(app).post(`/guests/${id}/reactivate`).send({ actor: 'Priya Nair' });
   const res = await request(app).get(`/guests/${id}`);

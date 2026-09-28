@@ -12,10 +12,10 @@ test('AC9: GET /guests/permission reflects canCreateGuest for the given role', a
   expect(denied.body).toEqual({ allowed: false });
 });
 
-test('AC9: GET /guests/permission treats a missing role header as allowed (backward compatible)', async () => {
+test('AC9: GET /guests/permission fails closed when the role header is missing', async () => {
   const res = await request(app).get('/guests/permission');
   expect(res.status).toBe(200);
-  expect(res.body).toEqual({ allowed: true });
+  expect(res.body).toEqual({ allowed: false });
 });
 
 test('AC2: GET /guests/match finds a seeded profile by email for an authorized role', async () => {
@@ -50,12 +50,15 @@ test('AC9/AC10/AC11: POST /guests is denied for a role without permission, same 
   expect(guestsStore.listGuests().length).toBe(before);
 });
 
-test('POST /guests still allows a caller with no x-staff-role header (STORY-100 backward compatibility)', async () => {
+test('AC9: POST /guests fails closed for a caller with no x-staff-role header', async () => {
+  const before = guestsStore.listGuests().length;
   const res = await request(app)
     .post('/guests')
     .send({ name: 'Legacy Caller', email: 'legacy@example.com' });
 
-  expect(res.status).toBe(201);
+  expect(res.status).toBe(403);
+  expect(res.body).toEqual({ error: 'forbidden' });
+  expect(guestsStore.listGuests().length).toBe(before);
 });
 
 test('AC5/AC6: POST /guests returns a structured validation error and persists nothing', async () => {

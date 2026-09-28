@@ -24,7 +24,7 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-test('AC1: submitting the form creates a guest without a full-page navigation', async () => {
+test('submitting the form creates a guest without a full-page navigation', async () => {
   const api = makeApi();
   const { container, hook, onLinked } = mount(api);
   await hook.open();
@@ -45,7 +45,7 @@ test('AC1: submitting the form creates a guest without a full-page navigation', 
   expect(document.body.contains(container)).toBe(true);
 });
 
-test('AC2: typing a matching email triggers duplicate detection', async () => {
+test('typing a matching email triggers duplicate detection', async () => {
   jest.useFakeTimers();
   const match = { id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com' };
   const api = makeApi({ checkMatch: jest.fn().mockResolvedValue(match) });
@@ -64,7 +64,7 @@ test('AC2: typing a matching email triggers duplicate detection', async () => {
   expect(container.querySelector('#dup-match').hidden).toBe(false);
 });
 
-test('AC3: selecting the matched profile links it without creating a new one', async () => {
+test('selecting the matched profile links it without creating a new one', async () => {
   jest.useFakeTimers();
   const match = { id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com' };
   const api = makeApi({ checkMatch: jest.fn().mockResolvedValue(match) });
@@ -84,7 +84,7 @@ test('AC3: selecting the matched profile links it without creating a new one', a
   expect(api.createGuest).not.toHaveBeenCalled();
 });
 
-test('AC4: a successful create returns a stable identifier to the embedding context', async () => {
+test('a successful create returns a stable identifier to the embedding context', async () => {
   const api = makeApi({ createGuest: jest.fn().mockResolvedValue({ ok: true, guest: { id: 'gst_stable', name: 'Alex Rivera' } }) });
   const { container, hook, onLinked } = mount(api);
   await hook.open();
@@ -99,7 +99,7 @@ test('AC4: a successful create returns a stable identifier to the embedding cont
   expect(onLinked).toHaveBeenCalledWith({ guestId: 'gst_stable', displayName: 'Alex Rivera', source: 'created' });
 });
 
-test('AC5/AC6: an invalid email format fails client-side validation and never calls the API', async () => {
+test('an invalid email format fails client-side validation and never calls the API', async () => {
   const api = makeApi();
   const { container, hook } = mount(api);
   await hook.open();
@@ -112,7 +112,7 @@ test('AC5/AC6: an invalid email format fails client-side validation and never ca
   expect(api.createGuest).not.toHaveBeenCalled();
 });
 
-test('AC5/AC6: a server-side structured validation error renders per-field messages (defense in depth)', async () => {
+test('a server-side structured validation error renders per-field messages (defense in depth)', async () => {
   const api = makeApi({
     createGuest: jest.fn().mockResolvedValue({ ok: false, kind: 'validation', fields: { email: 'That email is already in use.' } }),
   });
@@ -132,7 +132,7 @@ test('AC5/AC6: a server-side structured validation error renders per-field messa
   expect(errorEmail.textContent).toContain('already in use');
 });
 
-test('AC7/AC8: a service error leaves typed values untouched and never links a guest', async () => {
+test('a service error leaves typed values untouched and never links a guest', async () => {
   const api = makeApi({ createGuest: jest.fn().mockResolvedValue({ ok: false, kind: 'service_error' }) });
   const { container, hook, onLinked, onEvent } = mount(api);
   await hook.open();
@@ -150,7 +150,7 @@ test('AC7/AC8: a service error leaves typed values untouched and never links a g
   expect(onEvent).toHaveBeenCalledWith('guest.service_error', { reason: 'network_error', persisted: false });
 });
 
-test('AC9/AC10/AC11: opening with a denied role shows the permission-denied notice and never renders the form or calls create', async () => {
+test('opening with a denied role shows the permission-denied notice and never renders the form or calls create', async () => {
   const api = makeApi({ checkPermission: jest.fn().mockResolvedValue({ allowed: false }) });
   const { container, hook, onLinked, onEvent } = mount(api);
 
@@ -195,6 +195,26 @@ test('a rejected checkMatch call during duplicate detection does not throw and h
 
   expect(container.querySelector('#dup-status').hidden).toBe(true);
   expect(container.querySelector('#dup-match').hidden).toBe(true);
+});
+
+test('a rejected createGuest call surfaces the service-error notice and re-enables the submit button', async () => {
+  const api = makeApi({ createGuest: jest.fn().mockRejectedValue(new Error('network down')) });
+  const { container, hook, onLinked, onEvent } = mount(api);
+  await hook.open();
+
+  container.querySelector('#field-name').value = 'Alex Rivera';
+  container.querySelector('#field-email').value = 'alex@example.com';
+  container.querySelector('#hook-form').dispatchEvent(new Event('submit', { cancelable: true }));
+
+  await Promise.resolve();
+  await Promise.resolve();
+
+  const submitBtn = container.querySelector('#hook-submit-btn');
+  expect(submitBtn.disabled).toBe(false);
+  expect(submitBtn.textContent).toBe('Create guest profile');
+  expect(container.querySelector('#service-error-notice').hidden).toBe(false);
+  expect(onLinked).not.toHaveBeenCalled();
+  expect(onEvent).toHaveBeenCalledWith('guest.service_error', { reason: 'network_error', persisted: false });
 });
 
 describe('createDefaultApi — network failures never reject, they resolve to safe defaults', () => {

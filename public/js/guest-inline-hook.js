@@ -250,6 +250,11 @@ function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) 
       hookSubmitBtn.textContent = 'Create guest profile';
       serviceErrorNotice.hidden = false;
       emit('guest.service_error', { reason: 'network_error', persisted: false });
+    }).catch(() => {
+      hookSubmitBtn.disabled = false;
+      hookSubmitBtn.textContent = 'Create guest profile';
+      serviceErrorNotice.hidden = false;
+      emit('guest.service_error', { reason: 'network_error', persisted: false });
     });
   });
 

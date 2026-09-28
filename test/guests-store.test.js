@@ -19,6 +19,7 @@ test('AC5/AC6: createGuest throws a structured GuestValidationError with per-fie
 });
 
 test('AC5/AC6: createGuest requires at least one of email/phone, reported as structured fields', () => {
+  expect.assertions(2);
   try {
     createGuest({ name: 'A' });
   } catch (err) {
@@ -31,6 +32,18 @@ test('AC2: findGuestMatch finds a seeded guest by normalized email or phone', ()
   expect(findGuestMatch({ email: 'JORDAN.LEE@example.com' })).toMatchObject({ id: 'gst_1005', name: 'Jordan Lee' });
   expect(findGuestMatch({ phone: '555-123-4567' })).toMatchObject({ id: 'gst_1005' });
   expect(findGuestMatch({ email: 'nobody@example.com', phone: '000' })).toBeUndefined();
+});
+
+test('findGuestMatch coerces a repeated query param (parsed as an array) instead of throwing', () => {
+  expect(() => findGuestMatch({ email: ['jordan.lee@example.com', 'other@example.com'] })).not.toThrow();
+  expect(findGuestMatch({ email: ['jordan.lee@example.com', 'other@example.com'] })).toMatchObject({ id: 'gst_1005' });
+});
+
+test('createGuest rejects a malformed email or phone with structured field errors and creates nothing', () => {
+  const before = listGuests().length;
+  expect(() => createGuest({ name: 'Alex Rivera', email: 'not-an-email' })).toThrow(GuestValidationError);
+  expect(() => createGuest({ name: 'Alex Rivera', phone: '123' })).toThrow(GuestValidationError);
+  expect(listGuests().length).toBe(before);
 });
 
 test('AC9: canCreateGuest allows front_desk and denies housekeeping and unknown roles', () => {

@@ -19,20 +19,6 @@ class GuestValidationError extends Error {
   }
 }
 
-function assertValid(name, email, phone) {
-  const fields = {};
-  if (!name) {
-    fields.name = "Enter the guest's full name.";
-  }
-  if (!email && !phone) {
-    fields.email = 'Add an email or phone number so we can check for existing profiles.';
-    fields.phone = 'Add an email or phone number so we can check for existing profiles.';
-  }
-  if (Object.keys(fields).length > 0) {
-    throw new GuestValidationError('validation_error', fields);
-  }
-}
-
 function normalizeEmail(v) {
   return (v || '').trim().toLowerCase();
 }
@@ -41,9 +27,44 @@ function normalizePhone(v) {
   return (v || '').replace(/\D/g, '');
 }
 
+function isValidEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function isValidPhone(v) {
+  return normalizePhone(v).length >= 7;
+}
+
+function assertValid(name, email, phone) {
+  const fields = {};
+  if (!name) {
+    fields.name = "Enter the guest's full name.";
+  }
+  if (!email && !phone) {
+    fields.email = 'Add an email or phone number so we can check for existing profiles.';
+    fields.phone = 'Add an email or phone number so we can check for existing profiles.';
+  } else {
+    if (email && !isValidEmail(email)) {
+      fields.email = 'Enter a valid email address.';
+    }
+    if (phone && !isValidPhone(phone)) {
+      fields.phone = 'Enter a valid phone number.';
+    }
+  }
+  if (Object.keys(fields).length > 0) {
+    throw new GuestValidationError('validation_error', fields);
+  }
+}
+
+function firstQueryValue(v) {
+  return Array.isArray(v) ? (v[0] || '') : (v || '');
+}
+
 function findGuestMatch({ email, phone } = {}) {
-  const nEmail = email ? normalizeEmail(email) : '';
-  const nPhone = phone ? normalizePhone(phone) : '';
+  const emailStr = firstQueryValue(email);
+  const phoneStr = firstQueryValue(phone);
+  const nEmail = emailStr ? normalizeEmail(emailStr) : '';
+  const nPhone = phoneStr ? normalizePhone(phoneStr) : '';
   return Array.from(guests.values()).find((g) =>
     (nEmail && normalizeEmail(g.email) === nEmail) ||
     (nPhone && normalizePhone(g.phone) === nPhone)

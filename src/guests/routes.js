@@ -13,11 +13,8 @@ function pickPatchableFields(body) {
   }, {});
 }
 
-// A missing x-staff-role header is treated as "allowed" for backward compatibility with
-// callers (e.g. the STORY-100 guest directory UI) that predate role-based permission checks.
 function isPermitted(req) {
-  const role = req.headers['x-staff-role'];
-  return role === undefined || guestsStore.canCreateGuest(role);
+  return guestsStore.canCreateGuest(req.headers['x-staff-role']);
 }
 
 router.get('/', (req, res, next) => {
@@ -29,8 +26,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/permission', (req, res) => {
-  const role = req.headers['x-staff-role'];
-  res.status(200).json({ allowed: role === undefined ? true : guestsStore.canCreateGuest(role) });
+  res.status(200).json({ allowed: isPermitted(req) });
 });
 
 router.get('/match', (req, res) => {
