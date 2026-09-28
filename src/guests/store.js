@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { normalizeEmail, normalizePhone, validateFields } = require('./validation');
 
 const SEED_GUESTS = [
   { id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com', phone: '(555) 123-4567' },
@@ -32,22 +33,6 @@ class ValidationError extends Error {
   }
 }
 
-function normalizeEmail(v) {
-  return v.trim().toLowerCase();
-}
-
-function normalizePhone(v) {
-  return v.replace(/\D/g, '');
-}
-
-function isValidEmail(v) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-}
-
-function isValidPhone(v) {
-  return normalizePhone(v).length >= 7;
-}
-
 function findGuestMatch({ email, phone } = {}) {
   const nEmail = email ? normalizeEmail(email) : '';
   const nPhone = phone ? normalizePhone(phone) : '';
@@ -62,20 +47,7 @@ function createGuest(data) {
   const email = (data.email || '').trim();
   const phone = (data.phone || '').trim();
 
-  const fields = {};
-
-  if (name === '') fields.name = "Enter the guest's full name.";
-
-  let emailError = email !== '' && !isValidEmail(email) ? 'Enter a valid email address.' : '';
-  let phoneError = phone !== '' && !isValidPhone(phone) ? 'Enter a valid phone number.' : '';
-
-  if (email === '' && phone === '') {
-    emailError = emailError || 'Add an email or phone number so we can check for existing profiles.';
-    phoneError = phoneError || 'Add an email or phone number so we can check for existing profiles.';
-  }
-
-  if (emailError) fields.email = emailError;
-  if (phoneError) fields.phone = phoneError;
+  const fields = validateFields({ name, email, phone });
 
   if (Object.keys(fields).length > 0) {
     throw new ValidationError(fields);

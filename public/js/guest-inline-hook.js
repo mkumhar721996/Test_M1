@@ -1,35 +1,5 @@
 const { escapeHtml } = require('./utils');
-
-function normalizePhone(v) {
-  return (v || '').replace(/\D/g, '');
-}
-
-function isValidEmail(v) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-}
-
-function isValidPhone(v) {
-  return normalizePhone(v).length >= 7;
-}
-
-function validateFields({ name, email, phone }) {
-  const fields = {};
-
-  if (name === '') fields.name = "Enter the guest's full name.";
-
-  let emailError = email !== '' && !isValidEmail(email) ? 'Enter a valid email address.' : '';
-  let phoneError = phone !== '' && !isValidPhone(phone) ? 'Enter a valid phone number.' : '';
-
-  if (email === '' && phone === '') {
-    emailError = emailError || 'Add an email or phone number so we can check for existing profiles.';
-    phoneError = phoneError || 'Add an email or phone number so we can check for existing profiles.';
-  }
-
-  if (emailError) fields.email = emailError;
-  if (phoneError) fields.phone = phoneError;
-
-  return fields;
-}
+const { normalizePhone, validateFields } = require('../../src/guests/validation');
 
 const TEMPLATE = `
   <div class="notice" id="permission-denied-notice" hidden>
@@ -250,6 +220,11 @@ function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) 
       hookSubmitBtn.textContent = 'Create guest profile';
       serviceErrorNotice.hidden = false;
       emit('guest.service_error', { reason: 'network_error', persisted: false });
+    }).catch(() => {
+      hookSubmitBtn.disabled = false;
+      hookSubmitBtn.textContent = 'Create guest profile';
+      serviceErrorNotice.hidden = false;
+      emit('guest.service_error', { reason: 'network_error', persisted: false });
     });
   });
 
@@ -295,8 +270,8 @@ function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) 
   return { open, close };
 }
 
-function createDefaultApi(role) {
-  const headers = { 'x-staff-role': role, 'Content-Type': 'application/json' };
+function createDefaultApi(staffSessionToken) {
+  const headers = { Authorization: `Bearer ${staffSessionToken}`, 'Content-Type': 'application/json' };
 
   return {
     checkPermission: () => fetch('/guests/permission', { headers })
