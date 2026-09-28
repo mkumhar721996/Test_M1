@@ -1,20 +1,30 @@
-const { escapeHtml } = require('./utils');
-
 const STAFF_NAME = 'Priya Nair';
 
-function statusChipHtml(status) {
-  if (status === 'available') {
-    return '<span class="status-chip status-chip--available"><span aria-hidden="true">●</span> Available</span>';
-  }
-  if (status === 'maintenance') {
-    return '<span class="status-chip status-chip--maintenance"><span aria-hidden="true">◌</span> Maintenance</span>';
-  }
-  return '<span class="status-chip status-chip--out-of-order"><span aria-hidden="true">✕</span> Out of order</span>';
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
 }
 
-function initRoomsApp(doc, initialRooms, roomTypes, api) {
+const STATUS_ICONS = { available: '●', maintenance: '◌' };
+
+function statusLabel(status) {
+  return status.split('-').map((word, i) => (
+    i > 0 && word === 'of' ? word : word.charAt(0).toUpperCase() + word.slice(1)
+  )).join(' ');
+}
+
+function statusChipHtml(status) {
+  const icon = STATUS_ICONS[status] || '✕';
+  return `<span class="status-chip status-chip--${status}"><span aria-hidden="true">${icon}</span> ${statusLabel(status)}</span>`;
+}
+
+function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
   let rooms = initialRooms.slice();
   const roomTypesById = new Map(roomTypes.map((rt) => [rt.id, rt]));
+  const statusOptions = statuses && statuses.length
+    ? statuses
+    : Array.from(new Set(initialRooms.map((r) => r.status)));
   let toastTimer = null;
 
   const tableWrap = doc.getElementById('rooms-table-wrap');
@@ -45,14 +55,12 @@ function initRoomsApp(doc, initialRooms, roomTypes, api) {
     emptyEl.hidden = true;
     tbody.innerHTML = rooms.map((r) => `
       <tr data-row-id="${r.id}">
-        <td class="room-identifier-cell">${escapeHtml(doc, r.identifier)}</td>
-        <td>${escapeHtml(doc, roomTypeName(r.roomTypeId))}</td>
+        <td class="room-identifier-cell">${escapeHtml(r.identifier)}</td>
+        <td>${escapeHtml(roomTypeName(r.roomTypeId))}</td>
         <td>${statusChipHtml(r.status)}</td>
         <td class="col-actions">
-          <select class="room-status-select" data-id="${r.id}" aria-label="Status for room ${escapeHtml(doc, r.identifier)}">
-            <option value="available" ${r.status === 'available' ? 'selected' : ''}>Available</option>
-            <option value="maintenance" ${r.status === 'maintenance' ? 'selected' : ''}>Maintenance</option>
-            <option value="out-of-order" ${r.status === 'out-of-order' ? 'selected' : ''}>Out of order</option>
+          <select class="room-status-select" data-id="${r.id}" aria-label="Status for room ${escapeHtml(r.identifier)}">
+            ${statusOptions.map((s) => `<option value="${s}" ${r.status === s ? 'selected' : ''}>${statusLabel(s)}</option>`).join('')}
           </select>
         </td>
       </tr>
@@ -88,7 +96,7 @@ function initRoomsApp(doc, initialRooms, roomTypes, api) {
   const roomTypeError = doc.getElementById('error-room-type');
 
   function populateRoomTypeOptions() {
-    const options = roomTypes.map((rt) => `<option value="${rt.id}">${escapeHtml(doc, rt.name)}</option>`).join('');
+    const options = roomTypes.map((rt) => `<option value="${rt.id}">${escapeHtml(rt.name)}</option>`).join('');
     roomTypeSelect.innerHTML = `<option value="">Select a room type</option>${options}`;
   }
   populateRoomTypeOptions();
@@ -184,8 +192,9 @@ function bootRoomsApp(doc, fetchImpl) {
   return Promise.all([
     fetchImpl('/rooms').then((res) => res.json()),
     fetchImpl('/room-types').then((res) => res.json()),
-  ]).then(([rooms, roomTypes]) => {
-    initRoomsApp(doc, rooms, roomTypes, createDefaultApi());
+    fetchImpl('/rooms/statuses').then((res) => res.json()),
+  ]).then(([rooms, roomTypes, statusesRes]) => {
+    initRoomsApp(doc, rooms, roomTypes, createDefaultApi(), statusesRes.statuses);
   }).catch((err) => {
     doc.body.textContent = 'Failed to load rooms. Please refresh the page.';
     console.error(err);

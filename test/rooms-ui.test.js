@@ -43,7 +43,7 @@ describe('Rooms UI', () => {
     const updated = { ...room, status: 'maintenance' };
     const api = { updateStatus: jest.fn().mockResolvedValue(updated) };
     const { initRoomsApp } = require('../public/js/rooms');
-    initRoomsApp(document, [room], roomTypes, api);
+    initRoomsApp(document, [room], roomTypes, api, ['available', 'maintenance', 'out-of-order']);
     const select = document.querySelector('.room-status-select');
     select.value = 'maintenance';
     select.dispatchEvent(new Event('change', { cancelable: true }));
@@ -97,7 +97,8 @@ describe('Rooms UI', () => {
     const rooms = [{ id: 'room_1', identifier: '101', roomTypeId: 'rt_standard_king', status: 'available' }];
     const okFetch = jest.fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(rooms) })
-      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(roomTypes) });
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(roomTypes) })
+      .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ statuses: ['available', 'maintenance', 'out-of-order'] }) });
     const { bootRoomsApp } = require('../public/js/rooms');
     await bootRoomsApp(document, okFetch);
     expect(document.getElementById('room-tbody').textContent).toContain('101');

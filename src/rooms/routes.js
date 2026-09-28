@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+  STATUSES,
   RoomValidationError,
   RoomUnavailableError,
   createRoom,
@@ -17,6 +18,10 @@ router.get('/', (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.get('/statuses', (req, res) => {
+  res.status(200).json({ statuses: STATUSES });
 });
 
 router.post('/', (req, res, next) => {

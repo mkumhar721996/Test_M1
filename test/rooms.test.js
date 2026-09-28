@@ -67,3 +67,9 @@ test('booking a room that does not exist returns 404', async () => {
   const res = await request(app).post('/rooms/does-not-exist/booking-requests').send({});
   expect(res.status).toBe(404);
 });
+
+test('GET /rooms/statuses exposes the valid status values for the UI to render', async () => {
+  const res = await request(app).get('/rooms/statuses');
+  expect(res.status).toBe(200);
+  expect(res.body.statuses).toEqual(['available', 'maintenance', 'out-of-order']);
+});

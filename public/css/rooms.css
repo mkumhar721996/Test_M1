@@ -2,21 +2,8 @@
 body { margin: 0; min-height: 100dvh; }
 
 /* App shell (.app-topbar, .app-nav, .modal/.toast primitives, .btn, .card,
-   .input, .field, .label) live in design-system/prototype-utils.css. */
-.page { max-width: 860px; }
-.page-header h1 {
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-fg);
-  margin: 0 0 var(--space-1) 0;
-}
-.page-header p {
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-md);
-  color: var(--color-fg-muted);
-  margin: 0;
-}
+   .input, .field, .label, .page, .page-header h1/p) live in
+   design-system/prototype-utils.css. */
 .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
 
 .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
