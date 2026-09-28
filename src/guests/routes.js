@@ -77,7 +77,7 @@ router.patch('/:id', (req, res, next) => {
     res.status(200).json(guest);
   } catch (err) {
     if (err instanceof GuestValidationError) {
-      return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
     }
     next(err);
   }

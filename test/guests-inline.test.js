@@ -82,6 +82,21 @@ test('AC1/AC4: POST /guests creates a profile and returns a stable id', async ()
   expect(guestsStore.getGuest(res.body.id)).toMatchObject({ id: res.body.id, name: 'Alex Rivera' });
 });
 
+test('PATCH /guests/:id returns the same structured validation error format as POST /guests', async () => {
+  const createRes = await request(app)
+    .post('/guests')
+    .set('x-staff-role', 'front_desk')
+    .send({ name: 'Alex Rivera', email: 'alex@example.com' });
+  const { id } = createRes.body;
+
+  const res = await request(app)
+    .patch(`/guests/${id}`)
+    .send({ name: '', email: '', phone: '' });
+
+  expect(res.status).toBe(400);
+  expect(res.body).toEqual({ error: 'validation_error', fields: expect.objectContaining({ name: expect.any(String) }) });
+});
+
 test('AC7/AC8: an unexpected store error returns 500 and persists nothing', async () => {
   const before = guestsStore.listGuests().length;
   const spy = jest.spyOn(guestsStore, 'createGuest').mockImplementation(() => { throw new Error('boom'); });
