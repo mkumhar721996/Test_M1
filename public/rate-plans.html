@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rate Plans — Front Desk Console</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/rate-plans.css" />
+<script src="./js/rate-plans.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <!-- Screen: Rate Plans (list) -->
+  <div id="rate-plans-screen">
+    <div class="app-topbar">
+      <span class="brand">Front Desk Console</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Rates</a>
+        <a href="#" onclick="return false;">Room Types</a>
+        <a href="#" onclick="return false;">Bookings</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <h1>Rate plans</h1>
+        <p>Named date ranges with per-room-type nightly prices. Room types left off a plan use their base rate for the dates it covers.</p>
+      </div>
+
+      <div class="toolbar-row">
+        <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="rp-count-summary"></p>
+        <div class="u-gap-3" style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+          <button class="btn btn-secondary" id="price-lookup-link" type="button">Price lookup</button>
+          <button class="btn btn-primary" id="new-plan-btn" type="button">+ New rate plan</button>
+        </div>
+      </div>
+
+      <div class="card table-card" id="rp-table-wrap">
+        <div class="table-scroll">
+          <table class="rp-table">
+            <thead>
+              <tr>
+                <th scope="col">Plan</th>
+                <th scope="col">Date range</th>
+                <th scope="col">Status</th>
+                <th scope="col">Per-room-type prices</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rp-tbody"><!-- rendered by JS --></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card empty-state" id="rp-empty" hidden>
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No rate plans yet</h3>
+        <p>Add a rate plan to set per-room-type nightly prices for a date range. Until then, every room type charges its base rate on every date.</p>
+        <button class="btn btn-primary" id="empty-new-plan-btn" type="button">+ Add a rate plan</button>
+      </div>
+    </div>
+
+    <!-- Delete confirm modal -->
+    <div class="modal-overlay" id="delete-overlay" hidden></div>
+    <div class="modal-wrap" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="delete-modal-title">Delete rate plan?</h2>
+          </div>
+          <button class="icon-btn" id="delete-close-btn" type="button" aria-label="Close dialog without deleting">✕</button>
+        </div>
+        <p class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span>Deleting "<strong id="delete-plan-name"></strong>" removes it immediately and can't be undone. The room types it priced will fall back to their base rate (or to another overlapping plan, if one still covers that date) for every future lookup.</span>
+        </p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="delete-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirm-delete-btn">Delete rate plan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <!-- Screen: Rate Plan Editor -->
+  <div id="editor-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Front Desk Console</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Rates</a>
+        <a href="#" onclick="return false;">Room Types</a>
+        <a href="#" onclick="return false;">Bookings</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+      </div>
+    </div>
+
+    <div class="page">
+      <button class="back-link" id="editor-back-btn" type="button">← Back to rate plans</button>
+      <div class="page-header">
+        <h1 id="editor-heading">New rate plan</h1>
+        <p>Give the plan a name, a date range, and at least one per-room-type nightly price.</p>
+      </div>
+
+      <form id="editor-form" novalidate>
+        <div class="card" style="margin-bottom:var(--space-4);">
+          <h2 class="card-title">Plan details</h2>
+          <div class="field">
+            <label class="label" for="plan-name">Plan name</label>
+            <input class="input" id="plan-name" type="text" placeholder="e.g. Summer Peak 2026" aria-describedby="error-name" />
+            <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter a name for this rate plan.</p>
+          </div>
+          <div class="date-range-fields">
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="plan-start">Start date</label>
+              <input class="input" id="plan-start" type="date" aria-describedby="error-dates" />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="plan-end">End date</label>
+              <input class="input" id="plan-end" type="date" aria-describedby="error-dates" />
+            </div>
+          </div>
+          <p class="field-error-text" id="error-dates" role="alert" hidden>⚠ Enter a start and end date, and make sure the end date is on or after the start date.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--space-4);">
+          <div class="card-section-header">
+            <div>
+              <h2>Per-room-type pricing</h2>
+              <p>Only the room types listed here carry a price override. Any room type not listed automatically uses its base rate for this plan's dates.</p>
+            </div>
+          </div>
+          <div id="price-rows"><!-- rendered by JS --></div>
+          <p class="field-error-text" id="error-price-rows" role="alert" hidden>⚠ Add at least one room type with a room type selected and a price greater than $0. Each room type can only appear once.</p>
+          <div style="margin-top:var(--space-3);">
+            <button type="button" class="btn btn-secondary" id="add-price-row-btn">+ Add room type price</button>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="editor-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="editor-save-btn">Create rate plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Screen: Price Lookup -->
+  <div id="lookup-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Front Desk Console</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Rates</a>
+        <a href="#" onclick="return false;">Room Types</a>
+        <a href="#" onclick="return false;">Bookings</a>
+      </nav>
+      <div class="topbar-actions">
+        <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+      </div>
+    </div>
+
+    <div class="page">
+      <button class="back-link" id="lookup-back-btn" type="button">← Back to rate plans</button>
+      <div class="page-header">
+        <h1>Price lookup</h1>
+        <p>Preview which price applies for a room type on a given date, including how overlapping plans and base rates are resolved.</p>
+      </div>
+
+      <div class="preset-row">
+        <button class="preset-btn" type="button" data-room="STD-KING" data-date="2026-12-25">Standard King · Dec 25, 2026 (overlap)</button>
+        <button class="preset-btn" type="button" data-room="GARDEN" data-date="2026-03-01">Garden Room · Mar 1, 2026 (base rate)</button>
+        <button class="preset-btn" type="button" data-room="OCEAN" data-date="2026-07-10">Ocean View Suite · Jul 10, 2026 (plan)</button>
+      </div>
+
+      <form class="card lookup-form" id="lookup-form" novalidate>
+        <div class="field">
+          <label class="label" for="lookup-room">Room type</label>
+          <select class="input" id="lookup-room"><!-- rendered by JS --></select>
+        </div>
+        <div class="field">
+          <label class="label" for="lookup-date">Date</label>
+          <input class="input" id="lookup-date" type="date" />
+        </div>
+        <button class="btn btn-primary" id="lookup-btn" type="submit">Check price</button>
+      </form>
+
+      <div class="card lookup-skeleton" id="lookup-loading" hidden>
+        <div class="skeleton-bar" style="width:30%;height:28px;"></div>
+        <div class="skeleton-bar short"></div>
+      </div>
+
+      <div class="card" id="lookup-result" hidden>
+        <p class="lookup-result-price" id="lookup-price"></p>
+        <p class="lookup-source" id="lookup-source-text"></p>
+        <div class="lookup-overlap-note" id="lookup-overlap-note" hidden>
+          <span aria-hidden="true">⚠</span>
+          <span id="lookup-overlap-text"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
