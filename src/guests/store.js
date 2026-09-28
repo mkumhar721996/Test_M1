@@ -2,21 +2,94 @@ const crypto = require('crypto');
 
 const guests = new Map();
 
+const ROLE_PERMISSIONS = {
+  front_desk: true,
+  housekeeping: false,
+};
+
+function canCreateGuest(role) {
+  return ROLE_PERMISSIONS[role] === true;
+}
+
 class GuestValidationError extends Error {
-  constructor(message) {
+  constructor(message, fields = {}) {
     super(message);
     this.statusCode = 400;
+    this.fields = fields;
   }
 }
 
+function normalizeEmail(v) {
+  return (v || '').trim().toLowerCase();
+}
+
+function normalizePhone(v) {
+  return (v || '').replace(/\D/g, '');
+}
+
+function isValidEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function isValidPhone(v) {
+  return normalizePhone(v).length >= 7;
+}
+
 function assertValid(name, email, phone) {
+  const fields = {};
   if (!name) {
-    throw new GuestValidationError('name is required');
+    fields.name = "Enter the guest's full name.";
   }
   if (!email && !phone) {
-    throw new GuestValidationError('at least one of email or phone is required');
+    fields.email = 'Add an email or phone number so we can check for existing profiles.';
+    fields.phone = 'Add an email or phone number so we can check for existing profiles.';
+  } else {
+    if (email && !isValidEmail(email)) {
+      fields.email = 'Enter a valid email address.';
+    }
+    if (phone && !isValidPhone(phone)) {
+      fields.phone = 'Enter a valid phone number.';
+    }
+  }
+  if (Object.keys(fields).length > 0) {
+    throw new GuestValidationError('validation_error', fields);
   }
 }
+
+function firstQueryValue(v) {
+  return Array.isArray(v) ? (v[0] || '') : (v || '');
+}
+
+function findGuestMatch({ email, phone } = {}) {
+  const emailStr = firstQueryValue(email);
+  const phoneStr = firstQueryValue(phone);
+  const nEmail = emailStr ? normalizeEmail(emailStr) : '';
+  const nPhone = phoneStr ? normalizePhone(phoneStr) : '';
+  return Array.from(guests.values()).find((g) =>
+    (nEmail && normalizeEmail(g.email) === nEmail) ||
+    (nPhone && normalizePhone(g.phone) === nPhone)
+  );
+}
+
+function seedFixtureGuest({ id, name, email, phone }) {
+  const iso = new Date().toISOString();
+  guests.set(id, {
+    id,
+    name,
+    email,
+    phone,
+    status: 'active',
+    createdAt: iso,
+    updatedAt: iso,
+    preferences: { roomType: '', dietary: '', communication: '' },
+    bookingHistory: [],
+    auditLog: [{ ts: iso, actor: 'system', action: 'seeded fixture profile' }],
+  });
+}
+
+seedFixtureGuest({ id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com', phone: '(555) 123-4567' });
+seedFixtureGuest({ id: 'gst_1006', name: 'Priya Nandakumar', email: 'priya.n@example.com', phone: '(555) 987-6543' });
+seedFixtureGuest({ id: 'gst_1007', name: 'Sam Okafor', email: 'sam.okafor@example.com', phone: '(555) 456-7890' });
 
 function createGuest(data, actor) {
   const name = data.name;
@@ -125,4 +198,6 @@ module.exports = {
   updateGuest,
   deactivateGuest,
   reactivateGuest,
+  canCreateGuest,
+  findGuestMatch,
 };

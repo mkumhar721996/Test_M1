@@ -436,7 +436,7 @@ function createDefaultApi() {
   function jsonRequest(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': 'front_desk' },
       body: JSON.stringify(body),
     }).then((res) => {
       if (!res.ok) {

@@ -1,13 +1,6 @@
 const express = require('express');
-const {
-  GuestValidationError,
-  createGuest,
-  getGuest,
-  listGuests,
-  updateGuest,
-  deactivateGuest,
-  reactivateGuest,
-} = require('./store');
+const guestsStore = require('./store');
+const { GuestValidationError, getGuest, updateGuest, deactivateGuest, reactivateGuest } = guestsStore;
 
 const router = express.Router();
 
@@ -20,21 +13,40 @@ function pickPatchableFields(body) {
   }, {});
 }
 
+function isPermitted(req) {
+  return guestsStore.canCreateGuest(req.headers['x-staff-role']);
+}
+
 router.get('/', (req, res, next) => {
   try {
-    res.status(200).json(listGuests());
+    res.status(200).json(guestsStore.listGuests());
   } catch (err) {
     next(err);
   }
 });
 
+router.get('/permission', (req, res) => {
+  res.status(200).json({ allowed: isPermitted(req) });
+});
+
+router.get('/match', (req, res) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
+  const match = guestsStore.findGuestMatch({ email: req.query.email, phone: req.query.phone });
+  res.status(200).json({ match: match || null });
+});
+
 router.post('/', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
-    const guest = createGuest(req.body, req.body.actor);
+    const guest = guestsStore.createGuest(req.body, req.body.actor);
     res.status(201).json(guest);
   } catch (err) {
     if (err instanceof GuestValidationError) {
-      return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
     }
     next(err);
   }
@@ -61,7 +73,7 @@ router.patch('/:id', (req, res, next) => {
     res.status(200).json(guest);
   } catch (err) {
     if (err instanceof GuestValidationError) {
-      return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
     }
     next(err);
   }
