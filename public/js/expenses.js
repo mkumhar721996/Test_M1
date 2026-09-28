@@ -1,4 +1,7 @@
 const { escapeHtml, formatDateDisplay } = require('./utils');
+const { createModalKeydownHandler } = typeof require === 'function'
+  ? require('./modal-focus-utils')
+  : window.ModalFocusUtils;
 
 const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
@@ -317,11 +320,7 @@ function initExpensesApp(doc = document) {
     setFieldError(createFieldDescription, createErrorDescription, false);
   }
 
-  function getFocusableElements(container) {
-    return Array.from(
-      container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
-    ).filter((el) => !el.hidden);
-  }
+  const onCreateModalKeydown = createModalKeydownHandler(doc, createModalPanel, () => cancelCreate());
 
   function openCreateModal() {
     createForm.reset();
@@ -345,32 +344,6 @@ function initExpensesApp(doc = document) {
       createModalOpenerEl.focus();
     }
     createModalOpenerEl = null;
-  }
-
-  function trapCreateModalTab(e) {
-    const focusable = getFocusableElements(createModalPanel);
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (e.shiftKey) {
-      if (doc.activeElement === first || !createModalPanel.contains(doc.activeElement)) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else if (doc.activeElement === last || !createModalPanel.contains(doc.activeElement)) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-
-  function onCreateModalKeydown(e) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      cancelCreate();
-    } else if (e.key === 'Tab') {
-      trapCreateModalTab(e);
-    }
   }
 
   function cancelCreate() {

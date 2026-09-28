@@ -9,16 +9,16 @@ const {
   updateRoomStatus,
   requestBooking,
 } = require('./store');
+const { requireStaffAuth } = require('./auth');
 
 const router = express.Router();
 
 // No router in this app (guests, hires, expenses, employees, workflows, runs)
-// has authentication/authorization or request metrics middleware — there is no
-// session/login system or metrics library anywhere in the codebase yet. Bolting
-// a bespoke auth check or a Prometheus-style instrumentation onto this router
-// alone would be inconsistent with every sibling endpoint and wouldn't actually
-// close the app-wide gap. That needs a dedicated cross-cutting story; tracked
-// here as a known limitation rather than papered over.
+// has request metrics middleware — there is no metrics library installed
+// anywhere in the codebase yet. Bolting bespoke Prometheus-style
+// instrumentation onto this router alone would be inconsistent with every
+// sibling endpoint. That needs a dedicated cross-cutting story; tracked here
+// as a known limitation rather than papered over.
 
 router.get('/', (req, res, next) => {
   try {
@@ -32,9 +32,9 @@ router.get('/statuses', (req, res) => {
   res.status(200).json({ statuses: STATUSES });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', requireStaffAuth, (req, res, next) => {
   try {
-    const room = createRoom(req.body, req.body.actor);
+    const room = createRoom(req.body, req.staffActor);
     res.status(201).json(room);
   } catch (err) {
     if (err instanceof RoomValidationError) {
@@ -56,9 +56,9 @@ router.get('/:id', (req, res, next) => {
   }
 });
 
-router.patch('/:id/status', (req, res, next) => {
+router.patch('/:id/status', requireStaffAuth, (req, res, next) => {
   try {
-    const room = updateRoomStatus(req.params.id, req.body.status, req.body.actor);
+    const room = updateRoomStatus(req.params.id, req.body.status, req.staffActor);
     if (!room) {
       return res.status(404).json({ error: 'room not found' });
     }
@@ -71,7 +71,7 @@ router.patch('/:id/status', (req, res, next) => {
   }
 });
 
-router.post('/:id/booking-requests', (req, res, next) => {
+router.post('/:id/booking-requests', requireStaffAuth, (req, res, next) => {
   try {
     const result = requestBooking(req.params.id);
     if (!result) {

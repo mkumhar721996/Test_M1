@@ -1,4 +1,12 @@
-const STAFF_NAME = 'Priya Nair';
+const { createModalKeydownHandler } = typeof require === 'function'
+  ? require('./modal-focus-utils')
+  : window.ModalFocusUtils;
+
+// Mirrors the fallback default in src/rooms/auth.js. This app has no
+// login/session system to derive a real per-request credential from, so the
+// static frontend authenticates with the same shared staff token the server
+// expects (overridable server-side via ROOMS_STAFF_TOKEN).
+const STAFF_TOKEN = 'staff-priya-nair-token';
 
 function escapeHtml(str) {
   return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
@@ -97,38 +105,7 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
   const identifierError = doc.getElementById('error-room-identifier');
   const roomTypeError = doc.getElementById('error-room-type');
   let createModalOpenerEl = null;
-
-  function getFocusableElements(container) {
-    return Array.from(
-      container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
-    ).filter((el) => !el.hidden);
-  }
-
-  function trapCreateModalTab(e) {
-    const focusable = getFocusableElements(createModalPanel);
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (e.shiftKey) {
-      if (doc.activeElement === first || !createModalPanel.contains(doc.activeElement)) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else if (doc.activeElement === last || !createModalPanel.contains(doc.activeElement)) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-
-  function onCreateModalKeydown(e) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      closeCreateModal();
-    } else if (e.key === 'Tab') {
-      trapCreateModalTab(e);
-    }
-  }
+  const onCreateModalKeydown = createModalKeydownHandler(doc, createModalPanel, () => closeCreateModal());
 
   function populateRoomTypeOptions() {
     const options = roomTypes.map((rt) => `<option value="${rt.id}">${escapeHtml(rt.name)}</option>`).join('');
@@ -190,7 +167,7 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
     }
     if (!valid) return;
 
-    api.create({ identifier, roomTypeId, actor: STAFF_NAME }).then((room) => {
+    api.create({ identifier, roomTypeId }).then((room) => {
       rooms.unshift(room);
       closeCreateModal();
       renderRooms();
@@ -210,7 +187,7 @@ function createDefaultApi() {
   function jsonRequest(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Staff-Token': STAFF_TOKEN },
       body: JSON.stringify(body),
     }).then((res) => {
       if (!res.ok) {
@@ -221,8 +198,8 @@ function createDefaultApi() {
   }
 
   return {
-    create: (data) => jsonRequest('/rooms', 'POST', { ...data, actor: STAFF_NAME }),
-    updateStatus: (id, status) => jsonRequest(`/rooms/${id}/status`, 'PATCH', { status, actor: STAFF_NAME }),
+    create: (data) => jsonRequest('/rooms', 'POST', data),
+    updateStatus: (id, status) => jsonRequest(`/rooms/${id}/status`, 'PATCH', { status }),
   };
 }
 
