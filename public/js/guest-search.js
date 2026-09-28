@@ -1,4 +1,8 @@
-const { escapeHtml } = require('./utils');
+function escapeHtml(doc, str) {
+  const div = doc.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
 
 function statusChipMarkup(status) {
   if (status === 'active') {
@@ -9,6 +13,7 @@ function statusChipMarkup(status) {
 
 function initGuestSearchApp(doc, api) {
   let searchedYet = false;
+  let currentRequestId = 0;
 
   const queryInput = doc.getElementById('search-query');
   const includeInactive = doc.getElementById('include-inactive');
@@ -78,14 +83,17 @@ function initGuestSearchApp(doc, api) {
     }
     searchedYet = true;
     renderLoading();
+    const requestId = ++currentRequestId;
     const started = performance.now();
     api.search(query, includeInactive.checked).then((results) => {
+      if (requestId !== currentRequestId) return;
       const elapsed = Math.round(performance.now() - started);
       searchBtn.disabled = false;
       searchBtn.textContent = 'Search';
       if (results.length === 0) renderNoResults(query);
       else renderResults(results, elapsed);
     }).catch(() => {
+      if (requestId !== currentRequestId) return;
       searchBtn.disabled = false;
       searchBtn.textContent = 'Search';
       renderError();

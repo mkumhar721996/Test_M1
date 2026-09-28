@@ -84,6 +84,36 @@ describe('Guest Search', () => {
     expect(api.search).toHaveBeenLastCalledWith('Amara', true);
   });
 
+  test('race condition: a stale in-flight response is ignored once a newer search has started', async () => {
+    let resolveFirst;
+    let resolveSecond;
+    const api = { search: jest.fn()
+      .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }))
+      .mockImplementationOnce(() => new Promise((resolve) => { resolveSecond = resolve; })) };
+    const { initGuestSearchApp } = require('../public/js/guest-search');
+    initGuestSearchApp(document, api);
+
+    document.getElementById('search-query').value = 'Amara';
+    document.getElementById('search-form').dispatchEvent(new Event('submit', { cancelable: true }));
+
+    document.getElementById('include-inactive').checked = true;
+    document.getElementById('include-inactive').dispatchEvent(new Event('change'));
+
+    // The newer (second) request resolves first...
+    resolveSecond([{ id: 'guest_10', name: 'Amara Osei', email: 'amara.osei@example.com', phone: '(404) 555-0151', status: 'inactive' }]);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    // ...then the stale (first) request resolves after it — its result must be ignored.
+    resolveFirst([{ id: 'guest_1', name: 'Amara Whitfield', email: 'amara.whitfield@example.com', phone: '(415) 555-0142', status: 'active' }]);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const rows = document.querySelectorAll('.guest-table tbody tr');
+    expect(rows).toHaveLength(1);
+    expect(rows[0].querySelector('.guest-name').textContent).toBe('Amara Osei');
+  });
+
   test('toggling "include inactive" before any search has run does not call the api, but the toggle still works for the next real search', async () => {
     const api = { search: jest.fn().mockResolvedValue([]) };
     const { initGuestSearchApp } = require('../public/js/guest-search');
