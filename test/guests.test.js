@@ -2,6 +2,10 @@ const request = require('supertest');
 const app = require('../src/server');
 const guestsStore = require('../src/guests/store');
 
+afterEach(() => {
+  guestsStore.resetStore();
+});
+
 test('AC6: canCreateGuest denies housekeeping and allows front_desk', () => {
   expect(guestsStore.canCreateGuest('housekeeping')).toBe(false);
   expect(guestsStore.canCreateGuest('front_desk')).toBe(true);

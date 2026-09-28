@@ -1,10 +1,19 @@
 const crypto = require('crypto');
 
+const SEED_GUESTS = [
+  { id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com', phone: '(555) 123-4567' },
+  { id: 'gst_1006', name: 'Priya Nandakumar', email: 'priya.n@example.com', phone: '(555) 987-6543' },
+  { id: 'gst_1007', name: 'Sam Okafor', email: 'sam.okafor@example.com', phone: '(555) 456-7890' },
+];
+
 const guests = new Map();
 
-guests.set('gst_1005', { id: 'gst_1005', name: 'Jordan Lee', email: 'jordan.lee@example.com', phone: '(555) 123-4567' });
-guests.set('gst_1006', { id: 'gst_1006', name: 'Priya Nandakumar', email: 'priya.n@example.com', phone: '(555) 987-6543' });
-guests.set('gst_1007', { id: 'gst_1007', name: 'Sam Okafor', email: 'sam.okafor@example.com', phone: '(555) 456-7890' });
+function resetStore() {
+  guests.clear();
+  SEED_GUESTS.forEach((g) => guests.set(g.id, { ...g }));
+}
+
+resetStore();
 
 const ROLE_PERMISSIONS = {
   front_desk: true,
@@ -93,4 +102,5 @@ module.exports = {
   getGuest,
   listGuests,
   findGuestMatch,
+  resetStore,
 };

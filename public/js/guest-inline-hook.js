@@ -91,6 +91,10 @@ const TEMPLATE = `
 `;
 
 function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) {
+  if (!api || typeof api.checkPermission !== 'function' || typeof api.checkMatch !== 'function' || typeof api.createGuest !== 'function') {
+    throw new Error('mountGuestInlineHook requires an api object with checkPermission, checkMatch, and createGuest methods');
+  }
+
   container.innerHTML = TEMPLATE;
   container.querySelector('#hook-form').hidden = true;
 
@@ -181,6 +185,8 @@ function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) 
           currentMatch = match;
           renderMatch(match);
         }
+      }).catch(() => {
+        hideDupStatus();
       });
     }, 350);
   }
@@ -267,6 +273,9 @@ function mountGuestInlineHook(container, { role, api, onLinked, onEvent } = {}) 
         return;
       }
       showForm();
+    }).catch(() => {
+      // Fail closed: an unresolvable permission check must never grant access.
+      showPermissionDenied();
     });
   }
 
@@ -290,14 +299,17 @@ function createDefaultApi(role) {
   const headers = { 'x-staff-role': role, 'Content-Type': 'application/json' };
 
   return {
-    checkPermission: () => fetch('/guests/permission', { headers }).then((res) => res.json()),
+    checkPermission: () => fetch('/guests/permission', { headers })
+      .then((res) => res.json())
+      .catch(() => ({ allowed: false })),
     checkMatch: ({ email, phone }) => {
       const params = new URLSearchParams();
       if (email) params.set('email', email);
       if (phone) params.set('phone', phone);
       return fetch(`/guests/match?${params.toString()}`, { headers })
         .then((res) => res.json())
-        .then((body) => body.match);
+        .then((body) => body.match)
+        .catch(() => null);
     },
     createGuest: (data) => fetch('/guests', {
       method: 'POST',

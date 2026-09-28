@@ -1,4 +1,8 @@
-const { createGuest, getGuest, listGuests, findGuestMatch, canCreateGuest, ValidationError } = require('../src/guests/store');
+const { createGuest, getGuest, listGuests, findGuestMatch, canCreateGuest, ValidationError, resetStore } = require('../src/guests/store');
+
+afterEach(() => {
+  resetStore();
+});
 
 test('AC3: createGuest returns a stable identifier that getGuest resolves to the same profile', () => {
   const guest = createGuest({ name: 'Alex Rivera', email: 'alex@example.com' });
@@ -36,6 +40,15 @@ test('AC2: findGuestMatch finds a seeded guest by normalized email or phone', ()
   expect(findGuestMatch({ email: 'JORDAN.LEE@example.com' })).toMatchObject({ id: 'gst_1005', name: 'Jordan Lee' });
   expect(findGuestMatch({ phone: '555-123-4567' })).toMatchObject({ id: 'gst_1005' });
   expect(findGuestMatch({ email: 'nobody@example.com', phone: '000' })).toBeUndefined();
+});
+
+test('resetStore restores the store to exactly the three seeded fixture guests', () => {
+  createGuest({ name: 'Alex Rivera', email: 'alex@example.com' });
+  expect(listGuests().length).toBe(4);
+
+  resetStore();
+
+  expect(listGuests().map((g) => g.id).sort()).toEqual(['gst_1005', 'gst_1006', 'gst_1007']);
 });
 
 test('AC6: canCreateGuest allows front_desk and denies housekeeping and unknown roles', () => {
