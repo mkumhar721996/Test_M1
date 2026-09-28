@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-101 — Guest Profile Search &amp; Retrieval</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* Page-specific layout only — every value below resolves through design-system tokens.
+     No dedicated success/danger token exists yet, so Active/Inactive status and the error
+     banner are signalled with icon + label + border emphasis (var(--color-primary) for the
+     emphasised/attention state), never colour alone (UX baseline: never encode meaning in
+     colour alone). If this product gains dedicated status tokens later (e.g.
+     "status.success.foreground" / "status.danger.foreground"), the chip and banner styles
+     below should switch to those instead of borrowing --color-primary. */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Bump shared controls to a real 44px touch target without redefining tokens. */
+  .btn, .input { min-height: 44px; }
+
+  /* ---------- Search bar ---------- */
+  .search-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+  .search-field {
+    flex: 1 1 260px;
+    min-width: 220px;
+  }
+  .search-actions-field { flex: 0 0 auto; }
+  .search-help {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 var(--space-4) 0;
+  }
+  .field-error {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: var(--space-1) 0 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .field-error[hidden] { display: none; }
+  .field-error svg { width: 16px; height: 16px; flex: none; }
+
+  .toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+  }
+  .checkbox-field input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+  }
+
+  .quick-tries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .quick-tries span {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .chip-btn {
+    background: var(--chip-default-background);
+    color: var(--chip-default-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3);
+    cursor: pointer;
+    min-height: 32px;
+  }
+  .chip-btn:hover { border-color: var(--color-primary); }
+
+  .outage-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .outage-toggle button {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    min-height: 36px;
+  }
+  .outage-toggle button[aria-pressed="true"] {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .list-count {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-2);
+  }
+
+  /* ---------- Results table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.guest-table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  .guest-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .guest-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .guest-table tbody tr:last-child td { border-bottom: none; }
+  .guest-name { font-weight: var(--font-weight-bold); }
+  .guest-meta { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin-top: 2px; }
+  .col-status { white-space: nowrap; }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    background: var(--chip-default-background);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+  }
+  .status-chip.is-active { border-color: var(--color-primary); color: var(--color-primary); }
+  .status-chip svg { width: 14px; height: 14px; flex: none; }
+
+  /* ---------- Loading skeleton ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-bar { animation: none; }
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ---------- Empty / no-results / error states ---------- */
+  .state-panel {
+    text-align: center;
+    padding: var(--space-4) var(--space-3);
+  }
+  .state-icon {
+    margin: 0 auto var(--space-3);
+    width: 44px;
+    height: 44px;
+    color: var(--color-fg-muted);
+  }
+  .state-title {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2);
+  }
+  .state-body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+
+  .error-panel {
+    border: 1px solid var(--color-primary);
+  }
+  .error-panel .state-icon { color: var(--color-primary); }
+  .error-panel .state-title { color: var(--color-primary); }
+
+  .response-time {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-top: var(--space-2);
+  }
+
+  /* ---------- Reference states screen ---------- */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 860px) {
+    .ref-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .ref-card-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 var(--space-2);
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: top bar — Guests · Reservations (front-desk staff console; "Guests" is the
+     active section since this story searches guest profiles independently of any
+     reservation — AC1/AC6). -->
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-101</span>
+  <button id="prev-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">&larr; Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn" style="background:none;border:none;color:var(--color-primary);cursor:pointer;font-family:var(--font-family-base);font-size:13px;padding:4px 8px;">Next &rarr;</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+  <!-- State: live-search -->
+  <!-- Screen: Guest Search (Live)
+       Notes:
+         - AC1: typing a partial name (e.g. "Amara") and pressing "Search" (or Enter) returns
+           every profile whose full name *contains* that substring — try the "Partial name"
+           quick-try chip below the search field, which returns three "Amara ___" profiles.
+         - AC2: entering a value that is a complete email address or a complete phone number
+           switches matching to exact-only. "Exact email" and "Exact phone" quick-tries each
+           return exactly one profile. Typing a partial email/phone (e.g. "amara.") is treated
+           as a name search and will not exact-match, by design — only a full email
+           (contains "@" + domain) or a full phone number (digits, with or without
+           formatting) triggers exact mode.
+         - AC3: the "No match" quick-try ("Zzyzx") runs a real search against the fixture set
+           and returns the "No profiles found" panel with the entered term echoed back.
+         - AC4/AC5: the "Simulate outage" toggle in the toolbar stands in for a real backend
+           failure the design can't fake over the network. With it ON, every search — including
+           the quick-tries — shows the error panel below instead of a results table, and no
+           rows are rendered (AC5). Toggle it back OFF to resume normal search.
+         - AC6: "Priya Raman" (the exact-email quick-try) has no active reservation attached
+           anywhere in this screen — she still returns normally, because guest search here
+           never depends on reservation state.
+         - AC7: "Include inactive profiles" starts unchecked. Searching "Amara" with it OFF
+           returns only 2 of the 3 Amara profiles — "Amara Osei" is Inactive and is excluded.
+         - AC8: checking "Include inactive profiles" and re-running the same "Amara" search
+           immediately adds "Amara Osei" (Inactive) to the results.
+         - AC9: every result row shows full name, email, phone, and an Active/Inactive status
+           chip that pairs an icon (check vs. slash) with the word — never colour alone.
+         - AC10: each search shows a brief loading skeleton (simulated 200–400ms network
+           delay) and the results panel reports the elapsed time, standing in for the "within
+           2 seconds" performance target — every simulated response here is well under that.
+         - Query is trimmed before matching; an empty submit shows an inline validation
+           message under the field instead of running a search.
+  -->
+  <div class="screen" data-name="Guest Search (Live)">
+    <div class="app-topbar">
+      <span class="brand">Front Desk Console</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Guests</a>
+        <a href="#" onclick="return false;">Reservations</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <h1>Guest search</h1>
+        <p>Find any guest profile by name, email, or phone — with or without an active reservation.</p>
+      </div>
+
+      <form role="search" aria-label="Search guest profiles" id="search-form">
+        <div class="search-bar">
+          <div class="search-field">
+            <label class="label" for="search-query">Search by name, email, or phone</label>
+            <input class="input" type="text" id="search-query" placeholder="e.g. Amara, amara.chen@example.com, (206) 555-0110" autocomplete="off" />
+          </div>
+          <div class="search-actions-field">
+            <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+          </div>
+        </div>
+        <p class="field-error" id="empty-query-error" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+          Enter a name, email, or phone number to search.
+        </p>
+        <p class="search-help">Partial names return every match; a complete email or phone number returns only the exact profile.</p>
+      </form>
+
+      <div class="toolbar-row">
+        <label class="checkbox-field">
+          <input type="checkbox" id="include-inactive" />
+          Include inactive profiles
+        </label>
+        <div class="outage-toggle">
+          <span>Reviewer control:</span>
+          <button type="button" id="outage-btn" aria-pressed="false">Simulate outage: OFF</button>
+        </div>
+      </div>
+
+      <div class="quick-tries">
+        <span>Quick tries:</span>
+        <button type="button" class="chip-btn" data-query="Amara">Partial name</button>
+        <button type="button" class="chip-btn" data-query="priya.raman@example.com">Exact email</button>
+        <button type="button" class="chip-btn" data-query="(206) 555-0110">Exact phone</button>
+        <button type="button" class="chip-btn" data-query="Zzyzx">No match</button>
+      </div>
+
+      <p class="list-count" id="result-count" aria-live="polite"></p>
+
+      <div class="card table-card" id="results-panel">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- State: reference-states -->
+  <!-- Screen: Reference States
+       Notes:
+         - Static side-by-side snapshots of every state named in the acceptance criteria, for
+           reviewers who want a quick visual scan without driving the live screen.
+         - "Partial name match" (AC1), "Exact email match" (AC2, AC6 — no reservation badge
+           anywhere), "No results" (AC3), "Service outage" (AC4, AC5 — no table rendered),
+           "Default search — inactive excluded" (AC7) vs. "Include inactive enabled" (AC8),
+           and a labelled close-up of the status chip (AC9).
+  -->
+  <div class="screen" data-name="Reference States">
+    <div class="app-topbar">
+      <span class="brand">Front Desk Console</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Guests</a>
+        <a href="#" onclick="return false;">Reservations</a>
+      </nav>
+    </div>
+    <div class="page">
+      <div class="page-header">
+        <h1>Reference states</h1>
+        <p>Static snapshots of each search state called out in the acceptance criteria.</p>
+      </div>
+
+      <div class="ref-grid">
+        <div>
+          <p class="ref-card-label">Partial name match — "Amara" (AC1)</p>
+          <div class="card table-card">
+            <div class="table-scroll">
+              <table class="guest-table">
+                <thead><tr><th>Guest</th><th>Email</th><th>Phone</th><th class="col-status">Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="guest-name">Amara Whitfield</td><td>amara.whitfield@example.com</td><td>(415) 555-0142</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                  <tr><td class="guest-name">Amara Chen</td><td>amara.chen@example.com</td><td>(206) 555-0110</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ref-card-label">Exact email match — no reservation needed (AC2, AC6)</p>
+          <div class="card table-card">
+            <div class="table-scroll">
+              <table class="guest-table">
+                <thead><tr><th>Guest</th><th>Email</th><th>Phone</th><th class="col-status">Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="guest-name">Priya Raman</td><td>priya.raman@example.com</td><td>(646) 555-0173</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ref-card-label">No results — "Zzyzx" (AC3)</p>
+          <div class="card table-card">
+            <div class="state-panel">
+              <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M20 20l-4.35-4.35"></path></svg>
+              <p class="state-title">No profiles found</p>
+              <p class="state-body">No guest profiles matched &ldquo;Zzyzx&rdquo;. Check the spelling, or try a different name, email, or phone number.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ref-card-label">Service outage — no results rendered (AC4, AC5)</p>
+          <div class="card table-card error-panel">
+            <div class="state-panel">
+              <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 4.3L2.6 18a1.5 1.5 0 0 0 1.3 2.2h16.2a1.5 1.5 0 0 0 1.3-2.2L13.7 4.3a1.5 1.5 0 0 0-2.6 0z"></path></svg>
+              <p class="state-title">Search is unavailable</p>
+              <p class="state-body">We couldn&rsquo;t reach the guest directory. No results can be shown right now — please try your search again in a moment.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ref-card-label">Default search — inactive excluded (AC7)</p>
+          <div class="card table-card">
+            <div class="table-scroll">
+              <table class="guest-table">
+                <thead><tr><th>Guest</th><th>Email</th><th>Phone</th><th class="col-status">Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="guest-name">Amara Whitfield</td><td>amara.whitfield@example.com</td><td>(415) 555-0142</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                  <tr><td class="guest-name">Amara Chen</td><td>amara.chen@example.com</td><td>(206) 555-0110</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="u-text-sm u-text-muted" style="padding: 0 var(--space-4) var(--space-4);">"Amara Osei" (Inactive) is hidden by default.</p>
+          </div>
+        </div>
+
+        <div>
+          <p class="ref-card-label">Include inactive enabled (AC8, AC9)</p>
+          <div class="card table-card">
+            <div class="table-scroll">
+              <table class="guest-table">
+                <thead><tr><th>Guest</th><th>Email</th><th>Phone</th><th class="col-status">Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="guest-name">Amara Whitfield</td><td>amara.whitfield@example.com</td><td>(415) 555-0142</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                  <tr><td class="guest-name">Amara Chen</td><td>amara.chen@example.com</td><td>(206) 555-0110</td><td class="col-status"><span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>Active</span></td></tr>
+                  <tr><td class="guest-name">Amara Osei</td><td>amara.osei@example.com</td><td>(404) 555-0151</td><td class="col-status"><span class="status-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg>Inactive</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---- Reviewer bar wiring ----
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !['SELECT', 'INPUT'].includes(document.activeElement.tagName)) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !['SELECT', 'INPUT'].includes(document.activeElement.tagName)) show(cur - 1);
+  });
+
+  // ---- Live Demo: fixture guest directory + simulated search ----
+  const GUESTS = [
+    { name: 'Amara Whitfield', email: 'amara.whitfield@example.com', phone: '(415) 555-0142', status: 'active' },
+    { name: 'Amara Chen',      email: 'amara.chen@example.com',      phone: '(206) 555-0110', status: 'active' },
+    { name: 'Daniel Osei',     email: 'daniel.osei@example.com',     phone: '(312) 555-0199', status: 'inactive' },
+    { name: 'Priya Raman',     email: 'priya.raman@example.com',     phone: '(646) 555-0173', status: 'active' },
+    { name: 'Marcus Bell',     email: 'marcus.bell@example.com',     phone: '(702) 555-0184', status: 'active' },
+    { name: 'Sofia Delgado',   email: 'sofia.delgado@example.com',   phone: '(929) 555-0128', status: 'inactive' },
+    { name: 'Wei Zhang',       email: 'wei.zhang@example.com',       phone: '(503) 555-0165', status: 'active' },
+    { name: 'Grace Okafor',    email: 'grace.okafor@example.com',    phone: '(773) 555-0137', status: 'active' },
+    { name: 'Liam Fitzgerald', email: 'liam.fitzgerald@example.com', phone: '(617) 555-0192', status: 'inactive' },
+    { name: 'Amara Osei',      email: 'amara.osei@example.com',      phone: '(404) 555-0151', status: 'inactive' },
+  ];
+  // Priya Raman intentionally carries no reservation reference anywhere in this fixture set
+  // or UI — proves guest search works independently of reservation state (AC6).
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function digitsOnly(str) { return str.replace(/[^\d]/g, ''); }
+  function isEmailQuery(q) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q); }
+  function isPhoneQuery(q) {
+    const stripped = q.replace(/[\s()\-.+]/g, '');
+    return stripped.length >= 7 && /^\d+$/.test(stripped);
+  }
+
+  function runMatch(query, includeInactive) {
+    const trimmed = query.trim();
+    let matches;
+    if (isEmailQuery(trimmed)) {
+      matches = GUESTS.filter(g => g.email.toLowerCase() === trimmed.toLowerCase());
+    } else if (isPhoneQuery(trimmed)) {
+      const qDigits = digitsOnly(trimmed);
+      matches = GUESTS.filter(g => digitsOnly(g.phone) === qDigits);
+    } else {
+      const needle = trimmed.toLowerCase();
+      matches = GUESTS.filter(g => g.name.toLowerCase().includes(needle));
+    }
+    if (!includeInactive) {
+      matches = matches.filter(g => g.status === 'active');
+    }
+    return matches;
+  }
+
+  function statusChipHtml(status) {
+    if (status === 'active') {
+      return '<span class="status-chip is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 13l4 4L19 7"></path></svg>Active</span>';
+    }
+    return '<span class="status-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>Inactive</span>';
+  }
+
+  const queryInput = document.getElementById('search-query');
+  const includeInactive = document.getElementById('include-inactive');
+  const emptyError = document.getElementById('empty-query-error');
+  const resultsPanel = document.getElementById('results-panel');
+  const resultCount = document.getElementById('result-count');
+  const searchForm = document.getElementById('search-form');
+  const searchBtn = document.getElementById('search-btn');
+  const outageBtn = document.getElementById('outage-btn');
+
+  let outageOn = false;
+  let searchedYet = false;
+
+  function renderInitial() {
+    resultsPanel.innerHTML =
+      '<div class="state-panel">' +
+      '<svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M20 20l-4.35-4.35"></path></svg>' +
+      '<p class="state-title">Search for a guest</p>' +
+      '<p class="state-body">Enter a full or partial name, or a complete email or phone number, then press Search.</p>' +
+      '</div>';
+    resultCount.textContent = '';
+  }
+
+  function renderLoading() {
+    const rows = [1, 2, 3].map(function () {
+      return '<tr class="skeleton-row"><td colspan="4"><div class="skeleton-bar"></div></td></tr>';
+    }).join('');
+    resultsPanel.innerHTML =
+      '<div class="table-scroll"><table class="guest-table"><tbody>' + rows + '</tbody></table></div>';
+    resultCount.textContent = 'Searching…';
+    searchBtn.disabled = true;
+    searchBtn.textContent = 'Searching…';
+  }
+
+  function renderError(elapsedMs) {
+    resultsPanel.innerHTML =
+      '<div class="state-panel error-panel">' +
+      '<svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 4.3L2.6 18a1.5 1.5 0 0 0 1.3 2.2h16.2a1.5 1.5 0 0 0 1.3-2.2L13.7 4.3a1.5 1.5 0 0 0-2.6 0z"></path></svg>' +
+      '<p class="state-title">Search is unavailable</p>' +
+      '<p class="state-body">We couldn’t reach the guest directory. No results can be shown right now &mdash; please try your search again in a moment.</p>' +
+      '</div>';
+    resultCount.textContent = '';
+  }
+
+  function renderNoResults(query) {
+    resultsPanel.innerHTML =
+      '<div class="state-panel">' +
+      '<svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="M20 20l-4.35-4.35"></path></svg>' +
+      '<p class="state-title">No profiles found</p>' +
+      '<p class="state-body">No guest profiles matched &ldquo;' + escapeHtml(query) + '&rdquo;. Check the spelling, or try a different name, email, or phone number.</p>' +
+      '</div>';
+    resultCount.textContent = '0 profiles found';
+  }
+
+  function renderResults(matches, elapsedMs) {
+    const rows = matches.map(function (g) {
+      return '<tr>' +
+        '<td class="guest-name">' + escapeHtml(g.name) + '</td>' +
+        '<td>' + escapeHtml(g.email) + '</td>' +
+        '<td>' + escapeHtml(g.phone) + '</td>' +
+        '<td class="col-status">' + statusChipHtml(g.status) + '</td>' +
+        '</tr>';
+    }).join('');
+    resultsPanel.innerHTML =
+      '<div class="table-scroll"><table class="guest-table">' +
+      '<thead><tr><th>Guest</th><th>Email</th><th>Phone</th><th class="col-status">Status</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table></div>';
+    resultCount.textContent = matches.length + (matches.length === 1 ? ' profile found' : ' profiles found') +
+      ' — responded in ' + elapsedMs + 'ms';
+  }
+
+  function performSearch(query) {
+    emptyError.hidden = true;
+    if (!query.trim()) {
+      emptyError.hidden = false;
+      queryInput.focus();
+      return;
+    }
+    searchedYet = true;
+    renderLoading();
+    const started = performance.now();
+    const delay = 200 + Math.random() * 200;
+    setTimeout(function () {
+      const elapsed = Math.round(performance.now() - started);
+      searchBtn.disabled = false;
+      searchBtn.textContent = 'Search';
+      if (outageOn) {
+        renderError(elapsed);
+        return;
+      }
+      const matches = runMatch(query, includeInactive.checked);
+      if (matches.length === 0) {
+        renderNoResults(query.trim());
+      } else {
+        renderResults(matches, elapsed);
+      }
+    }, delay);
+  }
+
+  searchForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    performSearch(queryInput.value);
+  });
+
+  document.querySelectorAll('.chip-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      queryInput.value = btn.dataset.query;
+      performSearch(queryInput.value);
+    });
+  });
+
+  includeInactive.addEventListener('change', function () {
+    if (searchedYet && queryInput.value.trim()) {
+      performSearch(queryInput.value);
+    }
+  });
+
+  outageBtn.addEventListener('click', function () {
+    outageOn = !outageOn;
+    outageBtn.setAttribute('aria-pressed', String(outageOn));
+    outageBtn.textContent = 'Simulate outage: ' + (outageOn ? 'ON' : 'OFF');
+  });
+
+  renderInitial();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
