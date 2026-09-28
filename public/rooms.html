@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rooms — Room Inventory</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/rooms.css" />
+<script src="./js/rooms.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Room Inventory</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Rooms</a>
+      <a href="#" onclick="return false;">Guests</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Rooms</h1>
+        <p>Create individual rooms under a room type and manage each room's maintenance status.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="new-room-btn">+ New room</button>
+    </div>
+
+    <div class="card table-card" id="rooms-table-wrap">
+      <div class="table-scroll">
+        <table class="room-table">
+          <thead>
+            <tr>
+              <th scope="col">Identifier</th>
+              <th scope="col">Room type</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="room-tbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card empty-state" id="rooms-empty" hidden>
+      <span class="icon" aria-hidden="true">◎</span>
+      <h3>No rooms yet</h3>
+      <p>Add a room to get started tracking availability and maintenance status.</p>
+      <button class="btn btn-secondary" id="rooms-empty-add-btn" type="button">+ Add a room</button>
+    </div>
+  </div>
+
+  <!-- Create room modal (AC1, AC5) -->
+  <div class="modal-overlay" id="create-room-overlay" hidden></div>
+  <div class="modal-wrap" id="create-room-modal" role="dialog" aria-modal="true" aria-labelledby="create-room-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-room-modal-title">New room</h2>
+          <p>Assign a unique identifier and a room type.</p>
+        </div>
+        <button class="icon-btn" id="create-room-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="create-room-form" novalidate>
+        <div class="field">
+          <label class="label" for="field-room-identifier">Identifier</label>
+          <input class="input" id="field-room-identifier" name="identifier" type="text" placeholder="e.g. 101" aria-describedby="error-room-identifier" />
+          <p class="field-error-text" id="error-room-identifier" role="alert" hidden>⚠ Enter a unique room identifier.</p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="field-room-type">Room type</label>
+          <select class="input" id="field-room-type" name="roomTypeId" aria-describedby="error-room-type">
+            <option value="">Select a room type</option>
+          </select>
+          <p class="field-error-text" id="error-room-type" role="alert" hidden>⚠ Select a room type.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="create-room-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="create-room-save-btn">Create room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>
