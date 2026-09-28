@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HR Dashboard — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/dashboard.css" />
+<script src="./js/dashboard.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Dashboard</a>
+      <a href="#" onclick="return false;">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Hiring pipeline dashboard</h1>
+        <p>Live pipeline status sourced from the arc integration.</p>
+      </div>
+      <button class="btn btn-secondary" id="refresh-btn" type="button">Refresh</button>
+    </div>
+
+    <div class="stale-banner" id="stale-banner" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">⚠</span>
+      <span id="stale-banner-text"></span>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="pipeline-table">
+          <thead>
+            <tr>
+              <th scope="col">Hire</th>
+              <th scope="col">Stage</th>
+              <th scope="col">Last updated</th>
+            </tr>
+          </thead>
+          <tbody id="pipeline-tbody">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

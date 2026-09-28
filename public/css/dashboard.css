@@ -1,0 +1,73 @@
+/*
+  Design-system gap note: tokens.json has no dedicated warning color, so the
+  stale-data banner is distinguished by border style/width + icon + copy,
+  never by hue alone — dashed border for stale, solid/bolder for
+  significantly stale (mirrors the status-chip convention in hire-profile.css).
+*/
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+
+/* App shell (.app-topbar, .app-nav, .btn, .card) lives in
+   design-system/prototype-utils.css. */
+.page { max-width: 1040px; }
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Stale-data banner (AC2, AC4) ---------- */
+.stale-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.stale-banner[hidden] { display: none; }
+.stale-banner--significant {
+  border-style: solid;
+  border-width: 2px;
+}
+
+/* ---------- Pipeline table ---------- */
+.table-card { padding: 0; overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+table.pipeline-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+.pipeline-table th {
+  text-align: left;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.pipeline-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  vertical-align: top;
+}
+.pipeline-table tbody tr:last-child td { border-bottom: none; }
