@@ -99,6 +99,8 @@ function initHireDashboardApp(doc, initialHires, api) {
     api.list().then((hires) => {
       allHires = hires;
       render();
+    }).catch((err) => {
+      console.error('Hire dashboard auto-refresh failed — showing last-loaded data:', err);
     });
   }, REFRESH_INTERVAL_MS);
 
@@ -109,12 +111,36 @@ function createDefaultApi() {
   return { list: () => fetch('/hires').then((r) => r.json()) };
 }
 
-module.exports = { initHireDashboardApp, filterHires, DEPARTMENTS, HIRE_STAGES, REFRESH_INTERVAL_MS };
+function showLoadError(doc, onRetry) {
+  const content = doc.getElementById('dashboard-content');
+  const errorPanel = doc.getElementById('load-error');
+  if (content) content.hidden = true;
+  if (errorPanel) errorPanel.hidden = false;
+  const retryBtn = doc.getElementById('load-retry-btn');
+  if (retryBtn) retryBtn.onclick = onRetry;
+}
+
+function hideLoadError(doc) {
+  const content = doc.getElementById('dashboard-content');
+  const errorPanel = doc.getElementById('load-error');
+  if (content) content.hidden = false;
+  if (errorPanel) errorPanel.hidden = true;
+}
+
+function loadAndInit(doc, api) {
+  return api.list().then((hires) => {
+    hideLoadError(doc);
+    initHireDashboardApp(doc, hires, api);
+  }).catch((err) => {
+    console.error('Hire dashboard initial load failed:', err);
+    showLoadError(doc, () => loadAndInit(doc, api));
+  });
+}
+
+module.exports = { initHireDashboardApp, filterHires, loadAndInit, DEPARTMENTS, HIRE_STAGES, REFRESH_INTERVAL_MS };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/hires')
-      .then((res) => res.json())
-      .then((hires) => initHireDashboardApp(document, hires, createDefaultApi()));
+    loadAndInit(document, createDefaultApi());
   });
 }

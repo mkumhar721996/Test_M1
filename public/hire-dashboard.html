@@ -28,52 +28,61 @@
       </div>
     </div>
 
-    <form role="search" aria-label="Filter hires" class="filter-bar" onsubmit="return false;">
-      <div class="filter-field">
-        <label class="label" for="filter-stage">Stage</label>
-        <select class="input" id="filter-stage" aria-label="Onboarding stage"><!-- options rendered by JS from HIRE_STAGES --></select>
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-search">Hire name or ID</label>
-        <input class="input" type="search" id="filter-search" aria-label="Hire name or ID" placeholder="e.g. Jordan Reyes or hire_1001" autocomplete="off" />
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-department">Department</label>
-        <select class="input" id="filter-department" aria-label="Department"><!-- options rendered by JS from DEPARTMENTS --></select>
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-start-date">From</label>
-        <input class="input" type="date" id="filter-start-date" aria-label="Start date from" />
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-end-date">To</label>
-        <input class="input" type="date" id="filter-end-date" aria-label="Start date to" />
-      </div>
-      <div class="filter-field filter-actions-field">
-        <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
-      </div>
-    </form>
-
-    <div class="filter-result-row">
-      <p class="list-count" id="result-count" aria-live="polite"></p>
+    <div class="card error-state" id="load-error" hidden role="alert">
+      <span class="icon" aria-hidden="true">⚠</span>
+      <h3>Couldn't load hires</h3>
+      <p id="load-error-message">Something went wrong loading the hire dashboard. Check your connection and try again.</p>
+      <button class="btn btn-secondary" id="load-retry-btn" type="button">Retry</button>
     </div>
 
-    <div class="card table-card">
-      <div class="table-scroll">
-        <table class="hire-table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Hire ID</th>
-              <th scope="col">Department</th>
-              <th scope="col">Stage</th>
-              <th scope="col">Start date</th>
-            </tr>
-          </thead>
-          <tbody id="hire-tbody">
-            <!-- rendered by JS -->
-          </tbody>
-        </table>
+    <div id="dashboard-content">
+      <form role="search" aria-label="Filter hires" class="filter-bar" onsubmit="return false;">
+        <div class="filter-field">
+          <label class="label" for="filter-stage">Stage</label>
+          <select class="input" id="filter-stage" aria-label="Onboarding stage"><!-- options rendered by JS from HIRE_STAGES --></select>
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-search">Hire name or ID</label>
+          <input class="input" type="search" id="filter-search" aria-label="Hire name or ID" placeholder="e.g. Jordan Reyes or hire_1001" autocomplete="off" />
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-department">Department</label>
+          <select class="input" id="filter-department" aria-label="Department"><!-- options rendered by JS from DEPARTMENTS --></select>
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-start-date">From</label>
+          <input class="input" type="date" id="filter-start-date" aria-label="Start date from" />
+        </div>
+        <div class="filter-field">
+          <label class="label" for="filter-end-date">To</label>
+          <input class="input" type="date" id="filter-end-date" aria-label="Start date to" />
+        </div>
+        <div class="filter-field filter-actions-field">
+          <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
+        </div>
+      </form>
+
+      <div class="filter-result-row">
+        <p class="list-count" id="result-count" aria-live="polite"></p>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="hire-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Hire ID</th>
+                <th scope="col">Department</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Start date</th>
+              </tr>
+            </thead>
+            <tbody id="hire-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

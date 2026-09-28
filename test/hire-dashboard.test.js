@@ -121,4 +121,75 @@ describe('Dashboard Filtering', () => {
     expect(filterHires(list, { stage: 'offer_accepted', search: 'b' })).toEqual([list[1]]);
     expect(filterHires(list, {})).toEqual(list);
   });
+
+  test('an auto-refresh failure is swallowed so the interval keeps refreshing on the next tick', async () => {
+    jest.useFakeTimers();
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    api.list.mockRejectedValueOnce(new Error('refresh failed'));
+
+    jest.advanceTimersByTime(REFRESH_INTERVAL_MS);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    // Failed refresh leaves the last-loaded data on screen, no crash.
+    expect(document.querySelectorAll('#hire-tbody tr').length).toBe(3);
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    const nextRefresh = fixtureHires().filter((h) => h.id !== 'hire_1003');
+    api.list.mockResolvedValueOnce(nextRefresh);
+
+    jest.advanceTimersByTime(REFRESH_INTERVAL_MS);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    // The interval kept firing: the following successful refresh still applies.
+    expect(document.querySelectorAll('#hire-tbody tr').length).toBe(2);
+
+    consoleErrorSpy.mockRestore();
+    jest.useRealTimers();
+  });
+});
+
+describe('Dashboard Filtering — initial load resilience', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+  });
+
+  test('a failed initial load shows a retry-able error state instead of a blank dashboard', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const failingApi = { list: jest.fn(() => Promise.reject(new Error('network error'))) };
+    const { loadAndInit } = require('../public/js/hire-dashboard');
+
+    await loadAndInit(document, failingApi);
+
+    expect(document.getElementById('load-error').hidden).toBe(false);
+    expect(document.getElementById('dashboard-content').hidden).toBe(true);
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
+  test('clicking Retry after a failed initial load re-fetches and shows the dashboard on success', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    const flakyApi = { list: jest.fn() };
+    flakyApi.list
+      .mockImplementationOnce(() => Promise.reject(new Error('network error')))
+      .mockImplementationOnce(() => Promise.resolve(fixtureHires()));
+    const { loadAndInit } = require('../public/js/hire-dashboard');
+
+    await loadAndInit(document, flakyApi);
+    expect(document.getElementById('load-error').hidden).toBe(false);
+
+    document.getElementById('load-retry-btn').click();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.getElementById('load-error').hidden).toBe(true);
+    expect(document.getElementById('dashboard-content').hidden).toBe(false);
+    expect(document.querySelectorAll('#hire-tbody tr').length).toBe(3);
+    expect(flakyApi.list).toHaveBeenCalledTimes(2);
+
+    console.error.mockRestore();
+  });
 });
