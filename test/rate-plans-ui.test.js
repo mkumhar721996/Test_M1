@@ -191,4 +191,19 @@ describe('Rate Plans UI', () => {
     expect(document.getElementById('lookup-overlap-note').hidden).toBe(false);
     expect(document.getElementById('lookup-overlap-text').textContent).toContain('Winter Promo 2026');
   });
+
+  test('page-load error handler does not throw when the rate-plans-screen container is missing', async () => {
+    document.getElementById('rate-plans-screen').remove();
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+
+    require('../public/js/rate-plans');
+    window.dispatchEvent(new Event('DOMContentLoaded'));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load rate plans:', expect.anything());
+
+    consoleErrorSpy.mockRestore();
+    delete global.fetch;
+  });
 });

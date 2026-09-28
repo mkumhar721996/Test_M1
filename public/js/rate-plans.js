@@ -393,13 +393,15 @@ if (typeof window !== 'undefined') {
     }).catch((err) => {
       console.error('Failed to load rate plans:', err);
       const container = document.getElementById('rate-plans-screen');
-      container.innerHTML = `<div class="page">
-        <div class="card empty-state">
-          <span class="icon" aria-hidden="true">⚠</span>
-          <h3>Couldn't load rate plans</h3>
-          <p>Something went wrong while loading this page. Please refresh to try again.</p>
-        </div>
-      </div>`;
+      if (container) {
+        container.innerHTML = `<div class="page">
+          <div class="card empty-state">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>Couldn't load rate plans</h3>
+            <p>Something went wrong while loading this page. Please refresh to try again.</p>
+          </div>
+        </div>`;
+      }
     });
   });
 }
