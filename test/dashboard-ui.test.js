@@ -60,6 +60,26 @@ describe('Dashboard UI — stale-data banner', () => {
     expect(document.getElementById('pipeline-tbody').textContent).toContain('background_check');
   });
 
+  test('a failed manual refresh shows error feedback instead of silently failing', async () => {
+    const stalePayload = {
+      data: [{ hireId: 'hire_1', name: 'Jordan Reyes', stage: 'offer', updatedAt: '2026-09-27T10:00:00.000Z' }],
+      stale: true,
+      lastFetchedAt: '2026-09-27T10:00:00.000Z',
+      significantlyStale: false,
+    };
+    const api = { fetchDashboard: jest.fn().mockRejectedValue(new Error('arc down')) };
+    const { initDashboardApp } = require('../public/js/dashboard');
+    initDashboardApp(document, stalePayload, api);
+
+    document.getElementById('refresh-btn').click();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toMatch(/could not refresh/i);
+    expect(document.getElementById('stale-banner').hidden).toBe(false);
+  });
+
   test('AC4: significantly stale data renders the stronger warning copy and modifier class', () => {
     const payload = {
       data: [],
