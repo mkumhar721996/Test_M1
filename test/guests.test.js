@@ -108,3 +108,30 @@ test('AC12: POST /guests/:id/deactivate for an unknown id returns 404', async ()
   const res = await request(app).post('/guests/does-not-exist/deactivate').send({ actor: 'Priya Nair' });
   expect(res.status).toBe(404);
 });
+
+test('Duplicate detection AC1: GET /guests/duplicates surfaces a match by email (case-insensitive) without creating anything', async () => {
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Nora Diaz', email: 'nora@example.com', actor: 'Priya Nair' });
+  const before = await request(app).get('/guests');
+  const res = await request(app).get('/guests/duplicates').query({ email: 'NORA@example.com', phone: '' });
+  expect(res.status).toBe(200);
+  expect(res.body.matches).toHaveLength(1);
+  expect(res.body.matches[0].guest.id).toBe(createRes.body.id);
+  expect(res.body.matches[0].reasons).toEqual(['email']);
+  const after = await request(app).get('/guests');
+  expect(after.body.length).toBe(before.body.length);
+});
+
+test('Duplicate detection AC1: GET /guests/duplicates surfaces a match by phone regardless of formatting', async () => {
+  const createRes = await request(app).post('/guests').set('x-staff-role', 'front_desk').send({ name: 'Oscar Vega', phone: '(555) 214-7788', actor: 'Priya Nair' });
+  const res = await request(app).get('/guests/duplicates').query({ email: '', phone: '5552147788' });
+  expect(res.status).toBe(200);
+  expect(res.body.matches).toHaveLength(1);
+  expect(res.body.matches[0].guest.id).toBe(createRes.body.id);
+  expect(res.body.matches[0].reasons).toEqual(['phone']);
+});
+
+test('Duplicate detection AC6: GET /guests/duplicates returns no matches when nothing matches', async () => {
+  const res = await request(app).get('/guests/duplicates').query({ email: 'nobody@example.com', phone: '5550000000' });
+  expect(res.status).toBe(200);
+  expect(res.body.matches).toEqual([]);
+});

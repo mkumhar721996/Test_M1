@@ -219,3 +219,117 @@ describe('Guest Profiles UI', () => {
     expect(document.getElementById('deactivate-modal').hidden).toBe(true);
   });
 });
+
+function fillCreateForm({ name, email, phone }) {
+  document.getElementById('field-name').value = name;
+  document.getElementById('field-email').value = email || '';
+  document.getElementById('field-phone').value = phone || '';
+}
+
+describe('Duplicate Guest Detection & Linking', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+  });
+
+  test('AC1: submitting a form whose email matches an existing profile shows the duplicate step and never calls create', async () => {
+    const existingGuest = fixtureGuest();
+    const checkDuplicates = jest.fn().mockResolvedValue([{ guest: existingGuest, reasons: ['email'] }]);
+    const create = jest.fn();
+    const api = { checkDuplicates, create };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [existingGuest], api);
+
+    document.getElementById('new-guest-btn').click();
+    fillCreateForm({ name: 'Alex Morgan', email: existingGuest.email });
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    expect(checkDuplicates).toHaveBeenCalledWith(existingGuest.email, '');
+    expect(document.getElementById('step-duplicates').hidden).toBe(false);
+    expect(document.querySelector('#dup-cards [data-link-id]')).toBeTruthy();
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  test('AC2/AC3: choosing "Link to this profile" never calls create and shows the existing profile as the record to use', async () => {
+    const existingGuest = fixtureGuest();
+    const checkDuplicates = jest.fn().mockResolvedValue([{ guest: existingGuest, reasons: ['email'] }]);
+    const create = jest.fn();
+    const api = { checkDuplicates, create };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [existingGuest], api);
+
+    document.getElementById('new-guest-btn').click();
+    fillCreateForm({ name: 'Alex Morgan', email: existingGuest.email });
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    document.querySelector('#dup-cards [data-link-id]').click();
+    await Promise.resolve(); await Promise.resolve();
+
+    expect(create).not.toHaveBeenCalled();
+    expect(document.getElementById('create-modal').hidden).toBe(true);
+    expect(document.getElementById('profile-name').textContent).toBe(existingGuest.name);
+    expect(document.getElementById('profile-screen').hidden).toBe(false);
+  });
+
+  test('AC4/AC5: proceeding anyway requires the inline confirmation, then creates a new profile and fully dismisses the duplicate warning', async () => {
+    const existingGuest = fixtureGuest();
+    const checkDuplicates = jest.fn().mockResolvedValue([{ guest: existingGuest, reasons: ['email'] }]);
+    const created = { ...existingGuest, id: 'GST-3003', name: 'New Person' };
+    const create = jest.fn().mockResolvedValue(created);
+    const api = { checkDuplicates, create };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [existingGuest], api);
+
+    document.getElementById('new-guest-btn').click();
+    fillCreateForm({ name: 'New Person', email: existingGuest.email });
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    document.getElementById('dup-proceed-btn').click();
+    expect(document.getElementById('dup-proceed-confirm').hidden).toBe(false);
+
+    document.getElementById('dup-proceed-confirm-btn').click();
+    await Promise.resolve(); await Promise.resolve();
+
+    expect(create).toHaveBeenCalledWith(expect.objectContaining({ name: 'New Person', email: existingGuest.email }));
+    expect(document.getElementById('create-modal').hidden).toBe(true);
+    expect(document.getElementById('step-duplicates').hidden).toBe(true);
+  });
+
+  test('AC6/AC7: no matching profiles means no duplicate warning is shown and the profile is created normally', async () => {
+    const existingGuest = fixtureGuest();
+    const checkDuplicates = jest.fn().mockResolvedValue([]);
+    const created = { id: 'GST-4004', name: 'Priya Natarajan', email: 'priya.natarajan@example.com', phone: '', status: 'active', createdAt: '2026-09-28T09:00:00.000Z', updatedAt: '2026-09-28T09:00:00.000Z', preferences: {}, bookingHistory: [], auditLog: [] };
+    const create = jest.fn().mockResolvedValue(created);
+    const api = { checkDuplicates, create };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [existingGuest], api);
+
+    document.getElementById('new-guest-btn').click();
+    fillCreateForm({ name: 'Priya Natarajan', email: 'priya.natarajan@example.com' });
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    expect(document.getElementById('step-duplicates').hidden).toBe(true);
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(document.getElementById('guest-tbody').textContent).toContain('Priya Natarajan');
+  });
+
+  test('a create-form submission still succeeds when the api has no checkDuplicates method (fail-open)', async () => {
+    const created = { id: 'GST-5005', name: 'No Check Person', email: 'nocheck@example.com', phone: '', status: 'active', createdAt: '2026-09-28T09:00:00.000Z', updatedAt: '2026-09-28T09:00:00.000Z', preferences: {}, bookingHistory: [], auditLog: [] };
+    const create = jest.fn().mockResolvedValue(created);
+    const api = { create };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [], api);
+
+    document.getElementById('new-guest-btn').click();
+    fillCreateForm({ name: 'No Check Person', email: 'nocheck@example.com' });
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(document.getElementById('step-duplicates').hidden).toBe(true);
+  });
+});

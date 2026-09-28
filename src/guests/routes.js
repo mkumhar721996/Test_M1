@@ -1,6 +1,13 @@
 const express = require('express');
 const guestsStore = require('./store');
-const { GuestValidationError, getGuest, updateGuest, deactivateGuest, reactivateGuest } = guestsStore;
+const {
+  GuestValidationError,
+  getGuest,
+  updateGuest,
+  deactivateGuest,
+  reactivateGuest,
+  findDuplicateGuests,
+} = guestsStore;
 
 const router = express.Router();
 
@@ -48,6 +55,18 @@ router.post('/', (req, res, next) => {
     if (err instanceof GuestValidationError) {
       return res.status(400).json({ error: 'validation_error', fields: err.fields });
     }
+    next(err);
+  }
+});
+
+router.get('/duplicates', (req, res, next) => {
+  try {
+    const matches = findDuplicateGuests(
+      { email: req.query.email, phone: req.query.phone },
+      guestsStore.listGuests(),
+    );
+    res.status(200).json({ matches });
+  } catch (err) {
     next(err);
   }
 });

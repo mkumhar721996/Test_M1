@@ -90,43 +90,73 @@
           </div>
           <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
         </div>
-        <form id="create-form" novalidate>
-          <div class="field">
-            <label class="label" for="field-name">Full name</label>
-            <input class="input" id="field-name" name="name" type="text" aria-describedby="error-name" />
-            <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+
+        <!-- Step: details -->
+        <div id="step-details">
+          <form id="create-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-name">Full name</label>
+              <input class="input" id="field-name" name="name" type="text" aria-describedby="error-name" />
+              <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-email">Email</label>
+              <input class="input" id="field-email" name="email" type="email" aria-describedby="error-contact" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-phone">Phone</label>
+              <input class="input" id="field-phone" name="phone" type="tel" aria-describedby="error-contact" />
+              <p class="field-error-text" id="error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-room">Room preference <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <input class="input" id="field-room" name="roomType" type="text" placeholder="e.g. Ocean view" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-dietary">Dietary notes <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <input class="input" id="field-dietary" name="dietary" type="text" placeholder="e.g. Vegetarian" />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="label" for="field-comm">Preferred contact method <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
+              <select class="input" id="field-comm" name="communication">
+                <option value="">No preference set</option>
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="SMS">SMS</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="create-save-btn">Create profile</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step: possible duplicates found (AC1; Link satisfies AC2/AC3, Proceed satisfies AC4/AC5) -->
+        <div id="step-duplicates" hidden>
+          <div class="duplicate-banner" role="alert">
+            <span aria-hidden="true">⚠</span>
+            <div>
+              <strong id="dup-banner-title">Possible duplicate found</strong>
+              <p id="dup-banner-copy" class="u-text-sm u-text-muted">The email or phone number you entered matches an existing profile.</p>
+            </div>
           </div>
-          <div class="field">
-            <label class="label" for="field-email">Email</label>
-            <input class="input" id="field-email" name="email" type="email" aria-describedby="error-contact" />
+
+          <div id="dup-cards"><!-- match cards rendered by JS --></div>
+
+          <div class="dup-proceed-row">
+            <button type="button" class="btn btn-secondary" id="dup-edit-btn">← Edit details</button>
+            <button type="button" class="btn btn-secondary" id="dup-proceed-btn">Proceed anyway — create new profile</button>
           </div>
-          <div class="field">
-            <label class="label" for="field-phone">Phone</label>
-            <input class="input" id="field-phone" name="phone" type="tel" aria-describedby="error-contact" />
-            <p class="field-error-text" id="error-contact" role="alert" hidden>⚠ Add an email or phone number so we can reach this guest.</p>
+
+          <div class="dup-confirm-inline" id="dup-proceed-confirm" hidden>
+            <p class="u-text-sm">Create a separate profile for <strong id="dup-confirm-name"></strong> even though it may match the profile(s) above?</p>
+            <div class="dup-confirm-actions">
+              <button type="button" class="btn btn-secondary" id="dup-proceed-cancel-btn">Cancel</button>
+              <button type="button" class="btn btn-primary" id="dup-proceed-confirm-btn">Yes, create new profile</button>
+            </div>
           </div>
-          <div class="field">
-            <label class="label" for="field-room">Room preference <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
-            <input class="input" id="field-room" name="roomType" type="text" placeholder="e.g. Ocean view" />
-          </div>
-          <div class="field">
-            <label class="label" for="field-dietary">Dietary notes <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
-            <input class="input" id="field-dietary" name="dietary" type="text" placeholder="e.g. Vegetarian" />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label class="label" for="field-comm">Preferred contact method <span style="font-weight:var(--font-weight-regular);color:var(--color-fg-muted)">(optional)</span></label>
-            <select class="input" id="field-comm" name="communication">
-              <option value="">No preference set</option>
-              <option value="Email">Email</option>
-              <option value="Phone">Phone</option>
-              <option value="SMS">SMS</option>
-            </select>
-          </div>
-          <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="create-save-btn">Create profile</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
 

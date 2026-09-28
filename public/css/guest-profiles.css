@@ -248,6 +248,30 @@ table.booking-table { width: 100%; border-collapse: collapse; }
 .input-error { border-width: 2px; border-color: var(--color-fg); }
 .field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
 
+/* ---------- Duplicate detection (New guest profile modal) ---------- */
+/* Design-system gap note: tokens.json has no dedicated warning/success/danger
+   color — every signal below is carried by icon + label + border style
+   (dashed = needs a decision, solid = confirmed), never by hue alone. */
+.duplicate-banner {
+  display: flex; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-4);
+  border: 1px dashed var(--color-primary); border-radius: var(--radius-md);
+}
+.duplicate-banner strong { display: block; font-family: var(--font-family-base); color: var(--color-fg); }
+.duplicate-banner p { margin: var(--space-1) 0 0 0; }
+
+.match-card { margin-bottom: var(--space-3); }
+.match-card:last-child { margin-bottom: 0; }
+.match-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); flex-wrap: wrap; }
+.match-card-name { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+.match-chip { border: 1px dashed var(--color-primary); flex-shrink: 0; }
+.match-card-contact { margin: var(--space-2) 0; }
+.match-card-actions { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+
+.dup-proceed-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+.dup-confirm-inline { margin-top: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg); }
+.dup-confirm-inline[hidden] { display: none; }
+.dup-confirm-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
+
 /* ---------- Guest profile layout ---------- */
 .back-link {
   background: none;

@@ -190,6 +190,19 @@ function reactivateGuest(id, actor) {
   return guest;
 }
 
+function findDuplicateGuests(candidate, guestList) {
+  const email = normalizeEmail(candidate.email);
+  const phone = normalizePhone(candidate.phone);
+  const matches = [];
+  guestList.forEach((g) => {
+    const reasons = [];
+    if (email && normalizeEmail(g.email) === email) reasons.push('email');
+    if (phone && normalizePhone(g.phone) === phone) reasons.push('phone');
+    if (reasons.length) matches.push({ guest: g, reasons });
+  });
+  return matches;
+}
+
 module.exports = {
   GuestValidationError,
   createGuest,
@@ -200,4 +213,5 @@ module.exports = {
   reactivateGuest,
   canCreateGuest,
   findGuestMatch,
+  findDuplicateGuests,
 };

@@ -36,6 +36,41 @@ function contactSummary(g) {
   return parts.length ? parts.join(' · ') : '—';
 }
 
+function reasonLabel(reasons) {
+  if (reasons.length === 2) return 'Matched on email & phone';
+  return reasons[0] === 'email' ? 'Matched on email' : 'Matched on phone';
+}
+
+function bannerCopy(matches) {
+  if (matches.length === 1) {
+    return {
+      title: 'Possible duplicate found',
+      copy: 'The email or phone number you entered matches an existing profile. Link to it instead of creating a new one, or proceed if this is a different person.',
+    };
+  }
+  return {
+    title: `${matches.length} possible duplicates found`,
+    copy: `The email or phone number you entered matches ${matches.length} existing profiles. Link to one instead of creating a new one, or proceed if this is a different person.`,
+  };
+}
+
+function matchCardHtml(match) {
+  const g = match.guest;
+  const statusLabel = g.status === 'active' ? 'Active profile' : 'Deactivated profile';
+  return `
+    <div class="card match-card">
+      <div class="match-card-header">
+        <div>
+          <h3 class="match-card-name">${escapeHtml(g.name)}</h3>
+          <p class="u-text-sm u-text-muted">${statusLabel}</p>
+        </div>
+        <span class="chip match-chip">${reasonLabel(match.reasons)}</span>
+      </div>
+      <p class="u-text-sm match-card-contact">${escapeHtml(contactSummary(g))}</p>
+      <div class="match-card-actions"><button type="button" class="btn btn-primary btn-sm" data-link-id="${escapeHtml(g.id)}">Link to this profile</button></div>
+    </div>`;
+}
+
 function diffChanges(guest, form) {
   const changes = {};
   if (form.name !== guest.name) changes.name = form.name;
@@ -53,6 +88,8 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   let lastMutationTs = null;
   let toastTimer = null;
   let profileToastTimer = null;
+  let pendingCreateData = null;
+  let pendingMatches = [];
 
   const directoryScreen = doc.getElementById('directory-screen');
   const profileScreen = doc.getElementById('profile-screen');
@@ -146,6 +183,10 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   const createOverlay = doc.getElementById('create-overlay');
   const createModal = doc.getElementById('create-modal');
   const createForm = doc.getElementById('create-form');
+  const stepDetails = doc.getElementById('step-details');
+  const stepDuplicates = doc.getElementById('step-duplicates');
+  const dupCards = doc.getElementById('dup-cards');
+  const dupProceedConfirm = doc.getElementById('dup-proceed-confirm');
 
   function clearCreateErrors() {
     doc.getElementById('error-name').hidden = true;
@@ -155,21 +196,57 @@ function initGuestProfilesApp(doc, initialGuests, api) {
     doc.getElementById('field-phone').classList.remove('input-error');
   }
 
+  function resetCreateSteps() {
+    stepDetails.hidden = false;
+    stepDuplicates.hidden = true;
+    dupProceedConfirm.hidden = true;
+    pendingCreateData = null;
+    pendingMatches = [];
+  }
+
   function openCreateModal() {
     createForm.reset();
     clearCreateErrors();
+    resetCreateSteps();
     createOverlay.hidden = false;
     createModal.hidden = false;
   }
   function closeCreateModal() {
     createOverlay.hidden = true;
     createModal.hidden = true;
+    resetCreateSteps();
   }
 
   doc.getElementById('new-guest-btn').addEventListener('click', openCreateModal);
   doc.getElementById('create-close-btn').addEventListener('click', closeCreateModal);
   doc.getElementById('create-cancel-btn').addEventListener('click', closeCreateModal);
   createOverlay.addEventListener('click', closeCreateModal);
+
+  function checkForDuplicates(email, phone) {
+    if (typeof api.checkDuplicates !== 'function') return Promise.resolve([]);
+    return Promise.resolve().then(() => api.checkDuplicates(email, phone)).catch(() => []);
+  }
+
+  function createGuestProfile(data) {
+    return api.create(data).then((guest) => {
+      guests.unshift(guest);
+      closeCreateModal();
+      searchInput.value = '';
+      renderDirectory(guests);
+      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), `Guest profile created — ID ${guest.id}`, 'directory');
+    }).catch(() => {
+      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), 'Guest profile could not be created — please try again', 'directory');
+    });
+  }
+
+  function renderDuplicateStep(matches, candidateName) {
+    const { title, copy } = bannerCopy(matches);
+    doc.getElementById('dup-banner-title').textContent = title;
+    doc.getElementById('dup-banner-copy').textContent = copy;
+    dupCards.innerHTML = matches.map((m) => matchCardHtml(m)).join('');
+    doc.getElementById('dup-confirm-name').textContent = candidateName;
+    dupProceedConfirm.hidden = true;
+  }
 
   createForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -194,16 +271,43 @@ function initGuestProfilesApp(doc, initialGuests, api) {
     const roomType = doc.getElementById('field-room').value.trim();
     const dietary = doc.getElementById('field-dietary').value.trim();
     const communication = doc.getElementById('field-comm').value;
+    const data = { name, email, phone, roomType, dietary, communication, actor: STAFF_NAME };
 
-    api.create({ name, email, phone, roomType, dietary, communication, actor: STAFF_NAME }).then((guest) => {
-      guests.unshift(guest);
-      closeCreateModal();
-      searchInput.value = '';
-      renderDirectory(guests);
-      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), `Guest profile created — ID ${guest.id}`, 'directory');
-    }).catch(() => {
-      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), 'Guest profile could not be created — please try again', 'directory');
+    checkForDuplicates(email, phone).then((matches) => {
+      if (matches.length === 0) {
+        createGuestProfile(data);
+        return;
+      }
+      pendingCreateData = data;
+      pendingMatches = matches;
+      renderDuplicateStep(matches, name);
+      stepDetails.hidden = true;
+      stepDuplicates.hidden = false;
     });
+  });
+
+  dupCards.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-link-id]');
+    if (!btn) return;
+    const match = pendingMatches.find((m) => m.guest.id === btn.dataset.linkId);
+    if (!match) return;
+    closeCreateModal();
+    openProfileFromGuest(match.guest);
+    showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), `Linked to ${match.guest.name}'s existing profile — no new profile was created.`, 'profile');
+  });
+
+  doc.getElementById('dup-edit-btn').addEventListener('click', () => {
+    stepDuplicates.hidden = true;
+    stepDetails.hidden = false;
+  });
+  doc.getElementById('dup-proceed-btn').addEventListener('click', () => {
+    dupProceedConfirm.hidden = false;
+  });
+  doc.getElementById('dup-proceed-cancel-btn').addEventListener('click', () => {
+    dupProceedConfirm.hidden = true;
+  });
+  doc.getElementById('dup-proceed-confirm-btn').addEventListener('click', () => {
+    createGuestProfile(pendingCreateData);
   });
 
   /* ---------------- Guest Profile ---------------- */
@@ -451,6 +555,10 @@ function createDefaultApi() {
       if (!res.ok) return Promise.reject({ status: res.status });
       return res.json();
     }),
+    checkDuplicates: (email, phone) => fetch(`/guests/duplicates?${new URLSearchParams({ email, phone })}`).then((res) => {
+      if (!res.ok) return Promise.reject({ status: res.status });
+      return res.json();
+    }).then((body) => body.matches),
     create: (data) => jsonRequest('/guests', 'POST', { ...data, actor: STAFF_NAME }),
     update: (id, changes) => jsonRequest(`/guests/${id}`, 'PATCH', { ...changes, actor: STAFF_NAME }),
     deactivate: (id) => jsonRequest(`/guests/${id}/deactivate`, 'POST', { actor: STAFF_NAME }),
