@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-103 — Inline Guest Create Hook</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note (same gap flagged in TEST-M1-STORY-032/091): tokens.json has no
+    dedicated error/danger or success color — only color-fg, color-fg-muted,
+    color-primary/-fg, color-surface, color-bg, color-border. Validation errors, the
+    service-error banner, the permission-denied notice and the "linked" success state are
+    all told apart by icon (⚠ / ✓ / ⛔) + label text + an emphasized border, never by hue
+    alone (UX baseline, "never encode meaning in colour alone"). If sdlc.design-system-bootstrap
+    later adds e.g. `color-danger` / `color-success`, the rules below marked "page-specific"
+    are the only place to swap them in.
+
+    Also note: this project (Test_M1) has no existing "Guest" or "Reservation" feature yet —
+    this story ships an embeddable entry point for a *future* consumer. The host page below is
+    an illustrative mock, clearly labelled, so a reviewer can see the hook working inside a
+    plausible calling flow without this prototype inventing/committing to that flow's real design.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- Mock host chrome (illustrative only — not part of this story) ---------- */
+  .mock-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+
+  .role-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .role-switcher label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .role-switcher select { width: auto; min-width: 220px; }
+
+  /* ---------- The embeddable hook itself: everything inside this boundary is the
+       deliverable for this story; the dashed border + tag exist only in this prototype to
+       show reviewers the scope, they are not part of the shipped component. ---------- */
+  .embed-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-bottom: var(--space-2);
+    background: var(--color-bg);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-1) var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+  .embed-boundary {
+    border: 2px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .embed-boundary[hidden] { display: none; }
+
+  .guest-empty {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .guest-linked {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .guest-linked-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .guest-linked-icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .guest-id {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .guest-linked[hidden] { display: none; }
+
+  /* Duplicate-detection status + match card (AC2) */
+  .dup-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .dup-status[hidden] { display: none; }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation: none; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .dup-match {
+    margin-top: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+  .dup-match[hidden] { display: none; }
+  .dup-match-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .dup-match-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+  .dup-match-card:last-of-type { margin-bottom: 0; }
+  .dup-match-name { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .dup-match-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: var(--space-2);
+  }
+
+  /* Inline field validation (page-specific: no shared token yet, see gap note above) */
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* Service-error banner (AC5) and permission-denied notice (AC6) */
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+  }
+  .notice[hidden] { display: none; }
+  .notice-icon { flex: 0 0 auto; font-weight: var(--font-weight-bold); color: var(--color-primary); }
+  .notice p { margin: 0; }
+  .notice p + p { margin-top: var(--space-1); color: var(--color-fg-muted); }
+
+  .demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-4);
+  }
+  .demo-note label { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .demo-note input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); cursor: pointer; }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  /* ---------- Integration event log: visualizes the identifier the embedding context
+       receives back from the hook (AC3), plus every other outcome the hook can emit. ---------- */
+  .event-log {
+    margin-top: var(--space-4);
+  }
+  .event-log h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 var(--space-2) 0;
+  }
+  .event-log-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .event-entry {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .event-entry .event-name { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .event-entry.event-empty { font-style: italic; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1080px) {
+    .reference-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: none. This story ships an embeddable widget (the "hook"), not a page in an
+     app with its own navigation — there is no existing Guest/Reservation product surface
+     to anchor a nav to (grep of src/ found no "guest" concept yet). Screen 1 wraps the
+     hook in a minimal, clearly-labelled mock host ("Front Desk Console (mock)") purely so
+     reviewers can see it embedded in a plausible calling flow; that host chrome is NOT
+     part of this story's deliverable. -->
+<body class="u-surface">
+
+  <!-- Fixture data: guest profiles that already exist, used for duplicate detection (AC2). -->
+  <script id="fixture-guests" type="application/json">
+  [
+    { "id": "gst_1005", "name": "Jordan Lee", "email": "jordan.lee@example.com", "phone": "(555) 123-4567" },
+    { "id": "gst_1006", "name": "Priya Nandakumar", "email": "priya.n@example.com", "phone": "(555) 987-6543" },
+    { "id": "gst_1007", "name": "Sam Okafor", "email": "sam.okafor@example.com", "phone": "(555) 456-7890" }
+  ]
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;font-family:var(--font-sans)">
+    <span style="font-family:var(--font-mono);color:var(--muted)">TEST-M1-STORY-103</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Embedding Host (interactive)
+         Notes:
+           - The dashed box labelled "Inline hook component (this story)" is the actual
+             deliverable; the "Front Desk Console (mock)" chrome around it is an
+             illustrative stand-in for a future reservation/check-in flow (AC1's
+             "embedding context"). Nothing outside the dashed box ships with this story.
+           - "Signed in as" switches the simulated staff member's permission. Leave it on
+             "Front desk agent" to walk the happy paths; switch to "Housekeeping staff
+             (no guest access)" and click "+ Add guest" to see AC6 — the same denial a
+             direct create attempt would get, with no widget rendered and nothing added
+             to the "Embedding context received" log.
+           - Click "+ Add guest" (as the front desk agent) to mount the create/select form
+             inline, in place — no page navigation happens (AC1).
+           - Type an email or phone that matches a seeded profile, e.g.
+             "jordan.lee@example.com" or "555-123-4567", and pause: duplicate detection
+             runs (shown as "Checking for existing profiles…") and then surfaces the
+             matching profile with a "Use this profile" action (AC2).
+           - Selecting a match, or creating a brand-new profile with a name plus a valid
+             email or phone, collapses the form to a "Guest linked" summary showing the
+             stable guest ID, and appends a `guest.linked` / `guest.created` entry (with
+             that ID) to the "Embedding context received" log below — this is what AC3
+             means by the embedding context receiving a stable identifier.
+           - Submit with the name blank, or with an unrecognizable email/phone, or with
+             neither an email nor a phone filled in, to see per-field structured errors;
+             the form stays open, nothing is added to the log, and no profile is created
+             (AC4).
+           - Check "Simulate service error" and submit an otherwise-valid form to see a
+             service-error notice; the form stays open with every value you typed intact,
+             and no profile is created or logged (AC5).
+    -->
+    <div class="screen" data-name="Embedding Host">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <span class="mock-flag">(mock host — illustrative only, not part of this story)</span>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>New reservation</h1>
+            <p>Room 214 · Sept 30 – Oct 2</p>
+          </div>
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="front_desk">Front desk agent</option>
+              <option value="housekeeping">Housekeeping staff (no guest access)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Guest</h2>
+
+          <!-- State: guest-empty -->
+          <div class="guest-empty" id="guest-empty">
+            <p class="card-body" id="guest-empty-text" style="margin:0;">No guest linked to this reservation yet.</p>
+            <button type="button" class="btn btn-primary" id="open-hook-btn">+ Add guest</button>
+          </div>
+
+          <!-- State: guest-linked (success — AC3) -->
+          <div class="guest-linked" id="guest-linked" hidden>
+            <div class="guest-linked-info">
+              <span class="guest-linked-icon" aria-hidden="true">✓</span>
+              <span id="guest-linked-name" style="font-weight: var(--font-weight-bold);">—</span>
+              <span class="guest-id" id="guest-linked-id">—</span>
+            </div>
+            <button type="button" class="link-btn" id="change-guest-btn">Change guest</button>
+          </div>
+
+          <!-- Embeddable hook boundary: open/closed by "+ Add guest" / cancel / link / change -->
+          <div id="hook-boundary" hidden style="margin-top: var(--space-3);">
+            <span class="embed-tag">⧉ Inline hook component (this story)</span>
+
+            <div class="embed-boundary">
+
+              <!-- State: permission-denied (AC6) -->
+              <div class="notice" id="permission-denied-notice" hidden>
+                <span class="notice-icon" aria-hidden="true">⛔</span>
+                <div>
+                  <p><strong>You don't have permission to create or select guest profiles.</strong></p>
+                  <p>This is the same outcome you'd get creating a guest profile directly — ask a manager for access. No profile was created or linked to this reservation.</p>
+                </div>
+              </div>
+
+              <!-- State: create-or-select form -->
+              <form id="hook-form" novalidate>
+                <p class="u-text-sm u-text-muted" style="margin: 0 0 var(--space-4) 0;">
+                  Search by email or phone to find an existing guest, or fill in the details below to create a new profile.
+                </p>
+
+                <div class="demo-note">
+                  <label for="simulate-error-checkbox">
+                    <input type="checkbox" id="simulate-error-checkbox" />
+                    Simulate service error (demo only, for AC5)
+                  </label>
+                  <span>Lets you preview the service/network-failure outcome without a real backend.</span>
+                </div>
+
+                <!-- State: service-error (AC5) -->
+                <div class="notice" id="service-error-notice" hidden>
+                  <span class="notice-icon" aria-hidden="true">⚠</span>
+                  <div>
+                    <p><strong>Couldn't create guest profile — please try again.</strong></p>
+                    <p>Nothing was saved. Your entries below are unchanged.</p>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="field-name">Full name</label>
+                  <input class="input" id="field-name" name="name" type="text" placeholder="e.g. Alex Rivera" aria-describedby="error-name" />
+                  <p class="field-error" id="error-name" role="alert" hidden>⚠ Enter the guest's full name.</p>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="field-email">Email</label>
+                  <input class="input" id="field-email" name="email" type="email" placeholder="name@example.com" aria-describedby="error-email dup-status" />
+                  <p class="field-error" id="error-email" role="alert" hidden>⚠ Enter a valid email address.</p>
+                </div>
+
+                <div class="field" style="margin-bottom: 0;">
+                  <label class="label" for="field-phone">Phone</label>
+                  <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 123-4567" aria-describedby="error-phone dup-status" />
+                  <p class="field-error" id="error-phone" role="alert" hidden>⚠ Enter a valid phone number.</p>
+                  <span class="hint">Enter an email, a phone number, or both — at least one is needed to check for an existing profile.</span>
+                </div>
+
+                <!-- State: duplicate-checking / duplicate-found (AC2) -->
+                <div class="dup-status" id="dup-status" hidden>
+                  <span class="spinner" aria-hidden="true"></span>
+                  <span id="dup-status-text">Checking for existing profiles…</span>
+                </div>
+
+                <div class="dup-match" id="dup-match" hidden role="status" aria-live="polite">
+                  <p class="dup-match-title"><span aria-hidden="true">ℹ</span> We found a matching profile</p>
+                  <div id="dup-match-list"></div>
+                  <button type="button" class="link-btn" id="dismiss-match-btn" style="padding-left:0;">Continue creating a new profile instead</button>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary" id="hook-cancel-btn">Cancel</button>
+                  <button type="submit" class="btn btn-primary" id="hook-submit-btn">Create guest profile</button>
+                </div>
+              </form>
+
+              <button type="button" class="btn btn-secondary" id="permission-denied-dismiss-btn" hidden style="margin-top: var(--space-3);">Dismiss</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-log">
+          <h3>Embedding context received</h3>
+          <ul class="event-log-list" id="event-log-list">
+            <li class="event-entry event-empty" id="event-log-empty">No events yet — nothing has been created or linked.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static, non-interactive snapshots of every state named in the acceptance
+             criteria, for a reviewer who wants the full picture at a glance. Drive the
+             real thing on screen 1.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <span class="mock-flag">(mock host — illustrative only, not part of this story)</span>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Inline hook — reference states</h1>
+          <p>Non-interactive snapshots. Use screen 1 to try the real flow.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Collapsed, no guest linked</h3>
+            <span class="ac-tag">Sets up AC1</span>
+            <div class="card" style="margin:0;">
+              <h2 class="card-title" style="font-size: var(--font-size-md);">Guest</h2>
+              <div class="guest-empty">
+                <p class="card-body" style="margin:0;">No guest linked to this reservation yet.</p>
+                <button type="button" class="btn btn-primary" disabled>+ Add guest</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Duplicate detected</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <div class="embed-boundary" style="padding: var(--space-3);">
+              <div class="field" style="margin-bottom: var(--space-2);">
+                <label class="label">Email</label>
+                <input class="input" type="text" value="jordan.lee@example.com" readonly />
+              </div>
+              <div class="dup-match" style="margin-top: var(--space-2);">
+                <p class="dup-match-title"><span aria-hidden="true">ℹ</span> We found a matching profile</p>
+                <div class="dup-match-card">
+                  <div>
+                    <div class="dup-match-name">Jordan Lee</div>
+                    <div class="dup-match-meta">jordan.lee@example.com · gst_1005</div>
+                  </div>
+                  <button type="button" class="btn btn-secondary" disabled>Use this profile</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Guest linked — stable ID emitted</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <div class="card" style="margin:0;">
+              <h2 class="card-title" style="font-size: var(--font-size-md);">Guest</h2>
+              <div class="guest-linked">
+                <div class="guest-linked-info">
+                  <span class="guest-linked-icon" aria-hidden="true">✓</span>
+                  <span style="font-weight: var(--font-weight-bold);">Jordan Lee</span>
+                  <span class="guest-id">gst_1005</span>
+                </div>
+                <button type="button" class="link-btn">Change guest</button>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">Embedding context received: <code>guest.linked { guestId: "gst_1005", source: "existing" }</code></p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Validation error</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="embed-boundary" style="padding: var(--space-3);">
+              <div class="field">
+                <label class="label">Full name</label>
+                <input class="input input-invalid" type="text" value="" />
+                <p class="field-error">⚠ Enter the guest's full name.</p>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Email</label>
+                <input class="input input-invalid" type="text" value="not-an-email" />
+                <p class="field-error">⚠ Enter a valid email address.</p>
+              </div>
+            </div>
+            <p class="u-text-sm u-text-muted" style="margin-top: var(--space-2);">No profile is created; the form stays open with these values.</p>
+          </div>
+
+          <div>
+            <h3>Service/network error</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <div class="embed-boundary" style="padding: var(--space-3);">
+              <div class="notice" style="margin-bottom:0;">
+                <span class="notice-icon" aria-hidden="true">⚠</span>
+                <div>
+                  <p><strong>Couldn't create guest profile — please try again.</strong></p>
+                  <p>Nothing was saved. Your entries below are unchanged.</p>
+                </div>
+              </div>
+            </div>
+            <p class="u-text-sm u-text-muted" style="margin-top: var(--space-2);">No partial profile record is persisted.</p>
+          </div>
+
+          <div>
+            <h3>Permission denied</h3>
+            <span class="ac-tag">Satisfies AC6</span>
+            <div class="embed-boundary" style="padding: var(--space-3);">
+              <div class="notice" style="margin-bottom:0;">
+                <span class="notice-icon" aria-hidden="true">⛔</span>
+                <div>
+                  <p><strong>You don't have permission to create or select guest profiles.</strong></p>
+                  <p>Same outcome as a direct create attempt. No profile is created or returned.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const SEEDED_GUESTS = JSON.parse(document.getElementById('fixture-guests').textContent);
+  let guests = SEEDED_GUESTS.map(g => ({ ...g }));
+  let nextGuestNumber = 1041;
+
+  const ROLE_PERMISSIONS = {
+    front_desk: true,
+    housekeeping: false,
+  };
+
+  function normalizeEmail(v) { return v.trim().toLowerCase(); }
+  function normalizePhone(v) { return v.replace(/\D/g, ''); }
+  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function isValidPhone(v) { return normalizePhone(v).length >= 7; }
+
+  function findMatch(email, phone) {
+    const nEmail = email ? normalizeEmail(email) : '';
+    const nPhone = phone ? normalizePhone(phone) : '';
+    return guests.find(g =>
+      (nEmail && normalizeEmail(g.email) === nEmail) ||
+      (nPhone && normalizePhone(g.phone) === nPhone)
+    ) || null;
+  }
+
+  // ---------- DOM refs ----------
+  const roleSelect = document.getElementById('role-select');
+  const guestEmpty = document.getElementById('guest-empty');
+  const guestLinked = document.getElementById('guest-linked');
+  const guestLinkedName = document.getElementById('guest-linked-name');
+  const guestLinkedId = document.getElementById('guest-linked-id');
+  const openHookBtn = document.getElementById('open-hook-btn');
+  const changeGuestBtn = document.getElementById('change-guest-btn');
+  const hookBoundary = document.getElementById('hook-boundary');
+  const permissionDeniedNotice = document.getElementById('permission-denied-notice');
+  const permissionDeniedDismissBtn = document.getElementById('permission-denied-dismiss-btn');
+  const hookForm = document.getElementById('hook-form');
+  const serviceErrorNotice = document.getElementById('service-error-notice');
+  const simulateErrorCheckbox = document.getElementById('simulate-error-checkbox');
+
+  const fieldName = document.getElementById('field-name');
+  const fieldEmail = document.getElementById('field-email');
+  const fieldPhone = document.getElementById('field-phone');
+  const errorName = document.getElementById('error-name');
+  const errorEmail = document.getElementById('error-email');
+  const errorPhone = document.getElementById('error-phone');
+
+  const dupStatus = document.getElementById('dup-status');
+  const dupStatusText = document.getElementById('dup-status-text');
+  const dupMatch = document.getElementById('dup-match');
+  const dupMatchList = document.getElementById('dup-match-list');
+  const dismissMatchBtn = document.getElementById('dismiss-match-btn');
+  const hookCancelBtn = document.getElementById('hook-cancel-btn');
+  const hookSubmitBtn = document.getElementById('hook-submit-btn');
+
+  const eventLogList = document.getElementById('event-log-list');
+  const eventLogEmpty = document.getElementById('event-log-empty');
+
+  let linkedGuest = null;
+  let currentMatch = null;
+  let dupTimer = null;
+  let submitTimer = null;
+
+  // ---------- Event log (visualizes what the embedding context receives — AC3) ----------
+  function logEvent(name, payload) {
+    if (eventLogEmpty && eventLogEmpty.parentNode) eventLogEmpty.remove();
+    const li = document.createElement('li');
+    li.className = 'event-entry';
+    const payloadText = payload ? ' ' + JSON.stringify(payload) : '';
+    li.innerHTML = `<span class="event-name">${name}</span>${escapeHtml(payloadText)}`;
+    eventLogList.prepend(li);
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // ---------- Guest section rendering ----------
+  function renderGuestSection() {
+    if (linkedGuest) {
+      guestEmpty.hidden = true;
+      guestLinked.hidden = false;
+      guestLinkedName.textContent = linkedGuest.name;
+      guestLinkedId.textContent = linkedGuest.id;
+    } else {
+      guestEmpty.hidden = false;
+      guestLinked.hidden = true;
+    }
+  }
+
+  function closeHook() {
+    hookBoundary.hidden = true;
+    hookForm.reset();
+    clearAllErrors();
+    hideDupStatus();
+    dupMatch.hidden = true;
+    currentMatch = null;
+    serviceErrorNotice.hidden = true;
+    hookSubmitBtn.disabled = false;
+    hookSubmitBtn.textContent = 'Create guest profile';
+    clearTimeout(dupTimer);
+    clearTimeout(submitTimer);
+  }
+
+  function openHook() {
+    const canUse = ROLE_PERMISSIONS[roleSelect.value];
+    hookBoundary.hidden = false;
+    if (!canUse) {
+      // AC6: same authorization outcome as attempting direct profile creation; no
+      // profile is created or returned to the embedding context.
+      permissionDeniedNotice.hidden = false;
+      permissionDeniedDismissBtn.hidden = false;
+      hookForm.hidden = true;
+      logEvent('guest.permission_denied', { reason: 'insufficient_permissions' });
+      return;
+    }
+    permissionDeniedNotice.hidden = true;
+    permissionDeniedDismissBtn.hidden = true;
+    hookForm.hidden = false;
+    hookForm.reset();
+    clearAllErrors();
+    fieldName.focus();
+  }
+
+  openHookBtn.addEventListener('click', openHook);
+  changeGuestBtn.addEventListener('click', () => {
+    linkedGuest = null;
+    renderGuestSection();
+    openHook();
+  });
+  permissionDeniedDismissBtn.addEventListener('click', closeHook);
+  hookCancelBtn.addEventListener('click', closeHook);
+
+  roleSelect.addEventListener('change', () => {
+    if (!hookBoundary.hidden) closeHook();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !hookBoundary.hidden) {
+      e.preventDefault();
+      closeHook();
+    }
+  });
+
+  // ---------- Duplicate detection (AC2) ----------
+  function hideDupStatus() { dupStatus.hidden = true; }
+
+  function scheduleDupCheck() {
+    clearTimeout(dupTimer);
+    dupMatch.hidden = true;
+    currentMatch = null;
+    const email = fieldEmail.value.trim();
+    const phone = fieldPhone.value.trim();
+    const emailLooksReal = email.includes('@');
+    const phoneLooksReal = normalizePhone(phone).length >= 7;
+    if (!emailLooksReal && !phoneLooksReal) {
+      hideDupStatus();
+      return;
+    }
+    dupStatus.hidden = false;
+    dupStatusText.textContent = 'Checking for existing profiles…';
+    dupTimer = setTimeout(() => {
+      const match = findMatch(emailLooksReal ? email : '', phoneLooksReal ? phone : '');
+      hideDupStatus();
+      if (match) {
+        currentMatch = match;
+        dupMatchList.innerHTML = `
+          <div class="dup-match-card">
+            <div>
+              <div class="dup-match-name">${escapeHtml(match.name)}</div>
+              <div class="dup-match-meta">${escapeHtml(match.email)} · ${escapeHtml(match.id)}</div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="use-match-btn">Use this profile</button>
+          </div>`;
+        dupMatch.hidden = false;
+        document.getElementById('use-match-btn').addEventListener('click', () => selectExistingGuest(match));
+      }
+    }, 350);
+  }
+
+  fieldEmail.addEventListener('input', scheduleDupCheck);
+  fieldPhone.addEventListener('input', scheduleDupCheck);
+  dismissMatchBtn.addEventListener('click', () => {
+    dupMatch.hidden = true;
+    currentMatch = null;
+  });
+
+  function selectExistingGuest(guest) {
+    linkedGuest = { id: guest.id, name: guest.name, source: 'existing' };
+    renderGuestSection();
+    closeHook();
+    logEvent('guest.linked', { guestId: guest.id, displayName: guest.name, source: 'existing' });
+  }
+
+  // ---------- Validation + create (AC4, AC5) ----------
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldName, errorName, '');
+    setFieldError(fieldEmail, errorEmail, '');
+    setFieldError(fieldPhone, errorPhone, '');
+  }
+
+  hookForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearAllErrors();
+    serviceErrorNotice.hidden = true;
+
+    const name = fieldName.value.trim();
+    const email = fieldEmail.value.trim();
+    const phone = fieldPhone.value.trim();
+
+    const nameError = name === '' ? "Enter the guest's full name." : '';
+    let emailError = email !== '' && !isValidEmail(email) ? 'Enter a valid email address.' : '';
+    let phoneError = phone !== '' && !isValidPhone(phone) ? 'Enter a valid phone number.' : '';
+
+    if (email === '' && phone === '') {
+      emailError = emailError || 'Add an email or phone number so we can check for existing profiles.';
+      phoneError = phoneError || 'Add an email or phone number so we can check for existing profiles.';
+    }
+
+    setFieldError(fieldName, errorName, nameError);
+    setFieldError(fieldEmail, errorEmail, emailError);
+    setFieldError(fieldPhone, errorPhone, phoneError);
+
+    if (nameError || emailError || phoneError) {
+      // AC4: structured, per-field errors; form stays open; nothing is created.
+      logEvent('guest.validation_error', {
+        invalidFields: [nameError && 'name', emailError && 'email', phoneError && 'phone'].filter(Boolean),
+      });
+      (nameError ? fieldName : emailError ? fieldEmail : fieldPhone).focus();
+      return;
+    }
+
+    hookSubmitBtn.disabled = true;
+    hookSubmitBtn.textContent = 'Creating…';
+
+    // Simulated latency — no real network call.
+    submitTimer = setTimeout(() => {
+      if (simulateErrorCheckbox.checked) {
+        // AC5: error surfaced, form stays open with entered values intact, nothing persisted.
+        hookSubmitBtn.disabled = false;
+        hookSubmitBtn.textContent = 'Create guest profile';
+        serviceErrorNotice.hidden = false;
+        logEvent('guest.service_error', { reason: 'network_error', persisted: false });
+        return;
+      }
+
+      const newGuest = {
+        id: 'gst_' + (nextGuestNumber++),
+        name,
+        email: email || '',
+        phone: phone || '',
+      };
+      guests.push(newGuest);
+      linkedGuest = { id: newGuest.id, name: newGuest.name, source: 'created' };
+      renderGuestSection();
+      closeHook();
+      logEvent('guest.created', { guestId: newGuest.id, displayName: newGuest.name, source: 'created' });
+    }, 350);
+  });
+
+  // ---------- Init ----------
+  renderGuestSection();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
