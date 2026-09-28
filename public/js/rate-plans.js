@@ -448,6 +448,13 @@ if (typeof window !== 'undefined') {
       fetch('/rate-plans').then((res) => res.json()),
     ]).then(([roomTypes, plans]) => {
       initRatePlansApp(document, roomTypes, plans, createDefaultApi());
+    }).catch(() => {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      if (toast && toastMessage) {
+        toastMessage.textContent = 'Could not load rate plans — please refresh the page';
+        toast.hidden = false;
+      }
     });
   });
 }
