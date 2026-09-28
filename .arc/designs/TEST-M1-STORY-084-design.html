@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-084 — Arc Run-Detail Deep Links</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/warning/error color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per Rule 3 (never encode meaning in color alone) every stage/status
+    chip and arc-link state below is distinguished by icon + label + border style
+    (solid/dashed/width), never by hue alone.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Page ---------- */
+  .page { max-width: 900px; margin: 0 auto; padding: var(--space-4); }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-3);
+  }
+
+  /* ---------- Preview / dev toggles (not part of the real product UI) ---------- */
+  .dev-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .dev-toolbar .dev-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-right: var(--space-1);
+  }
+  .btn-toggle {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 0;
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+  }
+  .btn-toggle[aria-pressed="true"] {
+    color: var(--color-fg);
+    border-color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Hire list ---------- */
+  .hire-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .hire-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3);
+  }
+  @media (max-width: 560px) {
+    .hire-row { grid-template-columns: 1fr; }
+    .hire-row .arc-link-cell { justify-self: start; }
+  }
+  .hire-main { min-width: 0; }
+  .hire-name-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .hire-name {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .hire-role {
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .open-detail-btn {
+    margin-top: var(--space-2);
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-1) 0;
+  }
+  .arc-link-cell { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); max-width: 260px; }
+
+  /* ---------- Stage chip ---------- */
+  .stage-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+  }
+  .stage-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .stage-chip--pending { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .stage-chip--done { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .stage-chip--blocked { border: 2px solid var(--color-fg); color: var(--color-fg); }
+  .stage-chip--draft { color: var(--color-fg-muted); }
+
+  /* ---------- Arc deep link (AC1–AC4) ---------- */
+  .arc-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    white-space: nowrap;
+  }
+  .arc-link-btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .arc-link-caption {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0;
+    max-width: 260px;
+  }
+  .arc-link-absent {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .arc-link-absent strong { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row { padding: var(--space-3); }
+  .skeleton-bar {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    position: relative;
+  }
+  .skeleton-bar + .skeleton-bar { margin-top: var(--space-2); }
+  .skeleton-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--color-surface), transparent);
+    animation: shimmer 1.2s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-bar::after { animation: none; }
+  }
+  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+  /* ---------- Empty / error states ---------- */
+  .state-card {
+    padding: var(--space-4);
+    text-align: left;
+  }
+  .state-card .state-icon { font-size: var(--font-size-lg); }
+  .state-card h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: var(--space-2) 0 var(--space-1) 0;
+  }
+  .state-card p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  /* ---------- Detail screen cards ---------- */
+  .layout-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .layout-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .k { color: var(--color-fg-muted); }
+  .summary-row .v { color: var(--color-fg); text-align: right; }
+
+  .boundary-card {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  .boundary-card p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .boundary-chips { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .boundary-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    text-decoration: line-through;
+  }
+
+  .security-note {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    margin-top: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+
+  /* ---------- Reference grid (screen 3) ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 980px) {
+    .reference-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .checklist { list-style: none; margin: 0; padding: 0; }
+  .checklist li {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    padding: var(--space-1) 0;
+  }
+  code.url-sample {
+    display: block;
+    padding: var(--space-2);
+    margin-bottom: var(--space-3);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    word-break: break-all;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast[hidden] { display: none; }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Pipeline (active) · Hires · Settings. This project (Test_M1) has no
+     existing HR/onboarding frontend, so the nav is a minimal project-appropriate top bar —
+     never arc's own sidebar/chrome, since onboarding must not dress itself as arc. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-084</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Pipeline Dashboard
+         Notes:
+           - Each hire row shows arc's deep link in one of three states: available (a real
+             link, opens in a new tab), disabled (run exists but arc hasn't issued a URL yet),
+             or absent (no run yet at all) — AC1, AC4.
+           - "Preview state" strip is a reviewer-only harness (not part of the real product)
+             so every dashboard-level data state (loading/empty/error/success) can be reached
+             by clicking, per the UX baseline.
+           - Clicking "View pipeline detail" on any row opens Screen 2 for that hire.
+    -->
+    <div class="screen" data-name="Pipeline Dashboard">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Hires</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Hire pipeline status</h1>
+            <p>Arc runs and scores each hire's onboarding pipeline. Use "View run in arc" to inspect the full run and eval detail in arc's own workspace.</p>
+          </div>
+        </div>
+
+        <div class="dev-toolbar" role="group" aria-label="Preview dashboard state (reviewer harness, not part of the product)">
+          <span class="dev-label">Preview state:</span>
+          <button class="btn-toggle" type="button" data-dash-state="loading" aria-pressed="false">Loading</button>
+          <button class="btn-toggle" type="button" data-dash-state="empty" aria-pressed="false">Empty</button>
+          <button class="btn-toggle" type="button" data-dash-state="error" aria-pressed="false">Error</button>
+          <button class="btn-toggle" type="button" data-dash-state="success" aria-pressed="true">Success</button>
+        </div>
+
+        <div id="dashboard-body"><!-- rendered by JS --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Hire Pipeline Detail
+         Notes:
+           - The "Onboarding summary" card is entirely onboarding-owned, read-only progress —
+             it never shows arc controls.
+           - The "Arc pipeline run" card carries the same deep-link component as the
+             dashboard, plus an explicit boundary note (no re-run/prompt-tuning/eval embedded
+             here — AC5) and a security note (no credentials beyond the URL — AC3).
+           - Activating the link opens arc's run/eval view in a new tab (target="_blank"
+             rel="noopener noreferrer") and shows a toast confirming that, without blocking
+             the new tab from opening (AC2).
+    -->
+    <div class="screen" data-name="Hire Pipeline Detail">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Hires</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+
+      <div class="page">
+        <button class="back-link" type="button" id="back-to-dashboard-btn"><span aria-hidden="true">←</span> Back to pipeline dashboard</button>
+        <div id="detail-body"><!-- rendered by JS --></div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">↗</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference & Edge States
+         Notes:
+           - Static, non-interactive snapshots of every AC-relevant arc-link state plus the
+             two structural guarantees (no credentials shared; no arc controls embedded) for
+             reviewers who want a quick scan without driving the full script on screens 1–2.
+    -->
+    <div class="screen" data-name="Reference &amp; Edge States">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Hires</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Arc deep link — reference states</h1>
+            <p>Non-interactive snapshots of every state the deep link can be in.</p>
+          </div>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: available -->
+          <div>
+            <h3>Available</h3>
+            <span class="ac-tag">Satisfies AC1, AC2, AC3</span>
+            <div class="card">
+              <span class="stage-chip stage-chip--active" style="margin-bottom: var(--space-3); display:inline-flex;"><span aria-hidden="true">●</span> In progress</span>
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Jordan Reyes — Software Engineer II, Engineering</p>
+              <a class="btn btn-secondary arc-link-btn" href="https://arc.example.com/runs/run_8823/eval" target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">↗</span> View run in arc
+              </a>
+              <p class="arc-link-caption">Opens arc's native run view in a new tab, using this run's own URL only.</p>
+            </div>
+          </div>
+
+          <!-- State: disabled -->
+          <div>
+            <h3>Disabled — run starting</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="card">
+              <span class="stage-chip stage-chip--pending" style="margin-bottom: var(--space-3); display:inline-flex;"><span aria-hidden="true">⏳</span> Starting</span>
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Miguel Ortiz — Account Executive, Sales</p>
+              <button class="btn btn-secondary arc-link-btn" type="button" disabled aria-disabled="true">
+                <span aria-hidden="true">↗</span> View run in arc
+              </button>
+              <p class="arc-link-caption">Not clickable yet — available once arc issues a run URL for this hire.</p>
+            </div>
+          </div>
+
+          <!-- State: absent, no run yet -->
+          <div>
+            <h3>Absent — no run yet</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="card">
+              <span class="stage-chip stage-chip--draft" style="margin-bottom: var(--space-3); display:inline-flex;"><span aria-hidden="true">○</span> Draft</span>
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Sam Whitfield — Recruiter, People Ops</p>
+              <p class="arc-link-absent"><strong>No arc run yet.</strong> A deep link will appear here once this hire's pipeline starts.</p>
+            </div>
+          </div>
+
+          <!-- State: absent, url unavailable -->
+          <div>
+            <h3>Absent — run blocked upstream</h3>
+            <span class="ac-tag">Satisfies AC4 (edge case)</span>
+            <div class="card">
+              <span class="stage-chip stage-chip--blocked" style="margin-bottom: var(--space-3); display:inline-flex;"><span aria-hidden="true">⛔</span> Blocked</span>
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Elena Kappas — Data Analyst, Finance</p>
+              <p class="arc-link-absent"><strong>No arc run URL available.</strong> Nothing broken to click — the link stays hidden until arc provides one.</p>
+            </div>
+          </div>
+
+          <!-- State: no embedded arc controls -->
+          <div>
+            <h3>No embedded arc controls</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <div class="card">
+              <p class="u-text-sm" style="margin:0 0 var(--space-3) 0;">Onboarding never embeds or proxies arc's own controls. These only exist inside arc, reached via the deep link:</p>
+              <div class="boundary-chips">
+                <span class="boundary-chip"><span aria-hidden="true">⊘</span> Re-run</span>
+                <span class="boundary-chip"><span aria-hidden="true">⊘</span> Prompt tuning</span>
+                <span class="boundary-chip"><span aria-hidden="true">⊘</span> Eval scoring</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: credential boundary -->
+          <div>
+            <h3>Credential boundary</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <div class="card">
+              <code class="url-sample">https://arc.example.com/runs/run_8823/eval</code>
+              <ul class="checklist">
+                <li><span aria-hidden="true">✓</span> Uses arc's own run URL exactly as issued</li>
+                <li><span aria-hidden="true">✓</span> No auth headers, cookies, or tokens appended</li>
+                <li><span aria-hidden="true">✓</span> Opens via a plain link with <code>rel="noopener noreferrer"</code></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const HIRES = [
+    {
+      id: 'hire_2031',
+      name: 'Jordan Reyes',
+      role: 'Software Engineer II — Engineering',
+      stage: 'active',
+      stageLabel: 'In progress',
+      arcStatus: 'available',
+      arcRunUrl: 'https://arc.example.com/runs/run_8823/eval',
+      runId: 'run_8823',
+      tasksDone: 3,
+      tasksTotal: 5,
+      started: 'Sep 22, 2026',
+    },
+    {
+      id: 'hire_2044',
+      name: 'Priya Natarajan',
+      role: 'Product Manager — Product',
+      stage: 'done',
+      stageLabel: 'Completed',
+      arcStatus: 'available',
+      arcRunUrl: 'https://arc.example.com/runs/run_8790/eval',
+      runId: 'run_8790',
+      tasksDone: 5,
+      tasksTotal: 5,
+      started: 'Sep 10, 2026',
+    },
+    {
+      id: 'hire_2051',
+      name: 'Miguel Ortiz',
+      role: 'Account Executive — Sales',
+      stage: 'pending',
+      stageLabel: 'Starting',
+      arcStatus: 'disabled',
+      arcRunUrl: null,
+      runId: null,
+      tasksDone: 0,
+      tasksTotal: 5,
+      started: 'Sep 27, 2026',
+    },
+    {
+      id: 'hire_2063',
+      name: 'Sam Whitfield',
+      role: 'Recruiter — People Ops',
+      stage: 'draft',
+      stageLabel: 'Draft',
+      arcStatus: 'absent-not-started',
+      arcRunUrl: null,
+      runId: null,
+      tasksDone: 0,
+      tasksTotal: 5,
+      started: null,
+    },
+    {
+      id: 'hire_2077',
+      name: 'Elena Kappas',
+      role: 'Data Analyst — Finance',
+      stage: 'blocked',
+      stageLabel: 'Blocked',
+      arcStatus: 'absent-unavailable',
+      arcRunUrl: null,
+      runId: null,
+      tasksDone: 1,
+      tasksTotal: 5,
+      started: 'Sep 24, 2026',
+    },
+  ];
+
+  function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // ---------- Stage chip ----------
+  function stageChipMarkup(hire) {
+    const icons = { active: '●', done: '✓', pending: '⏳', blocked: '⛔', draft: '○' };
+    return `<span class="stage-chip stage-chip--${hire.stage}"><span aria-hidden="true">${icons[hire.stage]}</span> ${hire.stageLabel}</span>`;
+  }
+
+  // ---------- Shared arc-link renderer (used by dashboard rows and detail screen) ----------
+  function arcLinkMarkup(hire, size) {
+    const sizeClass = size === 'sm' ? ' btn-sm' : '';
+    if (hire.arcStatus === 'available') {
+      return `
+        <a class="btn btn-secondary arc-link-btn${sizeClass}" href="${hire.arcRunUrl}" target="_blank" rel="noopener noreferrer" data-arc-link data-hire="${hire.id}">
+          <span aria-hidden="true">↗</span> View run in arc
+        </a>
+        <p class="arc-link-caption">Opens in a new tab using this run's own URL — no onboarding credentials are shared.</p>
+      `;
+    }
+    if (hire.arcStatus === 'disabled') {
+      return `
+        <button class="btn btn-secondary arc-link-btn${sizeClass}" type="button" disabled aria-disabled="true">
+          <span aria-hidden="true">↗</span> View run in arc
+        </button>
+        <p class="arc-link-caption">Not clickable yet — available once arc issues a run URL for this hire.</p>
+      `;
+    }
+    if (hire.arcStatus === 'absent-unavailable') {
+      return `<p class="arc-link-absent"><strong>No arc run URL available.</strong> The pipeline continues; nothing to click until arc provides one.</p>`;
+    }
+    return `<p class="arc-link-absent"><strong>No arc run yet.</strong> A link appears once this hire's pipeline starts.</p>`;
+  }
+
+  // ================= Dashboard (Screen 1) =================
+  function renderDashSkeleton() {
+    const body = document.getElementById('dashboard-body');
+    body.innerHTML = Array.from({ length: 3 }).map(() => `
+      <div class="card skeleton-row" aria-hidden="true">
+        <div class="skeleton-bar" style="width: 40%;"></div>
+        <div class="skeleton-bar" style="width: 60%;"></div>
+      </div>
+    `).join('<div style="height:12px"></div>');
+  }
+
+  function renderDashEmpty() {
+    const body = document.getElementById('dashboard-body');
+    body.innerHTML = `
+      <div class="card state-card">
+        <span class="state-icon" aria-hidden="true">🗂</span>
+        <h3>No hires in the pipeline yet</h3>
+        <p>Deep links to arc's run and eval views will appear here as soon as a hire's onboarding pipeline starts.</p>
+      </div>
+    `;
+  }
+
+  function renderDashError() {
+    const body = document.getElementById('dashboard-body');
+    body.innerHTML = `
+      <div class="card state-card">
+        <span class="state-icon" aria-hidden="true">⛔</span>
+        <h3>Couldn't load the pipeline dashboard</h3>
+        <p>The onboarding service didn't respond. Your hire list and any arc links couldn't be fetched.</p>
+        <button class="btn btn-secondary btn-sm" type="button" id="dash-retry-btn">Retry</button>
+      </div>
+    `;
+    document.getElementById('dash-retry-btn').addEventListener('click', () => setDashState('success'));
+  }
+
+  function renderDashSuccess() {
+    const body = document.getElementById('dashboard-body');
+    body.innerHTML = `<div class="hire-list">${HIRES.map((hire) => `
+      <div class="card hire-row">
+        <div class="hire-main">
+          <div class="hire-name-row">
+            <span class="hire-name">${escapeHtml(hire.name)}</span>
+            ${stageChipMarkup(hire)}
+          </div>
+          <p class="hire-role">${escapeHtml(hire.role)}</p>
+          <button class="open-detail-btn" type="button" data-open-detail="${hire.id}">View pipeline detail →</button>
+        </div>
+        <div class="arc-link-cell">${arcLinkMarkup(hire)}</div>
+      </div>
+    `).join('')}</div>`;
+
+    body.querySelectorAll('[data-open-detail]').forEach((btn) => {
+      btn.addEventListener('click', () => openDetail(btn.getAttribute('data-open-detail')));
+    });
+    body.querySelectorAll('[data-arc-link]').forEach((link) => {
+      link.addEventListener('click', () => showToast('Opening arc’s run view in a new tab…'));
+    });
+  }
+
+  async function setDashState(target) {
+    document.querySelectorAll('[data-dash-state]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.getAttribute('data-dash-state') === target));
+    });
+    renderDashSkeleton();
+    await delay(280);
+    if (target === 'loading') { renderDashSkeleton(); return; }
+    if (target === 'empty') { renderDashEmpty(); return; }
+    if (target === 'error') { renderDashError(); return; }
+    renderDashSuccess();
+  }
+
+  document.querySelectorAll('[data-dash-state]').forEach((btn) => {
+    btn.addEventListener('click', () => setDashState(btn.getAttribute('data-dash-state')));
+  });
+
+  // ================= Detail (Screen 2) =================
+  let selectedHireId = null;
+
+  function openDetail(hireId) {
+    selectedHireId = hireId;
+    show(1);
+    loadDetail();
+  }
+
+  async function loadDetail() {
+    const body = document.getElementById('detail-body');
+    body.innerHTML = `
+      <div class="card skeleton-row" aria-hidden="true">
+        <div class="skeleton-bar" style="width: 50%;"></div>
+        <div class="skeleton-bar" style="width: 30%;"></div>
+      </div>
+    `;
+    await delay(260);
+    renderDetail();
+  }
+
+  function renderDetailError() {
+    const body = document.getElementById('detail-body');
+    body.innerHTML = `
+      <div class="card state-card">
+        <span class="state-icon" aria-hidden="true">⛔</span>
+        <h3>Couldn't load this hire's pipeline detail</h3>
+        <p>The onboarding service didn't respond.</p>
+        <button class="btn btn-secondary btn-sm" type="button" id="detail-retry-btn">Retry</button>
+      </div>
+    `;
+    document.getElementById('detail-retry-btn').addEventListener('click', loadDetail);
+  }
+
+  function renderDetail() {
+    const hire = HIRES.find((h) => h.id === selectedHireId) || HIRES[0];
+    const body = document.getElementById('detail-body');
+    body.innerHTML = `
+      <div class="page-header">
+        <div>
+          <h1>${escapeHtml(hire.name)}</h1>
+          <p>${escapeHtml(hire.role)}</p>
+        </div>
+        ${stageChipMarkup(hire)}
+      </div>
+
+      <div class="layout-grid">
+        <div class="card">
+          <h2 class="card-title">Onboarding summary</h2>
+          <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Owned entirely by onboarding — arc has no controls here.</p>
+          <div class="summary-row"><span class="k">Stage</span><span class="v">${hire.stageLabel}</span></div>
+          <div class="summary-row"><span class="k">Tasks complete</span><span class="v">${hire.tasksDone} of ${hire.tasksTotal}</span></div>
+          <div class="summary-row"><span class="k">Pipeline started</span><span class="v">${hire.started || 'Not started'}</span></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Arc pipeline run</h2>
+          <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Arc runs and scores this hire's onboarding pipeline.</p>
+          ${hire.runId ? `<div class="summary-row"><span class="k">Run ID</span><span class="v">${hire.runId}</span></div>` : ''}
+          <div style="margin-top: var(--space-3);">${arcLinkMarkup(hire)}</div>
+
+          <div class="boundary-card">
+            <p><span aria-hidden="true">⊘</span> Re-run, prompt tuning, and eval scoring are never embedded or proxied here — they only exist in arc, reached via the link above.</p>
+          </div>
+          <div class="security-note">
+            <span aria-hidden="true">🔒</span>
+            <span>Opening the link passes no onboarding credentials or session tokens to arc — only the run's own URL.</span>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top: var(--space-4);">
+        <button class="reset-link" type="button" id="detail-error-demo-btn">Simulate error loading this hire</button>
+      </p>
+    `;
+
+    const arcLink = body.querySelector('[data-arc-link]');
+    if (arcLink) arcLink.addEventListener('click', () => showToast('Opening arc’s run view in a new tab…'));
+    document.getElementById('detail-error-demo-btn').addEventListener('click', renderDetailError);
+  }
+
+  document.getElementById('back-to-dashboard-btn').addEventListener('click', () => show(0));
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ---------- Init ----------
+  renderDashSuccess();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
