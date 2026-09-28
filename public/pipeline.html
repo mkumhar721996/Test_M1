@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pipeline — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/pipeline.css" />
+<script src="./js/pipeline.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <!-- Screen: Pipeline Dashboard -->
+  <div id="dashboard-screen">
+    <div class="app-topbar">
+      <span class="brand">Onboarding</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Pipeline</a>
+        <a href="#" onclick="return false;">Hires</a>
+        <a href="#" onclick="return false;">Settings</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <h1>Hire pipeline status</h1>
+          <p>Arc runs and scores each hire's onboarding pipeline. Use "View run in arc" to inspect the full run and eval detail in arc's own workspace.</p>
+        </div>
+      </div>
+
+      <div class="card state-card" id="dashboard-empty" hidden>
+        <span class="state-icon" aria-hidden="true">🗂</span>
+        <h3>No hires in the pipeline yet</h3>
+        <p>Deep links to arc's run and eval views will appear here as soon as a hire's onboarding pipeline starts.</p>
+      </div>
+
+      <div id="hire-list"><!-- rendered by JS --></div>
+    </div>
+  </div>
+
+  <!-- Screen: Hire Pipeline Detail -->
+  <div id="detail-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Onboarding</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Pipeline</a>
+        <a href="#" onclick="return false;">Hires</a>
+        <a href="#" onclick="return false;">Settings</a>
+      </nav>
+    </div>
+
+    <div class="page">
+      <button class="back-link" type="button" id="back-to-dashboard-btn"><span aria-hidden="true">←</span> Back to pipeline dashboard</button>
+      <div id="detail-body"><!-- rendered by JS --></div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">↗</span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+</body>
+</html>

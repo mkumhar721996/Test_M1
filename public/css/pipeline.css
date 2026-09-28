@@ -1,0 +1,159 @@
+/*
+  Design-system gap note: tokens.json has no dedicated success/warning/error color
+  (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+  color-border). Every arc-link state is distinguished by icon + label + border
+  style (solid/dashed/width), never by hue alone.
+*/
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+
+/* App shell (.app-topbar, .app-nav, .card, .btn, .toast primitives) live in
+   design-system/prototype-utils.css, shared across pages. */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  padding: var(--space-2) 0;
+  margin-bottom: var(--space-3);
+}
+
+/* ---------- Hire list ---------- */
+.hire-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.hire-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+}
+@media (max-width: 560px) {
+  .hire-row { grid-template-columns: 1fr; }
+  .hire-row .arc-link-cell { justify-self: start; }
+}
+.hire-main { min-width: 0; }
+.hire-name-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.hire-name {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.hire-role {
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+}
+.open-detail-btn {
+  margin-top: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  padding: var(--space-1) 0;
+}
+.arc-link-cell { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); max-width: 260px; }
+
+/* ---------- Arc deep link (AC1-AC4) ---------- */
+.arc-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  white-space: nowrap;
+}
+.arc-link-btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.arc-link-caption {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0;
+  max-width: 260px;
+}
+.arc-link-absent {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+}
+.arc-link-absent strong { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+/* ---------- Empty state ---------- */
+.state-card {
+  padding: var(--space-4);
+  text-align: left;
+}
+.state-card .state-icon { font-size: var(--font-size-lg); }
+.state-card h3 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: var(--space-2) 0 var(--space-1) 0;
+}
+.state-card p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0 0 var(--space-3) 0;
+}
+
+/* ---------- Detail screen cards ---------- */
+.layout-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+@media (min-width: 720px) {
+  .layout-grid { grid-template-columns: 1fr 1fr; }
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row .k { color: var(--color-fg-muted); }
+.summary-row .v { color: var(--color-fg); text-align: right; }
+
+.boundary-card {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-top: var(--space-3);
+}
+.boundary-card p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.security-note {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  margin-top: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+}
+
+/* ---------- Toast (page-specific override; base rule in prototype-utils.css) ---------- */
+.toast { max-width: min(90vw, 340px); }

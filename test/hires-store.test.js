@@ -69,3 +69,9 @@ test('AC8: the previously cancelled Run is not resumed on reactivation', async (
   expect(updated.run.id).not.toBe(cancelledRunId);
   expect(updated.runHistory.find((r) => r.id === cancelledRunId)).toMatchObject({ status: 'cancelled' });
 });
+
+test('AC1 (arc deep link): a triggered Run carries an arc run URL derived from its own run id', async () => {
+  const hire = await createHire({ name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'offer_accepted' });
+  const run = getHire(hire.id).run;
+  expect(run.arcRunUrl).toBe(`https://arc.example.com/runs/${run.id}/eval`);
+});
