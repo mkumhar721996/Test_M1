@@ -138,4 +138,84 @@ describe('Guest Profiles UI', () => {
     expect(document.getElementById('directory-not-found').hidden).toBe(false);
     expect(document.getElementById('directory-not-found').textContent).toContain('GST-9999');
   });
+
+  test('a failed create shows an error toast and does not add the guest to the directory', async () => {
+    const api = { create: jest.fn().mockRejectedValue(new Error('network error')) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [], api);
+    document.getElementById('new-guest-btn').click();
+    document.getElementById('field-name').value = 'Kai Ward';
+    document.getElementById('field-email').value = 'kai@example.com';
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('guest-tbody').textContent).not.toContain('Kai Ward');
+  });
+
+  test('a failed edit shows an error toast and leaves the profile unchanged', async () => {
+    const guest = fixtureGuest();
+    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockRejectedValue(new Error('network error')) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    document.getElementById('edit-profile-btn').click();
+    document.getElementById('edit-phone').value = '555-9999';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('profile-toast').hidden).toBe(false);
+    expect(document.getElementById('kv-list').textContent).toContain(guest.phone);
+  });
+
+  test('a failed deactivate shows an error toast and leaves the status chip unchanged', async () => {
+    const guest = fixtureGuest();
+    const api = { get: jest.fn().mockResolvedValue(guest), deactivate: jest.fn().mockRejectedValue(new Error('network error')) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    document.getElementById('deactivate-profile-btn').click();
+    document.getElementById('deactivate-confirm-btn').click();
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('profile-toast').hidden).toBe(false);
+    expect(document.getElementById('deactivated-banner').hidden).toBe(true);
+  });
+
+  test('a failed reactivate shows an error toast and leaves the status chip unchanged', async () => {
+    const deactivatedGuest = { ...fixtureGuest(), status: 'deactivated' };
+    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockRejectedValue(new Error('network error')) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [deactivatedGuest], api);
+    document.getElementById('lookup-input').value = deactivatedGuest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    document.getElementById('reactivate-profile-btn').click();
+    document.getElementById('reactivate-confirm-btn').click();
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('profile-toast').hidden).toBe(false);
+    expect(document.getElementById('deactivated-banner').hidden).toBe(false);
+  });
+
+  test('pressing Escape closes an open create/deactivate/reactivate modal', async () => {
+    const guest = fixtureGuest();
+    const api = { get: jest.fn().mockResolvedValue(guest) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+
+    document.getElementById('new-guest-btn').click();
+    expect(document.getElementById('create-modal').hidden).toBe(false);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(document.getElementById('create-modal').hidden).toBe(true);
+
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+
+    document.getElementById('deactivate-profile-btn').click();
+    expect(document.getElementById('deactivate-modal').hidden).toBe(false);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(document.getElementById('deactivate-modal').hidden).toBe(true);
+  });
 });

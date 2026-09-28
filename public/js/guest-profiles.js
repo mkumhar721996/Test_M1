@@ -201,6 +201,8 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       searchInput.value = '';
       renderDirectory(guests);
       showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), `Guest profile created — ID ${guest.id}`, 'directory');
+    }).catch(() => {
+      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), 'Guest profile could not be created — please try again', 'directory');
     });
   });
 
@@ -353,6 +355,9 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       if (idx !== -1) guests[idx] = guest;
       renderProfileView(guest, Object.keys(changes));
       showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Profile updated', 'profile');
+    }).catch(() => {
+      renderProfileView(currentGuest);
+      showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Profile could not be saved — please try again', 'profile');
     });
   });
 
@@ -384,6 +389,10 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       closeDeactivateModal();
       renderProfileView(guest);
       showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Guest profile deactivated', 'profile');
+    }).catch(() => {
+      closeDeactivateModal();
+      renderProfileView(currentGuest);
+      showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Deactivation could not be completed — please try again', 'profile');
     });
   });
 
@@ -406,7 +415,18 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       closeReactivateModal();
       renderProfileView(guest);
       showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Guest profile reactivated', 'profile');
+    }).catch(() => {
+      closeReactivateModal();
+      renderProfileView(currentGuest);
+      showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Reactivation could not be completed — please try again', 'profile');
     });
+  });
+
+  doc.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!createModal.hidden) closeCreateModal();
+    if (!deactivateModal.hidden) closeDeactivateModal();
+    if (!reactivateModal.hidden) closeReactivateModal();
   });
 
   renderDirectory(guests);
