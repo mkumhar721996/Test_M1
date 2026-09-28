@@ -12,6 +12,14 @@ const {
 
 const router = express.Router();
 
+// No router in this app (guests, hires, expenses, employees, workflows, runs)
+// has authentication/authorization or request metrics middleware — there is no
+// session/login system or metrics library anywhere in the codebase yet. Bolting
+// a bespoke auth check or a Prometheus-style instrumentation onto this router
+// alone would be inconsistent with every sibling endpoint and wouldn't actually
+// close the app-wide gap. That needs a dedicated cross-cutting story; tracked
+// here as a known limitation rather than papered over.
+
 router.get('/', (req, res, next) => {
   try {
     res.status(200).json(listRooms());
@@ -72,6 +80,7 @@ router.post('/:id/booking-requests', (req, res, next) => {
     res.status(201).json(result);
   } catch (err) {
     if (err instanceof RoomUnavailableError) {
+      console.warn({ action: 'bookingRejected', roomId: req.params.id, reason: err.message });
       return res.status(409).json({ error: err.message });
     }
     next(err);

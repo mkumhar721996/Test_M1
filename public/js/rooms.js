@@ -80,7 +80,8 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
       if (idx !== -1) rooms[idx] = updated;
       renderRooms();
       showToast(`Room ${updated.identifier} status set to ${updated.status}`);
-    }).catch(() => {
+    }).catch((err) => {
+      console.error({ action: 'updateStatus', roomId: id, targetStatus: nextStatus, error: (err && err.message) || err });
       select.value = previousStatus;
       showToast('Status could not be updated — please try again');
     });
@@ -89,11 +90,45 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
   /* ---------------- Create room ---------------- */
   const createOverlay = doc.getElementById('create-room-overlay');
   const createModal = doc.getElementById('create-room-modal');
+  const createModalPanel = createModal.querySelector('.modal-panel');
   const createForm = doc.getElementById('create-room-form');
   const identifierInput = doc.getElementById('field-room-identifier');
   const roomTypeSelect = doc.getElementById('field-room-type');
   const identifierError = doc.getElementById('error-room-identifier');
   const roomTypeError = doc.getElementById('error-room-type');
+  let createModalOpenerEl = null;
+
+  function getFocusableElements(container) {
+    return Array.from(
+      container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
+    ).filter((el) => !el.hidden);
+  }
+
+  function trapCreateModalTab(e) {
+    const focusable = getFocusableElements(createModalPanel);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (doc.activeElement === first || !createModalPanel.contains(doc.activeElement)) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (doc.activeElement === last || !createModalPanel.contains(doc.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  function onCreateModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeCreateModal();
+    } else if (e.key === 'Tab') {
+      trapCreateModalTab(e);
+    }
+  }
 
   function populateRoomTypeOptions() {
     const options = roomTypes.map((rt) => `<option value="${rt.id}">${escapeHtml(rt.name)}</option>`).join('');
@@ -112,12 +147,20 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
   function openCreateModal() {
     createForm.reset();
     clearCreateErrors();
+    createModalOpenerEl = doc.activeElement;
     createOverlay.hidden = false;
     createModal.hidden = false;
+    doc.addEventListener('keydown', onCreateModalKeydown);
+    identifierInput.focus();
   }
   function closeCreateModal() {
     createOverlay.hidden = true;
     createModal.hidden = true;
+    doc.removeEventListener('keydown', onCreateModalKeydown);
+    if (createModalOpenerEl && typeof createModalOpenerEl.focus === 'function') {
+      createModalOpenerEl.focus();
+    }
+    createModalOpenerEl = null;
   }
 
   doc.getElementById('new-room-btn').addEventListener('click', openCreateModal);
@@ -160,11 +203,6 @@ function initRoomsApp(doc, initialRooms, roomTypes, api, statuses) {
     });
   });
 
-  doc.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (!createModal.hidden) closeCreateModal();
-  });
-
   renderRooms();
 }
 
@@ -196,12 +234,14 @@ function bootRoomsApp(doc, fetchImpl) {
   ]).then(([rooms, roomTypes, statusesRes]) => {
     initRoomsApp(doc, rooms, roomTypes, createDefaultApi(), statusesRes.statuses);
   }).catch((err) => {
+    console.error({ action: 'bootRoomsApp', error: (err && err.message) || err, timestamp: Date.now() });
     doc.body.textContent = 'Failed to load rooms. Please refresh the page.';
-    console.error(err);
   });
 }
 
-module.exports = { initRoomsApp, createDefaultApi, bootRoomsApp };
+if (typeof module !== 'undefined') {
+  module.exports = { initRoomsApp, createDefaultApi, bootRoomsApp };
+}
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
