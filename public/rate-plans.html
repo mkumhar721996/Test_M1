@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rate Plans — Rate Manager</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/rate-plans.css" />
+<script src="./js/rate-plans.js" defer></script>
+</head>
+<body class="u-surface">
+
+<!-- Screen: Rate plans -->
+<div id="rate-plans-screen">
+  <div class="app-topbar">
+    <span class="brand">Rate Manager</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page" data-goto="list">Rate plans</a>
+      <a href="#" data-goto="lookup">Price lookup</a>
+      <a href="#" onclick="return false;">Room types</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Jordan Blake</strong></span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Rate plans</h1>
+      <p>Named date ranges with per-room-type nightly prices. Room types left off a plan use their base rate.</p>
+    </div>
+
+    <div class="rp-toolbar">
+      <button class="btn btn-primary" type="button" id="new-plan-btn" style="margin-left:auto;">+ New rate plan</button>
+    </div>
+
+    <div class="rp-layout">
+      <div>
+        <!-- State: list-empty (AC7) -->
+        <div id="rp-empty" class="rp-empty" hidden>
+          <div class="icon" aria-hidden="true">🗓️</div>
+          <h2>No rate plans yet</h2>
+          <p>Rate plans control what a room type costs on a given night. Add one to start overriding base rates for a date range.</p>
+          <button class="btn btn-primary" type="button" id="add-first-plan-btn">+ Add a rate plan</button>
+        </div>
+
+        <!-- State: list-populated (AC1, AC4 overlap note) -->
+        <div id="rp-grid" class="rp-grid" role="list"></div>
+      </div>
+
+      <aside class="card rp-base-rates" aria-labelledby="base-rates-heading">
+        <h3 class="card-title" id="base-rates-heading">Room types &amp; base rates</h3>
+        <p class="card-body" style="margin-bottom:var(--space-3);">Used whenever no rate plan covers a room type for a given date (AC8).</p>
+        <div id="base-rates-list"></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- State: delete-confirm (destructive-action confirmation) -->
+  <div class="modal-overlay" id="delete-overlay" hidden></div>
+  <div class="modal-wrap" id="delete-modal-wrap" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="delete-modal-title">Delete rate plan?</h2>
+          <p id="delete-modal-body"></p>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Close" id="delete-modal-close-btn">✕</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" type="button" id="cancel-delete-btn">Cancel</button>
+        <button class="btn btn-danger" type="button" id="confirm-delete-btn">Delete rate plan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Screen: Rate plan editor -->
+<div id="editor-screen" hidden>
+  <div class="app-topbar">
+    <span class="brand">Rate Manager</span>
+    <nav class="app-nav">
+      <a href="#" data-goto="list">Rate plans</a>
+      <a href="#" data-goto="lookup">Price lookup</a>
+      <a href="#" onclick="return false;">Room types</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Jordan Blake</strong></span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1 id="editor-heading">New rate plan</h1>
+      <p>Give it a name, a date range, and a nightly price for each room type it should override.</p>
+    </div>
+
+    <div class="rp-mode-switch" role="group" aria-label="Editor mode">
+      <button class="btn btn-secondary" type="button" id="mode-new-btn" aria-pressed="true">New rate plan</button>
+      <button class="btn btn-secondary" type="button" id="mode-edit-btn" aria-pressed="false">Edit an existing plan</button>
+    </div>
+
+    <div class="rp-edit-picker">
+      <div class="field" id="edit-picker-wrap">
+        <label class="label" for="edit-picker-field">Choose a plan to edit</label>
+        <select class="input" id="edit-picker-field"></select>
+      </div>
+      <button class="btn btn-secondary" type="button" id="load-plan-btn">Load plan</button>
+    </div>
+
+    <button class="btn btn-secondary btn-sm" type="button" id="show-validation-demo-btn" style="margin-bottom:var(--space-4);">Show validation example</button>
+
+    <form id="plan-form" novalidate>
+      <input type="hidden" id="editing-plan-id" value="" />
+
+      <div class="field">
+        <label class="label" for="plan-name">Rate plan name</label>
+        <input class="input" type="text" id="plan-name" placeholder="e.g. Summer Peak 2026" />
+        <span class="field-error" id="err-name" role="alert" hidden></span>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label class="label" for="plan-start">Start date</label>
+          <input class="input" type="date" id="plan-start" />
+          <span class="field-error" id="err-start" role="alert" hidden></span>
+        </div>
+        <div class="field">
+          <label class="label" for="plan-end">End date</label>
+          <input class="input" type="date" id="plan-end" />
+          <span class="field-error" id="err-end" role="alert" hidden></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">Per-room-type prices</span>
+        <div class="price-rows" id="price-rows"></div>
+        <span class="field-error" id="err-rows" role="alert" hidden></span>
+        <button class="btn btn-secondary btn-sm" type="button" id="add-row-btn">+ Add a room type price</button>
+        <p class="not-listed-hint" id="not-listed-hint"></p>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" id="save-plan-btn">Save rate plan</button>
+        <button class="btn btn-secondary" type="button" id="cancel-editor-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Screen: Price lookup -->
+<div id="lookup-screen" hidden>
+  <div class="app-topbar">
+    <span class="brand">Rate Manager</span>
+    <nav class="app-nav">
+      <a href="#" data-goto="list">Rate plans</a>
+      <a href="#" class="active" aria-current="page" data-goto="lookup">Price lookup</a>
+      <a href="#" onclick="return false;">Room types</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Jordan Blake</strong></span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Price lookup</h1>
+      <p>Resolve the nightly price for a room type on a given date — useful for checking overlaps and confirming the base-rate fallback.</p>
+    </div>
+
+    <div class="lookup-examples">
+      <button class="btn btn-secondary btn-sm" type="button" id="lookup-example-overlap">Try: overlap example (Deluxe King · Aug 30, 2026)</button>
+      <button class="btn btn-secondary btn-sm" type="button" id="lookup-example-base">Try: no active plan example (Twin · Dec 25, 2026)</button>
+    </div>
+
+    <form class="lookup-form" id="lookup-form" novalidate>
+      <div class="field">
+        <label class="label" for="lookup-room-type">Room type</label>
+        <select class="input" id="lookup-room-type"></select>
+      </div>
+      <div class="field">
+        <label class="label" for="lookup-date">Date</label>
+        <input class="input" type="date" id="lookup-date" value="2026-08-30" />
+      </div>
+      <button class="btn btn-primary" type="button" id="lookup-submit-btn">Look up price</button>
+    </form>
+
+    <div class="card lookup-result" id="lookup-result" aria-live="polite"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span id="toast-message"></span>
+</div>
+
+</body>
+</html>

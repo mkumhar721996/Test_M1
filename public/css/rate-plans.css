@@ -1,0 +1,139 @@
+/*
+  Design-system gap: tokens.json has no semantic error/danger color. The
+  approved design proposes a local --color-danger for inline validation
+  errors and the destructive "Delete rate plan" action (5.7:1 on
+  color-surface, 6.7:1 on color-bg — both clear WCAG AA). This should be
+  promoted to a real design-system token later; scoped to this page for now.
+*/
+:root {
+  --color-danger: #f87171;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+
+/* App shell (.app-topbar, .app-nav, .modal/.toast primitives, .btn, .card,
+   .input, .field, .label) live in design-system/prototype-utils.css. */
+.page { max-width: 960px; }
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Touch targets: bump default control padding to clear the 44px WCAG minimum. */
+.btn { padding: var(--space-3) var(--space-4); }
+.input, select.input { padding: var(--space-3); }
+.icon-btn { min-width: 44px; min-height: 44px; padding: var(--space-2); }
+
+.topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+.signed-in-as { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+/* ---------- Rate plan list ---------- */
+.rp-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4);
+}
+.rp-layout { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); align-items: start; }
+@media (max-width: 720px) { .rp-layout { grid-template-columns: 1fr; } }
+
+.rp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-3); }
+.rp-grid[hidden] { display: none; }
+.rp-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; }
+.rp-card-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.rp-card .card-title { margin-bottom: var(--space-1); }
+.rp-daterange { margin: 0 0 var(--space-3) 0; }
+.rp-price-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
+.rp-meta-label { display: block; margin-bottom: var(--space-1); }
+
+.rp-overlap-note {
+  display: flex; gap: var(--space-2); align-items: flex-start;
+  background: var(--color-bg); border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+}
+.rp-overlap-note .icon { font-size: var(--font-size-md); line-height: 1; }
+.rp-overlap-note p { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.rp-overlap-note strong { color: var(--color-fg); }
+
+.rp-empty {
+  text-align: center; padding: var(--space-4) var(--space-4);
+  border: 1px dashed var(--color-border); border-radius: var(--card-default-radius);
+}
+.rp-empty .icon { font-size: 2rem; line-height: 1; margin-bottom: var(--space-2); }
+.rp-empty h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+.rp-empty p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); max-width: 44ch; margin: 0 auto var(--space-4) auto; }
+
+.rp-base-rates .rate-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family-base); font-size: var(--font-size-sm);
+}
+.rp-base-rates .rate-row:last-child { border-bottom: none; }
+.rp-base-rates .rate-row .rt-name { color: var(--color-fg); }
+.rp-base-rates .rate-row .rt-price { color: var(--color-fg-muted); }
+
+/* ---------- Buttons ---------- */
+.btn-danger { background: var(--color-bg); color: var(--color-danger); border-color: var(--color-danger); border-radius: var(--button-primary-radius); }
+.btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 44px; }
+
+/* ---------- Editor ---------- */
+.rp-mode-switch { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.rp-mode-switch .btn[aria-pressed="true"] { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+.rp-edit-picker { display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.rp-edit-picker .field { margin-bottom: 0; flex: 1; min-width: 220px; }
+
+.form-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.form-row .field { flex: 1; min-width: 180px; }
+
+.field-error {
+  display: block; margin-top: var(--space-1);
+  font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  color: var(--color-danger);
+}
+.field-error[hidden] { display: none; }
+.input.has-error, select.input.has-error { border-color: var(--color-danger); }
+
+.price-rows { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-2); }
+.price-row {
+  display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+  background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: var(--space-2);
+}
+.price-row-select { flex: 2; min-width: 200px; margin: 0; }
+.price-row-amount { display: flex; align-items: center; gap: var(--space-1); flex: 1; min-width: 140px; }
+.price-row-currency { font-family: var(--font-family-base); color: var(--color-fg-muted); }
+.price-row-input { width: 100%; margin: 0; }
+.price-row-remove { flex-shrink: 0; }
+
+.not-listed-hint {
+  font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  color: var(--color-fg-muted); margin: 0 0 var(--space-4) 0;
+}
+.not-listed-hint strong { color: var(--color-fg); }
+
+.form-actions { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; margin-top: var(--space-4); }
+
+/* ---------- Price lookup ---------- */
+.lookup-form { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: flex-end; margin-bottom: var(--space-4); }
+.lookup-form .field { margin-bottom: 0; min-width: 200px; }
+.lookup-examples { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4); }
+
+.lookup-result { display: flex; flex-direction: column; gap: var(--space-2); }
+.lookup-result .price-amount { font-family: var(--font-family-base); font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+.lookup-result .price-source { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+.lookup-badge { display: inline-flex; align-self: flex-start; }
+.lookup-badge.base { background: var(--color-bg); border: 1px solid var(--color-border); }
+
+/* ---------- Toast override: allow custom message swap ---------- */
+.toast strong { color: var(--color-fg); }
