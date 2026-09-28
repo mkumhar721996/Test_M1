@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guest Search — Front Desk Console</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/guest-search.css" />
+<script src="./js/guest-search.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Front Desk Console</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Guests</a>
+      <a href="#" onclick="return false;">Reservations</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Guest search</h1>
+      <p>Find any guest profile by name, email, or phone — with or without an active reservation.</p>
+    </div>
+
+    <form role="search" aria-label="Search guest profiles" id="search-form">
+      <div class="search-bar">
+        <div class="search-field">
+          <label class="label" for="search-query">Search by name, email, or phone</label>
+          <input class="input" type="text" id="search-query" placeholder="e.g. Amara, amara.chen@example.com, (206) 555-0110" autocomplete="off" />
+        </div>
+        <div class="search-actions-field">
+          <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+        </div>
+      </div>
+      <p class="field-error" id="empty-query-error" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+        Enter a name, email, or phone number to search.
+      </p>
+      <p class="search-help">Partial names return every match; a complete email or phone number returns only the exact profile.</p>
+    </form>
+
+    <div class="toolbar-row">
+      <label class="checkbox-field">
+        <input type="checkbox" id="include-inactive" />
+        Include inactive profiles
+      </label>
+    </div>
+
+    <p class="list-count" id="result-count" aria-live="polite"></p>
+
+    <div class="card table-card" id="results-panel">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+</body>
+</html>
