@@ -4,7 +4,7 @@ function initials(name) {
   return name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
 }
 
-function statusChipMarkup(doc, hire, flags) {
+function statusChipMarkup(hire, flags) {
   if (flags.isOverdue) {
     const days = flags.overdueBy;
     return `<span class="status-chip status-chip--overdue"><span class="status-chip-icon" aria-hidden="true">⚠</span> Overdue by ${days} day${days === 1 ? '' : 's'}</span>`;
@@ -89,7 +89,7 @@ function initDashboardApp(doc, dashboardData, options = {}) {
               <p class="stage-line">${flags.daysInStage} day${flags.daysInStage === 1 ? '' : 's'} in ${escapeHtml(doc, group.stage.name)} · SLA ${group.stage.slaDays} day${group.stage.slaDays === 1 ? '' : 's'}</p>
               ${noteLine}
             </div>
-            <div class="hire-status">${statusChipMarkup(doc, hire, flags)}</div>
+            <div class="hire-status">${statusChipMarkup(hire, flags)}</div>
           </div>`;
       }).join('');
 
@@ -135,7 +135,7 @@ function initDashboardApp(doc, dashboardData, options = {}) {
           <p class="name">${escapeHtml(doc, hire.name)}</p>
           <p class="role">${escapeHtml(doc, hire.role)}</p>
         </div>
-        ${statusChipMarkup(doc, hire, flags)}
+        ${statusChipMarkup(hire, flags)}
       </div>`).join('');
 
     lastFocusedEl = doc.activeElement;
