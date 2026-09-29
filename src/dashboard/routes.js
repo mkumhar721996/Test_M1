@@ -1,16 +1,19 @@
 const express = require('express');
-const { getDashboard } = require('./store');
+const { getDashboard, canViewDashboard } = require('./store');
 
 const router = express.Router();
 
-// No access control here: this app has no session/login system anywhere (grep the repo —
-// there is no req.user, no cookie, no token verification on any route), so a client-supplied
-// header cannot provide real authorization — it's trivially forgeable by whoever sends the
-// request and would only simulate security while doing nothing to stop it. Gating this route
-// on such a header was flagged and removed; restricting HR-admin access to this endpoint for
-// real requires adding genuine session-based authentication across the app, which is a
-// dedicated cross-cutting initiative, not something this story can safely bolt on.
+// See the TEMPORARY/NOT REAL SECURITY note in ./store.js: this is an interim, client-header
+// gate — not authentication — kept only because no access control is worse than this, per
+// explicit security review guidance, until real session-based auth exists for the app.
+function isPermitted(req) {
+  return canViewDashboard(req.headers['x-staff-role']);
+}
+
 router.get('/', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     res.status(200).json(getDashboard());
   } catch (err) {

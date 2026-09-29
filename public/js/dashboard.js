@@ -161,7 +161,9 @@ module.exports = { initDashboardApp };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/dashboard')
+    // TEMPORARY: sends the interim x-staff-role header expected by src/dashboard/routes.js
+    // pending real session-based authentication (see that file's comment).
+    fetch('/dashboard', { headers: { 'x-staff-role': 'hr_admin' } })
       .then((res) => res.json())
       .then((data) => initDashboardApp(document, data));
   });
