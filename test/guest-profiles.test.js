@@ -219,3 +219,21 @@ describe('Guest Profiles UI', () => {
     expect(document.getElementById('deactivate-modal').hidden).toBe(true);
   });
 });
+
+describe('createDefaultApi', () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  test('get() sends the x-staff-role header', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ id: 'gst_1' }) });
+    const { createDefaultApi } = require('../public/js/guest-profiles');
+    await createDefaultApi().get('gst_1');
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/guests/gst_1',
+      expect.objectContaining({ headers: expect.objectContaining({ 'x-staff-role': 'front_desk' }) })
+    );
+  });
+});
