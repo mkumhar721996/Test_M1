@@ -7,7 +7,12 @@ const {
   deleteRatePlan,
   listRoomTypes,
   resolvePrice,
+  resetRatePlansStore,
 } = require('../src/ratePlans/store');
+
+beforeEach(() => {
+  resetRatePlansStore();
+});
 
 test('AC1: creating a rate plan with a name, date range, and one price assigns an id and is retrievable', () => {
   const plan = createRatePlan({
@@ -64,25 +69,31 @@ test('AC5/AC6: a plan with no price rows is rejected and not saved', () => {
   expect(listRatePlans().length).toBe(before);
 });
 
-test('AC5/AC6: a duplicate room type within a plan is rejected', () => {
+test('AC5/AC6: a duplicate room type within a plan is rejected and not saved', () => {
+  const before = listRatePlans().length;
   expect(() => createRatePlan({
     name: 'Dup', startDate: '2026-05-01', endDate: '2026-05-10',
     prices: [{ roomType: 'GARDEN', price: 100 }, { roomType: 'GARDEN', price: 120 }],
   })).toThrow(RatePlanValidationError);
+  expect(listRatePlans().length).toBe(before);
 });
 
-test('AC5/AC6: a price of zero or less is rejected', () => {
+test('AC5/AC6: a price of zero or less is rejected and not saved', () => {
+  const before = listRatePlans().length;
   expect(() => createRatePlan({
     name: 'Zero Price', startDate: '2026-05-01', endDate: '2026-05-10',
     prices: [{ roomType: 'GARDEN', price: 0 }],
   })).toThrow(RatePlanValidationError);
+  expect(listRatePlans().length).toBe(before);
 });
 
-test('AC5/AC6: an unknown room type code is rejected', () => {
+test('AC5/AC6: an unknown room type code is rejected and not saved', () => {
+  const before = listRatePlans().length;
   expect(() => createRatePlan({
     name: 'Unknown Room', startDate: '2026-05-01', endDate: '2026-05-10',
     prices: [{ roomType: 'NOT-A-ROOM', price: 100 }],
   })).toThrow(RatePlanValidationError);
+  expect(listRatePlans().length).toBe(before);
 });
 
 test('AC4: removing a price row from a plan drops the override and the room type falls back to base rate', () => {

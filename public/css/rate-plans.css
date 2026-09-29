@@ -1,0 +1,137 @@
+/*
+  Design-system gap note: tokens.json has no dedicated warning/danger hue, so overlap and
+  validation states are always paired with an icon (⚠) and an explicit label, never color alone.
+*/
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+
+/* App shell (.app-topbar, .app-nav, .modal/.toast primitives, .btn, .card,
+   .input, .field, .label) live in design-system/prototype-utils.css. */
+.page { max-width: 860px; }
+
+.topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+.signed-in-as { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+.back-link {
+  background: none; border: none; color: var(--color-primary);
+  font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+  cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px;
+  text-decoration: none; display: inline-flex; align-items: center;
+}
+.toolbar-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.toolbar-row-actions { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+
+/* ---------- Rate plan table ---------- */
+.table-card { padding: 0; overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+table.rp-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.rp-table th {
+  text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+  letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+}
+.rp-table td {
+  padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); vertical-align: top;
+}
+.rp-table tbody tr:last-child td { border-bottom: none; }
+.rp-name-cell strong { display: block; }
+.rp-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); margin-top: 2px; }
+.col-actions { text-align: right; white-space: nowrap; }
+.view-link-btn {
+  background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base);
+  font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer;
+  padding: var(--space-2) var(--space-3); min-height: 44px;
+}
+
+.price-chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-1); }
+.rp-fallback-note { margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.overlap-note { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+.overlap-note strong { font-weight: var(--font-weight-bold); }
+
+/* ---------- Status chips ---------- */
+.status-chip {
+  display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold); border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+}
+.status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+.status-chip--upcoming { border: 1px solid var(--color-border); color: var(--color-fg); }
+.status-chip--past { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+/* ---------- Empty / not-found states ---------- */
+.empty-state, .not-found-panel { padding: var(--space-4); text-align: center; }
+.empty-state .icon, .not-found-panel .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+.empty-state p, .not-found-panel p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+.empty-state h3, .not-found-panel h3 {
+  margin: 0 0 var(--space-1) 0; color: var(--color-fg); font-family: var(--font-family-base);
+  font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);
+}
+
+/* ---------- Forms ---------- */
+.field-error-text {
+  display: block; margin-top: var(--space-1); font-family: var(--font-family-base);
+  font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg);
+}
+.field-error-text[hidden] { display: none; }
+.input-error { border-width: 2px; border-color: var(--color-fg); }
+.field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.date-range-fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+@media (max-width: 480px) { .date-range-fields { grid-template-columns: 1fr; } }
+
+/* ---------- Per-room-type price rows ---------- */
+.rp-price-row {
+  display: grid; grid-template-columns: 1fr 160px 44px; gap: var(--space-3); align-items: end;
+  padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border);
+}
+.rp-price-row:last-of-type { border-bottom: none; }
+@media (max-width: 560px) { .rp-price-row { grid-template-columns: 1fr; } }
+.price-input-wrap { display: flex; align-items: center; gap: var(--space-1); }
+.price-input-wrap span { font-family: var(--font-family-base); color: var(--color-fg-muted); }
+.price-row-remove {
+  background: none; border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-fg-muted);
+  cursor: pointer; min-height: 44px; min-width: 44px; align-self: center;
+}
+.price-row-remove:hover { color: var(--color-fg); }
+
+/* ---------- Card section header ---------- */
+.card-section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap; }
+.card-section-header h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+.card-section-header p { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+/* ---------- Delete-confirm consequence note ---------- */
+.consequence-note {
+  display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3);
+  border: 1px dashed var(--color-primary); border-radius: var(--radius-md); background: var(--color-bg);
+  font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: 0;
+}
+
+/* ---------- Price lookup ---------- */
+.lookup-form { display: flex; gap: var(--space-3); align-items: end; flex-wrap: wrap; margin-bottom: var(--space-3); }
+.lookup-form .field { margin-bottom: 0; min-width: 200px; }
+.preset-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+.preset-btn {
+  background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  cursor: pointer; padding: var(--space-1) var(--space-3); min-height: 36px;
+}
+.preset-btn:hover { color: var(--color-fg); border-color: var(--color-primary); }
+.lookup-skeleton .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; margin-bottom: var(--space-2); }
+.lookup-skeleton .skeleton-bar.short { width: 40%; }
+@media (prefers-reduced-motion: no-preference) { .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.lookup-result-price { font-family: var(--font-family-base); font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+.lookup-source { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+.lookup-overlap-note {
+  display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); border: 1px dashed var(--color-fg-muted);
+  border-radius: var(--radius-md); background: var(--color-surface); font-family: var(--font-family-base);
+  font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-3);
+}
+
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+select.input:focus-visible, .view-link-btn:focus-visible, .price-row-remove:focus-visible,
+.preset-btn:focus-visible, .back-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
