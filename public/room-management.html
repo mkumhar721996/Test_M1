@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Room Management — Room Inventory</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/room-management.css" />
+<script src="./js/room-management.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Room Inventory</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Rooms</a>
+      <a href="#" onclick="return false;">Room Types</a>
+      <a href="#" onclick="return false;">Rates</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Room management</h1>
+      <p>Create individual rooms under a room type and manage each room's maintenance status.</p>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" id="new-room-btn" type="button">+ Add room</button>
+    </div>
+
+    <div id="room-list-wrap"><!-- rendered by JS --></div>
+
+    <div class="card empty-state" id="room-list-empty" hidden>
+      <span class="icon" aria-hidden="true">◎</span>
+      <h3>No rooms yet</h3>
+      <p>Add a room to get started.</p>
+      <button class="btn btn-secondary" id="empty-add-room-btn" type="button">+ Add room</button>
+    </div>
+  </div>
+
+  <!-- Create room modal -->
+  <div class="modal-overlay" id="create-overlay" hidden></div>
+  <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-modal-title">Add room</h2>
+          <p>Assign a unique identifier and a room type.</p>
+        </div>
+        <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="create-form" novalidate>
+        <div class="field">
+          <label class="label" for="field-identifier">Room identifier</label>
+          <input class="input" id="field-identifier" name="identifier" type="text" placeholder="e.g. 204" aria-describedby="error-identifier" />
+          <p class="field-error-text" id="error-identifier" role="alert" hidden>⚠ Enter a unique room identifier.</p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="field-room-type">Room type</label>
+          <select class="input" id="field-room-type" name="roomTypeId" aria-describedby="error-room-type">
+            <option value="" disabled selected>Select a room type</option>
+          </select>
+          <p class="field-error-text" id="error-room-type" role="alert" hidden>⚠ Select a room type.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="create-save-btn">Add room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>
