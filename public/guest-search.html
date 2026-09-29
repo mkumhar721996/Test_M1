@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guest Search — Guest Services</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/guest-search.css" />
+<script src="./js/guest-search.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Guest Services</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Guests</a>
+      <a href="#" onclick="return false;">Bookings</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="signed-in-as">Signed in as <strong>Priya Nair</strong> · Front desk</span>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Find a guest</h1>
+      <p>Search every guest profile by name, email, or phone — with or without an active reservation.</p>
+    </div>
+
+    <form id="search-form" class="search-form" autocomplete="off">
+      <div class="search-field">
+        <label class="label" for="search-input">Search guests</label>
+        <input class="input" id="search-input" type="text" placeholder="Search by name, email, or phone" />
+        <p class="field-error" id="search-error" hidden>Enter a name, email, or phone number to search.</p>
+      </div>
+      <button type="submit" class="btn btn-primary" id="search-submit">Search</button>
+    </form>
+    <p class="search-hint">Enter a partial name (e.g. "mar"), or a complete email address or phone number.</p>
+
+    <div class="include-inactive-row">
+      <input type="checkbox" id="include-inactive" />
+      <label for="include-inactive">Include inactive profiles</label>
+    </div>
+
+    <div id="results-region" aria-live="polite">
+
+      <!-- State: idle (no search yet) -->
+      <div class="card state-panel" id="state-idle">
+        <div class="state-icon" aria-hidden="true">🔍</div>
+        <h3>Search for a guest to get started</h3>
+        <p>Results appear here. Deactivated profiles are hidden unless "Include inactive profiles" is checked.</p>
+      </div>
+
+      <!-- State: loading -->
+      <div class="card" id="state-loading" hidden>
+        <div class="skeleton-row">
+          <div class="skeleton-block skeleton-avatar"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-block skeleton-line w-40"></div>
+            <div class="skeleton-block skeleton-line w-60"></div>
+          </div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton-block skeleton-avatar"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-block skeleton-line w-30"></div>
+            <div class="skeleton-block skeleton-line w-60"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- State: error (backend outage) -->
+      <div class="card state-panel" id="state-error" hidden>
+        <div class="state-icon" aria-hidden="true">⚠️</div>
+        <h3>Guest search is unavailable</h3>
+        <p>We couldn't reach the guest directory. No results can be shown right now — please try again in a few minutes.</p>
+      </div>
+
+      <!-- State: no-results -->
+      <div class="card state-panel" id="state-empty" hidden>
+        <div class="state-icon" aria-hidden="true">🗂️</div>
+        <h3 id="state-empty-heading">No profiles found</h3>
+        <p>Check the spelling, or try a different name, email, or phone number.</p>
+      </div>
+
+      <!-- State: results -->
+      <div id="state-results" hidden>
+        <p class="results-meta" id="results-meta"></p>
+        <div class="results-list" id="results-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
