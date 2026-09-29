@@ -1,5 +1,6 @@
 const express = require('express');
 const guestsStore = require('./store');
+const stayHistoryClient = require('./stayHistoryClient');
 const { GuestValidationError, getGuest, updateGuest, deactivateGuest, reactivateGuest } = guestsStore;
 
 const router = express.Router();
@@ -68,6 +69,22 @@ router.get('/:id', enforceFrontDeskRole, (req, res, next) => {
     }
     res.status(200).json(guest);
   } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/:id/stay-history', enforceFrontDeskRole, async (req, res, next) => {
+  try {
+    const guest = getGuest(req.params.id);
+    if (!guest) {
+      return res.status(404).json({ error: 'guest not found' });
+    }
+    const stays = await stayHistoryClient.fetchStayHistory(guest.id);
+    res.status(200).json({ stays });
+  } catch (err) {
+    if (err instanceof stayHistoryClient.StayHistoryUnavailableError) {
+      return res.status(502).json({ error: 'stay_history_unavailable' });
+    }
     next(err);
   }
 });
