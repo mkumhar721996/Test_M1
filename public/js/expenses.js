@@ -3,9 +3,9 @@ const { escapeHtml, formatDateDisplay } = require('./utils');
 const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
 const INITIAL_EXPENSES = [
-  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50 },
-  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18 },
-  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00 },
+  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50, loggedBy: 'Morgan Ellis' },
+  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18, loggedBy: 'Priya Shah' },
+  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00, loggedBy: 'Devon Ruiz' },
 ];
 
 function loadExpenses() {
@@ -104,7 +104,7 @@ function initExpensesApp(doc = document) {
     if (expenses.length === 0) {
       const tr = doc.createElement('tr');
       tr.className = 'empty-row';
-      tr.innerHTML = '<td colspan="5">No expenses yet.</td>';
+      tr.innerHTML = '<td colspan="6">No expenses yet.</td>';
       tbody.appendChild(tr);
       return;
     }
@@ -112,7 +112,7 @@ function initExpensesApp(doc = document) {
     if (list.length === 0) {
       const tr = doc.createElement('tr');
       tr.className = 'no-match-row';
-      tr.innerHTML = '<td colspan="5"><div class="no-match">' +
+      tr.innerHTML = '<td colspan="6"><div class="no-match">' +
         '<svg class="no-match-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 5h16l-6 8v5l-4 2v-7L4 5z"></path></svg>' +
         '<p class="no-match-title">No matching expenses</p>' +
         '<p class="no-match-body">No expenses match the selected category and date range. Try widening the range or choosing a different category.</p>' +
@@ -129,6 +129,7 @@ function initExpensesApp(doc = document) {
         <td>${escapeHtml(doc, formatDateDisplay(exp.date))}</td>
         <td><span class="chip">${escapeHtml(doc, exp.category)}</span></td>
         <td class="desc-cell">${escapeHtml(doc, exp.description) || '—'}</td>
+        <td class="logged-by-cell">${escapeHtml(doc, exp.loggedBy)}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
           <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
@@ -307,6 +308,7 @@ function initExpensesApp(doc = document) {
   const createErrorCategory = doc.getElementById('create-error-category');
   const createErrorDescription = doc.getElementById('create-error-description');
   const createModalPanel = createModalWrap.querySelector('.modal-panel');
+  const viewerSelect = doc.getElementById('viewer-select');
   let createSaveTimer = null;
   let createModalOpenerEl = null;
 
@@ -337,7 +339,7 @@ function initExpensesApp(doc = document) {
     createOverlay.hidden = true;
     createModalWrap.hidden = true;
     createSaveBtn.disabled = false;
-    createSaveBtn.textContent = 'Save expense';
+    createSaveBtn.textContent = 'Log expense';
     doc.removeEventListener('keydown', onCreateModalKeydown);
     clearTimeout(createSaveTimer);
     createSaveTimer = null;
@@ -412,7 +414,7 @@ function initExpensesApp(doc = document) {
     }
 
     createSaveBtn.disabled = true;
-    createSaveBtn.textContent = 'Saving…';
+    createSaveBtn.textContent = 'Logging…';
 
     const newExpense = {
       id: 'exp_' + String(nextId++).padStart(3, '0'),
@@ -420,6 +422,7 @@ function initExpensesApp(doc = document) {
       date: dateValue,
       category: categoryValue,
       description: descriptionValue,
+      loggedBy: viewerSelect.value,
     };
 
     createSaveTimer = setTimeout(() => {
@@ -427,15 +430,15 @@ function initExpensesApp(doc = document) {
         persistExpenses([newExpense, ...expenses]);
       } catch (err) {
         createSaveBtn.disabled = false;
-        createSaveBtn.textContent = 'Save expense';
-        showToast('error', "Couldn't save expense — please try again");
+        createSaveBtn.textContent = 'Log expense';
+        showToast('error', "Couldn't log expense — please try again");
         return;
       }
       expenses = [newExpense, ...expenses];
       lastAddedId = newExpense.id;
       closeCreateModal();
       applyFiltersAndRender();
-      showToast('success', 'Expense added');
+      showToast('success', 'Expense logged');
     }, 350);
   });
 

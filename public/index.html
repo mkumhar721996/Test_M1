@@ -17,6 +17,14 @@
       <a href="#" class="active" aria-current="page">Expenses</a>
       <a href="#" onclick="return false;">Employees</a>
     </nav>
+    <div class="viewer-switcher">
+      <label for="viewer-select">Signed in as</label>
+      <select class="input" id="viewer-select">
+        <option>Morgan Ellis</option>
+        <option>Priya Shah</option>
+        <option>Devon Ruiz</option>
+      </select>
+    </div>
   </div>
 
   <div class="page">
@@ -25,7 +33,7 @@
         <h1>Expenses</h1>
         <p>Review and correct submitted expense records, or add a new one.</p>
       </div>
-      <button type="button" class="btn btn-primary" id="add-expense-btn">+ Add expense</button>
+      <button type="button" class="btn btn-primary" id="add-expense-btn">+ Log expense</button>
     </div>
 
     <form role="search" aria-label="Filter expenses" class="filter-bar" onsubmit="return false;">
@@ -60,6 +68,11 @@
       <p class="list-count" id="result-count" aria-live="polite"></p>
     </div>
 
+    <p class="shared-visibility-hint">
+      <span class="hint-icon" aria-hidden="true">ℹ</span>
+      <span>Every staff member sees this same list — logging an expense makes it visible to everyone, not just the person who submitted it.</span>
+    </p>
+
     <div class="card table-card">
       <div class="table-scroll">
         <table class="expense-table">
@@ -68,6 +81,7 @@
               <th scope="col">Date</th>
               <th scope="col">Category</th>
               <th scope="col">Description</th>
+              <th scope="col">Logged by</th>
               <th scope="col" class="col-amount">Amount</th>
               <th scope="col" class="col-actions">Actions</th>
             </tr>
@@ -141,8 +155,8 @@
     <div class="modal-panel">
       <div class="modal-header">
         <div>
-          <h2 id="create-modal-title">Create expense</h2>
-          <p>Enter the details of a new expense to add it to the list.</p>
+          <h2 id="create-modal-title">Log an expense</h2>
+          <p>Fill in every field below to add it to the shared expense list.</p>
         </div>
         <button class="icon-btn" id="create-modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
       </div>
@@ -159,12 +173,6 @@
         </div>
 
         <div class="field">
-          <label class="label" for="create-field-date">Date</label>
-          <input class="input" id="create-field-date" name="date" type="date" aria-describedby="create-error-date" />
-          <p class="field-error" id="create-error-date" role="alert" hidden>⚠ Date is required.</p>
-        </div>
-
-        <div class="field">
           <label class="label" for="create-field-category">Category</label>
           <select class="input" id="create-field-category" name="category" aria-describedby="create-error-category">
             <option value="">Select a category</option>
@@ -177,6 +185,12 @@
           <p class="field-error" id="create-error-category" role="alert" hidden>⚠ Category is required.</p>
         </div>
 
+        <div class="field">
+          <label class="label" for="create-field-date">Date</label>
+          <input class="input" id="create-field-date" name="date" type="date" aria-describedby="create-error-date" />
+          <p class="field-error" id="create-error-date" role="alert" hidden>⚠ Date is required.</p>
+        </div>
+
         <div class="field" style="margin-bottom: 0;">
           <label class="label" for="create-field-description">Description</label>
           <textarea class="input" id="create-field-description" name="description" rows="2" aria-describedby="create-error-description"></textarea>
@@ -185,7 +199,7 @@
 
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="create-modal-cancel-btn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Save expense</button>
+          <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Log expense</button>
         </div>
       </form>
     </div>
