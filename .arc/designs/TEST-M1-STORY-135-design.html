@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-135 — Guest Reservation History Integration</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar extras ---------- */
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .role-switcher { display: flex; gap: var(--space-2); align-items: center; }
+  .role-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .role-switcher select { min-width: 220px; }
+
+  /* ---------- Toolbar (search + lookup) ---------- */
+  .toolbar {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-4);
+  }
+  .toolbar .field { margin-bottom: 0; }
+  .search-field { flex: 1 1 260px; min-width: 220px; }
+  .lookup-field { display: flex; gap: var(--space-2); align-items: flex-end; flex: 0 0 auto; }
+  .lookup-field input { min-width: 160px; }
+
+  /* ---------- Guest table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.guest-table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  .guest-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .guest-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .guest-table tbody tr:last-child td { border-bottom: none; }
+  .guest-name-cell { font-weight: var(--font-weight-bold); }
+  .guest-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .history-link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+  }
+  .no-access-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Inline error notice (AC6) ---------- */
+  .inline-notice {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-fg);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .inline-notice[hidden] { display: none; }
+  .inline-notice .icon-btn { margin-left: auto; }
+
+  /* ---------- Status chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--upcoming { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--instay { border: 2px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--completed { border: 1px solid var(--color-border); color: var(--color-fg); }
+  .status-chip--cancelled { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); text-decoration: line-through; }
+
+  /* ---------- Reservation history list ---------- */
+  .history-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-3);
+    min-height: 44px;
+  }
+  .demo-switcher { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .demo-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .demo-switcher select { min-width: 260px; }
+  .list-count-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-4) 0; }
+
+  .status-group { margin-bottom: var(--space-4); }
+  .status-group:last-child { margin-bottom: 0; }
+  .status-group h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .reservation-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .status-group ul { list-style: none; margin: 0; padding: 0; }
+  .status-group li:last-child .reservation-row { border-bottom: none; }
+  .reservation-main { min-width: 220px; }
+  .reservation-room { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 2px 0; }
+  .reservation-dates { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .reservation-res-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Empty / not-found / error states ---------- */
+  .empty-state, .not-found-panel, .error-state {
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .empty-state .icon, .not-found-panel .icon, .error-state .icon {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+  .empty-state p, .not-found-panel p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state h3, .not-found-panel h3, .error-state h3 {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; }
+  .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+
+  /* Error/not-found emphasis uses border WIDTH + DASH-STYLE + icon + label, never a new hue —
+     tokens.json has no dedicated error/danger color, so introducing one here would be a
+     design-system gap, not a page-level decision. Flagging for design-system owners if a
+     future story needs a true "danger" semantic color. */
+</style>
+</head>
+<!-- App nav: top bar — Guests (active) · Reservations. This product's frontend shell (seen in
+     prior Guest Services prototypes) is a minimal, product-appropriate top bar for a front-desk
+     staff console, not the arc platform's own chrome. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-135</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "staffName": "Priya Nair",
+    "guests": [
+      {
+        "id": "GST-2001",
+        "name": "Elena Ruiz",
+        "email": "elena.ruiz@example.com",
+        "phone": "(555) 402-1187",
+        "reservations": [
+          { "id": "RES-7002", "room": "Garden Room 204", "checkIn": "2025-03-10", "checkOut": "2025-03-12", "status": "Completed" },
+          { "id": "RES-7100", "room": "Oceanview Suite 310", "checkIn": "2026-11-02", "checkOut": "2026-11-05", "status": "Upcoming" },
+          { "id": "RES-6890", "room": "Executive Suite 502", "checkIn": "2025-07-20", "checkOut": "2025-07-22", "status": "Cancelled" },
+          { "id": "RES-7050", "room": "Standard King 118", "checkIn": "2026-01-04", "checkOut": "2026-01-07", "status": "Completed" },
+          { "id": "RES-7210", "room": "Poolside Cabana 402", "checkIn": "2026-12-20", "checkOut": "2026-12-23", "status": "Upcoming" },
+          { "id": "RES-6950", "room": "Rooftop Loft 601", "checkIn": "2025-09-05", "checkOut": "2025-09-07", "status": "Cancelled" }
+        ]
+      },
+      {
+        "id": "GST-2002",
+        "name": "Marcus Webb",
+        "email": "marcus.webb@example.com",
+        "phone": "(555) 776-2290",
+        "reservations": []
+      },
+      {
+        "id": "GST-2003",
+        "name": "Priya Chandra",
+        "email": "priya.chandra@example.com",
+        "phone": "(555) 118-4432",
+        "reservations": [
+          { "id": "RES-9001", "room": "Oceanview Suite 310", "checkIn": "2026-10-05", "checkOut": "2026-10-08", "status": "Upcoming" },
+          { "id": "RES-9002", "room": "Garden Room 207", "checkIn": "2026-10-20", "checkOut": "2026-10-22", "status": "Upcoming" },
+          { "id": "RES-9003", "room": "Standard King 122", "checkIn": "2026-11-01", "checkOut": "2026-11-03", "status": "In stay" },
+          { "id": "RES-9004", "room": "Executive Suite 502", "checkIn": "2026-12-24", "checkOut": "2026-12-28", "status": "Upcoming" },
+          { "id": "RES-9005", "room": "Rooftop Loft 601", "checkIn": "2027-01-15", "checkOut": "2027-01-18", "status": "Upcoming" },
+          { "id": "RES-8801", "room": "Garden Room 204", "checkIn": "2024-05-02", "checkOut": "2024-05-04", "status": "Completed" },
+          { "id": "RES-8850", "room": "Standard King 118", "checkIn": "2024-08-11", "checkOut": "2024-08-13", "status": "Completed" },
+          { "id": "RES-8920", "room": "Oceanview Suite 315", "checkIn": "2025-01-09", "checkOut": "2025-01-12", "status": "Completed" },
+          { "id": "RES-8990", "room": "Poolside Cabana 402", "checkIn": "2025-05-22", "checkOut": "2025-05-25", "status": "Completed" },
+          { "id": "RES-9050", "room": "Executive Suite 502", "checkIn": "2025-09-14", "checkOut": "2025-09-16", "status": "Completed" },
+          { "id": "RES-9100", "room": "Garden Room 207", "checkIn": "2026-02-02", "checkOut": "2026-02-04", "status": "Completed" },
+          { "id": "RES-8700", "room": "Standard King 118", "checkIn": "2024-03-01", "checkOut": "2024-03-03", "status": "Cancelled" },
+          { "id": "RES-8905", "room": "Oceanview Suite 310", "checkIn": "2024-12-19", "checkOut": "2024-12-22", "status": "Cancelled" },
+          { "id": "RES-9020", "room": "Garden Room 204", "checkIn": "2025-06-30", "checkOut": "2025-07-02", "status": "Cancelled" },
+          { "id": "RES-9075", "room": "Poolside Cabana 402", "checkIn": "2025-11-11", "checkOut": "2025-11-13", "status": "Cancelled" },
+          { "id": "RES-9150", "room": "Rooftop Loft 601", "checkIn": "2026-04-04", "checkOut": "2026-04-06", "status": "Cancelled" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Guest Directory (interactive)
+         Notes:
+           - Role switcher in the top bar simulates staff vs. non-staff sign-in. Switch to
+             "Housekeeping (no access)" and the "View reservation history" action disappears
+             from every row, and the "Open reservation history by guest ID" lookup form is
+             replaced by a note — there is no entry point to the feature at all for this role
+             (AC5). Switch back to "Front Desk Staff" to restore it.
+           - "Open reservation history by guest ID" looks a guest up directly — enter an
+             existing ID (e.g. GST-2001) to jump straight to their history, or an unknown one
+             (e.g. GST-9999) to see the redirect-with-notice response: the staff member stays on
+             this guest list/search view and an inline error notice appears above the table,
+             nothing is hidden or crashes (AC6).
+           - Clicking "View reservation history →" on any row does the same thing as a
+             successful ID lookup, landing on the Reservation History screen for that guest.
+    -->
+    <div class="screen" data-name="Guest Directory">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Reservations</a>
+        </nav>
+        <div class="topbar-actions">
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="staff" selected>Priya Nair — Front Desk Staff</option>
+              <option value="housekeeping">Sam Torres — Housekeeping</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Guests</h1>
+          <p>Search the guest directory, or open a guest's full reservation history — every stay they've booked, completed, or cancelled.</p>
+        </div>
+
+        <!-- State: redirect-not-found-notice (hidden until a bad ID is submitted, AC6) -->
+        <div class="inline-notice" id="not-found-notice" role="alert" hidden>
+          <span aria-hidden="true">⚠</span>
+          <span>No guest profile found for ID "<strong id="nf-id"></strong>". You're back on the guest list — check the ID and try again.</span>
+          <button class="icon-btn" id="notice-dismiss-btn" type="button" aria-label="Dismiss notice">✕</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="field search-field">
+            <label class="label" for="search-input">Search guests</label>
+            <input class="input" id="search-input" type="search" placeholder="Name, email, or ID" autocomplete="off" />
+          </div>
+          <form class="lookup-field" id="lookup-form" novalidate>
+            <div class="field">
+              <label class="label" for="lookup-input">Open reservation history by guest ID</label>
+              <input class="input" id="lookup-input" type="text" placeholder="e.g. GST-2001" autocomplete="off" />
+            </div>
+            <button class="btn btn-secondary" id="lookup-btn" type="submit">Open</button>
+          </form>
+          <!-- State: no-entry-point (housekeeping role — lookup form above is swapped for this note) -->
+          <p class="no-access-note" id="no-access-lookup-note" hidden>Reservation history lookup isn't available for your role.</p>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="guest-table">
+              <thead>
+                <tr>
+                  <th scope="col">Guest</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Reservations</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="guest-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- State: directory-empty (search yields no matches) -->
+        <div class="card empty-state" id="directory-empty" hidden>
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>No guests match "<span class="empty-query"></span>"</h3>
+          <p>Try a different name, email, or guest ID.</p>
+          <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reservation History (interactive)
+         Notes:
+           - Opened from the directory (row click, ID lookup, or the demo switcher below).
+             Defaults to Elena Ruiz, whose fixture reservations are deliberately listed
+             out of order, so the render logic visibly regroups and sorts them: active/upcoming
+             first, then completed, then cancelled — each group ascending by date, oldest
+             first (AC1, AC2, AC7, AC8).
+           - Use "Viewing" to switch guests: Marcus Webb has zero reservations — the section
+             renders an empty state with an inviting message and no error text anywhere (AC3,
+             AC4). Priya Chandra has 16 reservations spread across all three groups — every one
+             renders in a single scrolling list with no page numbers, "next page" controls, or
+             row limit (AC9). "Unknown guest (demo)" simulates requesting history for an ID that
+             doesn't exist, which redirects back to the Guest Directory with the inline notice
+             from AC6.
+    -->
+    <div class="screen" data-name="Reservation History">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Guests</a>
+          <a href="#" class="active" aria-current="page">Reservations</a>
+        </nav>
+      </div>
+
+      <div class="page">
+        <button class="back-link" id="history-back-btn" type="button">← Back to guest directory</button>
+
+        <div class="demo-switcher">
+          <label for="demo-guest-select">Viewing</label>
+          <select class="input" id="demo-guest-select">
+            <option value="GST-2001">Elena Ruiz — mixed history (6 reservations)</option>
+            <option value="GST-2002">Marcus Webb — no reservations</option>
+            <option value="GST-2003">Priya Chandra — large history (16 reservations)</option>
+            <option value="GST-9999">Unknown guest (demo) — invalid ID</option>
+          </select>
+        </div>
+
+        <!-- State: history-loading (skeleton, ~250ms) -->
+        <div id="history-loading" hidden>
+          <div class="card u-stack">
+            <div class="skeleton-bar" style="width:40%;height:24px;"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar short"></div>
+          </div>
+        </div>
+
+        <!-- State: history-success / history-empty (rendered by JS) -->
+        <div id="history-content">
+          <div class="history-header-row">
+            <div>
+              <h1 id="history-guest-name" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+              <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="history-guest-meta"></p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">Reservation history</h2>
+            <p class="list-count-note" id="history-count-note"></p>
+            <div id="history-groups"><!-- rendered by JS --></div>
+
+            <!-- State: history-empty -->
+            <div class="empty-state" id="history-empty" hidden>
+              <span class="icon" aria-hidden="true">🗓</span>
+              <h3>No reservations yet</h3>
+              <p>This guest hasn't made any reservations. New bookings will appear here automatically, grouped by status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every AC-relevant edge case, for reviewers who
+             want a quick scan without driving the full interaction on screens 1–2.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Guests</a>
+          <a href="#" onclick="return false;">Reservations</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of key states called out in the acceptance criteria.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: grouped-and-sorted -->
+          <div class="mini-card">
+            <h3>Grouped &amp; sorted history</h3>
+            <span class="ac-tag">Satisfies AC1, AC2, AC7, AC8</span>
+            <div class="status-group" style="margin-bottom:var(--space-3);">
+              <h2 style="font-size:var(--font-size-sm);">Active &amp; upcoming</h2>
+              <p class="reservation-dates" style="margin:0;">Oceanview Suite 310 · Nov 2–5, 2026 <span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span></p>
+              <p class="reservation-dates" style="margin:var(--space-1) 0 0 0;">Poolside Cabana 402 · Dec 20–23, 2026 <span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span></p>
+            </div>
+            <div class="status-group" style="margin-bottom:var(--space-3);">
+              <h2 style="font-size:var(--font-size-sm);">Completed</h2>
+              <p class="reservation-dates" style="margin:0;">Garden Room 204 · Mar 10–12, 2025 <span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span></p>
+              <p class="reservation-dates" style="margin:var(--space-1) 0 0 0;">Standard King 118 · Jan 4–7, 2026 <span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span></p>
+            </div>
+            <div class="status-group">
+              <h2 style="font-size:var(--font-size-sm);">Cancelled</h2>
+              <p class="reservation-dates" style="margin:0;">Executive Suite 502 · Jul 20–22, 2025 <span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span></p>
+              <p class="reservation-dates" style="margin:var(--space-1) 0 0 0;">Rooftop Loft 601 · Sep 5–7, 2025 <span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span></p>
+            </div>
+          </div>
+
+          <!-- State: history-empty -->
+          <div class="mini-card empty-state">
+            <span class="icon" aria-hidden="true">🗓</span>
+            <h3>No reservations yet</h3>
+            <span class="ac-tag">Satisfies AC3, AC4</span>
+            <p>Empty section, no error text — inviting, not alarming.</p>
+          </div>
+
+          <!-- State: no-entry-point -->
+          <div class="mini-card">
+            <h3>No entry point for unauthorized roles</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);margin:0 0 var(--space-2) 0;">Signed in as Sam Torres — Housekeeping:</p>
+            <table class="guest-table" style="min-width:0;">
+              <thead><tr><th>Guest</th><th class="col-actions">Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Elena Ruiz</td><td class="col-actions"><span class="no-access-note">—</span></td></tr>
+              </tbody>
+            </table>
+            <p style="margin-top:var(--space-2);">No "View reservation history" link, button, or URL lookup is rendered anywhere in this role's UI.</p>
+          </div>
+
+          <!-- State: redirect-not-found-notice -->
+          <div class="mini-card">
+            <h3>Unknown guest ID → redirect + notice</h3>
+            <span class="ac-tag">Satisfies AC6</span>
+            <div class="inline-notice" style="margin-bottom:0;">
+              <span aria-hidden="true">⚠</span>
+              <span>No guest profile found for ID "GST-9999". You're back on the guest list — check the ID and try again.</span>
+            </div>
+          </div>
+
+          <!-- State: large-list-no-pagination -->
+          <div class="mini-card">
+            <h3>Large history — single list, no pagination</h3>
+            <span class="ac-tag">Satisfies AC9</span>
+            <p>Priya Chandra's 16 reservations render as one continuous, scrollable list. No page numbers, "load more" button, or row cap appear anywhere in the layout.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var guests = FIXTURE.guests;
+    var currentRole = 'staff';
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function findGuest(id) {
+      var needle = String(id).trim().toLowerCase();
+      for (var i = 0; i < guests.length; i++) {
+        if (guests[i].id.toLowerCase() === needle) return guests[i];
+      }
+      return null;
+    }
+    function fmtRange(checkIn, checkOut) {
+      var a = new Date(checkIn + 'T00:00:00');
+      var b = new Date(checkOut + 'T00:00:00');
+      var optsFull = { month: 'short', day: 'numeric', year: 'numeric' };
+      if (a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()) {
+        return a.toLocaleDateString('en-US', { month: 'short' }) + ' ' + a.getDate() + '–' + b.getDate() + ', ' + b.getFullYear();
+      }
+      return a.toLocaleDateString('en-US', optsFull) + ' – ' + b.toLocaleDateString('en-US', optsFull);
+    }
+    function statusChipHtml(status) {
+      if (status === 'Upcoming') return '<span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span>';
+      if (status === 'In stay') return '<span class="status-chip status-chip--instay"><span aria-hidden="true">●</span> In stay</span>';
+      if (status === 'Cancelled') return '<span class="status-chip status-chip--cancelled"><span aria-hidden="true">✕</span> Cancelled</span>';
+      return '<span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span>';
+    }
+    /* Active/upcoming first, then completed, then cancelled; each group ascending by check-in date (AC7, AC8) */
+    function groupOrder(status) {
+      if (status === 'Upcoming' || status === 'In stay') return 0;
+      if (status === 'Completed') return 1;
+      return 2;
+    }
+    function sortedReservations(list) {
+      return list.slice().sort(function (a, b) {
+        var ga = groupOrder(a.status), gb = groupOrder(b.status);
+        if (ga !== gb) return ga - gb;
+        return a.checkIn < b.checkIn ? -1 : a.checkIn > b.checkIn ? 1 : 0;
+      });
+    }
+    function groupLabel(order) {
+      return ['Active & upcoming', 'Completed', 'Cancelled'][order];
+    }
+
+    /* ---------------- Guest Directory ---------------- */
+    var tbody = document.getElementById('guest-tbody');
+    var tableCard = document.querySelector('#guest-tbody').closest('.table-card');
+    var emptyEl = document.getElementById('directory-empty');
+    var notFoundNotice = document.getElementById('not-found-notice');
+    var lookupForm = document.getElementById('lookup-form');
+    var noAccessLookupNote = document.getElementById('no-access-lookup-note');
+
+    function renderDirectory(list) {
+      if (!list.length) {
+        tableCard.hidden = true;
+        emptyEl.hidden = false;
+        emptyEl.querySelector('.empty-query').textContent = document.getElementById('search-input').value.trim();
+        return;
+      }
+      tableCard.hidden = false;
+      emptyEl.hidden = true;
+      var isStaff = currentRole === 'staff';
+      tbody.innerHTML = list.map(function (g) {
+        var count = g.reservations.length;
+        var countCell = isStaff
+          ? count + (count === 1 ? ' reservation' : ' reservations')
+          : '<span class="no-access-note">—</span>';
+        var action = isStaff
+          ? '<button type="button" class="history-link-btn" data-id="' + g.id + '">View reservation history →</button>'
+          : '<span class="no-access-note">—</span>';
+        return '<tr>' +
+          '<td class="guest-name-cell">' + escapeHtml(g.name) + '<span class="guest-id">' + g.id + '</span></td>' +
+          '<td>' + escapeHtml(g.email) + '<span class="guest-id">' + escapeHtml(g.phone) + '</span></td>' +
+          '<td>' + countCell + '</td>' +
+          '<td class="col-actions">' + action + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function applySearchFilter() {
+      var q = document.getElementById('search-input').value.trim().toLowerCase();
+      if (!q) { renderDirectory(guests); return; }
+      var filtered = guests.filter(function (g) {
+        return g.name.toLowerCase().indexOf(q) !== -1 ||
+          g.email.toLowerCase().indexOf(q) !== -1 ||
+          g.id.toLowerCase().indexOf(q) !== -1;
+      });
+      renderDirectory(filtered);
+    }
+    document.getElementById('search-input').addEventListener('input', applySearchFilter);
+    document.getElementById('clear-search-btn').addEventListener('click', function () {
+      document.getElementById('search-input').value = '';
+      renderDirectory(guests);
+    });
+
+    tbody.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-id]');
+      if (btn) openHistory(btn.getAttribute('data-id'));
+    });
+
+    function showNotFoundNotice(id) {
+      document.getElementById('nf-id').textContent = id;
+      notFoundNotice.hidden = false;
+    }
+    document.getElementById('notice-dismiss-btn').addEventListener('click', function () {
+      notFoundNotice.hidden = true;
+    });
+
+    lookupForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var idVal = document.getElementById('lookup-input').value.trim();
+      if (!idVal) return;
+      var btn = document.getElementById('lookup-btn');
+      btn.disabled = true; btn.textContent = 'Looking up…';
+      await wait(250);
+      btn.disabled = false; btn.textContent = 'Open';
+      var g = findGuest(idVal);
+      document.getElementById('lookup-input').value = '';
+      if (g) { notFoundNotice.hidden = true; openHistory(g.id); }
+      else { showNotFoundNotice(idVal); }
+    });
+
+    function applyRole(role) {
+      currentRole = role;
+      var isStaff = role === 'staff';
+      lookupForm.hidden = !isStaff;
+      noAccessLookupNote.hidden = isStaff;
+      if (!isStaff) notFoundNotice.hidden = true;
+      renderDirectory(guests);
+    }
+    document.getElementById('role-select').addEventListener('change', function (e) {
+      applyRole(e.target.value);
+    });
+
+    /* ---------------- Reservation History ---------------- */
+    var historyLoading = document.getElementById('history-loading');
+    var historyContent = document.getElementById('history-content');
+    var historyGroupsEl = document.getElementById('history-groups');
+    var historyEmptyEl = document.getElementById('history-empty');
+    var historyCountNote = document.getElementById('history-count-note');
+    var demoSelect = document.getElementById('demo-guest-select');
+
+    function renderHistoryLoading() {
+      historyLoading.hidden = false;
+      historyContent.hidden = true;
+    }
+
+    function renderHistoryView(g) {
+      historyLoading.hidden = true;
+      historyContent.hidden = false;
+      document.getElementById('history-guest-name').textContent = g.name;
+      document.getElementById('history-guest-meta').textContent = g.id + ' · ' + g.email + ' · ' + g.phone;
+
+      var sorted = sortedReservations(g.reservations);
+      if (!sorted.length) {
+        historyGroupsEl.hidden = true;
+        historyEmptyEl.hidden = false;
+        historyCountNote.textContent = '';
+        return;
+      }
+      historyGroupsEl.hidden = false;
+      historyEmptyEl.hidden = true;
+      historyCountNote.textContent = 'Showing all ' + sorted.length + (sorted.length === 1 ? ' reservation' : ' reservations') + ' — no pagination.';
+
+      var groups = [[], [], []];
+      sorted.forEach(function (r) { groups[groupOrder(r.status)].push(r); });
+
+      historyGroupsEl.innerHTML = groups.map(function (rows, idx) {
+        if (!rows.length) return '';
+        return '<div class="status-group">' +
+          '<h2>' + groupLabel(idx) + '</h2>' +
+          '<ul>' + rows.map(function (r) {
+            return '<li><div class="reservation-row">' +
+              '<div class="reservation-main">' +
+                '<p class="reservation-room">' + escapeHtml(r.room) + '</p>' +
+                '<p class="reservation-dates">' + fmtRange(r.checkIn, r.checkOut) + ' <span class="reservation-res-id">· ' + r.id + '</span></p>' +
+              '</div>' +
+              statusChipHtml(r.status) +
+              '</div></li>';
+          }).join('') + '</ul>' +
+        '</div>';
+      }).join('');
+    }
+
+    async function openHistory(id, opts) {
+      opts = opts || {};
+      show(1);
+      demoSelect.value = guests.some(function (g) { return g.id === id; }) ? id : 'GST-9999';
+      if (id === 'GST-9999') {
+        show(0);
+        showNotFoundNotice(id);
+        return;
+      }
+      renderHistoryLoading();
+      if (!opts.skipWait) await wait(300);
+      var g = findGuest(id);
+      renderHistoryView(g);
+    }
+
+    demoSelect.addEventListener('change', function (e) {
+      openHistory(e.target.value);
+    });
+
+    document.getElementById('history-back-btn').addEventListener('click', function () {
+      show(0);
+    });
+
+    /* ---------------- Reviewer bar screen switcher (must exist before Init runs openHistory) ---------------- */
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    let cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+      document.getElementById('screen-label').textContent =
+        `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    }
+    document.getElementById('prev-btn').onclick = () => show(cur - 1);
+    document.getElementById('next-btn').onclick = () => show(cur + 1);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+
+    /* ---------------- Init ---------------- */
+    applyRole('staff');
+    openHistory('GST-2001', { skipWait: true });
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
