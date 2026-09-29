@@ -1,3 +1,7 @@
+beforeEach(() => {
+  require('../src/rooms/store').clearRooms();
+});
+
 test('AC1: createRoom assigns to an existing room type and appears in listRooms', () => {
   const { createRoom, listRoomTypes, listRooms } = require('../src/rooms/store');
   const roomTypeId = listRoomTypes()[0].id;

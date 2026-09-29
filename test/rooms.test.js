@@ -1,5 +1,10 @@
 const request = require('supertest');
 const app = require('../src/server');
+const { clearRooms } = require('../src/rooms/store');
+
+beforeEach(() => {
+  clearRooms();
+});
 
 test('AC1: POST /rooms creates a room under an existing room type', async () => {
   const typesRes = await request(app).get('/rooms/room-types');

@@ -222,6 +222,9 @@ if (typeof window !== 'undefined') {
       fetch('/rooms').then((res) => res.json()),
     ]).then(([roomTypes, rooms]) => {
       initRoomManagementApp(document, roomTypes, rooms, createDefaultApi());
+    }).catch((err) => {
+      console.error('Failed to load room data:', err);
+      document.body.innerHTML = '<div style="padding:2rem;text-align:center;"><h2>Error Loading Rooms</h2><p>Please refresh the page to try again.</p></div>';
     });
   });
 }

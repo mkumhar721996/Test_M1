@@ -34,6 +34,10 @@ function listRoomTypes() {
   return ROOM_TYPES.slice();
 }
 
+function clearRooms() {
+  rooms.clear();
+}
+
 function findRoomByIdentifier(identifier) {
   const normalized = normalizeIdentifier(identifier);
   return Array.from(rooms.values()).find((r) => normalizeIdentifier(r.identifier) === normalized);
@@ -114,6 +118,7 @@ module.exports = {
   RoomValidationError,
   RoomUnavailableError,
   listRoomTypes,
+  clearRooms,
   createRoom,
   getRoom,
   listRooms,
