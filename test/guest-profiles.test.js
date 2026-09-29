@@ -278,13 +278,14 @@ describe('createDefaultApi', () => {
     );
   });
 
-  test('getStayHistory() sends the x-staff-role header', async () => {
-    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ stays: [] }) });
+  test('getStayHistory() sends the x-staff-role header and resolves the stays array from the response body', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ stays: [{ id: 'stay_1' }] }) });
     const { createDefaultApi } = require('../public/js/guest-profiles');
-    await createDefaultApi().getStayHistory('gst_1');
+    const result = await createDefaultApi().getStayHistory('gst_1');
     expect(global.fetch).toHaveBeenCalledWith(
       '/guests/gst_1/stay-history',
       expect.objectContaining({ headers: expect.objectContaining({ 'x-staff-role': 'front_desk' }) })
     );
+    expect(result).toEqual([{ id: 'stay_1' }]);
   });
 });
