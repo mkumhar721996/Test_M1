@@ -1,0 +1,172 @@
+/*
+  Design-system gap note: tokens.json has no dedicated danger/warning color —
+  only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+  color-border. The --status-danger-*/--status-warning-* custom properties
+  below are a local proposal (see the approved design's own comment) pending
+  formalization in design-system/tokens.json. Every overdue/stalled/bottleneck
+  indicator is distinguished by icon + label, never by hue alone.
+*/
+:root {
+  --status-danger-bg: #3a1620;
+  --status-danger-border: #a24259;
+  --status-danger-accent: #ff8fa3;
+  --status-warning-bg: #3a2a12;
+  --status-warning-border: #a2792a;
+  --status-warning-accent: #ffcf7a;
+}
+
+.page { max-width: 920px; }
+.page-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+/* ---------- Bottleneck banner ---------- */
+.bottleneck-banner {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  background: var(--status-danger-bg);
+  border: 1px solid var(--status-danger-border);
+  border-left: 4px solid var(--status-danger-accent);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.bottleneck-banner .icon { font-size: var(--font-size-lg); line-height: 1; color: var(--status-danger-accent); }
+.bottleneck-banner h2 {
+  margin: 0 0 var(--space-1) 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.bottleneck-banner p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+.bottleneck-banner .actions { margin-left: auto; flex-shrink: 0; }
+
+.attention-summary { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0 0 var(--space-4) 0; }
+
+/* ---------- Controls row ---------- */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+.segmented { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+.segmented button {
+  background: var(--color-bg);
+  color: var(--color-fg-muted);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.segmented button + button { border-left: 1px solid var(--color-border); }
+.segmented button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-primary-fg); }
+.segmented button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ---------- Legend (non-colour cue reference, always visible) ---------- */
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-4); margin: 0 0 var(--space-4) 0; padding: var(--space-2) 0; }
+.legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.legend-swatch {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--radius-sm); font-size: 0.8rem; flex-shrink: 0;
+}
+.legend-swatch--overdue { background: var(--status-danger-bg); border: 1px solid var(--status-danger-border); color: var(--status-danger-accent); }
+.legend-swatch--stalled { background: var(--status-warning-bg); border: 1px solid var(--status-warning-border); color: var(--status-warning-accent); }
+
+/* ---------- Stage groups ---------- */
+.stage-group { margin-bottom: var(--space-4); }
+.stage-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0 var(--space-1) var(--space-2) var(--space-1);
+}
+.stage-group-header-title { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+.stage-group-header h2 {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.stage-count { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+.bottleneck-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--status-danger-bg);
+  border: 1px solid var(--status-danger-border);
+  color: var(--color-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  min-height: 28px;
+}
+.bottleneck-badge .icon { color: var(--status-danger-accent); }
+.bottleneck-badge-btn {
+  background: none; border: none; padding: 0; margin: 0;
+  color: inherit; font: inherit; cursor: pointer; text-decoration: underline;
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.bottleneck-badge-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+.hire-list { padding: 0; }
+.hire-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.hire-row:last-child { border-bottom: none; }
+.hire-identity { display: flex; align-items: center; gap: var(--space-3); min-width: 200px; flex: 1 1 220px; }
+.hire-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: var(--color-primary); color: var(--color-primary-fg);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+}
+.hire-meta .name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+.hire-meta .role { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+.hire-progress { flex: 2 1 220px; min-width: 200px; }
+.hire-progress .stage-line { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+.hire-progress .partial-note { font-size: var(--font-size-sm); color: var(--color-fg-muted); font-style: italic; margin: var(--space-1) 0 0 0; }
+.hire-status { flex: 0 0 auto; margin-left: auto; }
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.status-chip--overdue { background: var(--status-danger-bg); border-color: var(--status-danger-border); color: var(--color-fg); }
+.status-chip--overdue .status-chip-icon { color: var(--status-danger-accent); }
+.status-chip--stalled { background: var(--status-warning-bg); border-color: var(--status-warning-border); color: var(--color-fg); }
+.status-chip--stalled .status-chip-icon { color: var(--status-warning-accent); }
+
+/* ---------- Stage drill-in modal ---------- */
+.drill-hire-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+.drill-hire-row:last-child { border-bottom: none; }
+.drill-hire-row .name { color: var(--color-fg); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); }
+.drill-hire-row .role { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+
+@media (max-width: 480px) {
+  .hire-status { margin-left: 0; }
+  .bottleneck-banner { flex-direction: column; }
+  .bottleneck-banner .actions { margin-left: 0; }
+}
