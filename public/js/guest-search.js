@@ -1,4 +1,8 @@
-const { escapeHtml } = require('./utils');
+function escapeHtml(doc, str) {
+  const div = doc.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
 
 function initials(name) {
   return name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
@@ -90,8 +94,7 @@ function initGuestSearchApp(doc, api) {
 function createDefaultApi() {
   return {
     search: (query, includeInactiveBool) => fetch(
-      `/guests/search?q=${encodeURIComponent(query)}&includeInactive=${includeInactiveBool}`,
-      { headers: { 'x-staff-role': 'front_desk' } }
+      `/guests/search?q=${encodeURIComponent(query)}&includeInactive=${includeInactiveBool}`
     ).then((res) => {
       if (!res.ok) return Promise.reject({ status: res.status });
       return res.json();
