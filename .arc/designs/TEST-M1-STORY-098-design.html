@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-098 — Rate Plan Management</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- App shell (top bar + page frame) ---------- */
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+  .app-nav a {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid transparent;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .signed-in-as { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .reset-link {
+    background: none; border: none; color: var(--color-fg-muted);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; text-decoration: underline; padding: var(--space-2); min-height: 44px;
+  }
+  .reset-link:hover { color: var(--color-fg); }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .view-link-btn:focus-visible, .reset-link:focus-visible,
+  .price-row-remove:focus-visible, .preset-btn:focus-visible, .back-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; padding: var(--space-4); }
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 {
+    font-family: var(--font-family-base); font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+  .back-link {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px;
+  }
+  .toolbar-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+
+  /* ---------- Rate plan table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.rp-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .rp-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .rp-table td {
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); vertical-align: top;
+  }
+  .rp-table tbody tr:last-child td { border-bottom: none; }
+  .rp-name-cell strong { display: block; }
+  .rp-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); margin-top: 2px; }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .view-link-btn {
+    background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer;
+    padding: var(--space-2) var(--space-3); min-height: 44px;
+  }
+
+  .price-chip-list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-1); }
+  .rp-fallback-note { margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .overlap-note { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .overlap-note strong { font-weight: var(--font-weight-bold); }
+
+  /* ---------- Status chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--upcoming { border: 1px solid var(--color-border); color: var(--color-fg); }
+  .status-chip--past { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Empty / error states ---------- */
+  .empty-state, .not-found-panel { padding: var(--space-4); text-align: center; }
+  .empty-state .icon, .not-found-panel .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p, .not-found-panel p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state h3, .not-found-panel h3 {
+    margin: 0 0 var(--space-1) 0; color: var(--color-fg); font-family: var(--font-family-base);
+    font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Forms ---------- */
+  .field { margin-bottom: var(--space-4); }
+  .field-error-text {
+    display: block; margin-top: var(--space-1); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg);
+  }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .date-range-fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .date-range-fields { grid-template-columns: 1fr; } }
+
+  /* ---------- Per-room-type price rows ---------- */
+  .rp-price-row {
+    display: grid; grid-template-columns: 1fr 160px 44px; gap: var(--space-3); align-items: end;
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border);
+  }
+  .rp-price-row:last-of-type { border-bottom: none; }
+  @media (max-width: 560px) { .rp-price-row { grid-template-columns: 1fr; } }
+  .price-input-wrap { display: flex; align-items: center; gap: var(--space-1); }
+  .price-input-wrap span { font-family: var(--font-family-base); color: var(--color-fg-muted); }
+  .price-row-remove {
+    background: none; border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-fg-muted);
+    cursor: pointer; min-height: 44px; min-width: 44px; align-self: center;
+  }
+  .price-row-remove:hover { color: var(--color-fg); }
+
+  /* ---------- Card section header ---------- */
+  .card-section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap; }
+  .card-section-header h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .card-section-header p { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: var(--color-bg); opacity: 0.72; z-index: 100; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 101; display: flex; align-items: flex-start; justify-content: center; padding: var(--space-4); overflow-y: auto; }
+  .modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+  .modal-panel {
+    width: min(92vw, 440px); margin-top: var(--space-4); background: var(--card-default-background);
+    border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm); padding: var(--space-4);
+  }
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .modal-header h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .icon-btn { background: none; border: none; color: var(--color-fg-muted); font-size: var(--font-size-lg); line-height: 1; cursor: pointer; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); }
+  .icon-btn:hover { color: var(--color-fg); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+  .consequence-note {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3);
+    border: 1px dashed var(--color-primary); border-radius: var(--radius-md); background: var(--color-bg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: 0;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: var(--space-4); right: var(--space-4); z-index: 200; display: flex; align-items: center;
+    gap: var(--space-2); background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg); max-width: min(90vw, 340px);
+  }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Price lookup ---------- */
+  .lookup-form { display: flex; gap: var(--space-3); align-items: end; flex-wrap: wrap; margin-bottom: var(--space-3); }
+  .lookup-form .field { margin-bottom: 0; min-width: 200px; }
+  .preset-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+  .preset-btn {
+    background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-1) var(--space-3); min-height: 36px;
+  }
+  .preset-btn:hover { color: var(--color-fg); border-color: var(--color-primary); }
+  .lookup-skeleton .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; margin-bottom: var(--space-2); }
+  .lookup-skeleton .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) { .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .lookup-result-price { font-family: var(--font-family-base); font-size: 2rem; font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .lookup-source { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .lookup-overlap-note {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); border: 1px dashed var(--color-fg-muted);
+    border-radius: var(--radius-md); background: var(--color-surface); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-3);
+  }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) { .reference-grid { grid-template-columns: repeat(2, 1fr); } }
+  .reference-grid h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+
+  /* No dedicated warning/danger hue exists in tokens.json, so overlap and validation states are
+     always paired with an icon (⚠) and an explicit label, never colour alone. Flagging as a
+     possible future design-system gap rather than inventing a colour at the page level. */
+</style>
+</head>
+<!-- App nav: top bar — Rates (active) · Room Types · Bookings. This project's existing
+     prototypes (Guests, Expenses) use a minimal top-bar staff console rather than a sidebar,
+     so this story follows the same shell for consistency. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-098</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "staffName": "Devon Brooks",
+    "today": "2026-09-28",
+    "nextIdSeq": 1005,
+    "roomTypes": [
+      { "code": "STD-KING", "name": "Standard King", "baseRate": 129 },
+      { "code": "GARDEN", "name": "Garden Room", "baseRate": 149 },
+      { "code": "OCEAN", "name": "Ocean View Suite", "baseRate": 189 },
+      { "code": "POOLSIDE", "name": "Poolside Cabana Suite", "baseRate": 219 }
+    ],
+    "ratePlans": [
+      {
+        "id": "RP-1001",
+        "name": "Summer Peak 2026",
+        "startDate": "2026-06-01",
+        "endDate": "2026-08-31",
+        "createdAt": "2026-02-10T09:00:00.000Z",
+        "prices": [
+          { "roomType": "STD-KING", "price": 159 },
+          { "roomType": "OCEAN", "price": 229 },
+          { "roomType": "POOLSIDE", "price": 259 }
+        ]
+      },
+      {
+        "id": "RP-1002",
+        "name": "Autumn Weekday Rate",
+        "startDate": "2026-09-01",
+        "endDate": "2026-11-30",
+        "createdAt": "2026-07-01T10:00:00.000Z",
+        "prices": [
+          { "roomType": "GARDEN", "price": 135 },
+          { "roomType": "POOLSIDE", "price": 199 }
+        ]
+      },
+      {
+        "id": "RP-1003",
+        "name": "Winter Promo 2026",
+        "startDate": "2026-12-01",
+        "endDate": "2027-01-15",
+        "createdAt": "2026-06-01T10:00:00.000Z",
+        "prices": [
+          { "roomType": "STD-KING", "price": 99 },
+          { "roomType": "GARDEN", "price": 119 }
+        ]
+      },
+      {
+        "id": "RP-1004",
+        "name": "Holiday Flash Sale",
+        "startDate": "2026-12-20",
+        "endDate": "2026-12-31",
+        "createdAt": "2026-09-15T08:00:00.000Z",
+        "prices": [
+          { "roomType": "STD-KING", "price": 89 }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Rate Plans (interactive)
+         Notes:
+           - Table lists every rate plan with its date range, live status (Active now / Upcoming
+             / Past, computed against today, 2026-09-28), the priced room types, and how many of
+             the four room types it covers — plans that don't cover every room type say so
+             ("2 of 4 room types priced — the rest use their base rate"), which is the visible
+             proof for AC3/AC8.
+           - Winter Promo 2026 and Holiday Flash Sale both price Standard King and overlap for
+             Dec 20–31, 2026. Each row shows an inline "⚠ overlaps with…" note naming which plan
+             applies and why (created more recently) — a deterministic, non-erroring result for
+             AC4, visible without leaving this screen.
+           - "Edit" opens the same editor used for creation, prefilled. "Delete" asks for
+             confirmation and names the consequence (room types fall back to base rate).
+           - Delete every plan (or click "Reset demo data" to restore them) to see the empty
+             state for AC7.
+    -->
+    <div class="screen" data-name="Rate Plans">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Rates</a>
+          <a href="#" onclick="return false;">Room Types</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+          <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Rate plans</h1>
+          <p>Named date ranges with per-room-type nightly prices. Room types left off a plan use their base rate for the dates it covers.</p>
+        </div>
+
+        <div class="toolbar-row">
+          <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="rp-count-summary"></p>
+          <button class="btn btn-primary" id="new-plan-btn" type="button">+ New rate plan</button>
+        </div>
+
+        <!-- State: list-success -->
+        <div class="card table-card" id="rp-table-wrap">
+          <div class="table-scroll">
+            <table class="rp-table">
+              <thead>
+                <tr>
+                  <th scope="col">Plan</th>
+                  <th scope="col">Date range</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Per-room-type prices</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="rp-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- State: list-empty (AC7) -->
+        <div class="card empty-state" id="rp-empty" hidden>
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>No rate plans yet</h3>
+          <p>Add a rate plan to set per-room-type nightly prices for a date range. Until then, every room type charges its base rate on every date.</p>
+          <button class="btn btn-primary" id="empty-new-plan-btn" type="button">+ Add a rate plan</button>
+        </div>
+      </div>
+
+      <!-- Delete confirm modal -->
+      <div class="modal-overlay" id="delete-overlay" hidden></div>
+      <div class="modal-wrap" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="delete-modal-title">Delete rate plan?</h2>
+            </div>
+            <button class="icon-btn" id="delete-close-btn" type="button" aria-label="Close dialog without deleting">✕</button>
+          </div>
+          <p class="consequence-note">
+            <span aria-hidden="true">⚠</span>
+            <span>Deleting "<strong id="delete-plan-name"></strong>" removes it immediately and can't be undone. The room types it priced will fall back to their base rate (or to another overlapping plan, if one still covers that date) for every future lookup.</span>
+          </p>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="delete-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirm-delete-btn">Delete rate plan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Rate Plan Editor (interactive)
+         Notes:
+           - Reused for both "+ New rate plan" (create) and "Edit" (prefilled). Click Save with
+             everything blank to see the inline, specific errors for a missing name, a missing
+             date range, and having no room-type price rows — the plan is not saved (AC5, AC6).
+           - Enter an end date before the start date to see that specific inline error too (AC5/6).
+           - "+ Add room type price" appends a row; each row's room type list only offers types
+             not already used elsewhere in this plan, so duplicates can't happen. Removing a row
+             deletes that override — the room type instantly falls back to its base rate
+             (AC1, AC3).
+           - Saving a valid plan returns to the list, where it's now shown (AC1) or its updated
+             values are shown (AC2). Try lowering Ocean View Suite's price on "Summer Peak 2026"
+             and saving, then check that new price on the Price Lookup screen.
+    -->
+    <div class="screen" data-name="Rate Plan Editor">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Rates</a>
+          <a href="#" onclick="return false;">Room Types</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <button class="back-link" id="editor-back-btn" type="button">← Back to rate plans</button>
+        <div class="page-header">
+          <h1 id="editor-heading">New rate plan</h1>
+          <p>Give the plan a name, a date range, and at least one per-room-type nightly price.</p>
+        </div>
+
+        <form id="editor-form" novalidate>
+          <div class="card" style="margin-bottom:var(--space-4);">
+            <h2 class="card-title">Plan details</h2>
+            <div class="field">
+              <label class="label" for="plan-name">Plan name</label>
+              <input class="input" id="plan-name" type="text" placeholder="e.g. Summer Peak 2026" aria-describedby="error-name" />
+              <p class="field-error-text" id="error-name" role="alert" hidden>⚠ Enter a name for this rate plan.</p>
+            </div>
+            <div class="date-range-fields">
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="plan-start">Start date</label>
+                <input class="input" id="plan-start" type="date" aria-describedby="error-dates" />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="plan-end">End date</label>
+                <input class="input" id="plan-end" type="date" aria-describedby="error-dates" />
+              </div>
+            </div>
+            <p class="field-error-text" id="error-dates" role="alert" hidden>⚠ Enter a start and end date, and make sure the end date is on or after the start date.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:var(--space-4);">
+            <div class="card-section-header">
+              <div>
+                <h2>Per-room-type pricing</h2>
+                <p>Only the room types listed here carry a price override. Any room type not listed automatically uses its base rate for this plan's dates.</p>
+              </div>
+            </div>
+            <div id="price-rows"><!-- rendered by JS --></div>
+            <p class="field-error-text" id="error-price-rows" role="alert" hidden>⚠ Add at least one room type with a room type selected and a price greater than $0. Each room type can only appear once.</p>
+            <div style="margin-top:var(--space-3);">
+              <button type="button" class="btn btn-secondary" id="add-price-row-btn">+ Add room type price</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="editor-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="editor-save-btn">Create rate plan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Screen: Price Lookup (interactive)
+         Notes:
+           - Pick a room type and a date, then "Check price" resolves it against every rate
+             plan currently in memory (shared with the two screens above — edits made there are
+             reflected here immediately).
+           - No plan covers the room type/date: the result shows the room type's base rate,
+             labelled as such (AC8). Try "Garden Room" on "2026-03-01".
+           - The room type/date falls in two overlapping plans: the result names the plan that
+             won, the price it lost to, and states the tie-break rule plainly — the same
+             deterministic, non-erroring behaviour shown on the list screen (AC4). Try
+             "Standard King" on "2026-12-25".
+           - Preset chips jump straight to illustrative scenarios.
+    -->
+    <div class="screen" data-name="Price Lookup">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Rates</a>
+          <a href="#" onclick="return false;">Room Types</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Devon Brooks</strong></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Price lookup</h1>
+          <p>Preview which price applies for a room type on a given date, including how overlapping plans and base rates are resolved.</p>
+        </div>
+
+        <div class="preset-row">
+          <button class="preset-btn" type="button" data-room="STD-KING" data-date="2026-12-25">Standard King · Dec 25, 2026 (overlap)</button>
+          <button class="preset-btn" type="button" data-room="GARDEN" data-date="2026-03-01">Garden Room · Mar 1, 2026 (base rate)</button>
+          <button class="preset-btn" type="button" data-room="OCEAN" data-date="2026-07-10">Ocean View Suite · Jul 10, 2026 (plan)</button>
+        </div>
+
+        <form class="card lookup-form" id="lookup-form" novalidate>
+          <div class="field">
+            <label class="label" for="lookup-room">Room type</label>
+            <select class="input" id="lookup-room"><!-- rendered by JS --></select>
+          </div>
+          <div class="field">
+            <label class="label" for="lookup-date">Date</label>
+            <input class="input" id="lookup-date" type="date" />
+          </div>
+          <button class="btn btn-primary" id="lookup-btn" type="submit">Check price</button>
+        </form>
+
+        <!-- State: lookup-loading -->
+        <div class="card lookup-skeleton" id="lookup-loading" hidden>
+          <div class="skeleton-bar" style="width:30%;height:28px;"></div>
+          <div class="skeleton-bar short"></div>
+        </div>
+
+        <!-- State: lookup-result (base rate or plan match, rendered by JS) -->
+        <div class="card" id="lookup-result" hidden>
+          <p class="lookup-result-price" id="lookup-price"></p>
+          <p class="lookup-source" id="lookup-source-text"></p>
+          <div class="lookup-overlap-note" id="lookup-overlap-note" hidden>
+            <span aria-hidden="true">⚠</span>
+            <span id="lookup-overlap-text"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference — key states
+         Notes: static reference for reviewers scanning quickly, cross-referencing every
+         acceptance criterion to where it's demonstrated on the interactive screens above.
+    -->
+    <div class="screen" data-name="Reference: key states">
+      <div class="app-topbar">
+        <span class="brand">Front Desk Console</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Rates</a>
+          <a href="#" onclick="return false;">Room Types</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference: acceptance criteria coverage</h1>
+          <p>Every criterion is reachable by clicking through the three screens above; this page summarizes where.</p>
+        </div>
+        <div class="reference-grid">
+          <div class="mini-card">
+            <span class="ac-tag">AC1 · AC2 — create &amp; edit</span>
+            <h3>Save creates or updates the listing</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">Rate Plan Editor → fill in a name, date range, and at least one room-type price → Save. New plans appear at the top of the Rate Plans table; edits to an existing plan's name, dates, or prices are reflected there immediately and apply to future Price Lookup results.</p>
+          </div>
+          <div class="mini-card">
+            <span class="ac-tag">AC3 — per-room-type overrides</span>
+            <h3>Unlisted room types fall back to base rate</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">"Autumn Weekday Rate" only lists Garden Room and Poolside Cabana Suite. Standard King and Ocean View Suite are untouched by it — a Price Lookup for either on a date inside that plan's range returns their base rate.</p>
+          </div>
+          <div class="mini-card">
+            <span class="ac-tag">AC4 — deterministic overlap resolution</span>
+            <h3>Most-recently-created plan wins, no error</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">"Winter Promo 2026" (created Jun 1, 2026) and "Holiday Flash Sale" (created Sep 15, 2026) both price Standard King for Dec 20–31, 2026. Holiday Flash Sale wins because it was created more recently — shown inline on the Rate Plans row and again on the Price Lookup result.</p>
+          </div>
+          <div class="mini-card">
+            <span class="ac-tag">AC5 · AC6 — validation blocks save</span>
+            <h3>Missing name or end date before start date</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">Open the editor and click Save with the name blank, or set an end date earlier than the start date: an inline error names the problem, focus stays on the form, and nothing is added to the Rate Plans list.</p>
+          </div>
+          <div class="mini-card">
+            <span class="ac-tag">AC7 — empty list</span>
+            <h3>Empty state invites the next action</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">Delete all four demo plans (or imagine a brand-new property with none yet) and the table is replaced by a centered message plus a single "+ Add a rate plan" button — never a blank table.</p>
+          </div>
+          <div class="mini-card">
+            <span class="ac-tag">AC8 — base rate fallback</span>
+            <h3>No plan active → base rate returned</h3>
+            <p class="u-text-muted" style="font-size:var(--font-size-sm);">Price Lookup for Garden Room on Mar 1, 2026 — a date outside every plan that prices Garden Room — returns Garden Room's $149/night base rate, labelled "Base rate", never an error or a blank result.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+    const roomTypes = fixture.roomTypes;
+    const TODAY = fixture.today;
+    let plans = JSON.parse(JSON.stringify(fixture.ratePlans));
+    let nextIdSeq = fixture.nextIdSeq;
+    let editingPlanId = null;
+    let draftPrices = [];
+    let planPendingDelete = null;
+
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function roomTypeName(code) { const rt = roomTypes.find(r => r.code === code); return rt ? rt.name : code; }
+    function baseRate(code) { const rt = roomTypes.find(r => r.code === code); return rt ? rt.baseRate : null; }
+    function fmtDate(d) {
+      const dt = new Date(d + 'T00:00:00Z');
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+    }
+    function fmtRange(s, e) { return fmtDate(s) + ' – ' + fmtDate(e); }
+
+    function planStatus(plan) {
+      if (TODAY < plan.startDate) return 'upcoming';
+      if (TODAY > plan.endDate) return 'past';
+      return 'active';
+    }
+    function statusChipHtml(status) {
+      if (status === 'active') return '<span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active now</span>';
+      if (status === 'upcoming') return '<span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span>';
+      return '<span class="status-chip status-chip--past"><span aria-hidden="true">◌</span> Past</span>';
+    }
+
+    function findOverlaps(plan) {
+      const results = [];
+      plan.prices.forEach(pr => {
+        plans.forEach(other => {
+          if (other.id === plan.id) return;
+          const otherPrice = other.prices.find(p => p.roomType === pr.roomType);
+          if (!otherPrice) return;
+          const overlapStart = plan.startDate > other.startDate ? plan.startDate : other.startDate;
+          const overlapEnd = plan.endDate < other.endDate ? plan.endDate : other.endDate;
+          if (overlapStart <= overlapEnd) {
+            const winnerIsThis = new Date(plan.createdAt) >= new Date(other.createdAt);
+            results.push({ roomType: pr.roomType, other, overlapStart, overlapEnd, winnerIsThis });
+          }
+        });
+      });
+      return results;
+    }
+
+    function resolvePrice(roomType, dateStr) {
+      const candidates = plans.filter(p =>
+        p.prices.some(pr => pr.roomType === roomType) && dateStr >= p.startDate && dateStr <= p.endDate
+      );
+      if (candidates.length === 0) {
+        return { source: 'base', price: baseRate(roomType) };
+      }
+      candidates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const winner = candidates[0];
+      const price = winner.prices.find(pr => pr.roomType === roomType).price;
+      return { source: 'plan', plan: winner, price, overlapping: candidates.slice(1) };
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+
+    /* ---------- Rate Plans list ---------- */
+    function renderList() {
+      const tbody = document.getElementById('rp-tbody');
+      const tableWrap = document.getElementById('rp-table-wrap');
+      const emptyEl = document.getElementById('rp-empty');
+      document.getElementById('rp-count-summary').textContent =
+        plans.length === 1 ? '1 rate plan' : plans.length + ' rate plans';
+
+      if (plans.length === 0) {
+        tableWrap.hidden = true;
+        emptyEl.hidden = false;
+        return;
+      }
+      tableWrap.hidden = false;
+      emptyEl.hidden = true;
+
+      tbody.innerHTML = plans.map(plan => {
+        const priceChips = plan.prices.map(p =>
+          '<span class="chip">' + roomTypeName(p.roomType) + ' · $' + p.price + '/night</span>'
+        ).join('');
+        const overlaps = findOverlaps(plan);
+        const overlapHtml = overlaps.map(o => {
+          const roomName = roomTypeName(o.roomType);
+          const rangeTxt = fmtRange(o.overlapStart, o.overlapEnd);
+          const verdict = o.winnerIsThis
+            ? 'this plan applies (created more recently)'
+            : '<strong>' + o.other.name + '</strong> applies (created more recently)';
+          return '<p class="overlap-note"><span aria-hidden="true">⚠</span> ' + roomName + ' overlaps with <strong>' + o.other.name + '</strong> (' + rangeTxt + ') — ' + verdict + '.</p>';
+        }).join('');
+        const fallbackNote = plan.prices.length < roomTypes.length
+          ? '<p class="rp-fallback-note">' + plan.prices.length + ' of ' + roomTypes.length + ' room types priced — the rest use their base rate.</p>'
+          : '';
+        return '<tr>' +
+          '<td class="rp-name-cell"><strong>' + plan.name + '</strong><span class="rp-id">' + plan.id + ' · Created ' + fmtDate(plan.createdAt.slice(0, 10)) + '</span></td>' +
+          '<td>' + fmtRange(plan.startDate, plan.endDate) + '</td>' +
+          '<td>' + statusChipHtml(planStatus(plan)) + '</td>' +
+          '<td><div class="price-chip-list">' + priceChips + '</div>' + fallbackNote + overlapHtml + '</td>' +
+          '<td class="col-actions"><button class="view-link-btn" data-action="edit" data-id="' + plan.id + '" type="button">Edit</button><button class="view-link-btn" data-action="delete" data-id="' + plan.id + '" type="button">Delete</button></td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('[data-action="edit"]').forEach(b =>
+        b.addEventListener('click', () => openEditor(plans.find(p => p.id === b.dataset.id)))
+      );
+      tbody.querySelectorAll('[data-action="delete"]').forEach(b =>
+        b.addEventListener('click', () => openDeleteConfirm(plans.find(p => p.id === b.dataset.id)))
+      );
+    }
+
+    document.getElementById('new-plan-btn').addEventListener('click', () => openEditor(null));
+    document.getElementById('empty-new-plan-btn').addEventListener('click', () => openEditor(null));
+    document.getElementById('reset-data-btn').addEventListener('click', () => {
+      plans = JSON.parse(JSON.stringify(fixture.ratePlans));
+      nextIdSeq = fixture.nextIdSeq;
+      renderList();
+      showToast('Demo data reset to the four original rate plans.');
+    });
+
+    /* ---------- Delete confirm ---------- */
+    function openDeleteConfirm(plan) {
+      planPendingDelete = plan;
+      document.getElementById('delete-plan-name').textContent = plan.name;
+      document.getElementById('delete-overlay').hidden = false;
+      document.getElementById('delete-modal').hidden = false;
+      document.getElementById('confirm-delete-btn').focus();
+    }
+    function closeDeleteConfirm() {
+      planPendingDelete = null;
+      document.getElementById('delete-overlay').hidden = true;
+      document.getElementById('delete-modal').hidden = true;
+    }
+    document.getElementById('delete-close-btn').addEventListener('click', closeDeleteConfirm);
+    document.getElementById('delete-cancel-btn').addEventListener('click', closeDeleteConfirm);
+    document.getElementById('delete-overlay').addEventListener('click', closeDeleteConfirm);
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('confirm-delete-btn');
+      const label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Deleting…';
+      await delay(250);
+      const name = planPendingDelete.name;
+      plans = plans.filter(p => p.id !== planPendingDelete.id);
+      btn.disabled = false;
+      btn.textContent = label;
+      closeDeleteConfirm();
+      renderList();
+      showToast('"' + name + '" deleted — its room types now use their base rate (or another overlapping plan, if any).');
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !document.getElementById('delete-modal').hidden) closeDeleteConfirm();
+    });
+
+    /* ---------- Editor ---------- */
+    const nameInput = document.getElementById('plan-name');
+    const startInput = document.getElementById('plan-start');
+    const endInput = document.getElementById('plan-end');
+
+    function clearErrors() {
+      ['error-name', 'error-dates', 'error-price-rows'].forEach(id => document.getElementById(id).hidden = true);
+      [nameInput, startInput, endInput].forEach(el => el.classList.remove('input-error'));
+    }
+
+    function usedRoomTypes(excludeIdx) {
+      return draftPrices.filter((p, i) => i !== excludeIdx && p.roomType).map(p => p.roomType);
+    }
+
+    function renderPriceRows() {
+      const container = document.getElementById('price-rows');
+      container.innerHTML = draftPrices.map((p, i) => {
+        const used = usedRoomTypes(i);
+        const options = roomTypes
+          .filter(rt => !used.includes(rt.code))
+          .map(rt => '<option value="' + rt.code + '"' + (rt.code === p.roomType ? ' selected' : '') + '>' + rt.name + ' (base $' + rt.baseRate + '/night)</option>')
+          .join('');
+        return '<div class="rp-price-row" data-idx="' + i + '">' +
+          '<div class="field" style="margin-bottom:0;"><label class="label" for="price-room-' + i + '">Room type</label>' +
+          '<select class="input" id="price-room-' + i + '" data-role="room-select" data-idx="' + i + '"><option value="">Select room type…</option>' + options + '</select></div>' +
+          '<div class="field" style="margin-bottom:0;"><label class="label" for="price-amount-' + i + '">Price per night</label>' +
+          '<div class="price-input-wrap"><span aria-hidden="true">$</span><input class="input" id="price-amount-' + i + '" type="number" min="0" step="1" placeholder="0" value="' + (p.price === '' || p.price == null ? '' : p.price) + '" data-role="price-input" data-idx="' + i + '" /></div></div>' +
+          '<button type="button" class="price-row-remove" data-idx="' + i + '" aria-label="Remove this room type price row">✕</button>' +
+          '</div>';
+      }).join('');
+
+      container.querySelectorAll('[data-role="room-select"]').forEach(sel => {
+        sel.addEventListener('change', e => { draftPrices[+e.target.dataset.idx].roomType = e.target.value; });
+      });
+      container.querySelectorAll('[data-role="price-input"]').forEach(inp => {
+        inp.addEventListener('input', e => { draftPrices[+e.target.dataset.idx].price = e.target.value; });
+      });
+      container.querySelectorAll('.price-row-remove').forEach(btn => {
+        btn.addEventListener('click', e => {
+          draftPrices.splice(+e.currentTarget.dataset.idx, 1);
+          renderPriceRows();
+        });
+      });
+      const addBtn = document.getElementById('add-price-row-btn');
+      const allUsed = draftPrices.filter(p => p.roomType).length >= roomTypes.length;
+      addBtn.disabled = allUsed;
+      addBtn.title = allUsed ? 'Every room type already has a price in this plan.' : '';
+    }
+
+    document.getElementById('add-price-row-btn').addEventListener('click', () => {
+      draftPrices.push({ roomType: '', price: '' });
+      renderPriceRows();
+    });
+
+    function openEditor(plan) {
+      editingPlanId = plan ? plan.id : null;
+      document.getElementById('editor-heading').textContent = plan ? 'Edit rate plan' : 'New rate plan';
+      document.getElementById('editor-save-btn').textContent = plan ? 'Save changes' : 'Create rate plan';
+      nameInput.value = plan ? plan.name : '';
+      startInput.value = plan ? plan.startDate : '';
+      endInput.value = plan ? plan.endDate : '';
+      draftPrices = plan ? plan.prices.map(p => ({ ...p })) : [{ roomType: '', price: '' }];
+      clearErrors();
+      renderPriceRows();
+      show(1);
+      nameInput.focus();
+    }
+
+    document.getElementById('editor-back-btn').addEventListener('click', () => show(0));
+    document.getElementById('editor-cancel-btn').addEventListener('click', () => show(0));
+
+    document.getElementById('editor-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+      let valid = true;
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        document.getElementById('error-name').hidden = false;
+        nameInput.classList.add('input-error');
+        valid = false;
+      }
+
+      const start = startInput.value;
+      const end = endInput.value;
+      if (!start || !end || end < start) {
+        document.getElementById('error-dates').hidden = false;
+        if (!start) startInput.classList.add('input-error');
+        if (!end || (start && end && end < start)) endInput.classList.add('input-error');
+        valid = false;
+      }
+
+      const seen = new Set();
+      let rowsValid = draftPrices.length > 0;
+      draftPrices.forEach(p => {
+        const priceNum = Number(p.price);
+        if (!p.roomType || !p.price || !(priceNum > 0)) rowsValid = false;
+        if (p.roomType) {
+          if (seen.has(p.roomType)) rowsValid = false;
+          seen.add(p.roomType);
+        }
+      });
+      if (!rowsValid) {
+        document.getElementById('error-price-rows').hidden = false;
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      const saveBtn = document.getElementById('editor-save-btn');
+      const prevLabel = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      await delay(300);
+
+      const cleanPrices = draftPrices.map(p => ({ roomType: p.roomType, price: Number(p.price) }));
+
+      if (editingPlanId) {
+        const idx = plans.findIndex(p => p.id === editingPlanId);
+        plans[idx] = { ...plans[idx], name, startDate: start, endDate: end, prices: cleanPrices };
+        showToast('Rate plan updated — the new name, dates, and prices apply to future price lookups.');
+      } else {
+        const id = 'RP-' + (nextIdSeq++);
+        plans.push({ id, name, startDate: start, endDate: end, createdAt: new Date().toISOString(), prices: cleanPrices });
+        showToast('Rate plan created — it now appears in the list and is ready for price lookups.');
+      }
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = prevLabel;
+      renderList();
+      show(0);
+    });
+
+    /* ---------- Price Lookup ---------- */
+    const lookupRoomSelect = document.getElementById('lookup-room');
+    lookupRoomSelect.innerHTML = roomTypes.map(rt => '<option value="' + rt.code + '">' + rt.name + '</option>').join('');
+    document.getElementById('lookup-date').value = '2026-12-25';
+
+    function renderLookupResult(roomType, dateStr, result) {
+      document.getElementById('lookup-loading').hidden = true;
+      const panel = document.getElementById('lookup-result');
+      panel.hidden = false;
+      document.getElementById('lookup-price').textContent = '$' + result.price + '/night';
+      const overlapNote = document.getElementById('lookup-overlap-note');
+      const overlapText = document.getElementById('lookup-overlap-text');
+
+      if (result.source === 'base') {
+        document.getElementById('lookup-source-text').textContent =
+          roomTypeName(roomType) + ' on ' + fmtDate(dateStr) + ' — Base rate (no rate plan covers this room type on this date)';
+        overlapNote.hidden = true;
+      } else {
+        document.getElementById('lookup-source-text').textContent =
+          roomTypeName(roomType) + ' on ' + fmtDate(dateStr) + ' — from rate plan "' + result.plan.name + '" (' + fmtRange(result.plan.startDate, result.plan.endDate) + ')';
+        if (result.overlapping.length > 0) {
+          const other = result.overlapping[0];
+          const otherPrice = other.prices.find(p => p.roomType === roomType).price;
+          overlapText.innerHTML = 'Also overlaps with <strong>' + other.name + '</strong> ($' + otherPrice + '/night), created ' + fmtDate(other.createdAt.slice(0, 10)) + '. "' + result.plan.name + '" applies instead because it was created more recently, on ' + fmtDate(result.plan.createdAt.slice(0, 10)) + ' — the most-recently-created overlapping plan always wins, so the result is never ambiguous.';
+          overlapNote.hidden = false;
+        } else {
+          overlapNote.hidden = true;
+        }
+      }
+    }
+
+    function runLookup(roomType, dateStr) {
+      document.getElementById('lookup-result').hidden = true;
+      document.getElementById('lookup-loading').hidden = false;
+      delay(300).then(() => {
+        const result = resolvePrice(roomType, dateStr);
+        renderLookupResult(roomType, dateStr, result);
+      });
+    }
+
+    document.getElementById('lookup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      runLookup(lookupRoomSelect.value, document.getElementById('lookup-date').value);
+    });
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        lookupRoomSelect.value = btn.dataset.room;
+        document.getElementById('lookup-date').value = btn.dataset.date;
+        runLookup(btn.dataset.room, btn.dataset.date);
+      });
+    });
+
+    /* ---------- Init ---------- */
+    renderList();
+    runLookup('STD-KING', '2026-12-25');
+  </script>
+
+  <script>
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
