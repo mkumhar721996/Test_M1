@@ -52,6 +52,20 @@ router.post('/', (req, res, next) => {
   }
 });
 
+router.get('/search', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
+  try {
+    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+    if (!q) return res.status(400).json({ error: 'query is required' });
+    const includeInactive = req.query.includeInactive === 'true';
+    res.status(200).json(guestsStore.searchGuests({ query: q, includeInactive }));
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/:id', (req, res, next) => {
   try {
     const guest = getGuest(req.params.id);

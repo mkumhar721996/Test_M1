@@ -190,6 +190,30 @@ function reactivateGuest(id, actor) {
   return guest;
 }
 
+function searchGuests({ query, includeInactive = false } = {}) {
+  const trimmed = (query || '').trim();
+  if (!trimmed) return [];
+
+  const all = Array.from(guests.values());
+  let matches;
+  if (isValidEmail(trimmed)) {
+    const target = normalizeEmail(trimmed);
+    matches = all.filter((g) => normalizeEmail(g.email) === target);
+  } else if (isValidPhone(trimmed)) {
+    const target = normalizePhone(trimmed);
+    matches = all.filter((g) => normalizePhone(g.phone) === target);
+  } else {
+    const needle = trimmed.toLowerCase();
+    matches = all.filter((g) => g.name.toLowerCase().includes(needle));
+  }
+
+  if (!includeInactive) {
+    matches = matches.filter((g) => g.status === 'active');
+  }
+
+  return matches.map(({ id, name, email, phone, status }) => ({ id, name, email, phone, status }));
+}
+
 module.exports = {
   GuestValidationError,
   createGuest,
@@ -200,4 +224,5 @@ module.exports = {
   reactivateGuest,
   canCreateGuest,
   findGuestMatch,
+  searchGuests,
 };
