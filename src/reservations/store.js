@@ -106,6 +106,10 @@ function listReservations() {
   return Array.from(reservations.values());
 }
 
+function clearReservations() {
+  reservations.clear();
+}
+
 function updateReservation(id, changes) {
   if ('roomRate' in changes) {
     throw new ReservationImmutableFieldError('immutable_field', {
@@ -129,4 +133,5 @@ module.exports = {
   listReservations,
   updateReservation,
   canCreateReservation,
+  clearReservations,
 };

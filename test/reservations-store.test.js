@@ -4,10 +4,15 @@ const {
   listReservations,
   updateReservation,
   canCreateReservation,
+  clearReservations,
   ReservationValidationError,
   ReservationConflictError,
   ReservationImmutableFieldError,
 } = require('../src/reservations/store');
+
+beforeEach(() => {
+  clearReservations();
+});
 
 test('AC1: creating a reservation with valid fields results in booked status', () => {
   const reservation = createReservation({

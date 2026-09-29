@@ -15,7 +15,8 @@ router.post('/', (req, res, next) => {
     return res.status(403).json({ error: 'forbidden' });
   }
   try {
-    const reservation = reservationsStore.createReservation(req.body, req.body.actor);
+    const actor = req.headers['x-staff-role'];
+    const reservation = reservationsStore.createReservation(req.body, actor);
     res.status(201).json(reservation);
   } catch (err) {
     if (err instanceof ReservationValidationError) {
@@ -41,6 +42,9 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.patch('/:id', (req, res, next) => {
+  if (!req.headers['x-staff-role']) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     const reservation = updateReservation(req.params.id, req.body);
     if (!reservation) {
