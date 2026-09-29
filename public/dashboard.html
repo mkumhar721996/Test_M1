@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Onboarding Dashboard — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/dashboard.css" />
+<script src="./js/dashboard.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Dashboard</a>
+      <a href="#" onclick="return false;">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Onboarding dashboard</h1>
+        <p>Spot stalled or overdue hires by pipeline stage, without checking every profile by hand.</p>
+      </div>
+    </div>
+
+    <div id="banner-slot"><!-- rendered by JS: bottleneck banner(s) --></div>
+    <p class="attention-summary" id="attention-summary" aria-live="polite"><!-- rendered by JS --></p>
+
+    <div class="controls-row">
+      <div class="segmented" role="group" aria-label="Filter hires">
+        <button type="button" id="filter-all-btn" aria-pressed="true">All hires</button>
+        <button type="button" id="filter-attention-btn" aria-pressed="false">Needs attention</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch legend-swatch--overdue" aria-hidden="true">⚠</span> Overdue — past its SLA threshold</span>
+      <span class="legend-item"><span class="legend-swatch legend-swatch--stalled" aria-hidden="true">⏸</span> Stalled — no recent activity, still within SLA</span>
+      <span class="legend-item"><span class="legend-swatch legend-swatch--overdue" aria-hidden="true">▲</span> Bottleneck — 2+ hires flagged in the same stage</span>
+    </div>
+
+    <div id="stage-groups"><!-- rendered by JS --></div>
+  </div>
+
+  <!-- Stage drill-in modal -->
+  <div class="modal-overlay" id="drill-overlay" hidden></div>
+  <div class="modal-wrap" id="drill-modal" role="dialog" aria-modal="true" aria-labelledby="drill-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="drill-modal-title">Stage name — systemic bottleneck</h2>
+          <p id="drill-modal-sub">Summary of the affected hires.</p>
+        </div>
+        <button class="icon-btn" id="drill-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div id="drill-hire-list"><!-- rendered by JS --></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="drill-done-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
