@@ -9,6 +9,14 @@ const ROOM_TYPES = [
   { code: 'POOLSIDE', name: 'Poolside Cabana Suite', baseRate: 219 },
 ];
 
+// TEMPORARY, NOT REAL SECURITY: this app has no session/login system anywhere (no req.user,
+// no cookie, no token verification on any route), so there is nothing genuine to check a
+// role against. This header-based gate only stops a caller that doesn't know to send the
+// header — it does NOT stop a deliberate attacker, who can set 'x-staff-role: front_desk'
+// themselves. It exists only because leaving rate plan writes fully open is worse, and
+// removing all access control was itself flagged as unacceptable. The real fix is
+// session-based authentication applied across the whole app, which is a dedicated
+// cross-cutting initiative out of scope for this story.
 const ROLE_PERMISSIONS = {
   front_desk: true,
   housekeeping: false,

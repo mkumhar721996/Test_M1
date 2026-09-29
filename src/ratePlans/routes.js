@@ -4,6 +4,9 @@ const { RatePlanValidationError, getRatePlan, updateRatePlan, deleteRatePlan } =
 
 const router = express.Router();
 
+// See the TEMPORARY/NOT REAL SECURITY note in ./store.js: this is an interim, client-header
+// gate — not authentication — kept only because no access control is worse than this, per
+// explicit security review guidance, until real session-based auth exists for the app.
 function isPermitted(req) {
   return ratePlansStore.canManageRatePlans(req.headers['x-staff-role']);
 }

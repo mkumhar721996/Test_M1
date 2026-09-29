@@ -376,6 +376,8 @@ function initRatePlansApp(doc, initialPlans, roomTypes, api) {
 
 function createDefaultApi() {
   function jsonRequest(url, method, body) {
+    // TEMPORARY: sends the interim x-staff-role header expected by src/ratePlans/routes.js
+    // pending real session-based authentication (see that file's comment).
     return fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json', 'x-staff-role': 'front_desk' },
