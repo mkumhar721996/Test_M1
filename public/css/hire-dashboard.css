@@ -1,0 +1,113 @@
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+
+/* App shell (.app-topbar, .app-nav, .page, .page-header) lives in
+   design-system/prototype-utils.css, shared with the other pages. */
+
+.btn, .input { min-height: 44px; }
+
+/* ---------- Filter bar (always visible, no toggle) ---------- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  flex: 1 1 160px;
+}
+.filter-field.filter-actions-field {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.filter-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+.list-count {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Initial load error state ---------- */
+.error-state {
+  padding: var(--space-4);
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+.error-state .icon {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.error-state h3 {
+  margin: 0 0 var(--space-1) 0;
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+.error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+/* ---------- No-match filtered-empty state ---------- */
+.no-match-row td {
+  padding: var(--space-4);
+  border-bottom: none;
+}
+.no-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+.no-match-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.no-match-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0;
+  max-width: 42ch;
+}
+
+/* ---------- Hire list ---------- */
+.table-card { padding: 0; overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+table.hire-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.hire-table th {
+  text-align: left;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.hire-table td {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+.hire-table tbody tr:last-child td { border-bottom: none; }
