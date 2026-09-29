@@ -259,6 +259,26 @@ describe('Guest Profiles UI', () => {
     await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
     expect(document.getElementById('stay-history-region').textContent).toContain('No stay history yet');
   });
+
+  test('security: the populated stay history table escapes untrusted field values (e.g. nights)', async () => {
+    const guest = fixtureGuest();
+    const maliciousStay = {
+      id: 'STY-1',
+      dates: 'Jun 12–15, 2026',
+      room: 'Oceanview Suite',
+      nights: '<img src=x onerror=alert(1)>',
+      confirmation: 'RES-1',
+    };
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockResolvedValue([maliciousStay]) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    const region = document.getElementById('stay-history-region');
+    expect(region.querySelector('img')).toBeNull();
+    expect(region.textContent).toContain('<img src=x onerror=alert(1)>');
+  });
 });
 
 describe('createDefaultApi', () => {

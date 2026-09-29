@@ -250,7 +250,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       '<thead><tr><th scope="col">Dates</th><th scope="col">Room</th><th scope="col">Nights</th></tr></thead>' +
       '<tbody>' + stays.map((s) =>
         `<tr><td>${escapeHtml(s.dates)}<br /><span class="confirmation-code">${escapeHtml(s.confirmation)}</span></td>` +
-        `<td>${escapeHtml(s.room)}</td><td>${s.nights}</td></tr>`
+        `<td>${escapeHtml(s.room)}</td><td>${escapeHtml(s.nights)}</td></tr>`
       ).join('') + '</tbody></table></div>';
   }
 
