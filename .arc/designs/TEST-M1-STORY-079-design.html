@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-079 — Bottleneck Indicators</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ------------------------------------------------------------------
+     Proposed tokens (NOT in tokens.json / prototype-utils.css yet).
+     The design system only ships one accent hue (--color-primary,
+     violet) plus neutral fg/bg/surface/border — there is no semantic
+     "danger" or "warning" pairing to borrow for overdue/stalled status.
+     These are flagged here as a greenfield proposal for
+     sdlc.design-system-bootstrap to formalize (e.g. as
+     status.danger.background / status.warning.background component
+     aliases); this file does not write to the token source itself.
+     Backgrounds are kept as dark as --color-surface so the existing
+     --color-fg (#f5f2fb) text/icon color keeps its ~16:1 contrast
+     ratio on top of them without any new foreground colors.
+  ------------------------------------------------------------------ */
+  :root {
+    --status-danger-bg: #3a1620;
+    --status-danger-border: #a24259;
+    --status-danger-accent: #ff8fa3;
+    --status-warning-bg: #3a2a12;
+    --status-warning-border: #a2792a;
+    --status-warning-accent: #ffcf7a;
+  }
+
+  body { min-height: 100vh; }
+
+  .page { max-width: 920px; }
+  .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+  /* ---------- Bottleneck banner ---------- */
+  .bottleneck-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    background: var(--status-danger-bg);
+    border: 1px solid var(--status-danger-border);
+    border-left: 4px solid var(--status-danger-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .bottleneck-banner .icon { font-size: var(--font-size-lg); line-height: 1; color: var(--status-danger-accent); }
+  .bottleneck-banner h2 {
+    margin: 0 0 var(--space-1) 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .bottleneck-banner p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .bottleneck-banner .actions { margin-left: auto; flex-shrink: 0; }
+
+  .attention-summary { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0 0 var(--space-4) 0; }
+
+  /* ---------- Controls row ---------- */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+  }
+  .segmented { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .segmented button {
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    min-height: 44px;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .segmented button + button { border-left: 1px solid var(--color-border); }
+  .segmented button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-primary-fg); }
+  .segmented button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  /* ---------- Legend (non-colour cue reference, always visible) ---------- */
+  .legend { display: flex; flex-wrap: wrap; gap: var(--space-4); margin: 0 0 var(--space-4) 0; padding: var(--space-2) 0; }
+  .legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .legend-swatch {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: var(--radius-sm); font-size: 0.8rem; flex-shrink: 0;
+  }
+  .legend-swatch--overdue { background: var(--status-danger-bg); border: 1px solid var(--status-danger-border); color: var(--status-danger-accent); }
+  .legend-swatch--stalled { background: var(--status-warning-bg); border: 1px solid var(--status-warning-border); color: var(--status-warning-accent); }
+
+  /* ---------- Stage groups ---------- */
+  .stage-group { margin-bottom: var(--space-4); }
+  .stage-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0 var(--space-1) var(--space-2) var(--space-1);
+  }
+  .stage-group-header-title { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+  .stage-group-header h2 {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .stage-count { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+  .bottleneck-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    background: var(--status-danger-bg);
+    border: 1px solid var(--status-danger-border);
+    color: var(--color-fg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    min-height: 28px;
+  }
+  .bottleneck-badge .icon { color: var(--status-danger-accent); }
+  .bottleneck-badge-btn {
+    background: none; border: none; padding: 0; margin: 0;
+    color: inherit; font: inherit; cursor: pointer; text-decoration: underline;
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .bottleneck-badge-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+  .hire-list { padding: 0; }
+  .hire-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .hire-row:last-child { border-bottom: none; }
+  .hire-identity { display: flex; align-items: center; gap: var(--space-3); min-width: 200px; flex: 1 1 220px; }
+  .hire-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .hire-meta .name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .hire-meta .role { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+  .hire-progress { flex: 2 1 220px; min-width: 200px; }
+  .hire-progress .stage-line { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .hire-progress .partial-note { font-size: var(--font-size-sm); color: var(--color-fg-muted); font-style: italic; margin: var(--space-1) 0 0 0; }
+  .hire-status { flex: 0 0 auto; margin-left: auto; }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .status-chip--overdue { background: var(--status-danger-bg); border-color: var(--status-danger-border); color: var(--color-fg); }
+  .status-chip--overdue .status-chip-icon { color: var(--status-danger-accent); }
+  .status-chip--stalled { background: var(--status-warning-bg); border-color: var(--status-warning-border); color: var(--color-fg); }
+  .status-chip--stalled .status-chip-icon { color: var(--status-warning-accent); }
+
+  /* ---------- Skeleton / loading ---------- */
+  .skeleton-row {
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    margin-bottom: var(--space-3);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-row { animation: skeleton-pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Empty / error states ---------- */
+  .empty-state, .error-state { padding: var(--space-4); text-align: center; }
+  .empty-state .icon, .error-state .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state h3, .error-state h3 {
+    margin: 0 0 var(--space-1) 0; color: var(--color-fg);
+    font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold);
+  }
+  .empty-state p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  .ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+  .ref-card-label { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0 0 var(--space-2) 0; }
+
+  /* ---------- Stage drill-in modal ---------- */
+  .drill-hire-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .drill-hire-row:last-child { border-bottom: none; }
+  .drill-hire-row .name { color: var(--color-fg); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); }
+  .drill-hire-row .role { color: var(--color-fg-muted); font-size: var(--font-size-sm); margin: 0; }
+
+  @media (max-width: 480px) {
+    .hire-status { margin-left: 0; }
+    .bottleneck-banner { flex-direction: column; }
+    .bottleneck-banner .actions { margin-left: 0; }
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: top bar — Dashboard (this story) · Profiles · Runs · Settings, matching the
+     Onboarding product's existing hire-profile screens. -->
+
+<!-- Fixture data: 9 hires spread across the 5-stage onboarding pipeline. Background check
+     carries 3 overdue hires (a systemic bottleneck, AC2); IT provisioning carries 1 overdue
+     hire (an individual outlier, no bottleneck badge); Paperwork carries 1 stalled hire
+     (AC5, no SLA breach yet); the remaining hires are on-track and show no indicator (AC4).
+     Riley Kwan demonstrates the "partial" data-view state: activity tracking is unavailable
+     for that hire, so no stalled/overdue call is made either way. -->
+<script>
+  const FIXTURES = {
+    stallThresholdDays: 4,
+    stages: [
+      { id: 'offer_accepted', name: 'Offer accepted', slaDays: 2 },
+      { id: 'background_check', name: 'Background check', slaDays: 5 },
+      { id: 'paperwork', name: 'Paperwork', slaDays: 3 },
+      { id: 'it_provisioning', name: 'IT provisioning', slaDays: 2 },
+      { id: 'orientation_scheduled', name: 'Orientation scheduled', slaDays: 2 }
+    ],
+    hires: [
+      { id: 'hire_2031', name: 'Jordan Reyes', role: 'Software Engineer II', stage: 'background_check', daysInStage: 8, daysSinceActivity: 1 },
+      { id: 'hire_2018', name: 'Morgan Ito', role: 'Product Designer', stage: 'background_check', daysInStage: 7, daysSinceActivity: 2 },
+      { id: 'hire_2044', name: 'Priya Natarajan', role: 'Data Analyst', stage: 'background_check', daysInStage: 6, daysSinceActivity: 0 },
+      { id: 'hire_2050', name: 'Sam Okafor', role: 'Sales Executive', stage: 'it_provisioning', daysInStage: 4, daysSinceActivity: 0 },
+      { id: 'hire_2061', name: 'Casey Lin', role: 'Marketing Coordinator', stage: 'paperwork', daysInStage: 2, daysSinceActivity: 6 },
+      { id: 'hire_2094', name: 'Alicia Chen', role: 'QA Engineer', stage: 'paperwork', daysInStage: 1, daysSinceActivity: 0 },
+      { id: 'hire_2072', name: 'Taylor Brooks', role: 'Software Engineer I', stage: 'offer_accepted', daysInStage: 1, daysSinceActivity: 0 },
+      { id: 'hire_2083', name: 'Devon Park', role: 'Support Specialist', stage: 'orientation_scheduled', daysInStage: 1, daysSinceActivity: 0 },
+      { id: 'hire_2099', name: 'Riley Kwan', role: 'UX Researcher', stage: 'orientation_scheduled', daysInStage: 1, activityUnknown: true }
+    ]
+  };
+</script>
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;font-family:var(--font-sans)">
+  <span style="font-family:var(--font-mono);color:var(--muted)">TEST-M1-STORY-079</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<style>
+  #review-bar button { color: var(--brand, var(--color-primary)); background: none; border: none; cursor: pointer; font-weight: var(--font-weight-bold); font-family: var(--font-family-base); font-size: 13px; padding: var(--space-1) var(--space-2); min-height: 32px; }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+</style>
+
+<div id="screens">
+
+<!-- State: success (default) — this is the live, interactive screen.
+     Screen: Onboarding Dashboard
+     Notes:
+       - AC1: any hire whose daysInStage exceeds its stage's SLA gets a red "⚠ Overdue by
+         N days" chip on its row (see Jordan Reyes / Morgan Ito / Priya Natarajan /
+         Sam Okafor).
+       - AC2: when 2+ hires in the same stage are flagged (overdue or stalled), the stage
+         group header gets a "⚠ Bottleneck — N hires overdue in this stage" badge, distinct
+         from the per-hire chip, plus a page-top banner. Background check (3 hires) is a
+         bottleneck; IT provisioning (1 hire) and Paperwork (1 hire) are flagged individually
+         but do NOT get the bottleneck badge, illustrating outlier vs. systemic.
+       - AC3: every indicator pairs an icon (⚠ / ⏸ / ▲) with a text label, never colour
+         alone; a persistent legend below the filter row spells out what each icon means.
+       - AC4: on-track hires (Alicia Chen, Taylor Brooks, Devon Park) show only the neutral
+         "N days in stage · SLA" line — no chip of any kind.
+       - AC5: Casey Lin is within the 3-day Paperwork SLA (2 days in) but has had no activity
+         in 6 days, so it gets a distinct amber "⏸ Stalled" chip instead of the red overdue
+         one.
+       - Partial-data state: Riley Kwan's activity tracking failed to sync, so instead of a
+         guess, the row shows a muted "Activity data unavailable" note and no chip.
+       - "Needs attention" segmented control filters the list down to only flagged hires and
+         hides stages that have nothing to show; "All hires" restores the full pipeline view.
+       - Clicking "View the 3 hires" (banner) or "View hires" (stage badge) opens a drill-in
+         modal listing exactly the hires driving that bottleneck; Esc or the ✕ closes it.
+-->
+<div class="screen" data-name="Onboarding Dashboard">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Dashboard</a>
+      <a href="#" onclick="return false;">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header page-header-row">
+      <div>
+        <h1>Onboarding dashboard</h1>
+        <p>Spot stalled or overdue hires by pipeline stage, without checking every profile by hand.</p>
+      </div>
+    </div>
+
+    <div id="banner-slot"><!-- rendered by JS: bottleneck banner(s) --></div>
+    <p class="attention-summary" id="attention-summary" aria-live="polite"><!-- rendered by JS --></p>
+
+    <div class="controls-row">
+      <div class="segmented" role="group" aria-label="Filter hires">
+        <button type="button" id="filter-all-btn" aria-pressed="true">All hires</button>
+        <button type="button" id="filter-attention-btn" aria-pressed="false">Needs attention</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch legend-swatch--overdue" aria-hidden="true">⚠</span> Overdue — past its SLA threshold</span>
+      <span class="legend-item"><span class="legend-swatch legend-swatch--stalled" aria-hidden="true">⏸</span> Stalled — no recent activity, still within SLA</span>
+      <span class="legend-item"><span class="legend-swatch legend-swatch--overdue" aria-hidden="true">▲</span> Bottleneck — 2+ hires flagged in the same stage</span>
+    </div>
+
+    <div id="stage-groups"><!-- rendered by JS --></div>
+  </div>
+</div>
+
+<!-- Stage drill-in modal -->
+<div class="modal-overlay" id="drill-overlay" hidden></div>
+<div class="modal-wrap" id="drill-modal" role="dialog" aria-modal="true" aria-labelledby="drill-modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div>
+        <h2 id="drill-modal-title">Stage name — systemic bottleneck</h2>
+        <p id="drill-modal-sub">Summary of the affected hires.</p>
+      </div>
+      <button class="icon-btn" id="drill-close-btn" type="button" aria-label="Close dialog">✕</button>
+    </div>
+    <div id="drill-hire-list"><!-- rendered by JS --></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" id="drill-done-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- State: reference-states — static, non-interactive snapshots of the fetch states
+     that the live dashboard above can also be in, for a quick visual scan.
+     Screen: Reference States
+     Notes:
+       - "Loading" — skeleton rows in place of stage groups while SLA data is fetched.
+       - "Empty" — no active hires anywhere in the pipeline; invites the next action
+         (go add one) rather than showing a bare blank page.
+       - "Error" — the SLA/bottleneck check failed to load; names what happened and offers
+         a Retry action, per the UX baseline for error states.
+-->
+<div class="screen" data-name="Reference States">
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Dashboard</a>
+      <a href="#" onclick="return false;">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Reference states</h1>
+      <p>Static snapshots of the dashboard's loading, empty and error states.</p>
+    </div>
+
+    <div class="ref-grid">
+      <div>
+        <p class="ref-card-label">Loading</p>
+        <div class="card">
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+          <div class="skeleton-row"></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="ref-card-label">Empty — no active hires</p>
+        <div class="card empty-state">
+          <span class="icon" aria-hidden="true">📋</span>
+          <h3>No hires in the pipeline yet</h3>
+          <p>Once a hire's offer is accepted, their stage progress and SLA status will show up here.</p>
+          <button type="button" class="btn btn-secondary" onclick="return false;">Go to hire profiles</button>
+        </div>
+      </div>
+
+      <div>
+        <p class="ref-card-label">Error — couldn't check SLA status</p>
+        <div class="card error-state">
+          <span class="icon" aria-hidden="true">⚠</span>
+          <h3>Couldn't load bottleneck data</h3>
+          <p>We couldn't check hire stages against their SLA thresholds. Your pipeline data is safe — try again.</p>
+          <button type="button" class="btn btn-primary" id="ref-retry-btn">Retry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function () {
+  const stageById = Object.fromEntries(FIXTURES.stages.map((s) => [s.id, s]));
+
+  function computeFlags(hire) {
+    const stage = stageById[hire.stage];
+    const overdueBy = hire.daysInStage - stage.slaDays;
+    const isOverdue = overdueBy > 0;
+    const isStalled = !isOverdue && !hire.activityUnknown && (hire.daysSinceActivity || 0) >= FIXTURES.stallThresholdDays;
+    const isPartial = !!hire.activityUnknown && !isOverdue;
+    return { isOverdue, isStalled, isPartial, overdueBy };
+  }
+
+  function initials(name) {
+    return name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function statusChipMarkup(hire, flags) {
+    if (flags.isOverdue) {
+      const days = flags.overdueBy;
+      return `<span class="status-chip status-chip--overdue"><span class="status-chip-icon" aria-hidden="true">⚠</span> Overdue by ${days} day${days === 1 ? '' : 's'}</span>`;
+    }
+    if (flags.isStalled) {
+      const days = hire.daysSinceActivity;
+      return `<span class="status-chip status-chip--stalled"><span class="status-chip-icon" aria-hidden="true">⏸</span> Stalled — no activity in ${days} days</span>`;
+    }
+    return '';
+  }
+
+  let filterMode = 'all'; // 'all' | 'attention'
+
+  function render() {
+    const stageData = FIXTURES.stages.map((stage) => {
+      const hires = FIXTURES.hires
+        .filter((h) => h.stage === stage.id)
+        .map((h) => ({ hire: h, flags: computeFlags(h) }));
+      const flaggedCount = hires.filter((h) => h.flags.isOverdue || h.flags.isStalled).length;
+      return { stage, hires, flaggedCount, isBottleneck: flaggedCount >= 2 };
+    });
+
+    const totalHires = FIXTURES.hires.length;
+    const totalFlagged = stageData.reduce((sum, s) => sum + s.flaggedCount, 0);
+    const flaggedStageCount = stageData.filter((s) => s.flaggedCount > 0).length;
+    const bottlenecks = stageData.filter((s) => s.isBottleneck);
+
+    // Banner(s)
+    const bannerSlot = document.getElementById('banner-slot');
+    bannerSlot.innerHTML = bottlenecks.map((b) => {
+      const overdueDays = b.hires.filter((h) => h.flags.isOverdue).map((h) => h.flags.overdueBy);
+      const avg = overdueDays.length ? Math.round((overdueDays.reduce((a, c) => a + c, 0) / overdueDays.length) * 10) / 10 : 0;
+      return `
+        <div class="bottleneck-banner" role="status">
+          <span class="icon" aria-hidden="true">▲</span>
+          <div>
+            <h2>Bottleneck detected: ${escapeHtml(b.stage.name)}</h2>
+            <p>${b.flaggedCount} of ${b.hires.length} hires in this stage are overdue or stalled — average ${avg} day${avg === 1 ? '' : 's'} past the ${b.stage.slaDays}-day SLA.</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary drill-trigger" data-stage="${b.stage.id}">View the ${b.flaggedCount} hires</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Summary line
+    const summary = document.getElementById('attention-summary');
+    summary.textContent = totalFlagged > 0
+      ? `${totalFlagged} of ${totalHires} hires need attention, across ${flaggedStageCount} stage${flaggedStageCount === 1 ? '' : 's'}.`
+      : `All ${totalHires} hires are within their stage's SLA — nothing needs attention right now.`;
+
+    // Filter button labels + pressed state
+    document.getElementById('filter-all-btn').textContent = `All hires (${totalHires})`;
+    document.getElementById('filter-attention-btn').textContent = `Needs attention (${totalFlagged})`;
+    document.getElementById('filter-all-btn').setAttribute('aria-pressed', String(filterMode === 'all'));
+    document.getElementById('filter-attention-btn').setAttribute('aria-pressed', String(filterMode === 'attention'));
+
+    // Stage groups
+    const groupsEl = document.getElementById('stage-groups');
+    groupsEl.innerHTML = stageData.map((group) => {
+      const visibleHires = filterMode === 'attention'
+        ? group.hires.filter((h) => h.flags.isOverdue || h.flags.isStalled)
+        : group.hires;
+      if (filterMode === 'attention' && visibleHires.length === 0) return '';
+
+      const rows = visibleHires.map(({ hire, flags }) => {
+        const noteLine = flags.isPartial
+          ? '<p class="partial-note">Activity data unavailable — last sync failed</p>'
+          : '';
+        return `
+          <div class="hire-row">
+            <div class="hire-identity">
+              <span class="hire-avatar" aria-hidden="true">${initials(hire.name)}</span>
+              <div class="hire-meta">
+                <p class="name">${escapeHtml(hire.name)}</p>
+                <p class="role">${escapeHtml(hire.role)}</p>
+              </div>
+            </div>
+            <div class="hire-progress">
+              <p class="stage-line">${hire.daysInStage} day${hire.daysInStage === 1 ? '' : 's'} in ${escapeHtml(stageById[hire.stage].name)} · SLA ${stageById[hire.stage].slaDays} day${stageById[hire.stage].slaDays === 1 ? '' : 's'}</p>
+              ${noteLine}
+            </div>
+            <div class="hire-status">${statusChipMarkup(hire, flags)}</div>
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="stage-group card">
+          <div class="stage-group-header">
+            <div class="stage-group-header-title">
+              <h2>${escapeHtml(group.stage.name)}</h2>
+              <span class="stage-count">${filterMode === 'attention' ? `${visibleHires.length} need attention` : `${group.hires.length} hire${group.hires.length === 1 ? '' : 's'} · SLA ${group.stage.slaDays}d`}</span>
+            </div>
+            ${group.isBottleneck ? `
+              <span class="bottleneck-badge">
+                <span class="icon" aria-hidden="true">⚠</span>
+                Bottleneck —
+                <button type="button" class="bottleneck-badge-btn drill-trigger" data-stage="${group.stage.id}">${group.flaggedCount} hires overdue in this stage</button>
+              </span>` : ''}
+          </div>
+          <div class="hire-list">${rows || '<p class="u-text-sm u-text-muted" style="padding: var(--space-2) var(--space-4);">Nothing to show for this filter.</p>'}</div>
+        </div>`;
+    }).join('');
+
+    // (Re)bind drill-in triggers created by this render
+    document.querySelectorAll('.drill-trigger').forEach((btn) => {
+      btn.addEventListener('click', () => openDrillModal(btn.dataset.stage));
+    });
+  }
+
+  // ---------- Filter control ----------
+  document.getElementById('filter-all-btn').addEventListener('click', () => { filterMode = 'all'; render(); });
+  document.getElementById('filter-attention-btn').addEventListener('click', () => { filterMode = 'attention'; render(); });
+
+  // ---------- Drill-in modal ----------
+  let lastFocusedEl = null;
+  function openDrillModal(stageId) {
+    const stage = stageById[stageId];
+    const hires = FIXTURES.hires
+      .filter((h) => h.stage === stageId)
+      .map((h) => ({ hire: h, flags: computeFlags(h) }))
+      .filter((h) => h.flags.isOverdue || h.flags.isStalled);
+
+    document.getElementById('drill-modal-title').textContent = `${stage.name} — systemic bottleneck`;
+    document.getElementById('drill-modal-sub').textContent = `${hires.length} hire${hires.length === 1 ? '' : 's'} in this stage ${hires.length === 1 ? 'is' : 'are'} overdue or stalled against the ${stage.slaDays}-day SLA.`;
+    document.getElementById('drill-hire-list').innerHTML = hires.map(({ hire, flags }) => `
+      <div class="drill-hire-row">
+        <div>
+          <p class="name">${escapeHtml(hire.name)}</p>
+          <p class="role">${escapeHtml(hire.role)}</p>
+        </div>
+        ${statusChipMarkup(hire, flags)}
+      </div>`).join('');
+
+    lastFocusedEl = document.activeElement;
+    document.getElementById('drill-overlay').hidden = false;
+    document.getElementById('drill-modal').hidden = false;
+    document.getElementById('drill-close-btn').focus();
+  }
+  function closeDrillModal() {
+    document.getElementById('drill-overlay').hidden = true;
+    document.getElementById('drill-modal').hidden = true;
+    if (lastFocusedEl) lastFocusedEl.focus();
+  }
+  document.getElementById('drill-close-btn').addEventListener('click', closeDrillModal);
+  document.getElementById('drill-done-btn').addEventListener('click', closeDrillModal);
+  document.getElementById('drill-overlay').addEventListener('click', closeDrillModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.getElementById('drill-modal').hidden) closeDrillModal();
+  });
+
+  // ---------- Reference "Retry" button (simulated latency, no real state change) ----------
+  const refRetryBtn = document.getElementById('ref-retry-btn');
+  if (refRetryBtn) {
+    refRetryBtn.addEventListener('click', () => {
+      const original = refRetryBtn.textContent;
+      refRetryBtn.disabled = true;
+      refRetryBtn.textContent = 'Retrying…';
+      new Promise((resolve) => setTimeout(resolve, 300)).then(() => {
+        refRetryBtn.disabled = false;
+        refRetryBtn.textContent = original;
+      });
+    });
+  }
+
+  render();
+})();
+</script>
+
+<script>
+const screens = Array.from(document.querySelectorAll('.screen'));
+let cur = 0;
+function show(i) {
+  cur = Math.max(0, Math.min(screens.length - 1, i));
+  screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+  document.getElementById('screen-label').textContent =
+    `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+}
+document.getElementById('prev-btn').onclick = () => show(cur - 1);
+document.getElementById('next-btn').onclick = () => show(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') show(cur + 1);
+  if (e.key === 'ArrowLeft') show(cur - 1);
+});
+show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
