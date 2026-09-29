@@ -42,7 +42,7 @@ describe('Guest Profiles UI', () => {
 
   test('AC2 UI: looking up an existing guest by ID opens its profile', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest) };
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -53,7 +53,7 @@ describe('Guest Profiles UI', () => {
 
   test('AC3 UI: opening a profile displays the full record', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest) };
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -65,7 +65,7 @@ describe('Guest Profiles UI', () => {
 
   test('AC4 UI: editing only phone sends just the changed field', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockResolvedValue({ ...guest, phone: '555-9999' }) };
+    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockResolvedValue({ ...guest, phone: '555-9999' }), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -82,7 +82,7 @@ describe('Guest Profiles UI', () => {
   test('AC5/AC6 UI: deactivating flips status and keeps booking history visible', async () => {
     const guest = fixtureGuest();
     const deactivated = { ...guest, status: 'deactivated' };
-    const api = { get: jest.fn().mockResolvedValue(guest), deactivate: jest.fn().mockResolvedValue(deactivated) };
+    const api = { get: jest.fn().mockResolvedValue(guest), deactivate: jest.fn().mockResolvedValue(deactivated), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -98,7 +98,7 @@ describe('Guest Profiles UI', () => {
   test('AC7/AC8 UI: reactivating restores active-profile actions', async () => {
     const deactivatedGuest = { ...fixtureGuest(), status: 'deactivated' };
     const reactivated = { ...deactivatedGuest, status: 'active' };
-    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockResolvedValue(reactivated) };
+    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockResolvedValue(reactivated), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [deactivatedGuest], api);
     document.getElementById('lookup-input').value = deactivatedGuest.id;
@@ -114,7 +114,7 @@ describe('Guest Profiles UI', () => {
   test('AC9 UI: a successful edit appends a "Just now" audit entry', async () => {
     const guest = fixtureGuest();
     const updated = { ...guest, phone: '555-9999', auditLog: [...guest.auditLog, { ts: '2026-09-28T09:41:00.000Z', actor: 'Priya Nair', action: 'updated phone' }] };
-    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockResolvedValue(updated) };
+    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockResolvedValue(updated), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -154,7 +154,7 @@ describe('Guest Profiles UI', () => {
 
   test('a failed edit shows an error toast and leaves the profile unchanged', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockRejectedValue(new Error('network error')) };
+    const api = { get: jest.fn().mockResolvedValue(guest), update: jest.fn().mockRejectedValue(new Error('network error')), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -170,7 +170,7 @@ describe('Guest Profiles UI', () => {
 
   test('a failed deactivate shows an error toast and leaves the status chip unchanged', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest), deactivate: jest.fn().mockRejectedValue(new Error('network error')) };
+    const api = { get: jest.fn().mockResolvedValue(guest), deactivate: jest.fn().mockRejectedValue(new Error('network error')), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
     document.getElementById('lookup-input').value = guest.id;
@@ -185,7 +185,7 @@ describe('Guest Profiles UI', () => {
 
   test('a failed reactivate shows an error toast and leaves the status chip unchanged', async () => {
     const deactivatedGuest = { ...fixtureGuest(), status: 'deactivated' };
-    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockRejectedValue(new Error('network error')) };
+    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockRejectedValue(new Error('network error')), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [deactivatedGuest], api);
     document.getElementById('lookup-input').value = deactivatedGuest.id;
@@ -200,7 +200,7 @@ describe('Guest Profiles UI', () => {
 
   test('pressing Escape closes an open create/deactivate/reactivate modal', async () => {
     const guest = fixtureGuest();
-    const api = { get: jest.fn().mockResolvedValue(guest) };
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockResolvedValue([]) };
     const { initGuestProfilesApp } = require('../public/js/guest-profiles');
     initGuestProfilesApp(document, [guest], api);
 
@@ -218,6 +218,47 @@ describe('Guest Profiles UI', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     expect(document.getElementById('deactivate-modal').hidden).toBe(true);
   });
+
+  test('AC1: a loading indicator is shown while stay history is being fetched', async () => {
+    const guest = fixtureGuest();
+    let resolveStayHistory;
+    const api = {
+      get: jest.fn().mockResolvedValue(guest),
+      getStayHistory: jest.fn(() => new Promise((resolve) => { resolveStayHistory = resolve; })),
+    };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('stay-history-region').textContent).toContain('Loading stay history');
+    resolveStayHistory([]);
+  });
+
+  test('AC2/AC3: an unavailable dependency shows a scoped error while the rest of the profile stays usable', async () => {
+    const guest = fixtureGuest();
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockRejectedValue({ status: 502 }) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('stay-history-region').textContent).toContain('Stay history unavailable');
+    expect(document.getElementById('kv-list').textContent).toContain(guest.email);
+    document.getElementById('edit-profile-btn').click();
+    expect(document.getElementById('details-edit-mode').hidden).toBe(false);
+  });
+
+  test('AC4: a guest with no past stays shows the "No stay history yet" placeholder', async () => {
+    const guest = fixtureGuest();
+    const api = { get: jest.fn().mockResolvedValue(guest), getStayHistory: jest.fn().mockResolvedValue([]) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [guest], api);
+    document.getElementById('lookup-input').value = guest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('stay-history-region').textContent).toContain('No stay history yet');
+  });
 });
 
 describe('createDefaultApi', () => {
@@ -233,6 +274,16 @@ describe('createDefaultApi', () => {
     await createDefaultApi().get('gst_1');
     expect(global.fetch).toHaveBeenCalledWith(
       '/guests/gst_1',
+      expect.objectContaining({ headers: expect.objectContaining({ 'x-staff-role': 'front_desk' }) })
+    );
+  });
+
+  test('getStayHistory() sends the x-staff-role header', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ stays: [] }) });
+    const { createDefaultApi } = require('../public/js/guest-profiles');
+    await createDefaultApi().getStayHistory('gst_1');
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/guests/gst_1/stay-history',
       expect.objectContaining({ headers: expect.objectContaining({ 'x-staff-role': 'front_desk' }) })
     );
   });
