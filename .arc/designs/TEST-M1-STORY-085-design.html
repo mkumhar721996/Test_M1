@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-085 · Completed/Cancelled Hire Data Retention</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* App nav: top bar — Hires · Settings · Audit log */
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .topbar-right strong { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+  .page-wide { max-width: 720px; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg);
+  }
+  .status-badge.is-active::before { content: "●"; color: var(--color-primary); }
+  .status-badge.is-completed::before { content: "✓"; }
+  .status-badge.is-cancelled::before { content: "✕"; }
+
+  .retention-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-fg-muted);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+  }
+  .retention-chip.is-soon { color: var(--color-fg); border-color: var(--color-primary); }
+  .retention-chip.is-soon::before { content: "⏳"; }
+
+  .info-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .info-banner .icon { font-size: var(--font-size-lg); line-height: 1; }
+  .info-banner a.link-btn {
+    background: none; border: none; padding: 0; color: var(--color-primary);
+    font-weight: var(--font-weight-bold); cursor: pointer; text-decoration: underline;
+    font-size: var(--font-size-sm); font-family: var(--font-family-base);
+  }
+
+  .hire-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    justify-content: space-between;
+  }
+  .hire-card + .hire-card { margin-top: var(--space-3); }
+  .hire-identity h3 {
+    font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base);
+  }
+  .hire-identity p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-sm); font-family: var(--font-family-base); }
+  .hire-meta { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
+  .hire-meta .date-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); font-family: var(--font-family-base); }
+  .view-link {
+    background: none; border: none; color: var(--color-primary); font-weight: var(--font-weight-bold);
+    cursor: pointer; font-size: var(--font-size-sm); font-family: var(--font-family-base); padding: var(--space-1) 0;
+    text-decoration: underline;
+  }
+
+  .sla-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3); margin: var(--space-4) 0; }
+  .metric-card { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); }
+  .metric-card .value { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); font-family: var(--font-family-base); }
+  .metric-card .label { font-size: var(--font-size-sm); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+
+  .retention-note {
+    display: flex; gap: var(--space-2); align-items: flex-start;
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+
+  .empty-state {
+    text-align: center; padding: var(--space-4) var(--space-4);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: var(--space-3); }
+  .empty-state h2 { font-size: var(--font-size-lg); color: var(--color-fg); margin: 0 0 var(--space-2) 0; font-family: var(--font-family-base); }
+  .empty-state p { color: var(--color-fg-muted); max-width: 46ch; margin: 0 auto var(--space-4) auto; font-family: var(--font-family-base); }
+
+  .field-group { max-width: 420px; }
+  .field-row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .field-row .input { max-width: 140px; }
+  .unit-label { color: var(--color-fg-muted); font-size: var(--font-size-md); font-family: var(--font-family-base); }
+  .helper-text { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-2); font-family: var(--font-family-base); }
+  .lock-badge {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+    padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+  }
+  .lock-badge::before { content: "🔒"; }
+
+  .form-actions { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
+
+  .warning-callout {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    background: var(--color-surface); border: 1px solid var(--color-primary); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4); margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--color-fg);
+    font-family: var(--font-family-base);
+  }
+  .warning-callout .icon { font-size: var(--font-size-lg); line-height: 1; }
+
+  .error-callout {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    background: var(--color-surface); border: 1px solid var(--color-fg); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4); margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--color-fg);
+    font-family: var(--font-family-base);
+  }
+  .error-callout[hidden] { display: none; }
+  .error-callout .icon { font-size: var(--font-size-lg); line-height: 1; }
+
+  .field-flash { animation: flash-border 900ms ease-out; }
+  @keyframes flash-border {
+    0% { outline: 2px solid var(--color-primary); }
+    100% { outline: 2px solid transparent; }
+  }
+
+  .chip-row { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+
+  .audit-list { list-style: none; margin: var(--space-3) 0 0 0; padding: 0; }
+  .audit-item { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-top: 1px solid var(--color-border); }
+  .audit-item:first-child { border-top: none; }
+  .audit-icon { font-size: var(--font-size-lg); line-height: 1.4; }
+  .audit-body p { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg); font-family: var(--font-family-base); }
+  .audit-body time { display: block; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-1); font-family: var(--font-family-base); }
+  .audit-tag {
+    display: inline-block; margin-top: var(--space-1); padding: 2px var(--space-2);
+    border-radius: var(--radius-sm); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+    font-size: 0.75rem; font-family: var(--font-family-base);
+  }
+
+  .filter-chips { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); flex-wrap: wrap; }
+  .filter-chip {
+    background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg); font-size: var(--font-size-sm);
+    cursor: pointer; font-family: var(--font-family-base);
+  }
+  .filter-chip.active { color: var(--color-primary-fg); background: var(--color-primary); border-color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .filter-chip:focus-visible, .view-link:focus-visible, .icon-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  .back-link {
+    background: none; border: none; color: var(--color-fg-muted); cursor: pointer;
+    font-size: var(--font-size-sm); font-family: var(--font-family-base); padding: 0; margin-bottom: var(--space-4);
+    display: inline-flex; align-items: center; gap: var(--space-1);
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .toast[data-tone="error"] { border-left-color: var(--color-fg-muted); }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:monospace;color:var(--color-fg-muted)">TEST-M1-STORY-085</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<script id="fixture-data" type="application/json">
+{
+  "tenant": { "name": "Northbridge Staffing", "retentionMonths": 12, "isCustomized": false },
+  "today": "2026-09-28",
+  "hires": [
+    {
+      "id": "hire-101",
+      "worker": "Maria Gonzalez",
+      "role": "Banquet Server",
+      "client": "Grand Plaza Hotel",
+      "status": "active",
+      "statusLabel": "In progress",
+      "shiftDate": "Oct 2, 2026"
+    },
+    {
+      "id": "hire-102",
+      "worker": "David Chen",
+      "role": "Warehouse Associate",
+      "client": "Riverside Distribution Center",
+      "status": "completed",
+      "statusLabel": "Completed",
+      "eventDate": "Aug 15, 2026",
+      "expiresOn": "Aug 15, 2027",
+      "expiresLabel": "Expires in 11 months"
+    },
+    {
+      "id": "hire-103",
+      "worker": "Aisha Bello",
+      "role": "Event Staff",
+      "client": "Lakeside Convention Center",
+      "status": "cancelled",
+      "statusLabel": "Cancelled",
+      "eventDate": "Jun 2, 2026",
+      "expiresOn": "Jun 2, 2027",
+      "expiresLabel": "Expires in 8 months"
+    },
+    {
+      "id": "hire-104",
+      "worker": "Tom Walker",
+      "role": "Banquet Server",
+      "client": "Grand Plaza Hotel",
+      "status": "completed",
+      "statusLabel": "Completed",
+      "eventDate": "Nov 20, 2025",
+      "expiresOn": "Nov 20, 2026",
+      "expiresLabel": "Expiring soon · 2 months left",
+      "soon": true
+    }
+  ],
+  "hiddenCount": 3,
+  "expiredHire": {
+    "worker": "Carlos Mendez",
+    "role": "Line Cook",
+    "client": "Sunrise Catering Co.",
+    "status": "cancelled",
+    "statusLabel": "Cancelled",
+    "eventDate": "Jun 10, 2025",
+    "expiredOn": "Jun 10, 2026",
+    "deletedOn": "Jun 11, 2026"
+  },
+  "auditLog": [
+    {
+      "type": "config",
+      "actor": "Jane Kim",
+      "role": "Tenant Administrator",
+      "timestamp": "Sep 28, 2026 · 09:41",
+      "description": "changed the retention period from 12 months to 6 months"
+    },
+    {
+      "type": "deletion",
+      "actor": "System",
+      "role": "Automated retention sweep",
+      "timestamp": "Sep 27, 2026 · 02:00",
+      "description": "permanently deleted 3 completed/cancelled hire records that exceeded the 12-month retention period"
+    },
+    {
+      "type": "denied",
+      "actor": "Priya Sharma",
+      "role": "Recruiter",
+      "timestamp": "Nov 2, 2025 · 16:05",
+      "description": "attempted to change the retention period — request denied (tenant administrator role required)"
+    },
+    {
+      "type": "deletion",
+      "actor": "System",
+      "role": "Automated retention sweep",
+      "timestamp": "Jun 3, 2026 · 02:00",
+      "description": "permanently deleted 1 completed/cancelled hire record that exceeded the 12-month retention period"
+    },
+    {
+      "type": "config",
+      "actor": "Marcus Lee",
+      "role": "Tenant Administrator",
+      "timestamp": "Feb 14, 2026 · 11:20",
+      "description": "changed the retention period from 18 months to 12 months"
+    }
+  ]
+}
+</script>
+
+<div id="screens">
+
+<!-- State: dashboard-success -->
+<!-- Screen: Hires Dashboard
+     Notes:
+       - AC1: completed/cancelled hires within the retention window stay visible with an
+         "expires on" chip so recruiters know how long data will remain.
+       - AC2 & AC3: the info banner discloses that records past the (default 12-month, or
+         tenant-configured) retention period are no longer surfaced, without listing them —
+         they are gone from this view entirely, not merely greyed out.
+       - Active/in-progress hires are shown with no retention chip since retention only
+         applies once a hire is completed or cancelled.
+-->
+<div class="screen" data-name="Hires Dashboard">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" class="active">Hires</a>
+      <a href="#" onclick="return goToScreen('Data Retention Settings — Admin', event)">Settings</a>
+      <a href="#" onclick="return goToScreen('Retention & Audit Log', event)">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Jane Kim</strong> · Tenant Administrator</div>
+  </header>
+
+  <div class="page page-wide">
+    <div class="page-header">
+      <h1>Hires</h1>
+      <p>Completed and cancelled hires stay visible here for your tenant's retention period, then are permanently removed.</p>
+    </div>
+
+    <div class="info-banner" role="status">
+      <span class="icon" aria-hidden="true">ℹ️</span>
+      <div>
+        <strong>3 completed/cancelled hires</strong> passed your 12-month retention period and are no longer shown.
+        <br />
+        <a href="#" class="link-btn" onclick="return goToScreen('Data Retention Settings — Admin', event)">Manage retention period</a>
+      </div>
+    </div>
+
+    <div class="u-stack" id="hire-list"></div>
+  </div>
+</div>
+
+<!-- State: hire-detail-active -->
+<!-- Screen: Hire Detail — Within Retention
+     Notes:
+       - AC1: SLA metrics and audit-relevant dates stay fully accessible while the hire is
+         inside its retention window; the retention note states the exact expiry date so
+         recruiters can plan ahead.
+-->
+<div class="screen" data-name="Hire Detail — Within Retention">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return goToScreen('Hires Dashboard', event)">Hires</a>
+      <a href="#" onclick="return goToScreen('Data Retention Settings — Admin', event)">Settings</a>
+      <a href="#" onclick="return goToScreen('Retention & Audit Log', event)">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Jane Kim</strong> · Tenant Administrator</div>
+  </header>
+
+  <div class="page page-wide">
+    <button class="back-link" onclick="return goToScreen('Hires Dashboard', event)">← Back to Hires</button>
+    <div class="page-header">
+      <h1>David Chen</h1>
+      <p>Warehouse Associate · Riverside Distribution Center</p>
+    </div>
+
+    <div class="chip-row" style="margin-bottom: var(--space-4);">
+      <span class="status-badge is-completed">Completed · Aug 15, 2026</span>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">SLA metrics</h3>
+      <div class="sla-grid">
+        <div class="metric-card"><div class="value">2.4 days</div><div class="label">Time to fill</div></div>
+        <div class="metric-card"><div class="value">18 hrs</div><div class="label">Time to onboard</div></div>
+        <div class="metric-card"><div class="value">100%</div><div class="label">Shift completion</div></div>
+        <div class="metric-card"><div class="value">4.9 / 5</div><div class="label">Client rating</div></div>
+      </div>
+    </div>
+
+    <div class="retention-note">
+      <span aria-hidden="true">⏳</span>
+      <span>This record will remain available until <strong>Aug 15, 2027</strong>, based on your tenant's 12-month retention period. After that date it will be permanently deleted.</span>
+    </div>
+  </div>
+</div>
+
+<!-- State: hire-detail-expired -->
+<!-- Screen: Hire Detail — Retention Expired
+     Notes:
+       - AC2 & AC3: simulates opening a hire (e.g. from an old bookmark or exported report)
+         whose retention period has elapsed. No metrics are rendered.
+       - AC8: copy is explicit that the underlying data was permanently deleted, not just
+         hidden from this view, and that it cannot be recovered.
+-->
+<div class="screen" data-name="Hire Detail — Retention Expired">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return goToScreen('Hires Dashboard', event)">Hires</a>
+      <a href="#" onclick="return goToScreen('Data Retention Settings — Admin', event)">Settings</a>
+      <a href="#" onclick="return goToScreen('Retention & Audit Log', event)">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Jane Kim</strong> · Tenant Administrator</div>
+  </header>
+
+  <div class="page page-wide">
+    <button class="back-link" onclick="return goToScreen('Hires Dashboard', event)">← Back to Hires</button>
+    <div class="card empty-state">
+      <div class="icon" aria-hidden="true">🗄️</div>
+      <h2>This hire's data is no longer available</h2>
+      <p>
+        Carlos Mendez's record (Line Cook · Sunrise Catering Co., cancelled Jun 10, 2025) exceeded your
+        tenant's 12-month retention period on Jun 10, 2026. Its underlying data was permanently deleted
+        on Jun 11, 2026 and cannot be recovered.
+      </p>
+      <button class="btn btn-secondary" onclick="return goToScreen('Hires Dashboard', event)">Back to Hires</button>
+    </div>
+  </div>
+</div>
+
+<!-- State: settings-admin -->
+<!-- Screen: Data Retention Settings — Admin
+     Notes:
+       - AC4: saving a new period updates the value used for future expiry calculations.
+       - AC7: every successful save appends an audit entry with the admin's identity and
+         timestamp (shown live in "Recent changes" below the form).
+       - AC8: reducing the period below the age of existing records surfaces a confirmation
+         naming exactly how many records will be permanently deleted and when — this is a
+         destructive-adjacent action so it is confirmed before saving (UX baseline: destructive
+         actions confirm and name the consequence). Increasing the period saves immediately
+         since it can't cause data loss.
+-->
+<div class="screen" data-name="Data Retention Settings — Admin">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return goToScreen('Hires Dashboard', event)">Hires</a>
+      <a href="#" class="active">Settings</a>
+      <a href="#" onclick="return goToScreen('Retention & Audit Log', event)">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Jane Kim</strong> · Tenant Administrator</div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Data retention</h1>
+      <p>Control how long completed and cancelled hire data stays visible before it's permanently deleted.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Retention period</h3>
+      <div class="field-group">
+        <label class="label" for="admin-retention-input">Keep completed/cancelled hire data for</label>
+        <div class="field-row">
+          <input class="input" type="number" min="1" max="60" id="admin-retention-input" value="12" />
+          <span class="unit-label">months</span>
+          <span class="chip" id="admin-retention-chip">Default · not customized</span>
+        </div>
+        <p class="helper-text">Applies tenant-wide to all completed and cancelled hires. Active hires are never affected.</p>
+      </div>
+
+      <div class="warning-callout" id="admin-impact-callout" hidden>
+        <span class="icon" aria-hidden="true">⚠️</span>
+        <span id="admin-impact-text"></span>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" id="admin-save-btn">Save</button>
+        <button class="btn btn-secondary" id="admin-reset-btn">Reset</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: var(--space-4);">
+      <h3 class="card-title">Recent changes</h3>
+      <ul class="audit-list" id="admin-recent-audit"></ul>
+      <p class="helper-text"><a href="#" class="link-btn" style="text-decoration:underline;color:var(--color-primary)" onclick="return goToScreen('Retention & Audit Log', event)">View full audit log →</a></p>
+    </div>
+  </div>
+
+  <!-- Confirm dialog for reducing the retention period -->
+  <div class="modal-overlay" id="admin-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="admin-modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="admin-modal-title">Reduce retention period?</h2>
+          <p id="admin-modal-body"></p>
+        </div>
+        <button class="icon-btn" aria-label="Close" id="admin-modal-close">✕</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="admin-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="admin-modal-confirm">Confirm & save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="admin-toast" hidden role="status"></div>
+</div>
+
+<!-- State: settings-non-admin -->
+<!-- Screen: Data Retention Settings — Non-admin
+     Notes:
+       - AC5: a non-admin can open the form and attempt to submit a change, but the request
+         is rejected — demonstrated as a real submit-and-reject flow, not just a disabled field,
+         since the requirement is about the change being rejected on submission.
+       - AC6: after rejection the field snaps back to the previously configured value and no
+         "Recent changes" entry is added.
+-->
+<div class="screen" data-name="Data Retention Settings — Non-admin">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return goToScreen('Hires Dashboard', event)">Hires</a>
+      <a href="#" class="active">Settings</a>
+      <a href="#" onclick="return goToScreen('Retention & Audit Log', event)">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Priya Sharma</strong> · Recruiter</div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Data retention</h1>
+      <p>Control how long completed and cancelled hire data stays visible before it's permanently deleted.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Retention period</h3>
+      <div class="field-group">
+        <div class="field-row" style="margin-bottom: var(--space-1);">
+          <label class="label" for="nonadmin-retention-input" style="margin-bottom:0;">Keep completed/cancelled hire data for</label>
+          <span class="lock-badge">Admin only</span>
+        </div>
+        <div class="field-row">
+          <input class="input" type="number" min="1" max="60" id="nonadmin-retention-input" value="12" />
+          <span class="unit-label">months</span>
+          <span class="chip">Default · not customized</span>
+        </div>
+        <p class="helper-text">Only a tenant administrator can change this setting. You can still view the current value.</p>
+      </div>
+
+      <div class="error-callout" id="nonadmin-error" hidden role="alert">
+        <span class="icon" aria-hidden="true">⛔</span>
+        <span>You don't have permission to change the data retention period. Ask a tenant administrator to update it. The retention period is still <strong>12 months</strong>.</span>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" id="nonadmin-save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="nonadmin-toast" hidden role="status" data-tone="error"></div>
+</div>
+
+<!-- State: audit-log -->
+<!-- Screen: Retention & Audit Log
+     Notes:
+       - AC7: configuration changes record the administrator's identity and timestamp.
+       - AC8: automated "retention sweep" entries make the permanent-deletion behaviour
+         visible for audit/compliance review, distinct from records simply being hidden.
+       - Denied attempts by non-admins are retained here for security visibility, reinforcing
+         AC5/AC6 without implying the configuration itself changed.
+-->
+<div class="screen" data-name="Retention & Audit Log">
+  <header class="app-topbar">
+    <span class="brand">Northbridge Staffing</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return goToScreen('Hires Dashboard', event)">Hires</a>
+      <a href="#" onclick="return goToScreen('Data Retention Settings — Admin', event)">Settings</a>
+      <a href="#" class="active">Audit log</a>
+    </nav>
+    <div class="topbar-right">Signed in as <strong>Jane Kim</strong> · Tenant Administrator</div>
+  </header>
+
+  <div class="page page-wide">
+    <div class="page-header">
+      <h1>Retention &amp; audit log</h1>
+      <p>A complete history of retention period changes and automatic data deletions, for audit and compliance review.</p>
+    </div>
+
+    <div class="filter-chips">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="config">Configuration changes</button>
+      <button class="filter-chip" data-filter="deletion">Deletions</button>
+      <button class="filter-chip" data-filter="denied">Access denied</button>
+    </div>
+
+    <div class="card">
+      <ul class="audit-list" id="full-audit-list"></ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+
+  function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+  function iconFor(type) {
+    if (type === 'config') return '⚙️';
+    if (type === 'deletion') return '🗑️';
+    return '⛔';
+  }
+  function tagFor(type) {
+    if (type === 'config') return 'Configuration change';
+    if (type === 'deletion') return 'Deletion';
+    return 'Access denied';
+  }
+
+  function renderAuditItem(entry) {
+    const li = document.createElement('li');
+    li.className = 'audit-item';
+    li.dataset.type = entry.type;
+    li.innerHTML = `
+      <span class="audit-icon" aria-hidden="true">${iconFor(entry.type)}</span>
+      <div class="audit-body">
+        <p><strong>${entry.actor}</strong> (${entry.role}) ${entry.description}.</p>
+        <time>${entry.timestamp}</time>
+        <span class="audit-tag">${tagFor(entry.type)}</span>
+      </div>`;
+    return li;
+  }
+
+  // Hires dashboard list
+  (function renderHireList() {
+    const list = document.getElementById('hire-list');
+    if (!list) return;
+    fixture.hires.forEach(h => {
+      const card = document.createElement('div');
+      card.className = 'card hire-card';
+      let statusMarkup, metaMarkup;
+      if (h.status === 'active') {
+        statusMarkup = `<span class="status-badge is-active">${h.statusLabel}</span>`;
+        metaMarkup = `<span class="date-line">Next shift ${h.shiftDate}</span>`;
+      } else {
+        const cls = h.status === 'completed' ? 'is-completed' : 'is-cancelled';
+        statusMarkup = `<span class="status-badge ${cls}">${h.statusLabel} · ${h.eventDate}</span>`;
+        metaMarkup = `<span class="retention-chip ${h.soon ? 'is-soon' : ''}">${h.expiresLabel}</span>`;
+      }
+      card.innerHTML = `
+        <div class="hire-identity">
+          <h3>${h.worker}</h3>
+          <p>${h.role} · ${h.client}</p>
+          ${statusMarkup}
+        </div>
+        <div class="hire-meta">
+          ${metaMarkup}
+          <button class="view-link" data-hire="${h.id}">View SLA</button>
+        </div>`;
+      list.appendChild(card);
+    });
+    list.addEventListener('click', e => {
+      const btn = e.target.closest('.view-link');
+      if (!btn) return;
+      if (btn.dataset.hire === 'hire-102') goToScreen('Hire Detail — Within Retention', e);
+    });
+  })();
+
+  // Admin recent-changes mini list
+  (function renderAdminRecent() {
+    const el = document.getElementById('admin-recent-audit');
+    if (!el) return;
+    fixture.auditLog.filter(a => a.type === 'config').slice(0, 2).forEach(a => el.appendChild(renderAuditItem(a)));
+  })();
+
+  // Full audit log
+  (function renderFullAudit() {
+    const el = document.getElementById('full-audit-list');
+    if (!el) return;
+    fixture.auditLog.forEach(a => el.appendChild(renderAuditItem(a)));
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const filter = chip.dataset.filter;
+        el.querySelectorAll('.audit-item').forEach(item => {
+          item.style.display = (filter === 'all' || item.dataset.type === filter) ? 'flex' : 'none';
+        });
+      });
+    });
+  })();
+
+  // Admin settings interactions
+  (function adminSettings() {
+    const input = document.getElementById('admin-retention-input');
+    const chip = document.getElementById('admin-retention-chip');
+    const saveBtn = document.getElementById('admin-save-btn');
+    const resetBtn = document.getElementById('admin-reset-btn');
+    const toast = document.getElementById('admin-toast');
+    const impactCallout = document.getElementById('admin-impact-callout');
+    const impactText = document.getElementById('admin-impact-text');
+    const overlay = document.getElementById('admin-modal-overlay');
+    const wrap = document.getElementById('admin-modal-wrap');
+    const modalBody = document.getElementById('admin-modal-body');
+    if (!input) return;
+
+    let savedValue = 12;
+    let customized = false;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+
+    function updateImpact() {
+      const val = Number(input.value);
+      if (val && val < savedValue) {
+        impactCallout.hidden = false;
+        impactText.textContent = `Reducing to ${val} month${val === 1 ? '' : 's'} will immediately push 2 existing hires past the new limit. They'll be permanently deleted at the next nightly retention sweep — this can't be undone.`;
+      } else {
+        impactCallout.hidden = true;
+      }
+    }
+    input.addEventListener('input', updateImpact);
+
+    function openModal(newVal) {
+      modalBody.textContent = `2 completed/cancelled hires are older than ${newVal} months and will be permanently deleted at the next retention sweep (tonight at 2:00 AM). This can't be undone.`;
+      overlay.hidden = false;
+      wrap.hidden = false;
+      document.getElementById('admin-modal-confirm').focus();
+    }
+    function closeModal() { overlay.hidden = true; wrap.hidden = true; saveBtn.disabled = false; saveBtn.textContent = 'Save'; }
+
+    async function commitSave(newVal) {
+      const li = document.createElement('li');
+      li.className = 'audit-item';
+      li.innerHTML = `
+        <span class="audit-icon" aria-hidden="true">⚙️</span>
+        <div class="audit-body">
+          <p><strong>Jane Kim</strong> (Tenant Administrator) changed the retention period from ${savedValue} months to ${newVal} months.</p>
+          <time>Just now</time>
+          <span class="audit-tag">Configuration change</span>
+        </div>`;
+      document.getElementById('admin-recent-audit').prepend(li);
+
+      savedValue = newVal;
+      customized = true;
+      chip.textContent = 'Custom';
+      impactCallout.hidden = true;
+      showToast(`Retention period updated to ${newVal} months.`);
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save';
+    }
+
+    saveBtn.addEventListener('click', async () => {
+      const newVal = Number(input.value);
+      if (!newVal || newVal < 1) return;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      await delay(300);
+      if (newVal < savedValue) {
+        openModal(newVal);
+        document.getElementById('admin-modal-confirm').onclick = () => { closeModal(); commitSave(newVal); };
+      } else {
+        commitSave(newVal);
+      }
+    });
+
+    document.getElementById('admin-modal-cancel').addEventListener('click', () => { closeModal(); input.value = savedValue; updateImpact(); });
+    document.getElementById('admin-modal-close').addEventListener('click', () => { closeModal(); input.value = savedValue; updateImpact(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !wrap.hidden) { closeModal(); input.value = savedValue; updateImpact(); } });
+
+    resetBtn.addEventListener('click', () => { input.value = savedValue; updateImpact(); });
+  })();
+
+  // Non-admin settings interactions
+  (function nonAdminSettings() {
+    const input = document.getElementById('nonadmin-retention-input');
+    const saveBtn = document.getElementById('nonadmin-save-btn');
+    const errorBox = document.getElementById('nonadmin-error');
+    const toast = document.getElementById('nonadmin-toast');
+    if (!input) return;
+    const savedValue = 12;
+
+    saveBtn.addEventListener('click', async () => {
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      errorBox.hidden = true;
+      await delay(300);
+      input.value = savedValue;
+      input.classList.remove('field-flash');
+      void input.offsetWidth;
+      input.classList.add('field-flash');
+      errorBox.hidden = false;
+      toast.textContent = 'Change rejected — administrator role required.';
+      toast.hidden = false;
+      clearTimeout(nonAdminSettings._t);
+      nonAdminSettings._t = setTimeout(() => { toast.hidden = true; }, 3200);
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save';
+    });
+  })();
+
+  function goToScreen(name, evt) {
+    if (evt) evt.preventDefault();
+    const i = screens.findIndex(s => s.dataset.name === name);
+    if (i >= 0) show(i);
+    return false;
+  }
+</script>
+
+<script>
+const screens = Array.from(document.querySelectorAll('.screen'));
+let cur = 0;
+function show(i) {
+  cur = Math.max(0, Math.min(screens.length - 1, i));
+  screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+  document.getElementById('screen-label').textContent =
+    `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+}
+document.getElementById('prev-btn').onclick = () => show(cur - 1);
+document.getElementById('next-btn').onclick = () => show(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') show(cur + 1);
+  if (e.key === 'ArrowLeft') show(cur - 1);
+});
+show(0);
+</script>
+
+<style>
+  #review-bar button { color: var(--color-primary); background: none; border: none; cursor: pointer; font-family: var(--font-family-base); font-size: var(--font-size-md); padding: var(--space-2) var(--space-3); }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+</style>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
