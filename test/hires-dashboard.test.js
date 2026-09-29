@@ -14,9 +14,9 @@ function fixtureData() {
     ],
     retentionSettings: { retentionMonths: 12, isCustomized: false, hiddenCount: 3 },
     auditLog: [
-      { type: 'config', actor: 'Jane Kim', role: 'Tenant Administrator', timestamp: 'Sep 28, 2026 · 09:41', description: 'changed the retention period from 12 months to 6 months' },
+      { type: 'config', actor: 'Jane Kim', role: 'tenant_admin', timestamp: 'Sep 28, 2026 · 09:41', description: 'changed the retention period from 12 months to 6 months' },
       { type: 'deletion', actor: 'System', role: 'Automated retention sweep', timestamp: 'Sep 27, 2026 · 02:00', description: 'permanently deleted 3 completed/cancelled hire records that exceeded the 12-month retention period' },
-      { type: 'denied', actor: 'Priya Sharma', role: 'Recruiter', timestamp: 'Nov 2, 2025 · 16:05', description: 'attempted to change the retention period — request denied (tenant administrator role required)' },
+      { type: 'denied', actor: 'Priya Sharma', role: 'recruiter', timestamp: 'Nov 2, 2025 · 16:05', description: 'attempted to change the retention period — request denied (tenant administrator role required)' },
     ],
   };
 }
@@ -88,6 +88,40 @@ describe('Hires Dashboard UI', () => {
     await Promise.resolve(); await Promise.resolve();
     expect(document.querySelector('.empty-state h2').textContent).toMatch(/no longer available/);
     expect(document.querySelector('.sla-grid')).toBeNull();
+  });
+
+  test('server-shaped audit entries (raw role codes) render with display labels, not raw codes', () => {
+    const { initHiresDashboardApp } = require('../public/js/hires-dashboard');
+    initHiresDashboardApp(document, fixtureData(), {}, { name: 'Jane Kim', role: 'tenant_admin' });
+    document.querySelector('[data-nav="audit"]').click();
+    const text = document.getElementById('full-audit-list').textContent;
+    expect(text).toContain('Tenant Administrator');
+    expect(text).toContain('Recruiter');
+    expect(text).not.toContain('tenant_admin');
+    expect(text).not.toContain('recruiter');
+  });
+
+  test('EDGE: a client-side "Just now" audit entry (from a successful save) also renders with a display label', async () => {
+    const api = { updateRetention: (months) => Promise.resolve({ retentionMonths: months, isCustomized: true, hiddenCount: 3 }) };
+    const { initHiresDashboardApp } = require('../public/js/hires-dashboard');
+    initHiresDashboardApp(document, fixtureData(), api, { name: 'Jane Kim', role: 'tenant_admin' });
+    document.querySelector('[data-nav="settings"]').click();
+    document.getElementById('retention-input').value = '20';
+    document.getElementById('save-btn').click();
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('recent-audit').textContent).toContain('Tenant Administrator');
+    expect(document.getElementById('recent-audit').textContent).not.toContain('tenant_admin');
+  });
+
+  test('CRITICAL: a failed hire-detail fetch shows an error message and stays on the dashboard', async () => {
+    const api = { getHireDetail: () => Promise.reject(new Error('network error')) };
+    const { initHiresDashboardApp } = require('../public/js/hires-dashboard');
+    initHiresDashboardApp(document, fixtureData(), api, { name: 'Jane Kim', role: 'tenant_admin' });
+    document.querySelector('[data-hire="hire-102"] .view-link').click();
+    await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('dashboard-screen').hidden).toBe(false);
+    expect(document.getElementById('dashboard-toast').hidden).toBe(false);
+    expect(document.getElementById('dashboard-toast').textContent.length).toBeGreaterThan(0);
   });
 
   test('EDGE: the audit-log screen filters entries by type', () => {

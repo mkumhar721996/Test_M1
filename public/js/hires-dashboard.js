@@ -61,6 +61,17 @@ function initHiresDashboardApp(doc, initialData, api, currentUser) {
     audit: doc.getElementById('audit-screen'),
   };
 
+  function makeToast(toastEl) {
+    let timer = null;
+    return function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.hidden = false;
+      clearTimeout(timer);
+      timer = setTimeout(() => { toastEl.hidden = true; }, 3200);
+    };
+  }
+  const showDashboardToast = makeToast(doc.getElementById('dashboard-toast'));
+
   function signedInHtml() {
     return `Signed in as <strong>${escapeHtml(currentUser.name)}</strong> · ${escapeHtml(roleLabel)}`;
   }
@@ -172,6 +183,8 @@ function initHiresDashboardApp(doc, initialData, api, currentUser) {
         renderDetailWithin(result.hire);
       }
       showScreen('detail');
+    }).catch(() => {
+      showDashboardToast("This hire's details could not be loaded — please try again.");
     });
   }
 
@@ -191,18 +204,10 @@ function initHiresDashboardApp(doc, initialData, api, currentUser) {
   const errorCalloutText = doc.getElementById('error-callout-text');
   const impactCallout = doc.getElementById('impact-callout');
   const impactText = doc.getElementById('impact-text');
-  const toast = doc.getElementById('settings-toast');
   const modalOverlay = doc.getElementById('settings-modal-overlay');
   const modalWrap = doc.getElementById('settings-modal-wrap');
   const modalBody = doc.getElementById('settings-modal-body');
-  let toastTimer = null;
-
-  function showToast(message) {
-    toast.textContent = message;
-    toast.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
-  }
+  const showToast = makeToast(doc.getElementById('settings-toast'));
 
   function updateChip() {
     chip.textContent = retentionSettings.isCustomized ? 'Custom' : 'Default · not customized';
@@ -251,7 +256,7 @@ function initHiresDashboardApp(doc, initialData, api, currentUser) {
     auditLog.unshift({
       type: 'config',
       actor: currentUser.name,
-      role: roleLabel,
+      role: currentUser.role,
       timestamp: 'Just now',
       description: `changed the retention period from ${savedValue} months to ${newVal} months`,
     });
@@ -331,7 +336,7 @@ function initHiresDashboardApp(doc, initialData, api, currentUser) {
     return `<li class="audit-item" data-type="${entry.type}">
       <span class="audit-icon" aria-hidden="true">${iconFor(entry.type)}</span>
       <div class="audit-body">
-        <p><strong>${escapeHtml(entry.actor)}</strong> (${escapeHtml(entry.role)}) ${escapeHtml(entry.description)}.</p>
+        <p><strong>${escapeHtml(entry.actor)}</strong> (${escapeHtml(ROLE_LABELS[entry.role] || entry.role)}) ${escapeHtml(entry.description)}.</p>
         <time>${escapeHtml(entry.timestamp)}</time>
         <span class="audit-tag">${tagFor(entry.type)}</span>
       </div>

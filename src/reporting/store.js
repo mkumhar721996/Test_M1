@@ -1,4 +1,4 @@
-const { isPastRetention } = require('./retention');
+const { isPastRetention, computeExpiryDate } = require('./retention');
 
 const hires = new Map();
 const tombstones = new Map();
@@ -50,7 +50,7 @@ function tombstoneFor(hire, now) {
     client: hire.client,
     status: hire.status,
     eventDate: hire.eventDate,
-    expiredOn: hire.eventDate,
+    expiredOn: computeExpiryDate(hire.eventDate, retentionConfig.retentionMonths),
     deletedOn: now,
   };
 }
