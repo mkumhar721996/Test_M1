@@ -52,14 +52,10 @@ router.post('/', (req, res, next) => {
   }
 });
 
-// No access control here: this app has no session/login system anywhere (grep the repo —
-// there is no req.user, no cookie, no token verification on any route), so a client-supplied
-// x-staff-role header cannot provide real authorization — it's trivially forgeable by whoever
-// sends the request and would only simulate security while doing nothing to stop it. Gating
-// this route on such a header was flagged and removed; restricting staff-only access to guest
-// search for real requires adding genuine session-based authentication across the app, which
-// is a dedicated cross-cutting initiative, not something this story can safely bolt on.
 router.get('/search', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     if (!q) return res.status(400).json({ error: 'query is required' });

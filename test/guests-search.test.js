@@ -9,6 +9,7 @@ afterEach(() => {
 test('route-ordering regression: GET /guests/search is not captured by GET /:id', async () => {
   const res = await request(app)
     .get('/guests/search')
+    .set('x-staff-role', 'front_desk')
     .query({ q: 'Anyone' });
 
   expect(res.status).not.toBe(404);
@@ -17,6 +18,7 @@ test('route-ordering regression: GET /guests/search is not captured by GET /:id'
 test('empty query returns a structured 400', async () => {
   const res = await request(app)
     .get('/guests/search')
+    .set('x-staff-role', 'front_desk')
     .query({ q: '   ' });
 
   expect(res.status).toBe(400);
@@ -31,6 +33,7 @@ test('AC1/AC9: a real search against a created guest returns the display fields'
 
   const res = await request(app)
     .get('/guests/search')
+    .set('x-staff-role', 'front_desk')
     .query({ q: 'Whitfield Search Target' });
 
   expect(res.status).toBe(200);
@@ -50,8 +53,28 @@ test('AC4/AC5: an unexpected store error returns 500 with no results', async () 
 
   const res = await request(app)
     .get('/guests/search')
+    .set('x-staff-role', 'front_desk')
     .query({ q: 'Amara' });
 
   expect(res.status).toBe(500);
   expect(Array.isArray(res.body)).toBe(false);
+});
+
+test('AC10/AC11: an unauthenticated request is refused with no results', async () => {
+  const res = await request(app)
+    .get('/guests/search')
+    .query({ q: 'Whitfield' });
+
+  expect(res.status).toBe(403);
+  expect(res.body).toEqual({ error: 'forbidden' });
+});
+
+test('AC10/AC11: a non-staff role is refused with no results', async () => {
+  const res = await request(app)
+    .get('/guests/search')
+    .set('x-staff-role', 'housekeeping')
+    .query({ q: 'Whitfield' });
+
+  expect(res.status).toBe(403);
+  expect(res.body).toEqual({ error: 'forbidden' });
 });
