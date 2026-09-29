@@ -27,12 +27,12 @@
     <div class="page">
       <div class="page-header">
         <h1>Guest profiles</h1>
-        <p>The authoritative record of every guest's name, contact details, preferences, and booking history.</p>
+        <p>Search active guest profiles by name, email, or phone. Deactivated profiles are hidden here — look one up by ID if you need to reopen it.</p>
       </div>
 
       <div class="toolbar">
         <div class="field search-field">
-          <label class="label" for="search-input">Search guests</label>
+          <label class="label" for="search-input">Search active guests</label>
           <input class="input" id="search-input" type="search" placeholder="Name, email, phone, or ID" autocomplete="off" />
         </div>
         <form class="lookup-field" id="lookup-form" novalidate>
@@ -42,8 +42,11 @@
           </div>
           <button class="btn btn-secondary" id="lookup-btn" type="submit">Open</button>
         </form>
+        <button class="btn btn-secondary refresh-btn" id="refresh-btn" type="button">⟳ Refresh directory</button>
         <button class="btn btn-primary" id="new-guest-btn" type="button">+ New guest profile</button>
       </div>
+
+      <p class="results-count" id="results-count" aria-live="polite"></p>
 
       <div class="card table-card" id="directory-table-wrap">
         <div class="table-scroll">
@@ -66,8 +69,8 @@
 
       <div class="card empty-state" id="directory-empty" hidden>
         <span class="icon" aria-hidden="true">◎</span>
-        <h3>No guests match "<span class="empty-query"></span>"</h3>
-        <p>Try a different name, email, phone number, or guest ID.</p>
+        <h3>No active guests match "<span class="empty-query"></span>"</h3>
+        <p>Deactivated profiles are excluded from search results. If you're looking for a former guest, open their profile directly by ID instead.</p>
         <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
       </div>
 
