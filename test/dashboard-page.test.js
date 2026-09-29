@@ -93,4 +93,21 @@ describe('Onboarding Dashboard page', () => {
     expect(document.getElementById('drill-hire-list').textContent).toMatch(/Jordan Reyes/);
     expect(document.getElementById('drill-hire-list').textContent).toMatch(/Morgan Ito/);
   });
+
+  test('AC2: the bottleneck badge does not claim hires are "overdue" when stalled hires alone drive the bottleneck', () => {
+    const data = fixtureDashboard();
+    data.stages[1].hires.push({
+      hire: { id: 'hire_2099', name: 'Riley Kwan', role: 'UX Researcher' },
+      flags: { daysInStage: 2, overdueBy: 0, isOverdue: false, isStalled: true, isPartial: false, daysSinceActivity: 5 },
+    });
+    data.stages[1].flaggedCount = 2;
+    data.stages[1].isBottleneck = true;
+
+    const { initDashboardApp } = require('../public/js/dashboard');
+    initDashboardApp(document, data);
+
+    const badgeBtn = document.querySelector('.bottleneck-badge-btn');
+    expect(badgeBtn).not.toBeNull();
+    expect(badgeBtn.textContent).not.toMatch(/overdue/i);
+  });
 });

@@ -12,6 +12,13 @@ function pickPatchableFields(body) {
   }, {});
 }
 
+// Creation goes through the same allowlist as PATCH: stageEnteredAt/lastActivityAt are
+// server-assigned (see src/hires/store.js) and must never be settable by the client, or a
+// caller could backdate them to fabricate an overdue/bottleneck dashboard signal.
+function pickCreatableFields(body) {
+  return pickPatchableFields(body);
+}
+
 router.get('/', (req, res, next) => {
   try {
     res.status(200).json(listHires());
@@ -22,7 +29,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const hire = await createHire(req.body);
+    const hire = await createHire(pickCreatableFields(req.body));
     res.status(201).json(hire);
   } catch (err) {
     next(err);

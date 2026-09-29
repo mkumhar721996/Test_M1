@@ -103,7 +103,7 @@ function initDashboardApp(doc, dashboardData) {
               <span class="bottleneck-badge">
                 <span class="icon" aria-hidden="true">⚠</span>
                 Bottleneck —
-                <button type="button" class="bottleneck-badge-btn drill-trigger" data-stage="${group.stage.id}">${group.flaggedCount} hires overdue in this stage</button>
+                <button type="button" class="bottleneck-badge-btn drill-trigger" data-stage="${group.stage.id}">${group.flaggedCount} hires need attention in this stage</button>
               </span>` : ''}
           </div>
           <div class="hire-list">${rows || '<p class="u-text-sm u-text-muted" style="padding: var(--space-2) var(--space-4);">Nothing to show for this filter.</p>'}</div>
@@ -161,6 +161,8 @@ module.exports = { initDashboardApp };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/dashboard').then((res) => res.json()).then((data) => initDashboardApp(document, data));
+    fetch('/dashboard', { headers: { 'x-staff-role': 'hr_admin' } })
+      .then((res) => res.json())
+      .then((data) => initDashboardApp(document, data));
   });
 }
