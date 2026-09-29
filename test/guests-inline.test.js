@@ -94,6 +94,7 @@ test('PATCH /guests/:id returns the same structured validation error format as P
 
   const res = await request(app)
     .patch(`/guests/${id}`)
+    .set('x-staff-role', 'front_desk')
     .send({ name: '', email: '', phone: '' });
 
   expect(res.status).toBe(400);
