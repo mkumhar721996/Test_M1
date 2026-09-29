@@ -60,6 +60,16 @@ test('PATCH /reservations/:id without an x-staff-role header is rejected with 40
   expect(patchRes.status).toBe(403);
 });
 
+test('PATCH /reservations/:id from a housekeeping role is denied with 403, matching POST\'s role gate', async () => {
+  const createRes = await request(app).post('/reservations').set('x-staff-role', 'front_desk').send({
+    guestId: 'gst_1005', roomId: 'room_811', checkInDate: '2026-10-01', checkOutDate: '2026-10-03', roomRate: 100,
+  });
+  const patchRes = await request(app).patch(`/reservations/${createRes.body.id}`).set('x-staff-role', 'housekeeping').send({ checkOutDate: '2026-10-04' });
+  expect(patchRes.status).toBe(403);
+  const getRes = await request(app).get(`/reservations/${createRes.body.id}`);
+  expect(getRes.body.checkOutDate).toBe('2026-10-03');
+});
+
 test('POST /reservations ignores a client-supplied actor and derives it from the authenticated staff-role header', async () => {
   const res = await request(app).post('/reservations').set('x-staff-role', 'front_desk').send({
     guestId: 'gst_1005', roomId: 'room_910', checkInDate: '2026-10-01', checkOutDate: '2026-10-03', roomRate: 100,

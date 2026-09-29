@@ -42,7 +42,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.patch('/:id', (req, res, next) => {
-  if (!req.headers['x-staff-role']) {
+  if (!reservationsStore.canCreateReservation(req.headers['x-staff-role'])) {
     return res.status(403).json({ error: 'forbidden' });
   }
   try {
