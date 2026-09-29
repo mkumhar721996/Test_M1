@@ -9,6 +9,15 @@ const ROOM_TYPES = [
   { code: 'POOLSIDE', name: 'Poolside Cabana Suite', baseRate: 219 },
 ];
 
+const ROLE_PERMISSIONS = {
+  front_desk: true,
+  housekeeping: false,
+};
+
+function canManageRatePlans(role) {
+  return ROLE_PERMISSIONS[role] === true;
+}
+
 class RatePlanValidationError extends Error {
   constructor(message, fields = {}) {
     super(message);
@@ -152,6 +161,8 @@ module.exports = {
   updateRatePlan,
   deleteRatePlan,
   listRoomTypes,
+  roomTypeCodes,
   resolvePrice,
   resetRatePlansStore,
+  canManageRatePlans,
 };

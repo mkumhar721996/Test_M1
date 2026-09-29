@@ -31,6 +31,12 @@
         <p>Named date ranges with per-room-type nightly prices. Room types left off a plan use their base rate for the dates it covers.</p>
       </div>
 
+      <div class="card empty-state" id="rp-load-error" role="alert" hidden>
+        <span class="icon" aria-hidden="true">⚠</span>
+        <h3>Couldn't load rate plans</h3>
+        <p>Something went wrong reaching the server. Please refresh the page to try again.</p>
+      </div>
+
       <div class="toolbar-row">
         <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="rp-count-summary"></p>
         <div class="toolbar-row-actions">

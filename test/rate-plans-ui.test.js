@@ -45,6 +45,15 @@ describe('Rate Plans UI', () => {
     expect(document.getElementById('rp-tbody').textContent).toContain('Summer Peak 2026');
   });
 
+  test('a plan name containing HTML is rendered as text, not executed as markup', () => {
+    const plan = fixturePlan({ name: '<img src=x onerror="window.__xss=true">' });
+    const { initRatePlansApp } = require('../public/js/rate-plans');
+    initRatePlansApp(document, [plan], ROOM_TYPES_FIXTURE, {});
+    expect(document.getElementById('rp-tbody').querySelector('img')).toBeNull();
+    expect(document.getElementById('rp-tbody').textContent).toContain('<img src=x onerror="window.__xss=true">');
+    expect(window.__xss).toBeUndefined();
+  });
+
   test('AC5/AC6 UI: submitting the editor with a blank name shows the inline error and adds nothing to the list', () => {
     const api = { create: jest.fn() };
     const { initRatePlansApp } = require('../public/js/rate-plans');

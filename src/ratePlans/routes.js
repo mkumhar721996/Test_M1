@@ -4,6 +4,10 @@ const { RatePlanValidationError, getRatePlan, updateRatePlan, deleteRatePlan } =
 
 const router = express.Router();
 
+function isPermitted(req) {
+  return ratePlansStore.canManageRatePlans(req.headers['x-staff-role']);
+}
+
 router.get('/', (req, res, next) => {
   try {
     res.status(200).json(ratePlansStore.listRatePlans());
@@ -26,6 +30,9 @@ router.get('/price-lookup', (req, res, next) => {
     if (!roomType || !date) {
       return res.status(400).json({ error: 'roomType and date are required' });
     }
+    if (!ratePlansStore.roomTypeCodes().includes(roomType)) {
+      return res.status(400).json({ error: 'invalid roomType' });
+    }
     res.status(200).json(ratePlansStore.resolvePrice(roomType, date));
   } catch (err) {
     next(err);
@@ -33,6 +40,9 @@ router.get('/price-lookup', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     const plan = ratePlansStore.createRatePlan(req.body);
     res.status(201).json(plan);
@@ -57,6 +67,9 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.patch('/:id', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     const plan = updateRatePlan(req.params.id, req.body);
     if (!plan) {
@@ -72,6 +85,9 @@ router.patch('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
+  if (!isPermitted(req)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
   try {
     const deleted = deleteRatePlan(req.params.id);
     if (!deleted) {

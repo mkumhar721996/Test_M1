@@ -1,3 +1,9 @@
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -106,16 +112,17 @@ function initRatePlansApp(doc, initialPlans, roomTypes, api) {
       const overlapHtml = overlaps.map((o) => {
         const roomName = roomTypeName(o.roomType);
         const rangeTxt = fmtRange(o.overlapStart, o.overlapEnd);
+        const otherName = escapeHtml(o.other.name);
         const verdict = o.winnerIsThis
           ? 'this plan applies (created more recently)'
-          : '<strong>' + o.other.name + '</strong> applies (created more recently)';
-        return '<p class="overlap-note"><span aria-hidden="true">⚠</span> ' + roomName + ' overlaps with <strong>' + o.other.name + '</strong> (' + rangeTxt + ') — ' + verdict + '.</p>';
+          : '<strong>' + otherName + '</strong> applies (created more recently)';
+        return '<p class="overlap-note"><span aria-hidden="true">⚠</span> ' + roomName + ' overlaps with <strong>' + otherName + '</strong> (' + rangeTxt + ') — ' + verdict + '.</p>';
       }).join('');
       const fallbackNote = plan.prices.length < roomTypes.length
         ? '<p class="rp-fallback-note">' + plan.prices.length + ' of ' + roomTypes.length + ' room types priced — the rest use their base rate.</p>'
         : '';
       return '<tr>' +
-        '<td class="rp-name-cell"><strong>' + plan.name + '</strong><span class="rp-id">' + plan.id + ' · Created ' + fmtDate(plan.createdAt.slice(0, 10)) + '</span></td>' +
+        '<td class="rp-name-cell"><strong>' + escapeHtml(plan.name) + '</strong><span class="rp-id">' + plan.id + ' · Created ' + fmtDate(plan.createdAt.slice(0, 10)) + '</span></td>' +
         '<td>' + fmtRange(plan.startDate, plan.endDate) + '</td>' +
         '<td>' + statusChipHtml(planStatus(plan)) + '</td>' +
         '<td><div class="price-chip-list">' + priceChips + '</div>' + fallbackNote + overlapHtml + '</td>' +
@@ -331,7 +338,7 @@ function initRatePlansApp(doc, initialPlans, roomTypes, api) {
       if (result.overlapping && result.overlapping.length > 0) {
         const other = result.overlapping[0];
         const otherPrice = other.prices.find((p) => p.roomType === roomType).price;
-        overlapText.innerHTML = 'Also overlaps with <strong>' + other.name + '</strong> ($' + otherPrice + '/night), created ' + fmtDate(other.createdAt.slice(0, 10)) + '. "' + result.plan.name + '" applies instead because it was created more recently, on ' + fmtDate(result.plan.createdAt.slice(0, 10)) + ' — the most-recently-created overlapping plan always wins, so the result is never ambiguous.';
+        overlapText.innerHTML = 'Also overlaps with <strong>' + escapeHtml(other.name) + '</strong> ($' + otherPrice + '/night), created ' + fmtDate(other.createdAt.slice(0, 10)) + '. "' + escapeHtml(result.plan.name) + '" applies instead because it was created more recently, on ' + fmtDate(result.plan.createdAt.slice(0, 10)) + ' — the most-recently-created overlapping plan always wins, so the result is never ambiguous.';
         overlapNote.hidden = false;
       } else {
         overlapNote.hidden = true;
@@ -371,7 +378,7 @@ function createDefaultApi() {
   function jsonRequest(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': 'front_desk' },
       body: JSON.stringify(body),
     }).then((res) => {
       if (!res.ok) return Promise.reject({ status: res.status });
@@ -401,6 +408,10 @@ if (typeof window !== 'undefined') {
     const api = createDefaultApi();
     Promise.all([api.list(), api.roomTypes()]).then(([plans, roomTypes]) => {
       initRatePlansApp(document, plans, roomTypes, api);
+    }).catch((err) => {
+      console.error('Failed to load rate plans:', err);
+      const errorEl = document.getElementById('rp-load-error');
+      if (errorEl) errorEl.hidden = false;
     });
   });
 }

@@ -6,8 +6,10 @@ const {
   updateRatePlan,
   deleteRatePlan,
   listRoomTypes,
+  roomTypeCodes,
   resolvePrice,
   resetRatePlansStore,
+  canManageRatePlans,
 } = require('../src/ratePlans/store');
 
 beforeEach(() => {
@@ -115,6 +117,17 @@ test('deleteRatePlan removes a plan and returns true; returns false for unknown 
   expect(deleteRatePlan(plan.id)).toBe(true);
   expect(getRatePlan(plan.id)).toBeUndefined();
   expect(deleteRatePlan(plan.id)).toBe(false);
+});
+
+test('canManageRatePlans allows front_desk and denies housekeeping and unknown roles', () => {
+  expect(canManageRatePlans('front_desk')).toBe(true);
+  expect(canManageRatePlans('housekeeping')).toBe(false);
+  expect(canManageRatePlans('someone_else')).toBe(false);
+  expect(canManageRatePlans(undefined)).toBe(false);
+});
+
+test('roomTypeCodes returns the seeded room type codes', () => {
+  expect(roomTypeCodes()).toEqual(expect.arrayContaining(['STD-KING', 'GARDEN', 'OCEAN', 'POOLSIDE']));
 });
 
 test('listRoomTypes returns the seeded room types with base rates', () => {
