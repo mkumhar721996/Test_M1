@@ -198,6 +198,76 @@ describe('Guest Profiles UI', () => {
     expect(document.getElementById('deactivated-banner').hidden).toBe(false);
   });
 
+  test('AC1 UI: the default directory listing excludes deactivated guests', () => {
+    const active = fixtureGuest();
+    const deactivated = { ...fixtureGuest(), id: 'GST-2003', name: 'Wei Zhang', status: 'deactivated' };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [active, deactivated], {});
+    expect(document.getElementById('guest-tbody').textContent).not.toContain('Wei Zhang');
+    expect(document.getElementById('guest-tbody').textContent).toContain(active.name);
+  });
+
+  test('AC2 UI: searching by a name that matches both an active and a deactivated guest excludes the deactivated one', () => {
+    const active = { ...fixtureGuest(), id: 'GST-2002', name: 'Daniel Kim' };
+    const deactivated = { ...fixtureGuest(), id: 'GST-2005', name: 'Elena Kim', status: 'deactivated' };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [active, deactivated], {});
+    document.getElementById('search-input').value = 'Kim';
+    document.getElementById('search-input').dispatchEvent(new Event('input'));
+    expect(document.getElementById('guest-tbody').textContent).toContain('Daniel Kim');
+    expect(document.getElementById('guest-tbody').textContent).not.toContain('Elena Kim');
+  });
+
+  test('AC2 UI: searching a term that only matches a deactivated guest shows the empty state, not that guest', () => {
+    const deactivated = { ...fixtureGuest(), id: 'GST-2003', name: 'Wei Zhang', email: 'wei.zhang@example.com', status: 'deactivated' };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [deactivated], {});
+    document.getElementById('search-input').value = 'wei.zhang';
+    document.getElementById('search-input').dispatchEvent(new Event('input'));
+    expect(document.getElementById('directory-empty').hidden).toBe(false);
+    expect(document.getElementById('guest-tbody').textContent).not.toContain('Wei Zhang');
+  });
+
+  test('AC1 UI: Refresh directory re-fetches from the backend and drops a guest deactivated since the last load', async () => {
+    const staleActive = { ...fixtureGuest(), id: 'GST-2001', name: 'Maria Alvarez' };
+    const api = { list: jest.fn().mockResolvedValue([]) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [staleActive], api);
+    expect(document.getElementById('guest-tbody').textContent).toContain('Maria Alvarez');
+    document.getElementById('refresh-btn').click();
+    await Promise.resolve(); await Promise.resolve();
+    expect(api.list).toHaveBeenCalled();
+    expect(document.getElementById('directory-empty').hidden).toBe(false);
+  });
+
+  test('AC3 UI: looking up a deactivated guest by ID still opens its full profile', async () => {
+    const deactivatedGuest = { ...fixtureGuest(), status: 'deactivated' };
+    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [], api);
+    document.getElementById('lookup-input').value = deactivatedGuest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    expect(document.getElementById('profile-name').textContent).toBe(deactivatedGuest.name);
+    expect(document.getElementById('deactivated-banner').hidden).toBe(false);
+  });
+
+  test('reactivating a guest reached via ID lookup adds it back into the directory listing', async () => {
+    const deactivatedGuest = { ...fixtureGuest(), status: 'deactivated' };
+    const reactivated = { ...deactivatedGuest, status: 'active' };
+    const api = { get: jest.fn().mockResolvedValue(deactivatedGuest), reactivate: jest.fn().mockResolvedValue(reactivated) };
+    const { initGuestProfilesApp } = require('../public/js/guest-profiles');
+    initGuestProfilesApp(document, [], api);
+    document.getElementById('lookup-input').value = deactivatedGuest.id;
+    document.getElementById('lookup-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await Promise.resolve(); await Promise.resolve();
+    document.getElementById('reactivate-profile-btn').click();
+    document.getElementById('reactivate-confirm-btn').click();
+    await Promise.resolve(); await Promise.resolve();
+    document.getElementById('profile-back-btn').click();
+    expect(document.getElementById('guest-tbody').textContent).toContain(reactivated.name);
+  });
+
   test('pressing Escape closes an open create/deactivate/reactivate modal', async () => {
     const guest = fixtureGuest();
     const api = { get: jest.fn().mockResolvedValue(guest) };

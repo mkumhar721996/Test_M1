@@ -1,4 +1,4 @@
-const { createGuest, getGuest, listGuests, findGuestMatch, canCreateGuest, GuestValidationError } = require('../src/guests/store');
+const { createGuest, getGuest, listGuests, listActiveGuests, deactivateGuest, findGuestMatch, canCreateGuest, GuestValidationError } = require('../src/guests/store');
 
 test('AC4: createGuest returns a stable identifier that getGuest resolves to the same profile', () => {
   const guest = createGuest({ name: 'Alex Rivera', email: 'alex@example.com' });
@@ -44,6 +44,15 @@ test('createGuest rejects a malformed email or phone with structured field error
   expect(() => createGuest({ name: 'Alex Rivera', email: 'not-an-email' })).toThrow(GuestValidationError);
   expect(() => createGuest({ name: 'Alex Rivera', phone: '123' })).toThrow(GuestValidationError);
   expect(listGuests().length).toBe(before);
+});
+
+test('AC1: listActiveGuests excludes deactivated profiles but includes active ones', () => {
+  const deactivated = createGuest({ name: 'Wei Zhang', email: 'wei.zhang@example.com' });
+  deactivateGuest(deactivated.id, 'Priya Nair');
+  const active = createGuest({ name: 'Sofia Torres', email: 'sofia.torres@example.com' });
+  const result = listActiveGuests();
+  expect(result.some((g) => g.id === deactivated.id)).toBe(false);
+  expect(result.some((g) => g.id === active.id)).toBe(true);
 });
 
 test('AC9: canCreateGuest allows front_desk and denies housekeeping and unknown roles', () => {

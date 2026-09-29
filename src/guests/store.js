@@ -127,6 +127,10 @@ function listGuests() {
   return Array.from(guests.values());
 }
 
+function listActiveGuests() {
+  return listGuests().filter((g) => g.status === 'active');
+}
+
 const PREFERENCE_FIELDS = ['roomType', 'dietary', 'communication'];
 
 function updateGuest(id, changes, actor) {
@@ -195,6 +199,7 @@ module.exports = {
   createGuest,
   getGuest,
   listGuests,
+  listActiveGuests,
   updateGuest,
   deactivateGuest,
   reactivateGuest,
