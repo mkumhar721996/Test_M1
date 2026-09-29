@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Room Inventory — Guest Services</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/rooms.css" />
+<script src="./js/rooms.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Guest Services</span>
+    <nav class="app-nav">
+      <a href="#" onclick="return false;">Guests</a>
+      <a href="#" class="active" aria-current="page">Rooms</a>
+      <a href="#" onclick="return false;">Bookings</a>
+    </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="front_desk">Front desk agent</option>
+          <option value="housekeeping">Housekeeping staff (no room access)</option>
+        </select>
+      </div>
+      <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Room inventory</h1>
+      <p>The source of truth for every room's number, type, and status.</p>
+    </div>
+
+    <!-- State: permission-denied (housekeeping role) -->
+    <div class="card error-state" id="denied-panel" role="alert" hidden>
+      <span class="icon" aria-hidden="true">⛔</span>
+      <h3 id="denied-title">You don't have permission to view the room inventory</h3>
+      <p id="denied-copy">Room records are managed by front-desk staff. Ask a front-desk lead for access.</p>
+      <div class="denied-tabs" role="group" aria-label="Try another action as housekeeping staff">
+        <button class="btn btn-secondary" type="button" data-denied-action="view" aria-pressed="true">View room list</button>
+        <button class="btn btn-secondary" type="button" data-denied-action="create" aria-pressed="false">Create a room</button>
+        <button class="btn btn-secondary" type="button" data-denied-action="update" aria-pressed="false">Update a room</button>
+        <button class="btn btn-secondary" type="button" data-denied-action="deactivate" aria-pressed="false">Deactivate a room</button>
+      </div>
+    </div>
+
+    <!-- Front-desk content (list, toolbar, empty/loading states) -->
+    <div id="front-desk-content">
+      <div class="toolbar">
+        <div class="field search-field">
+          <label class="label" for="search-input">Search rooms</label>
+          <input class="input" id="search-input" type="search" placeholder="Room number, type, or status" autocomplete="off" />
+        </div>
+        <label class="toggle-field" for="show-inactive-toggle">
+          <input type="checkbox" id="show-inactive-toggle" />
+          <span>Show inactive rooms</span>
+        </label>
+        <button class="btn btn-primary" id="new-room-btn" type="button">+ New room</button>
+      </div>
+
+      <!-- State: rooms-loading (skeleton) -->
+      <div class="card table-card" id="rooms-loading" hidden>
+        <table class="room-table">
+          <tbody>
+            <tr class="skeleton-row"><td colspan="5"><div class="skeleton-bar"></div></td></tr>
+            <tr class="skeleton-row"><td colspan="5"><div class="skeleton-bar short"></div></td></tr>
+            <tr class="skeleton-row"><td colspan="5"><div class="skeleton-bar"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- State: rooms-success / rooms-partial (rendered by JS) -->
+      <div class="card table-card" id="rooms-table-wrap">
+        <div class="table-scroll">
+          <table class="room-table">
+            <thead>
+              <tr>
+                <th scope="col">Room</th>
+                <th scope="col">Type</th>
+                <th scope="col">Status</th>
+                <th scope="col">Reservations</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rooms-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- State: rooms-empty-created (AC5: nothing has ever been created) -->
+      <div class="card empty-state" id="rooms-empty-created" hidden>
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No rooms yet</h3>
+        <p>Create the first room to start tracking your available inventory.</p>
+        <button class="btn btn-primary" id="empty-create-btn" type="button">+ Create your first room</button>
+      </div>
+
+      <!-- State: rooms-empty-search (search matches nothing) -->
+      <div class="card empty-state" id="rooms-empty-search" hidden>
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No rooms match "<span class="empty-query"></span>"</h3>
+        <p>Try a different room number, type, or status.</p>
+        <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
+      </div>
+
+      <div style="margin-top: var(--space-3);">
+        <button class="reset-link" id="clear-rooms-btn" type="button">Clear all rooms (demo)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create room modal (AC1) -->
+  <div class="modal-overlay" id="create-overlay" hidden></div>
+  <div class="modal-wrap" id="create-modal" role="dialog" aria-modal="true" aria-labelledby="create-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="create-modal-title">New room</h2>
+          <p>Room number, type, and status are all required.</p>
+        </div>
+        <button class="icon-btn" id="create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="create-form" novalidate>
+        <div class="field">
+          <label class="label" for="field-number">Room number</label>
+          <input class="input" id="field-number" name="number" type="text" placeholder="e.g. 220" aria-describedby="error-number" />
+          <p class="field-error-text" id="error-number" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="field-type">Room type</label>
+          <select class="input" id="field-type" name="type" aria-describedby="error-type">
+            <option value="">Select a type</option>
+            <option value="Standard">Standard</option>
+            <option value="Deluxe">Deluxe</option>
+            <option value="Suite">Suite</option>
+          </select>
+          <p class="field-error-text" id="error-type" role="alert" hidden>⚠ Select a room type.</p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="field-status">Status</label>
+          <select class="input" id="field-status" name="status">
+            <option value="available">Available</option>
+            <option value="occupied">Occupied</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+          <p class="field-hint">New rooms are rarely under maintenance before their first guest, but you can set any status.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="create-save-btn">Create room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit room modal (AC2, AC8, AC9) -->
+  <div class="modal-overlay" id="edit-overlay" hidden></div>
+  <div class="modal-wrap" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="edit-modal-title">Edit room</h2>
+          <p id="edit-modal-subtitle"></p>
+        </div>
+        <button class="icon-btn" id="edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="edit-form" novalidate>
+        <div class="field">
+          <label class="label" for="edit-number">Room number</label>
+          <input class="input" id="edit-number" name="number" type="text" aria-describedby="edit-error-number" />
+          <p class="field-error-text" id="edit-error-number" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="edit-type">Room type</label>
+          <select class="input" id="edit-type" name="type">
+            <option value="Standard">Standard</option>
+            <option value="Deluxe">Deluxe</option>
+            <option value="Suite">Suite</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="edit-status">Status</label>
+          <select class="input" id="edit-status" name="status" aria-describedby="edit-block-note">
+            <option value="available">Available</option>
+            <option value="occupied">Occupied</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+          <div class="block-note" id="edit-block-note" role="alert" hidden>
+            <span aria-hidden="true">⛔</span>
+            <span id="edit-block-copy"></span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Deactivate confirm modal (AC3, AC4) -->
+  <div class="modal-overlay" id="deactivate-overlay" hidden></div>
+  <div class="modal-wrap" id="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="deactivate-modal-title">Deactivate room?</h2>
+        <button class="icon-btn" id="deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">⚠</span>
+        <span id="deactivate-consequence-copy"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="deactivate-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="deactivate-confirm-btn">Deactivate room</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+
+</body>
+</html>
