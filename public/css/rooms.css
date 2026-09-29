@@ -1,16 +1,5 @@
 /* ---------- Top bar / role switcher ---------- */
 .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
-.reset-link {
-  background: none;
-  border: none;
-  color: var(--color-fg-muted);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  text-decoration: underline;
-  padding: var(--space-2);
-}
-.reset-link:hover { color: var(--color-fg); }
 .role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .role-switcher label {
   font-family: var(--font-family-base);

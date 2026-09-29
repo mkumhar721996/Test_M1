@@ -1,6 +1,6 @@
 const express = require('express');
 const roomsStore = require('./store');
-const { RoomValidationError, RoomMaintenanceBlockedError, getRoom, updateRoom, deactivateRoom, reactivateRoom } = roomsStore;
+const { RoomValidationError, RoomMaintenanceBlockedError, updateRoom, deactivateRoom, reactivateRoom } = roomsStore;
 
 const router = express.Router();
 

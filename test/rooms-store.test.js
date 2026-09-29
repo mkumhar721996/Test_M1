@@ -80,3 +80,22 @@ test('AC8/AC9: a room with no active reservations can be moved to maintenance', 
   const updated = updateRoom(room.id, { status: 'maintenance' });
   expect(updated.status).toBe('maintenance');
 });
+
+test('security: createRoom rejects a status value outside the known enum, preventing injection into rendered markup', () => {
+  const before = listRooms().length;
+  expect(() => createRoom({ number: '501', type: 'Standard', status: '"><img src=x onerror=alert(1)>' })).toThrow(RoomValidationError);
+  expect(listRooms().length).toBe(before);
+});
+
+test('security: createRoom rejects a type value outside the known enum, preventing injection into rendered markup', () => {
+  const before = listRooms().length;
+  expect(() => createRoom({ number: '502', type: '"><img src=x onerror=alert(1)>', status: 'available' })).toThrow(RoomValidationError);
+  expect(listRooms().length).toBe(before);
+});
+
+test('security: updateRoom rejects a status/type value outside the known enum', () => {
+  const room = createRoom({ number: '503', type: 'Standard', status: 'available' });
+  expect(() => updateRoom(room.id, { status: 'not-a-real-status' })).toThrow(RoomValidationError);
+  expect(() => updateRoom(room.id, { type: 'not-a-real-type' })).toThrow(RoomValidationError);
+  expect(getRoom(room.id)).toMatchObject({ type: 'Standard', status: 'available' });
+});

@@ -27,6 +27,9 @@ class RoomMaintenanceBlockedError extends Error {
   }
 }
 
+const VALID_TYPES = ['Standard', 'Deluxe', 'Suite'];
+const VALID_STATUSES = ['available', 'occupied', 'maintenance'];
+
 function roomExistsWithNumber(number, excludeId) {
   const needle = String(number).trim().toLowerCase();
   return Array.from(rooms.values()).some(
@@ -41,11 +44,11 @@ function assertValid(number, type, status, excludeId) {
   } else if (roomExistsWithNumber(number, excludeId)) {
     fields.number = `Room ${number} already exists. Enter a different room number.`;
   }
-  if (!type) {
-    fields.type = 'Select a room type.';
+  if (!type || !VALID_TYPES.includes(type)) {
+    fields.type = 'Select a valid room type.';
   }
-  if (!status) {
-    fields.status = 'Select a room status.';
+  if (!status || !VALID_STATUSES.includes(status)) {
+    fields.status = 'Select a valid room status.';
   }
   if (Object.keys(fields).length > 0) {
     throw new RoomValidationError('validation_error', fields);
