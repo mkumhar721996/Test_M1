@@ -18,12 +18,15 @@ hires.set('hire_2031', {
 });
 
 async function createHire(data) {
+  const now = new Date().toISOString();
   const hire = {
     ...data,
     id: crypto.randomUUID(),
     profileStatus: 'active',
     run: null,
     runHistory: [],
+    stageEnteredAt: 'stageEnteredAt' in data ? data.stageEnteredAt : now,
+    lastActivityAt: 'lastActivityAt' in data ? data.lastActivityAt : now,
   };
 
   if (hire.hireStage === 'offer_accepted') {
@@ -57,6 +60,14 @@ async function updateHire(id, changes) {
   const roleOrDeptChanging = departmentChanging || roleChanging;
   const nextDepartment = 'department' in changes ? changes.department : hire.department;
   const nextRole = 'role' in changes ? changes.role : hire.role;
+
+  const now = new Date().toISOString();
+  if ('hireStage' in changes && changes.hireStage !== hire.hireStage && !('stageEnteredAt' in changes)) {
+    changes = { ...changes, stageEnteredAt: now };
+  }
+  if (!('lastActivityAt' in changes)) {
+    changes = { ...changes, lastActivityAt: now };
+  }
 
   if (changingToOfferAccepted && !hasActiveRun) {
     const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
