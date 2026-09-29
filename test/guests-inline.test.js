@@ -50,14 +50,14 @@ test('AC9/AC10/AC11: POST /guests is denied for a role without permission, same 
   expect(guestsStore.listGuests().length).toBe(before);
 });
 
-test('AC9: POST /guests fails closed for a caller with no x-staff-role header', async () => {
+test('AC5: POST /guests returns 401 for a caller with no x-staff-role header', async () => {
   const before = guestsStore.listGuests().length;
   const res = await request(app)
     .post('/guests')
     .send({ name: 'Legacy Caller', email: 'legacy@example.com' });
 
-  expect(res.status).toBe(403);
-  expect(res.body).toEqual({ error: 'forbidden' });
+  expect(res.status).toBe(401);
+  expect(res.body).toEqual({ error: 'unauthorized' });
   expect(guestsStore.listGuests().length).toBe(before);
 });
 
@@ -94,6 +94,7 @@ test('PATCH /guests/:id returns the same structured validation error format as P
 
   const res = await request(app)
     .patch(`/guests/${id}`)
+    .set('x-staff-role', 'front_desk')
     .send({ name: '', email: '', phone: '' });
 
   expect(res.status).toBe(400);

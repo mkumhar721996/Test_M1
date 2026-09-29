@@ -447,7 +447,7 @@ function createDefaultApi() {
   }
 
   return {
-    get: (id) => fetch(`/guests/${id}`).then((res) => {
+    get: (id) => fetch(`/guests/${id}`, { headers: { 'x-staff-role': 'front_desk' } }).then((res) => {
       if (!res.ok) return Promise.reject({ status: res.status });
       return res.json();
     }),
@@ -462,7 +462,7 @@ module.exports = { initGuestProfilesApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/guests')
+    fetch('/guests', { headers: { 'x-staff-role': 'front_desk' } })
       .then((res) => res.json())
       .then((guests) => initGuestProfilesApp(document, guests, createDefaultApi()));
   });

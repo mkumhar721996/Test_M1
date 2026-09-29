@@ -17,7 +17,18 @@ function isPermitted(req) {
   return guestsStore.canCreateGuest(req.headers['x-staff-role']);
 }
 
-router.get('/', (req, res, next) => {
+function enforceFrontDeskRole(req, res, next) {
+  const role = req.headers['x-staff-role'];
+  if (!role) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  if (!guestsStore.canCreateGuest(role)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
+  next();
+}
+
+router.get('/', enforceFrontDeskRole, (req, res, next) => {
   try {
     res.status(200).json(guestsStore.listGuests());
   } catch (err) {
@@ -37,10 +48,7 @@ router.get('/match', (req, res) => {
   res.status(200).json({ match: match || null });
 });
 
-router.post('/', (req, res, next) => {
-  if (!isPermitted(req)) {
-    return res.status(403).json({ error: 'forbidden' });
-  }
+router.post('/', enforceFrontDeskRole, (req, res, next) => {
   try {
     const guest = guestsStore.createGuest(req.body, req.body.actor);
     res.status(201).json(guest);
@@ -52,7 +60,7 @@ router.post('/', (req, res, next) => {
   }
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', enforceFrontDeskRole, (req, res, next) => {
   try {
     const guest = getGuest(req.params.id);
     if (!guest) {
@@ -64,7 +72,7 @@ router.get('/:id', (req, res, next) => {
   }
 });
 
-router.patch('/:id', (req, res, next) => {
+router.patch('/:id', enforceFrontDeskRole, (req, res, next) => {
   try {
     const guest = updateGuest(req.params.id, pickPatchableFields(req.body), req.body.actor);
     if (!guest) {
@@ -79,7 +87,7 @@ router.patch('/:id', (req, res, next) => {
   }
 });
 
-router.post('/:id/deactivate', (req, res, next) => {
+router.post('/:id/deactivate', enforceFrontDeskRole, (req, res, next) => {
   try {
     const guest = deactivateGuest(req.params.id, req.body.actor);
     if (!guest) {
@@ -91,7 +99,7 @@ router.post('/:id/deactivate', (req, res, next) => {
   }
 });
 
-router.post('/:id/reactivate', (req, res, next) => {
+router.post('/:id/reactivate', enforceFrontDeskRole, (req, res, next) => {
   try {
     const guest = reactivateGuest(req.params.id, req.body.actor);
     if (!guest) {
