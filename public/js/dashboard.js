@@ -161,7 +161,7 @@ module.exports = { initDashboardApp };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/dashboard', { headers: { 'x-staff-role': 'hr_admin' } })
+    fetch('/dashboard')
       .then((res) => res.json())
       .then((data) => initDashboardApp(document, data));
   });
