@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-128 — Deactivated Guest Filtering in Directory and Search</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .signed-in-as {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+
+  /* ---------- Toolbar (search + lookup) ---------- */
+  .toolbar {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-2);
+  }
+  .toolbar .field { margin-bottom: 0; }
+  .search-field { flex: 1 1 260px; min-width: 220px; }
+  .lookup-field { display: flex; gap: var(--space-2); align-items: flex-end; flex: 0 0 auto; }
+  .lookup-field input { min-width: 170px; }
+  .refresh-btn { flex: 0 0 auto; }
+
+  .results-count {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  /* ---------- Forms ---------- */
+  .field-error-text {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+
+  /* ---------- Guest table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.guest-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .guest-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .guest-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .guest-table tbody tr:last-child td { border-bottom: none; }
+  .guest-row { cursor: pointer; }
+  .guest-row:hover { background: var(--color-bg); }
+  .guest-row:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+  .guest-name-cell { font-weight: var(--font-weight-bold); }
+  .guest-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .view-link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+  }
+
+  /* ---------- Status chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--upcoming { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--completed { border: 1px solid var(--color-border); color: var(--color-fg); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; }
+  .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Empty / not-found / error states ---------- */
+  .empty-state, .not-found-panel, .error-state {
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .empty-state .icon, .not-found-panel .icon, .error-state .icon {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+  .empty-state p, .not-found-panel p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .not-found-panel h3, .error-state h3, .empty-state h3 {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ---------- Deactivated banner on profile ---------- */
+  .deactivated-banner {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .deactivated-banner[hidden] { display: none; }
+  .deactivated-banner strong { color: var(--color-fg); }
+
+  /* ---------- Key/value rows ---------- */
+  .kv-list { border-top: 1px solid var(--color-border); }
+  .kv-row {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  @media (max-width: 480px) {
+    .kv-row { grid-template-columns: 1fr; gap: var(--space-1); }
+  }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+
+  /* ---------- Booking history ---------- */
+  table.booking-table { width: 100%; border-collapse: collapse; }
+  .booking-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .booking-table td {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+  }
+  .booking-table tr:last-child td { border-bottom: none; }
+  .no-bookings-note { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Guest profile layout ---------- */
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-3);
+    min-height: 44px;
+  }
+  .profile-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .layout-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
+  @media (min-width: 820px) {
+    .layout-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
+  .full-span { grid-column: 1 / -1; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+  .mini-list { list-style: none; margin: 0; padding: 0; }
+  .mini-list li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); display: flex; justify-content: space-between; gap: var(--space-2); }
+  .mini-list li:last-child { border-bottom: none; }
+  .mini-list .m-muted { color: var(--color-fg-muted); }
+
+  /* Error/not-found emphasis uses border WIDTH + icon + label, never a new hue — tokens.json
+     has no dedicated error/danger color, so introducing one here would be a design-system gap,
+     not a page-level decision. Flagging for design-system owners if a future story needs it. */
+</style>
+</head>
+<!-- App nav: top bar — Guests (active) · Bookings. This project has no existing frontend shell
+     beyond small task-specific tools, so the nav is a minimal, product-appropriate top bar
+     (front-desk staff console), matching the pattern already used by TEST-M1-STORY-100. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-128</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "staffName": "Priya Nair",
+    "guests": [
+      {
+        "id": "GST-2001",
+        "name": "Maria Alvarez",
+        "email": "maria.alvarez@example.com",
+        "phone": "(555) 214-7788",
+        "status": "active",
+        "updatedAt": "2026-09-20T14:05:00.000Z",
+        "preferences": { "roomType": "Ocean view", "dietary": "Vegetarian", "communication": "Email" },
+        "bookingHistory": [
+          { "dates": "Jun 12–15, 2026", "item": "Oceanview Suite", "status": "Upcoming" },
+          { "dates": "Jan 4–7, 2026", "item": "Garden Room", "status": "Completed" }
+        ]
+      },
+      {
+        "id": "GST-2002",
+        "name": "Daniel Kim",
+        "email": "",
+        "phone": "(555) 998-2231",
+        "status": "active",
+        "updatedAt": "2026-09-25T11:40:00.000Z",
+        "preferences": { "roomType": "High floor", "dietary": "—", "communication": "Phone" },
+        "bookingHistory": [
+          { "dates": "Oct 1–3, 2026", "item": "Standard King", "status": "Upcoming" }
+        ]
+      },
+      {
+        "id": "GST-2003",
+        "name": "Wei Zhang",
+        "email": "wei.zhang@example.com",
+        "phone": "",
+        "status": "deactivated",
+        "deactivatedAt": "2026-08-01T16:22:00.000Z",
+        "updatedAt": "2026-08-01T16:22:00.000Z",
+        "preferences": { "roomType": "—", "dietary": "Nut allergy", "communication": "Email" },
+        "bookingHistory": [
+          { "dates": "May 2–4, 2025", "item": "Garden Room", "status": "Completed" }
+        ]
+      },
+      {
+        "id": "GST-2004",
+        "name": "Sofia Torres",
+        "email": "sofia.torres@example.com",
+        "phone": "(555) 340-9012",
+        "status": "active",
+        "updatedAt": "2026-05-14T12:00:00.000Z",
+        "preferences": { "roomType": "Poolside", "dietary": "Gluten-free", "communication": "SMS" },
+        "bookingHistory": [
+          { "dates": "Dec 20–26, 2025", "item": "Poolside Cabana Suite", "status": "Completed" }
+        ]
+      },
+      {
+        "id": "GST-2005",
+        "name": "Elena Kim",
+        "email": "",
+        "phone": "(555) 730-4420",
+        "status": "deactivated",
+        "deactivatedAt": "2026-07-15T09:30:00.000Z",
+        "updatedAt": "2026-07-15T09:30:00.000Z",
+        "preferences": { "roomType": "—", "dietary": "—", "communication": "Phone" },
+        "bookingHistory": []
+      },
+      {
+        "id": "GST-2006",
+        "name": "James Okafor",
+        "email": "james.okafor@example.com",
+        "phone": "(555) 671-2299",
+        "status": "active",
+        "updatedAt": "2026-09-10T08:15:00.000Z",
+        "preferences": { "roomType": "—", "dietary": "—", "communication": "Email" },
+        "bookingHistory": []
+      }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Guest Directory (interactive)
+         Notes:
+           - Default listing on load shows only active guests — 4 of the 6 fixture profiles.
+             Wei Zhang and Elena Kim (both deactivated) never appear here (AC1).
+           - "Refresh directory" simulates a reload (brief skeleton) and re-applies the same
+             active-only filter, so a refresh never re-introduces a deactivated guest (AC1).
+           - "Search guests" matches name, email, or phone against ACTIVE guests only. Try
+             "Kim" — only Daniel Kim (active) appears; Elena Kim (deactivated) is excluded even
+             though her name matches (AC2). Try "Zhang" or "wei.zhang" — zero results, because
+             Wei Zhang is deactivated, even though he exists (AC2).
+           - "Open profile by ID" is a separate, deliberate direct-lookup path that is NOT
+             filtered by status — enter GST-2003 or GST-2005 to open a deactivated guest's full
+             profile (AC3). An unknown ID (e.g. GST-9999) shows the not-found response.
+           - The results-count line makes the filtering visible and intentional to staff,
+             without naming which guests are hidden.
+    -->
+    <div class="screen" data-name="Guest Directory">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Guest directory</h1>
+          <p>Search active guest profiles by name, email, or phone. Deactivated profiles are hidden here — look one up by ID if you need to reopen it.</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="field search-field">
+            <label class="label" for="search-input">Search active guests</label>
+            <input class="input" id="search-input" type="search" placeholder="Name, email, or phone" autocomplete="off" />
+          </div>
+          <form class="lookup-field" id="lookup-form" novalidate>
+            <div class="field">
+              <label class="label" for="lookup-input">Open profile by ID</label>
+              <input class="input" id="lookup-input" type="text" placeholder="e.g. GST-2003" autocomplete="off" aria-describedby="lookup-error" />
+              <p class="field-error-text" id="lookup-error" role="alert" hidden>⚠ Enter a guest ID to look up.</p>
+            </div>
+            <button class="btn btn-secondary" id="lookup-btn" type="submit">Open</button>
+          </form>
+          <button class="btn btn-secondary refresh-btn" id="refresh-btn" type="button">⟳ Refresh directory</button>
+        </div>
+
+        <p class="results-count" id="results-count" aria-live="polite"></p>
+
+        <!-- State: directory-loading (skeleton rows, ~300ms) -->
+        <div class="card table-card" id="directory-table-wrap">
+          <div class="table-scroll">
+            <table class="guest-table">
+              <thead>
+                <tr>
+                  <th scope="col">Guest</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Last updated</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="guest-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- State: directory-empty (search yields no active matches) -->
+        <div class="card empty-state" id="directory-empty" hidden>
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>No active guests match "<span class="empty-query"></span>"</h3>
+          <p>Deactivated profiles are excluded from search results. If you're looking for a former guest, open their profile directly by ID instead.</p>
+          <button class="btn btn-secondary" id="clear-search-btn" type="button">Clear search</button>
+        </div>
+
+        <!-- State: not-found (ID lookup for a guest that doesn't exist at all) -->
+        <div class="card not-found-panel" id="directory-not-found" hidden role="alert">
+          <span class="icon" aria-hidden="true">⚠</span>
+          <h3>No guest profile found for ID "<span class="nf-id"></span>"</h3>
+          <p>Double-check the ID and try again. This lookup checks every profile regardless of status, so if the ID exists at all — active or deactivated — it will be found.</p>
+          <button class="btn btn-secondary" id="nf-back-btn" type="button">Back to directory</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Guest Profile (interactive, read-only)
+         Notes:
+           - Reached from the directory (row click / "View profile") for an active guest, or
+             from "Open profile by ID" for either an active or a deactivated guest.
+           - When the profile is deactivated, a banner explains it's hidden from the directory
+             and search, but stays fully retrievable by ID, satisfying AC3 in place: the profile
+             data (contact, preferences, booking history) is complete and viewable, not a stub.
+           - This screen is intentionally read-only for this story — editing, deactivating, and
+             reactivating guest profiles are covered by TEST-M1-STORY-100, not duplicated here.
+    -->
+    <div class="screen" data-name="Guest Profile">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <div class="topbar-actions">
+          <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <button class="back-link" id="profile-back-btn" type="button">← Back to guest directory</button>
+
+        <!-- State: profile-loading (skeleton, ~250ms) -->
+        <div id="profile-loading" hidden>
+          <div class="card u-stack">
+            <div class="skeleton-bar" style="width:40%;height:24px;"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar short"></div>
+          </div>
+        </div>
+
+        <!-- State: profile-success (active or deactivated) -->
+        <div id="profile-content">
+          <div class="profile-header-row">
+            <div>
+              <h1 id="profile-name" tabindex="-1" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+              <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="profile-meta"></p>
+            </div>
+            <span id="profile-status-chip"></span>
+          </div>
+
+          <div class="deactivated-banner" id="deactivated-banner" hidden>
+            <span aria-hidden="true">◌</span>
+            <span>This profile is deactivated, so it's hidden from the default directory and from search results. You reached it just now using its guest ID (<strong id="deactivated-banner-id"></strong>) — direct ID lookup always finds a profile regardless of status.</span>
+          </div>
+
+          <div class="layout-grid">
+            <div class="card">
+              <h2 class="card-title">Contact &amp; preferences</h2>
+              <div class="kv-list" id="kv-list"><!-- rendered by JS --></div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title">Booking history</h2>
+              <div id="booking-history"><!-- rendered by JS --></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every AC-relevant case, for reviewers who want a
+             quick scan without driving the search/lookup interactions on screen 1.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of the key states called out in the acceptance criteria.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: default-directory -->
+          <div class="mini-card">
+            <h3>Default directory — active only</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <p class="results-count" style="margin-bottom:var(--space-2);">Showing 4 active guest profiles. 2 deactivated profiles are hidden from this view.</p>
+            <ul class="mini-list">
+              <li>Maria Alvarez <span class="m-muted">GST-2001</span></li>
+              <li>Daniel Kim <span class="m-muted">GST-2002</span></li>
+              <li>Sofia Torres <span class="m-muted">GST-2004</span></li>
+              <li>James Okafor <span class="m-muted">GST-2006</span></li>
+            </ul>
+          </div>
+
+          <!-- State: directory-refreshed -->
+          <div class="mini-card">
+            <h3>After refresh — filter still applies</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <p style="margin:0;color:var(--color-fg-muted);font-size:var(--font-size-sm);">Refreshing the directory reloads the list from scratch and re-applies the active-only filter — a deactivated guest cannot reappear by refreshing the page.</p>
+          </div>
+
+          <!-- State: search-excludes-name-match -->
+          <div class="mini-card">
+            <h3>Search "Kim" — partial match, deactivated excluded</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <ul class="mini-list">
+              <li>Daniel Kim <span class="m-muted">active — shown</span></li>
+              <li class="m-muted">Elena Kim — deactivated, excluded from results</li>
+            </ul>
+          </div>
+
+          <!-- State: search-empty -->
+          <div class="mini-card empty-state">
+            <span class="icon" aria-hidden="true">◎</span>
+            <h3>Search "Zhang" — no active matches</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <p>Wei Zhang exists but is deactivated, so the search returns nothing rather than surfacing his profile.</p>
+          </div>
+
+          <!-- State: id-lookup-deactivated -->
+          <div class="mini-card">
+            <h3>Direct ID lookup — deactivated guest, viewable</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <p style="margin:0 0 var(--space-2) 0;"><span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span></p>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">GST-2003 (Wei Zhang) opens in full — contact details, preferences, and booking history all render, even though this guest never appears in the directory or search.</p>
+          </div>
+
+          <!-- State: id-lookup-not-found -->
+          <div class="mini-card not-found-panel">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>No guest profile found for ID "GST-9999"</h3>
+            <span class="ac-tag">Design baseline — unknown ID</span>
+            <p>Distinguishes "hidden by status filter" from "doesn't exist" — this response only appears when the ID truly has no matching profile.</p>
+          </div>
+
+          <!-- State: directory-loading (design baseline) -->
+          <div class="mini-card u-stack">
+            <h3>Directory loading</h3>
+            <span class="ac-tag">Design baseline — loading state</span>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar short"></div>
+          </div>
+
+          <!-- State: directory-error (design baseline) -->
+          <div class="mini-card error-state">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>Couldn't load guest profiles</h3>
+            <span class="ac-tag">Design baseline — error state</span>
+            <p>A connection problem stopped the directory from loading. The active-only filter still applies once it recovers.</p>
+            <button class="btn btn-secondary" type="button" disabled>Retry</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var guests = FIXTURE.guests;
+    var currentGuestId = null;
+    var lastOpenedVia = null; // 'row' | 'lookup'
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtDateTime(iso) {
+      var d = new Date(iso);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+    function isActive(g) { return g.status === 'active'; }
+    function activeGuests() { return guests.filter(isActive); }
+    function findGuestById(id) {
+      var needle = String(id).trim().toLowerCase();
+      for (var i = 0; i < guests.length; i++) {
+        if (guests[i].id.toLowerCase() === needle) return guests[i];
+      }
+      return null;
+    }
+    function statusChipHtml(status) {
+      if (status === 'active') return '<span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span>';
+      return '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span>';
+    }
+    function bookingStatusChipHtml(status) {
+      if (status === 'Upcoming') return '<span class="status-chip status-chip--upcoming"><span aria-hidden="true">▸</span> Upcoming</span>';
+      return '<span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span>';
+    }
+    function contactSummary(g) {
+      var parts = [];
+      if (g.email) parts.push(g.email);
+      if (g.phone) parts.push(g.phone);
+      return parts.length ? parts.join(' · ') : '—';
+    }
+
+    /* ---------------- Guest Directory ---------------- */
+    var tableWrap = document.getElementById('directory-table-wrap');
+    var emptyEl = document.getElementById('directory-empty');
+    var notFoundEl = document.getElementById('directory-not-found');
+    var tbody = document.getElementById('guest-tbody');
+    var resultsCountEl = document.getElementById('results-count');
+
+    function renderDirectoryLoading() {
+      tableWrap.hidden = false; emptyEl.hidden = true; notFoundEl.hidden = true;
+      resultsCountEl.textContent = 'Loading active guest profiles…';
+      var rows = '';
+      for (var i = 0; i < 3; i++) {
+        rows += '<tr class="skeleton-row"><td><div class="skeleton-bar"></div></td><td><div class="skeleton-bar"></div></td><td><div class="skeleton-bar short"></div></td><td><div class="skeleton-bar short"></div></td><td></td></tr>';
+      }
+      tbody.innerHTML = rows;
+    }
+
+    function renderDirectory(list, query) {
+      notFoundEl.hidden = true;
+      var deactivatedTotal = guests.length - activeGuests().length;
+
+      if (list.length === 0) {
+        tableWrap.hidden = true;
+        emptyEl.hidden = false;
+        emptyEl.querySelector('.empty-query').textContent = query;
+        resultsCountEl.textContent = 'Showing 0 active guest profiles for "' + query + '".';
+        return;
+      }
+
+      tableWrap.hidden = false;
+      emptyEl.hidden = true;
+
+      if (query) {
+        resultsCountEl.textContent = 'Showing ' + list.length + ' active guest ' + (list.length === 1 ? 'match' : 'matches') + ' for "' + query + '". Deactivated profiles are excluded from search results.';
+      } else {
+        resultsCountEl.textContent = 'Showing ' + list.length + ' active guest profiles. ' + deactivatedTotal + ' deactivated ' + (deactivatedTotal === 1 ? 'profile is' : 'profiles are') + ' hidden from this view — open one directly by ID.';
+      }
+
+      tbody.innerHTML = list.map(function (g) {
+        return '<tr class="guest-row" tabindex="0" role="button" data-id="' + g.id + '" aria-label="View profile for ' + escapeHtml(g.name) + '">' +
+          '<td class="guest-name-cell">' + escapeHtml(g.name) + '<span class="guest-id">' + g.id + '</span></td>' +
+          '<td>' + escapeHtml(contactSummary(g)) + '</td>' +
+          '<td>' + statusChipHtml(g.status) + '</td>' +
+          '<td>' + fmtDateTime(g.updatedAt) + '</td>' +
+          '<td class="col-actions"><button type="button" class="view-link-btn" data-id="' + g.id + '">View profile →</button></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function applySearchFilter() {
+      var q = document.getElementById('search-input').value.trim().toLowerCase();
+      var pool = activeGuests();
+      if (!q) { renderDirectory(pool, ''); return; }
+      var filtered = pool.filter(function (g) {
+        return g.name.toLowerCase().indexOf(q) !== -1 ||
+          (g.email && g.email.toLowerCase().indexOf(q) !== -1) ||
+          (g.phone && g.phone.indexOf(q) !== -1);
+      });
+      renderDirectory(filtered, q);
+    }
+
+    document.getElementById('search-input').addEventListener('input', applySearchFilter);
+    document.getElementById('clear-search-btn').addEventListener('click', function () {
+      document.getElementById('search-input').value = '';
+      renderDirectory(activeGuests(), '');
+    });
+
+    tbody.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-id]');
+      if (btn) openProfile(btn.getAttribute('data-id'), 'row');
+    });
+    tbody.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('guest-row')) {
+        e.preventDefault();
+        openProfile(e.target.getAttribute('data-id'), 'row');
+      }
+    });
+
+    function showNotFound(id) {
+      tableWrap.hidden = true;
+      emptyEl.hidden = true;
+      notFoundEl.hidden = false;
+      notFoundEl.querySelector('.nf-id').textContent = id;
+    }
+
+    var lookupInputEl = document.getElementById('lookup-input');
+    var lookupErrorEl = document.getElementById('lookup-error');
+
+    document.getElementById('nf-back-btn').addEventListener('click', function () {
+      lookupInputEl.value = '';
+      var searchInputEl = document.getElementById('search-input');
+      searchInputEl.value = '';
+      renderDirectory(activeGuests(), '');
+      searchInputEl.focus();
+    });
+
+    lookupInputEl.addEventListener('input', function () {
+      lookupErrorEl.hidden = true;
+      lookupInputEl.classList.remove('input-error');
+    });
+    document.getElementById('lookup-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var idVal = lookupInputEl.value.trim();
+      if (!idVal) {
+        lookupErrorEl.hidden = false;
+        lookupInputEl.classList.add('input-error');
+        lookupInputEl.focus();
+        return;
+      }
+      var btn = document.getElementById('lookup-btn');
+      btn.disabled = true; btn.textContent = 'Looking up…';
+      await wait(250);
+      btn.disabled = false; btn.textContent = 'Open';
+      var g = findGuestById(idVal);
+      if (g) { lookupInputEl.value = ''; openProfile(g.id, 'lookup'); }
+      else { showNotFound(idVal); }
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Refreshing…';
+      var query = document.getElementById('search-input').value.trim().toLowerCase();
+      renderDirectoryLoading();
+      await wait(300);
+      btn.disabled = false; btn.textContent = '⟳ Refresh directory';
+      if (!query) { renderDirectory(activeGuests(), ''); } else { applySearchFilter(); }
+    });
+
+    /* ---------------- Guest Profile ---------------- */
+    var profileLoading = document.getElementById('profile-loading');
+    var profileContent = document.getElementById('profile-content');
+
+    function renderProfileView(g) {
+      profileLoading.hidden = true;
+      profileContent.hidden = false;
+
+      document.getElementById('profile-name').textContent = g.name;
+      document.getElementById('profile-meta').textContent = g.id + ' · Last updated ' + fmtDateTime(g.updatedAt) +
+        (g.status === 'deactivated' ? ' · Deactivated ' + fmtDateTime(g.deactivatedAt) : '');
+      document.getElementById('profile-status-chip').innerHTML = statusChipHtml(g.status);
+
+      var banner = document.getElementById('deactivated-banner');
+      banner.hidden = g.status !== 'deactivated';
+      if (g.status === 'deactivated') {
+        document.getElementById('deactivated-banner-id').textContent = g.id;
+      }
+
+      var rows = [
+        ['Email', g.email || '—'],
+        ['Phone', g.phone || '—'],
+        ['Room preference', g.preferences.roomType || '—'],
+        ['Dietary notes', g.preferences.dietary || '—'],
+        ['Preferred contact', g.preferences.communication || '—']
+      ];
+      document.getElementById('kv-list').innerHTML = rows.map(function (r) {
+        return '<div class="kv-row"><span class="kv-label">' + r[0] + '</span><span class="kv-value">' + escapeHtml(r[1]) + '</span></div>';
+      }).join('');
+
+      var bookingsEl = document.getElementById('booking-history');
+      if (g.bookingHistory.length === 0) {
+        bookingsEl.innerHTML = '<p class="no-bookings-note">No bookings on file yet.</p>';
+      } else {
+        bookingsEl.innerHTML = '<table class="booking-table"><thead><tr><th scope="col">Dates</th><th scope="col">Booking</th><th scope="col">Status</th></tr></thead><tbody>' +
+          g.bookingHistory.map(function (b) {
+            return '<tr><td>' + escapeHtml(b.dates) + '</td><td>' + escapeHtml(b.item) + '</td><td>' + bookingStatusChipHtml(b.status) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      }
+    }
+
+    async function openProfile(id, via) {
+      currentGuestId = id;
+      lastOpenedVia = via;
+      show(1);
+      profileLoading.hidden = false;
+      profileContent.hidden = true;
+      await wait(250);
+      var g = findGuestById(id);
+      renderProfileView(g);
+      document.getElementById('profile-name').focus();
+    }
+
+    document.getElementById('profile-back-btn').addEventListener('click', function () {
+      show(0);
+      var searchInputEl = document.getElementById('search-input');
+      searchInputEl.value = '';
+      renderDirectory(activeGuests(), '');
+      searchInputEl.focus();
+    });
+
+    /* ---------------- Reviewer bar / screen switching ---------------- */
+    var screens = Array.from(document.querySelectorAll('.screen'));
+    var cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+      document.getElementById('screen-label').textContent = (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+    }
+    document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+    document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+    document.addEventListener('keydown', function (e) {
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+
+    /* Initial paint: default directory shows active guests only (AC1) */
+    renderDirectoryLoading();
+    wait(300).then(function () { renderDirectory(activeGuests(), ''); });
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
