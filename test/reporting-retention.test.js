@@ -2,7 +2,11 @@ const { addMonths, computeExpiryDate, isPastRetention } = require('../src/report
 
 test('addMonths adds whole calendar months to an ISO date', () => {
   expect(addMonths('2026-08-15', 12)).toBe('2027-08-15');
-  expect(addMonths('2026-01-31', 1)).toBe('2026-03-03');
+});
+
+test('EDGE: addMonths clamps to the last day of the target month rather than overflowing', () => {
+  expect(addMonths('2026-01-31', 1)).toBe('2026-02-28');
+  expect(addMonths('2024-01-31', 1)).toBe('2024-02-29');
 });
 
 test('computeExpiryDate adds the retention period in whole months', () => {

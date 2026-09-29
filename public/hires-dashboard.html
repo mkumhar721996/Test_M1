@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hires — Data Retention</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hires-dashboard.css" />
+<script src="./js/hires-dashboard.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <!-- Screen: Hires Dashboard -->
+  <div id="dashboard-screen">
+    <div class="app-topbar">
+      <span class="brand">Northbridge Staffing</span>
+      <nav class="app-nav">
+        <a href="#" class="active" data-nav="dashboard">Hires</a>
+        <a href="#" data-nav="settings">Settings</a>
+        <a href="#" data-nav="audit">Audit log</a>
+      </nav>
+      <div class="topbar-right" id="dashboard-signed-in"></div>
+    </div>
+
+    <div class="page page-wide">
+      <div class="page-header">
+        <h1>Hires</h1>
+        <p>Completed and cancelled hires stay visible here for your tenant's retention period, then are permanently removed.</p>
+      </div>
+
+      <div class="info-banner" role="status" id="info-banner">
+        <span class="icon" aria-hidden="true">ℹ️</span>
+        <div>
+          <strong id="hidden-count-text"></strong> passed your <span id="retention-period-text"></span>-month retention period and are no longer shown.
+          <br />
+          <a href="#" class="link-btn" data-nav="settings">Manage retention period</a>
+        </div>
+      </div>
+
+      <div class="u-stack" id="hire-list"></div>
+    </div>
+  </div>
+
+  <!-- Screen: Hire Detail -->
+  <div id="detail-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Northbridge Staffing</span>
+      <nav class="app-nav">
+        <a href="#" data-nav="dashboard">Hires</a>
+        <a href="#" data-nav="settings">Settings</a>
+        <a href="#" data-nav="audit">Audit log</a>
+      </nav>
+      <div class="topbar-right" id="detail-signed-in"></div>
+    </div>
+
+    <div class="page page-wide">
+      <button class="back-link" id="detail-back-btn" type="button">← Back to Hires</button>
+
+      <div id="detail-content"></div>
+    </div>
+  </div>
+
+  <!-- Screen: Data Retention Settings -->
+  <div id="settings-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Northbridge Staffing</span>
+      <nav class="app-nav">
+        <a href="#" data-nav="dashboard">Hires</a>
+        <a href="#" class="active" data-nav="settings">Settings</a>
+        <a href="#" data-nav="audit">Audit log</a>
+      </nav>
+      <div class="topbar-right" id="settings-signed-in"></div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <h1>Data retention</h1>
+        <p>Control how long completed and cancelled hire data stays visible before it's permanently deleted.</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Retention period</h3>
+        <div class="field-group">
+          <div class="field-row" style="margin-bottom: var(--space-1);">
+            <label class="label" for="retention-input" style="margin-bottom:0;">Keep completed/cancelled hire data for</label>
+            <span class="lock-badge" id="lock-badge" hidden>Admin only</span>
+          </div>
+          <div class="field-row">
+            <input class="input" type="number" min="1" max="60" id="retention-input" />
+            <span class="unit-label">months</span>
+            <span class="chip" id="retention-chip"></span>
+          </div>
+          <p class="helper-text" id="settings-helper-text"></p>
+        </div>
+
+        <div class="warning-callout" id="impact-callout" hidden>
+          <span class="icon" aria-hidden="true">⚠️</span>
+          <span id="impact-text"></span>
+        </div>
+
+        <div class="error-callout" id="error-callout" hidden role="alert">
+          <span class="icon" aria-hidden="true">⛔</span>
+          <span id="error-callout-text"></span>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" id="save-btn" type="button">Save</button>
+          <button class="btn btn-secondary" id="reset-btn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="card" id="recent-changes-card" style="margin-top: var(--space-4);">
+        <h3 class="card-title">Recent changes</h3>
+        <ul class="audit-list" id="recent-audit"></ul>
+        <p class="helper-text"><a href="#" class="link-btn" style="text-decoration:underline;color:var(--color-primary)" data-nav="audit">View full audit log →</a></p>
+      </div>
+    </div>
+
+    <!-- Confirm dialog for reducing the retention period -->
+    <div class="modal-overlay" id="settings-modal-overlay" hidden></div>
+    <div class="modal-wrap" id="settings-modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="settings-modal-title">Reduce retention period?</h2>
+            <p id="settings-modal-body"></p>
+          </div>
+          <button class="icon-btn" aria-label="Close" id="settings-modal-close">✕</button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="settings-modal-cancel">Cancel</button>
+          <button class="btn btn-primary" id="settings-modal-confirm">Confirm &amp; save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="settings-toast" hidden role="status"></div>
+  </div>
+
+  <!-- Screen: Retention & Audit Log -->
+  <div id="audit-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Northbridge Staffing</span>
+      <nav class="app-nav">
+        <a href="#" data-nav="dashboard">Hires</a>
+        <a href="#" data-nav="settings">Settings</a>
+        <a href="#" class="active" data-nav="audit">Audit log</a>
+      </nav>
+      <div class="topbar-right" id="audit-signed-in"></div>
+    </div>
+
+    <div class="page page-wide">
+      <div class="page-header">
+        <h1>Retention &amp; audit log</h1>
+        <p>A complete history of retention period changes and automatic data deletions, for audit and compliance review.</p>
+      </div>
+
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="all" type="button">All</button>
+        <button class="filter-chip" data-filter="config" type="button">Configuration changes</button>
+        <button class="filter-chip" data-filter="deletion" type="button">Deletions</button>
+        <button class="filter-chip" data-filter="denied" type="button">Access denied</button>
+      </div>
+
+      <div class="card">
+        <ul class="audit-list" id="full-audit-list"></ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

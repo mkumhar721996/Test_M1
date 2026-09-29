@@ -46,7 +46,11 @@ scope:
       `tombstones` Map for deleted records. Seed fixture hires matching the design's
       fixture-data block (hire-101 active, hire-102 completed Aug 15 2026, hire-103 cancelled
       Jun 2 2026, hire-104 completed Nov 20 2025) so the frontend has data to render without a
-      create-hire flow (no AC asks for one). Key exports:
+      create-hire flow (no AC asks for one). Key exports (`now` is an optional ISO-date string
+      on every function that takes it, defaulting to the real current date via
+      `new Date().toISOString().slice(0, 10)` when omitted — call sites in routes and most
+      tests never pass it; only the boundary-focused store/route tests pass an explicit `now`
+      to pin "today"):
 
       ```js
       function listHires(now) { sweep(now); return Array.from(hires.values()); }
@@ -57,6 +61,9 @@ scope:
         return { found: false };
       }
       function updateRetentionSettings(newMonths, actor, role, now) { /* see rationale below */ }
+      function seedHire(hire) { /* inserts directly into the `hires` Map, bypassing sweep — used by fixtures and tests */ }
+      function listAuditLog(type) { /* returns auditLog, optionally filtered to `type`, newest first */ }
+      function getRetentionSettings() { /* returns a shallow copy of retentionConfig */ }
       ```
 
       `sweep(now)` walks `hires`, and for any `completed`/`cancelled` record where
@@ -175,6 +182,15 @@ tests:
   - |
     Pure retention math (foundational for AC1–AC3, AC8), in test/reporting-retention.test.js:
     ```js
+    test('addMonths adds whole calendar months to an ISO date', () => {
+      const { addMonths } = require('../src/reporting/retention');
+      expect(addMonths('2026-08-15', 12)).toBe('2027-08-15');
+    });
+    test('EDGE: addMonths clamps to the last day of the target month rather than overflowing', () => {
+      const { addMonths } = require('../src/reporting/retention');
+      expect(addMonths('2026-01-31', 1)).toBe('2026-02-28');
+      expect(addMonths('2024-01-31', 1)).toBe('2024-02-29');
+    });
     test('computeExpiryDate adds the retention period in whole months', () => {
       const { computeExpiryDate } = require('../src/reporting/retention');
       expect(computeExpiryDate('2026-08-15', 12)).toBe('2027-08-15');
@@ -185,6 +201,10 @@ tests:
       expect(isPastRetention('2025-06-10', 12, '2026-06-09')).toBe(false);
     });
     ```
+    `addMonths` clamps to the last valid day of the target month (e.g. Jan 31 + 1 month =
+    Feb 28, or Feb 29 in a leap year) instead of relying on native JS `Date` rollover (which
+    would silently overflow Jan 31 + 1 month into Mar 3) — the correct semantics for a
+    calendar-months retention calculator, not just an arbitrary date-math choice.
   - |
     EDGE CASE — exact boundary: a record is still visible ON its exact expiry date and only
     expires the day after (test/reporting-retention.test.js):
