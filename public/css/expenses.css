@@ -219,3 +219,94 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 
 /* ---------- Toast icon variants (color stays the token default; icon + text carry meaning) ---------- */
 .toast .toast-icon { flex: 0 0 auto; }
+
+/* ---------- Row actions (Edit + Delete side by side) ---------- */
+.row-actions {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+/* ---------- Row delete action ----------
+   Design-system gap note (same gap already documented for validation errors above):
+   tokens.json has no dedicated danger/destructive color, so destructiveness is signalled
+   with an icon + bold label + explicit consequence copy, never color alone. */
+.row-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  min-height: 44px;
+}
+.row-delete-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.row-delete-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ---------- Delete-confirmation modal ---------- */
+.btn-danger {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  border-color: var(--color-fg);
+  border-width: 2px;
+  border-radius: var(--button-primary-radius);
+}
+.btn-danger:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+.confirm-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+}
+.confirm-summary strong { color: var(--color-fg); }
+.confirm-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-4) 0;
+}
+.confirm-warning .warn-icon { flex: 0 0 auto; }
+
+/* ---------- No-restriction callout (AC3) ---------- */
+.no-restriction-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-left-width: var(--space-1);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-3) 0;
+}
+.no-restriction-note .note-icon { flex: 0 0 auto; color: var(--color-primary); font-weight: var(--font-weight-bold); }
+
+/* ---------- Row removal flash ---------- */
+.expense-table tbody tr.row-removing { animation: flash-removed 0.3s ease-out forwards; }
+@keyframes flash-removed {
+  0% { background: transparent; opacity: 1; }
+  100% { background: var(--color-surface); opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .expense-table tbody tr.row-removing { animation: none; opacity: 0.35; }
+}

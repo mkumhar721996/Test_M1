@@ -73,6 +73,11 @@
       <span>Every staff member sees this same list — logging an expense makes it visible to everyone, not just the person who submitted it.</span>
     </p>
 
+    <p class="no-restriction-note">
+      <span class="note-icon" aria-hidden="true">ⓘ</span>
+      <span>Any staff member can delete any expense here — there's no owner, date, or status check. You don't have to be the person who logged it.</span>
+    </p>
+
     <div class="card table-card">
       <div class="table-scroll">
         <table class="expense-table">
@@ -202,6 +207,36 @@
           <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Log expense</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Delete-confirmation modal: hidden until a row's "Delete" action is activated.
+       Own ids/overlay/wrap so it can coexist in the DOM with the edit and create
+       modals above without collisions. -->
+  <div class="modal-overlay" id="delete-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="delete-modal-wrap" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="delete-modal-title">Delete this expense?</h2>
+          <p>This removes it from the shared list for every staff member.</p>
+        </div>
+        <button class="icon-btn" id="delete-modal-close-btn" type="button" aria-label="Close dialog without deleting">✕</button>
+      </div>
+
+      <div class="confirm-summary" id="confirm-summary">
+        <!-- filled by JS: date · category · description · logged by · amount -->
+      </div>
+
+      <p class="confirm-warning">
+        <span class="warn-icon" aria-hidden="true">⚠</span>
+        <span>This can't be undone. The expense will be removed immediately for everyone, no matter who logged it.</span>
+      </p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="delete-modal-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="delete-modal-delete-btn">🗑 Delete expense</button>
+      </div>
     </div>
   </div>
 
