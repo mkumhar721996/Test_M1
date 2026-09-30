@@ -95,6 +95,19 @@ describe('Filter Expenses by Category and Date Range', () => {
     expect(document.getElementById('filter-end-date').getAttribute('aria-label')).toBe('End date');
   });
 
+  test('clicking Clear filters shows a toast confirming the reset when filters were active', () => {
+    document.getElementById('filter-category').value = 'Software';
+    document.getElementById('filter-category').dispatchEvent(new Event('change'));
+    document.getElementById('clear-filters-btn').click();
+    expect(document.getElementById('toast').hidden).toBe(false);
+    expect(document.getElementById('toast-message').textContent).toBe('Filters cleared — showing all expenses');
+  });
+
+  test('clicking Clear filters with no active filters shows a distinct toast message', () => {
+    document.getElementById('clear-filters-btn').click();
+    expect(document.getElementById('toast-message').textContent).toBe('No filters were active');
+  });
+
   test('filterExpenses is a pure function that AND-combines category and date-range conditions', () => {
     const { filterExpenses } = require('../public/js/expenses');
     const list = [
