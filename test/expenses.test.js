@@ -210,4 +210,64 @@ describe('Edit Expense via Modal Form', () => {
 
     setItemSpy.mockRestore();
   });
+
+  test('clearing Description and submitting shows an inline error and does not update the stored record', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-description').value = '';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    expect(document.getElementById('modal-wrap').hidden).toBe(false);
+    expect(document.getElementById('error-description').hidden).toBe(false);
+    expect(document.getElementById('error-description').textContent).toMatch(/Description is required/);
+    jest.advanceTimersByTime(350);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_001').description).toBe('Flight to Chicago client site');
+  });
+
+  test('opening the edit modal for an expense logged by someone else shows the "Not logged by you" badge, and saving still succeeds', () => {
+    document.getElementById('viewer-select').value = 'Morgan Ellis';
+    document.querySelector('[data-edit-id="exp_002"]').click();
+    expect(document.getElementById('not-yours-badge').hidden).toBe(false);
+    document.getElementById('field-amount').value = '150.00';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_002').amount).toBe(150);
+  });
+
+  test('opening the edit modal for an expense logged by the current viewer keeps the "Not logged by you" badge hidden', () => {
+    document.getElementById('viewer-select').value = 'Morgan Ellis';
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    expect(document.getElementById('not-yours-badge').hidden).toBe(true);
+  });
+
+  test('opening the edit modal for an expense logged more than 90 days ago shows the "Logged a while ago" badge and an age flag on its Edit button, and saving still succeeds', () => {
+    const oldDate = new Date(Date.now() - 100 * 86400000).toISOString().slice(0, 10);
+    localStorage.setItem('expenses', JSON.stringify([
+      { id: 'exp_old', date: oldDate, category: 'Software', description: 'Vendor contract renewal', amount: 1080, loggedBy: 'Devon Ruiz' },
+    ]));
+    jest.resetModules();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+    const { initExpensesApp: reInit } = require('../public/js/expenses');
+    reInit(document);
+
+    expect(document.querySelector('[data-edit-id="exp_old"] .age-flag')).not.toBeNull();
+    document.querySelector('[data-edit-id="exp_old"]').click();
+    expect(document.getElementById('old-badge').hidden).toBe(false);
+    document.getElementById('field-amount').value = '1140.00';
+    document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.find((e) => e.id === 'exp_old').amount).toBe(1140);
+  });
+
+  test('the record context bar shows who logged the record and when', () => {
+    document.querySelector('[data-edit-id="exp_002"]').click();
+    expect(document.getElementById('context-logged-by').textContent).toBe('Priya Shah');
+    expect(document.getElementById('context-logged-date').textContent).toBe('09/05/2026');
+  });
+
+  test('the expense list page states both edit permissions and the required-description rule', () => {
+    expect(document.querySelector('.edit-hint').textContent).toMatch(/edit any expense/i);
+    expect(document.querySelector('.edit-hint').textContent).toMatch(/Description is required/i);
+  });
 });
