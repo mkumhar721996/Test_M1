@@ -211,6 +211,62 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   const detailsViewMode = doc.getElementById('details-view-mode');
   const detailsEditMode = doc.getElementById('details-edit-mode');
 
+  /* ---------------- Stay history ---------------- */
+  let stayHistoryRequestId = 0;
+
+  function renderStayHistoryLoading() {
+    doc.getElementById('stay-history-region').innerHTML =
+      '<p class="loading-caption"><span class="spinner" aria-hidden="true"></span> Loading stay history…</p>' +
+      '<div class="stay-history-skeleton-row"><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div></div>' +
+      '<div class="stay-history-skeleton-row"><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div></div>' +
+      '<div class="stay-history-skeleton-row"><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div><div class="stay-history-skeleton-bar"></div></div>';
+  }
+
+  function renderStayHistoryError() {
+    doc.getElementById('stay-history-region').innerHTML =
+      '<div class="error-state" role="alert">' +
+        '<span class="icon" aria-hidden="true">⚠</span>' +
+        '<h3>Stay history unavailable</h3>' +
+        '<p>We couldn’t reach Room &amp; Reservation Management to load this guest’s past stays. The rest of this profile is unaffected — try again in a moment.</p>' +
+        '<button class="btn btn-secondary" id="retry-stay-history-btn" type="button">Retry</button>' +
+      '</div>';
+    doc.getElementById('retry-stay-history-btn').addEventListener('click', () => {
+      loadStayHistory(currentGuest.id);
+    });
+  }
+
+  function renderStayHistoryEmpty() {
+    doc.getElementById('stay-history-region').innerHTML =
+      '<div class="empty-state">' +
+        '<span class="icon" aria-hidden="true">◎</span>' +
+        '<h3>No stay history yet</h3>' +
+        '<p>Past stays will appear here once this guest completes a reservation.</p>' +
+      '</div>';
+  }
+
+  function renderStayHistorySuccess(stays) {
+    doc.getElementById('stay-history-region').innerHTML =
+      '<div class="stay-table-scroll"><table class="stay-table">' +
+      '<thead><tr><th scope="col">Dates</th><th scope="col">Room</th><th scope="col">Nights</th></tr></thead>' +
+      '<tbody>' + stays.map((s) =>
+        `<tr><td>${escapeHtml(s.dates)}<br /><span class="confirmation-code">${escapeHtml(s.confirmation)}</span></td>` +
+        `<td>${escapeHtml(s.room)}</td><td>${escapeHtml(s.nights)}</td></tr>`
+      ).join('') + '</tbody></table></div>';
+  }
+
+  function loadStayHistory(guestId) {
+    const requestId = ++stayHistoryRequestId;
+    renderStayHistoryLoading();
+    return api.getStayHistory(guestId).then((stays) => {
+      if (requestId !== stayHistoryRequestId) return;
+      if (stays.length === 0) renderStayHistoryEmpty();
+      else renderStayHistorySuccess(stays);
+    }).catch(() => {
+      if (requestId !== stayHistoryRequestId) return;
+      renderStayHistoryError();
+    });
+  }
+
   function renderProfileView(g, changedFields) {
     const changed = changedFields || [];
     profileContent.hidden = false;
@@ -268,6 +324,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
     renderProfileView(guest);
     directoryScreen.hidden = true;
     profileScreen.hidden = false;
+    loadStayHistory(guest.id);
   }
 
   function openProfile(id) {
@@ -451,6 +508,9 @@ function createDefaultApi() {
       if (!res.ok) return Promise.reject({ status: res.status });
       return res.json();
     }),
+    getStayHistory: (id) => fetch(`/guests/${id}/stay-history`, { headers: { 'x-staff-role': 'front_desk' } })
+      .then((res) => (res.ok ? res.json() : Promise.reject({ status: res.status })))
+      .then((body) => body.stays),
     create: (data) => jsonRequest('/guests', 'POST', { ...data, actor: STAFF_NAME }),
     update: (id, changes) => jsonRequest(`/guests/${id}`, 'PATCH', { ...changes, actor: STAFF_NAME }),
     deactivate: (id) => jsonRequest(`/guests/${id}/deactivate`, 'POST', { actor: STAFF_NAME }),

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-130 — Stay History Shell on Guest Profile</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar (matches this product's existing front-desk console shell) ---------- */
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .app-topbar .brand {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+  .app-nav a {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-1);
+    border-bottom: 2px solid transparent;
+  }
+  .app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .scenario-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .signed-in-as { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .page { max-width: 860px; margin: 0 auto; padding: var(--space-4); }
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Guest profile header ---------- */
+  .profile-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .profile-meta { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .profile-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4); }
+
+  /* ---------- Status chip (never colour alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--completed { border: 1px solid var(--color-border); color: var(--color-fg); }
+
+  /* ---------- Card header row + subtitle ---------- */
+  .card-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-1); flex-wrap: wrap; }
+  .card-subtitle { margin: 0 0 var(--space-3) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Key/value rows (contact & preferences) ---------- */
+  .kv-list { border-top: 1px solid var(--color-border); }
+  .kv-row { display: grid; grid-template-columns: 170px 1fr; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+
+  /* ---------- Scenario control (prototype-only, clearly separated from product chrome) ---------- */
+  .scenario-panel {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+  }
+  .scenario-panel .scenario-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-right: var(--space-1);
+  }
+  .scenario-btn {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .scenario-btn[aria-pressed="true"] { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* ---------- Stay history: loading skeleton ---------- */
+  .skeleton-row { display: grid; grid-template-columns: 1.4fr 1.6fr 0.8fr 1fr; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .skeleton-row:last-child { border-bottom: none; }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .loading-caption { display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .spinner { animation: spin 0.8s linear infinite; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { border-top-color: var(--color-primary); opacity: 0.9; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Empty / error state ---------- */
+  .empty-state, .error-state { padding: var(--space-4) var(--space-2); text-align: center; }
+  .empty-state .icon, .error-state .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state h3, .error-state h3 {
+    margin: 0 0 var(--space-1) 0;
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+  }
+  .empty-state p, .error-state p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  /* No dedicated error/danger colour exists in tokens.json, so this state (like the rest of the
+     product) is distinguished by icon + border weight + copy, never colour alone — consistent
+     with the gap already flagged against TEST-M1-STORY-100. Nothing new needed here. */
+  .error-state { border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-md); }
+  .error-scope-note { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Stay history table (populated) ---------- */
+  table.stay-table { width: 100%; border-collapse: collapse; }
+  .stay-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    padding: var(--space-2) var(--space-2) var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .stay-table td {
+    padding: var(--space-3) var(--space-2) var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    vertical-align: top;
+  }
+  .stay-table tr:last-child td { border-bottom: none; }
+  .stay-table-scroll { overflow-x: auto; }
+  .confirmation-code { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+  .mini-pair { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    max-width: min(90vw, 320px);
+  }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<!-- App nav: top bar — Guests (active) · Bookings. This matches the product's existing
+     front-desk console shell (see TEST-M1-STORY-100), not the arc platform's own chrome. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-130</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "staffName": "Priya Nair",
+    "guest": {
+      "id": "GST-1001",
+      "name": "Maria Alvarez",
+      "status": "active",
+      "memberSince": "Nov 3, 2025",
+      "email": "maria.alvarez@example.com",
+      "phone": "(555) 214-7788",
+      "communication": "Email"
+    },
+    "stayHistorySuccess": [
+      { "id": "STY-7741", "dates": "Jun 12–15, 2026", "room": "Oceanview Suite", "nights": 3, "confirmation": "RES-48213" },
+      { "id": "STY-7402", "dates": "Jan 4–7, 2026", "room": "Garden Room", "nights": 3, "confirmation": "RES-40892" },
+      { "id": "STY-6810", "dates": "Aug 20–21, 2025", "room": "Standard King", "nights": 1, "confirmation": "RES-33210" }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Guest Profile (interactive)
+         Notes:
+           - On load (and whenever the scenario changes below), the Stay history card shows a
+             loading indicator first, then resolves after a simulated fetch (AC1).
+           - The "Prototype control" panel simulates the three states the Room & Reservation
+             Management dependency can put this section in — it stands in for the real fetch,
+             which staff never see: "Has past stays" (success), "No past stays" (success, empty),
+             and "Dependency unavailable" (error). Use it to drive every AC directly.
+           - "Dependency unavailable" shows an error confined to the Stay history card only
+             (AC2) — the header, status chip, and Contact & preferences card above it are
+             untouched, and "Copy guest ID" keeps working, demonstrating the rest of the guest
+             profile stays fully usable (AC3).
+           - "No past stays" shows the exact "No stay history yet" placeholder copy (AC4).
+           - "Retry" on the error state re-attempts the same fetch (shows loading, then the
+             same outcome) — switch scenarios above it to simulate the dependency coming back.
+    -->
+    <div class="screen" data-name="Guest Profile">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+        <span class="signed-in-as">Signed in as <strong>Priya Nair</strong></span>
+      </div>
+
+      <div class="page">
+        <div class="profile-header-row">
+          <div>
+            <h1 style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);">Maria Alvarez</h1>
+            <p class="profile-meta">GST-1001 · Member since Nov 3, 2025</p>
+          </div>
+          <span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span>
+        </div>
+
+        <div class="profile-actions">
+          <button class="btn btn-secondary" id="copy-id-btn" type="button">Copy guest ID</button>
+        </div>
+
+        <div class="u-stack">
+          <!-- Contact & preferences: always available, unaffected by stay-history state (AC3) -->
+          <div class="card">
+            <h2 class="card-title">Contact &amp; preferences</h2>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value">maria.alvarez@example.com</span></div>
+              <div class="kv-row"><span class="kv-label">Phone</span><span class="kv-value">(555) 214-7788</span></div>
+              <div class="kv-row"><span class="kv-label">Preferred contact</span><span class="kv-value">Email</span></div>
+            </div>
+          </div>
+
+          <!-- Stay history: read-only shell driven by the scenario panel below -->
+          <div class="card">
+            <div class="card-header-row">
+              <h2 class="card-title" style="margin-bottom:0;">Stay history</h2>
+            </div>
+            <p class="card-subtitle">Synced from Room &amp; Reservation Management. Read-only.</p>
+
+            <div class="scenario-panel" role="group" aria-label="Prototype control: simulate stay history fetch outcome">
+              <span class="scenario-label">Prototype control — simulate:</span>
+              <button class="scenario-btn" type="button" data-scenario="success" aria-pressed="true">Has past stays</button>
+              <button class="scenario-btn" type="button" data-scenario="empty" aria-pressed="false">No past stays</button>
+              <button class="scenario-btn" type="button" data-scenario="error" aria-pressed="false">Dependency unavailable</button>
+            </div>
+
+            <div id="stay-history-region" aria-live="polite">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span aria-hidden="true">✓</span>
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of every stay-history state for reviewers who want a
+             quick scan without driving the scenario panel on screen 1.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Guest Services</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Guests</a>
+          <a href="#" onclick="return false;">Bookings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of the stay-history shell's loading, error, empty, and populated states.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <!-- State: stay-history-loading -->
+          <div class="mini-card">
+            <h3>Loading</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <p class="loading-caption"><span class="spinner" aria-hidden="true"></span> Loading stay history…</p>
+            <div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>
+            <div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>
+          </div>
+
+          <!-- State: stay-history-error + rest-of-profile-functional -->
+          <div class="mini-card">
+            <h3>Dependency unavailable</h3>
+            <span class="ac-tag">Satisfies AC2, AC3</span>
+            <div class="mini-pair">
+              <div class="error-state">
+                <span class="icon" aria-hidden="true">⚠</span>
+                <h3>Stay history unavailable</h3>
+                <p>We couldn't reach Room &amp; Reservation Management to load this guest's past stays. The rest of this profile is unaffected — try again in a moment.</p>
+                <button class="btn btn-secondary" type="button" disabled>Retry</button>
+              </div>
+              <div class="card" style="box-shadow:none;">
+                <h2 class="card-title" style="font-size:var(--font-size-md);">Contact &amp; preferences</h2>
+                <p class="error-scope-note" style="margin:0;">Still fully visible and usable — only the Stay history card is affected.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: stay-history-empty -->
+          <div class="mini-card">
+            <h3>Empty</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="empty-state">
+              <span class="icon" aria-hidden="true">◎</span>
+              <h3>No stay history yet</h3>
+              <p>Past stays will appear here once this guest completes a reservation.</p>
+            </div>
+          </div>
+
+          <!-- State: stay-history-populated (design baseline, not covered by an AC yet — shown
+               so the shell's shape when Room & Reservation Management starts sending data is
+               agreed alongside the loading/error/empty states this story delivers) -->
+          <div class="mini-card">
+            <h3>Populated</h3>
+            <span class="ac-tag">Design baseline — data shape for a future integration story</span>
+            <div class="stay-table-scroll">
+              <table class="stay-table">
+                <thead><tr><th scope="col">Dates</th><th scope="col">Room</th><th scope="col">Nights</th></tr></thead>
+                <tbody>
+                  <tr><td>Jun 12–15, 2026<br /><span class="confirmation-code">RES-48213</span></td><td>Oceanview Suite</td><td>3</td></tr>
+                  <tr><td>Jan 4–7, 2026<br /><span class="confirmation-code">RES-40892</span></td><td>Garden Room</td><td>3</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var toastTimer = null;
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function showToast(msg) {
+      var el = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      el.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { el.hidden = true; }, 2600);
+    }
+
+    document.getElementById('copy-id-btn').addEventListener('click', function () {
+      showToast('Guest ID copied — GST-1001');
+    });
+
+    /* ---------------- Stay history shell ---------------- */
+    var region = document.getElementById('stay-history-region');
+    var scenarioButtons = Array.from(document.querySelectorAll('.scenario-btn'));
+    var currentScenario = 'success';
+
+    function renderLoading() {
+      region.innerHTML =
+        '<p class="loading-caption"><span class="spinner" aria-hidden="true"></span> Loading stay history…</p>' +
+        '<div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>' +
+        '<div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>' +
+        '<div class="skeleton-row"><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div><div class="skeleton-bar"></div></div>';
+    }
+
+    function renderError() {
+      region.innerHTML =
+        '<div class="error-state" role="alert">' +
+          '<span class="icon" aria-hidden="true">⚠</span>' +
+          '<h3>Stay history unavailable</h3>' +
+          '<p>We couldn’t reach Room &amp; Reservation Management to load this guest’s past stays. The rest of this profile is unaffected — try again in a moment.</p>' +
+          '<button class="btn btn-secondary" id="retry-stay-history-btn" type="button">Retry</button>' +
+        '</div>';
+      document.getElementById('retry-stay-history-btn').addEventListener('click', function () {
+        loadStayHistory(currentScenario);
+      });
+    }
+
+    function renderEmpty() {
+      region.innerHTML =
+        '<div class="empty-state">' +
+          '<span class="icon" aria-hidden="true">◎</span>' +
+          '<h3>No stay history yet</h3>' +
+          '<p>Past stays will appear here once this guest completes a reservation.</p>' +
+        '</div>';
+    }
+
+    function renderSuccess(stays) {
+      region.innerHTML =
+        '<div class="stay-table-scroll"><table class="stay-table">' +
+        '<thead><tr><th scope="col">Dates</th><th scope="col">Room</th><th scope="col">Nights</th></tr></thead>' +
+        '<tbody>' + stays.map(function (s) {
+          return '<tr><td>' + escapeHtml(s.dates) + '<br /><span class="confirmation-code">' + escapeHtml(s.confirmation) + '</span></td>' +
+            '<td>' + escapeHtml(s.room) + '</td><td>' + s.nights + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+
+    async function loadStayHistory(scenario) {
+      currentScenario = scenario;
+      scenarioButtons.forEach(function (btn) {
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-scenario') === scenario ? 'true' : 'false');
+      });
+      renderLoading();
+      await wait(300);
+      if (currentScenario !== scenario) return; // a newer scenario click superseded this one
+      if (scenario === 'error') renderError();
+      else if (scenario === 'empty') renderEmpty();
+      else renderSuccess(FIXTURE.stayHistorySuccess);
+    }
+
+    scenarioButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        loadStayHistory(btn.getAttribute('data-scenario'));
+      });
+    });
+
+    /* ---------------- Initial render (AC1: loading shown as soon as the section loads) ---------------- */
+    loadStayHistory('success');
+  </script>
+
+  <script>
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    let cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+      document.getElementById('screen-label').textContent =
+        `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    }
+    document.getElementById('prev-btn').onclick = () => show(cur - 1);
+    document.getElementById('next-btn').onclick = () => show(cur + 1);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
