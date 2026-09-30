@@ -104,6 +104,7 @@ describe('Delete an Expense', () => {
     jest.advanceTimersByTime(300);
     const stored = JSON.parse(localStorage.getItem('expenses'));
     expect(stored.some((e) => e.id === 'exp_001')).toBe(true);
+    expect(document.querySelector('[data-delete-id="exp_001"]').closest('tr').classList.contains('row-removing')).toBe(false);
   });
 
   test('a localStorage failure on delete shows an error toast and keeps the dialog open', () => {

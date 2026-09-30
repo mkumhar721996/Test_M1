@@ -479,6 +479,10 @@ function initExpensesApp(doc = document) {
     doc.removeEventListener('keydown', onDeleteModalKeydown);
     clearTimeout(deleteTimer);
     deleteTimer = null;
+    if (pendingDeleteId) {
+      const row = doc.querySelector(`[data-delete-id="${pendingDeleteId}"]`);
+      if (row) row.closest('tr').classList.remove('row-removing');
+    }
     pendingDeleteId = null;
   }
 
