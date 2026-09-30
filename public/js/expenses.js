@@ -166,10 +166,12 @@ function initExpensesApp(doc = document) {
   filterStartInput.addEventListener('input', applyFiltersAndRender);
   filterEndInput.addEventListener('input', applyFiltersAndRender);
   doc.getElementById('clear-filters-btn').addEventListener('click', () => {
+    const hadFilters = Boolean(filterCategorySelect.value || filterStartInput.value || filterEndInput.value);
     filterCategorySelect.value = '';
     filterStartInput.value = '';
     filterEndInput.value = '';
     applyFiltersAndRender();
+    showToast('success', hadFilters ? 'Filters cleared — showing all expenses' : 'No filters were active');
   });
 
   function setFieldError(fieldEl, errorEl, hasError, message) {
