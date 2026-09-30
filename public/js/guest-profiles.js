@@ -47,6 +47,14 @@ function diffChanges(guest, form) {
   return changes;
 }
 
+function isActive(g) {
+  return g.status === 'active';
+}
+
+function activeGuests(list) {
+  return list.filter(isActive);
+}
+
 function initGuestProfilesApp(doc, initialGuests, api) {
   let guests = initialGuests.slice();
   let currentGuest = null;
@@ -61,6 +69,8 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   const notFoundEl = doc.getElementById('directory-not-found');
   const tbody = doc.getElementById('guest-tbody');
   const searchInput = doc.getElementById('search-input');
+  const resultsCountEl = doc.getElementById('results-count');
+  const refreshBtn = doc.getElementById('refresh-btn');
 
   function showToast(el, msgEl, msg, which) {
     msgEl.textContent = msg;
@@ -74,12 +84,18 @@ function initGuestProfilesApp(doc, initialGuests, api) {
     }
   }
 
-  function renderDirectory(list) {
+  function renderDirectory(list, query) {
     notFoundEl.hidden = true;
+    const deactivatedTotal = guests.length - activeGuests(guests).length;
+    if (query) {
+      resultsCountEl.textContent = `Showing ${list.length} active guest ${list.length === 1 ? 'match' : 'matches'} for "${query}". Deactivated profiles are excluded from search results.`;
+    } else {
+      resultsCountEl.textContent = `Showing ${list.length} active guest profiles. ${deactivatedTotal} deactivated ${deactivatedTotal === 1 ? 'profile is' : 'profiles are'} hidden from this view — open one directly by ID.`;
+    }
     if (list.length === 0) {
       tableWrap.hidden = true;
       emptyEl.hidden = false;
-      emptyEl.querySelector('.empty-query').textContent = searchInput.value.trim();
+      emptyEl.querySelector('.empty-query').textContent = query;
       return;
     }
     tableWrap.hidden = false;
@@ -97,19 +113,39 @@ function initGuestProfilesApp(doc, initialGuests, api) {
 
   function applySearchFilter() {
     const q = searchInput.value.trim().toLowerCase();
-    if (!q) { renderDirectory(guests); return; }
-    const filtered = guests.filter((g) =>
+    const pool = activeGuests(guests);
+    if (!q) { renderDirectory(pool, ''); return; }
+    const filtered = pool.filter((g) =>
       g.name.toLowerCase().includes(q) ||
       (g.email && g.email.toLowerCase().includes(q)) ||
       (g.phone && g.phone.includes(q)) ||
       g.id.toLowerCase().includes(q));
-    renderDirectory(filtered);
+    renderDirectory(filtered, q);
   }
 
   searchInput.addEventListener('input', applySearchFilter);
   doc.getElementById('clear-search-btn').addEventListener('click', () => {
     searchInput.value = '';
-    renderDirectory(guests);
+    renderDirectory(activeGuests(guests), '');
+  });
+
+  refreshBtn.addEventListener('click', () => {
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = 'Refreshing…';
+    api.list().then((freshGuests) => {
+      guests = freshGuests.slice();
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = '⟳ Refresh directory';
+      if (searchInput.value.trim()) {
+        applySearchFilter();
+      } else {
+        renderDirectory(activeGuests(guests), '');
+      }
+    }).catch(() => {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = '⟳ Refresh directory';
+      showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), 'Directory could not be refreshed — please try again', 'directory');
+    });
   });
 
   tbody.addEventListener('click', (e) => {
@@ -127,7 +163,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   doc.getElementById('nf-back-btn').addEventListener('click', () => {
     doc.getElementById('lookup-input').value = '';
     searchInput.value = '';
-    renderDirectory(guests);
+    renderDirectory(activeGuests(guests), '');
   });
 
   doc.getElementById('lookup-form').addEventListener('submit', (e) => {
@@ -199,7 +235,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       guests.unshift(guest);
       closeCreateModal();
       searchInput.value = '';
-      renderDirectory(guests);
+      renderDirectory(activeGuests(guests), '');
       showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), `Guest profile created — ID ${guest.id}`, 'directory');
     }).catch(() => {
       showToast(doc.getElementById('toast'), doc.getElementById('toast-message'), 'Guest profile could not be created — please try again', 'directory');
@@ -281,7 +317,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
   doc.getElementById('profile-back-btn').addEventListener('click', () => {
     exitEditMode();
     searchInput.value = '';
-    renderDirectory(guests);
+    renderDirectory(activeGuests(guests), '');
     profileScreen.hidden = true;
     directoryScreen.hidden = false;
   });
@@ -411,7 +447,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
       currentGuest = guest;
       lastMutationTs = guest.auditLog[guest.auditLog.length - 1].ts;
       const idx = guests.findIndex((g) => g.id === guest.id);
-      if (idx !== -1) guests[idx] = guest;
+      if (idx !== -1) guests[idx] = guest; else guests.push(guest);
       closeReactivateModal();
       renderProfileView(guest);
       showToast(doc.getElementById('profile-toast'), doc.getElementById('profile-toast-message'), 'Guest profile reactivated', 'profile');
@@ -429,7 +465,7 @@ function initGuestProfilesApp(doc, initialGuests, api) {
     if (!reactivateModal.hidden) closeReactivateModal();
   });
 
-  renderDirectory(guests);
+  renderDirectory(activeGuests(guests), '');
 }
 
 function createDefaultApi() {
@@ -447,6 +483,10 @@ function createDefaultApi() {
   }
 
   return {
+    list: () => fetch('/guests', { headers: { 'x-staff-role': 'front_desk' } }).then((res) => {
+      if (!res.ok) return Promise.reject({ status: res.status });
+      return res.json();
+    }),
     get: (id) => fetch(`/guests/${id}`, { headers: { 'x-staff-role': 'front_desk' } }).then((res) => {
       if (!res.ok) return Promise.reject({ status: res.status });
       return res.json();
@@ -462,8 +502,7 @@ module.exports = { initGuestProfilesApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('/guests', { headers: { 'x-staff-role': 'front_desk' } })
-      .then((res) => res.json())
-      .then((guests) => initGuestProfilesApp(document, guests, createDefaultApi()));
+    const api = createDefaultApi();
+    api.list().then((guests) => initGuestProfilesApp(document, guests, api));
   });
 }

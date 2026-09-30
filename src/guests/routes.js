@@ -30,7 +30,7 @@ function enforceFrontDeskRole(req, res, next) {
 
 router.get('/', enforceFrontDeskRole, (req, res, next) => {
   try {
-    res.status(200).json(guestsStore.listGuests());
+    res.status(200).json(guestsStore.listActiveGuests());
   } catch (err) {
     next(err);
   }

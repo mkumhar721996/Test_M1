@@ -43,6 +43,14 @@ body { margin: 0; min-height: 100dvh; }
 .search-field { flex: 1 1 260px; min-width: 220px; }
 .lookup-field { display: flex; gap: var(--space-2); align-items: flex-end; flex: 0 0 auto; }
 .lookup-field input { min-width: 160px; }
+.refresh-btn { flex: 0 0 auto; }
+
+.results-count {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: 0 0 var(--space-3) 0;
+}
 
 /* ---------- Guest table ---------- */
 .table-card { padding: 0; overflow: hidden; }
