@@ -514,6 +514,7 @@ function initExpensesApp(doc = document) {
         updated = expenses.filter((e) => e.id !== targetId);
         persistExpenses(updated);
       } catch (err) {
+        if (row) row.closest('tr').classList.remove('row-removing');
         deleteModalDeleteBtn.disabled = false;
         deleteModalDeleteBtn.textContent = '🗑 Delete expense';
         showToast('error', "Couldn't delete expense — please try again");

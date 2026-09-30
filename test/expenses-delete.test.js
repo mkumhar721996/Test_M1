@@ -108,16 +108,35 @@ describe('Delete an Expense', () => {
 
   test('a localStorage failure on delete shows an error toast and keeps the dialog open', () => {
     document.querySelector('[data-delete-id="exp_001"]').click();
+    const rowBefore = document.querySelector('[data-delete-id="exp_001"]').closest('tr');
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });
     document.getElementById('delete-modal-delete-btn').click();
     jest.advanceTimersByTime(300);
     expect(document.getElementById('delete-modal-wrap').hidden).toBe(false);
+    expect(rowBefore.classList.contains('row-removing')).toBe(false);
     const deleteBtn = document.getElementById('delete-modal-delete-btn');
     expect(deleteBtn.disabled).toBe(false);
     expect(document.getElementById('toast-message').textContent).toMatch(/couldn.?t delete/i);
+    expect(document.querySelector('[data-delete-id="exp_001"]')).not.toBeNull();
     setItemSpy.mockRestore();
+  });
+
+  test('a retried delete after a localStorage failure succeeds', () => {
+    document.querySelector('[data-delete-id="exp_001"]').click();
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+    document.getElementById('delete-modal-delete-btn').click();
+    jest.advanceTimersByTime(300);
+    setItemSpy.mockRestore();
+
+    document.getElementById('delete-modal-delete-btn').click();
+    jest.advanceTimersByTime(300);
+    expect(document.querySelector('[data-delete-id="exp_001"]')).toBeNull();
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored.some((e) => e.id === 'exp_001')).toBe(false);
   });
 
   test('the page states that any staff member can delete any expense with no restriction', () => {
