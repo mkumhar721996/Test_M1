@@ -27,15 +27,6 @@ function formatUSD(amount) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }
 
-function validateExpenseFields({ amount, date, category }) {
-  const amountValue = parseFloat(amount);
-  return {
-    amount: (amount === '' || Number.isNaN(amountValue) || amountValue <= 0) ? 'Amount is required.' : null,
-    date: date === '' ? 'Date is required.' : null,
-    category: category === '' ? 'Category is required.' : null,
-  };
-}
-
 function validateAmount(raw) {
   const trimmed = (raw || '').trim();
   if (trimmed === '') return 'Amount is required.';
@@ -48,13 +39,23 @@ function validateAmount(raw) {
   return '';
 }
 
-function validateCreateExpenseFields({ amount, date, category, description }) {
+function validateExpenseFields({ amount, date, category, description }) {
   return {
     amount: validateAmount(amount) || null,
     date: date === '' ? 'Date is required.' : null,
     category: category === '' ? 'Category is required.' : null,
     description: (description || '').trim() === '' ? 'Description is required.' : null,
   };
+}
+
+function daysBetween(isoA, isoB) {
+  const a = new Date(isoA + 'T00:00:00Z');
+  const b = new Date(isoB + 'T00:00:00Z');
+  return Math.round((b - a) / 86400000);
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 function filterExpenses(list, { category = '', start = '', end = '' } = {}) {
@@ -86,6 +87,12 @@ function initExpensesApp(doc = document) {
   const errorAmount = doc.getElementById('error-amount');
   const errorDate = doc.getElementById('error-date');
   const errorCategory = doc.getElementById('error-category');
+  const errorDescription = doc.getElementById('error-description');
+
+  const contextLoggedBy = doc.getElementById('context-logged-by');
+  const contextLoggedDate = doc.getElementById('context-logged-date');
+  const notYoursBadge = doc.getElementById('not-yours-badge');
+  const oldBadge = doc.getElementById('old-badge');
 
   const toast = doc.getElementById('toast');
   const toastMessage = doc.getElementById('toast-message');
@@ -96,6 +103,7 @@ function initExpensesApp(doc = document) {
   const filterEndInput = doc.getElementById('filter-end-date');
   const dateOrderHint = doc.getElementById('date-order-hint');
   const resultCount = doc.getElementById('result-count');
+  const viewerSelect = doc.getElementById('viewer-select');
 
   function renderList(list) {
     const tbody = doc.getElementById('expense-tbody');
@@ -125,6 +133,7 @@ function initExpensesApp(doc = document) {
       const tr = doc.createElement('tr');
       if (exp.id === lastUpdatedId) tr.className = 'row-updated';
       if (exp.id === lastAddedId) tr.className = 'row-added';
+      const isOld = daysBetween(exp.date, todayISO()) > 90;
       tr.innerHTML = `
         <td>${escapeHtml(doc, formatDateDisplay(exp.date))}</td>
         <td><span class="chip">${escapeHtml(doc, exp.category)}</span></td>
@@ -132,7 +141,7 @@ function initExpensesApp(doc = document) {
         <td class="logged-by-cell">${escapeHtml(doc, exp.loggedBy)}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
-          <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
+          <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit${isOld ? '<span class="age-flag" title="Logged over 90 days ago" aria-hidden="true">⏱</span>' : ''}</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -183,6 +192,7 @@ function initExpensesApp(doc = document) {
     setFieldError(fieldAmount, errorAmount, false);
     setFieldError(fieldDate, errorDate, false);
     setFieldError(fieldCategory, errorCategory, false);
+    setFieldError(fieldDescription, errorDescription, false);
   }
 
   function openEditModal(id) {
@@ -195,6 +205,11 @@ function initExpensesApp(doc = document) {
     fieldCategory.value = exp.category;
     fieldDescription.value = exp.description;
     clearAllErrors();
+
+    contextLoggedBy.textContent = exp.loggedBy;
+    contextLoggedDate.textContent = formatDateDisplay(exp.date);
+    notYoursBadge.hidden = (exp.loggedBy === viewerSelect.value);
+    oldBadge.hidden = daysBetween(exp.date, todayISO()) <= 90;
 
     overlay.hidden = false;
     modalWrap.hidden = false;
@@ -241,15 +256,25 @@ function initExpensesApp(doc = document) {
     const amountRaw = fieldAmount.value.trim();
     const dateValue = fieldDate.value.trim();
     const categoryValue = fieldCategory.value;
+    const descriptionValue = fieldDescription.value.trim();
 
-    const errors = validateExpenseFields({ amount: amountRaw, date: dateValue, category: categoryValue });
+    const errors = validateExpenseFields({
+      amount: amountRaw,
+      date: dateValue,
+      category: categoryValue,
+      description: descriptionValue,
+    });
 
-    setFieldError(fieldAmount, errorAmount, Boolean(errors.amount));
-    setFieldError(fieldDate, errorDate, Boolean(errors.date));
-    setFieldError(fieldCategory, errorCategory, Boolean(errors.category));
+    setFieldError(fieldAmount, errorAmount, Boolean(errors.amount), errors.amount);
+    setFieldError(fieldDate, errorDate, Boolean(errors.date), errors.date);
+    setFieldError(fieldCategory, errorCategory, Boolean(errors.category), errors.category);
+    setFieldError(fieldDescription, errorDescription, Boolean(errors.description), errors.description);
 
-    if (errors.amount || errors.date || errors.category) {
-      const firstInvalid = errors.amount ? fieldAmount : errors.date ? fieldDate : fieldCategory;
+    if (errors.amount || errors.date || errors.category || errors.description) {
+      const firstInvalid = errors.amount ? fieldAmount
+        : errors.category ? fieldCategory
+        : errors.date ? fieldDate
+        : fieldDescription;
       firstInvalid.focus();
       return;
     }
@@ -270,7 +295,7 @@ function initExpensesApp(doc = document) {
         amount: Math.round(parseFloat(amountRaw) * 100) / 100,
         date: dateValue,
         category: categoryValue,
-        description: fieldDescription.value.trim(),
+        description: descriptionValue,
       };
       try {
         persistExpenses([
@@ -308,7 +333,6 @@ function initExpensesApp(doc = document) {
   const createErrorCategory = doc.getElementById('create-error-category');
   const createErrorDescription = doc.getElementById('create-error-description');
   const createModalPanel = createModalWrap.querySelector('.modal-panel');
-  const viewerSelect = doc.getElementById('viewer-select');
   let createSaveTimer = null;
   let createModalOpenerEl = null;
 
@@ -392,7 +416,7 @@ function initExpensesApp(doc = document) {
     const categoryValue = createFieldCategory.value;
     const descriptionValue = createFieldDescription.value.trim();
 
-    const errors = validateCreateExpenseFields({
+    const errors = validateExpenseFields({
       amount: amountRaw,
       date: dateValue,
       category: categoryValue,
@@ -454,7 +478,6 @@ module.exports = {
   formatUSD,
   validateExpenseFields,
   validateAmount,
-  validateCreateExpenseFields,
   filterExpenses,
   initExpensesApp,
 };

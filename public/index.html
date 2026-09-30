@@ -73,6 +73,11 @@
       <span>Every staff member sees this same list — logging an expense makes it visible to everyone, not just the person who submitted it.</span>
     </p>
 
+    <p class="edit-hint">
+      <span class="hint-icon" aria-hidden="true">ℹ</span>
+      <span>You can edit any expense in this list, even one someone else logged, or one from months ago. Description is required — it can't be cleared.</span>
+    </p>
+
     <div class="card table-card">
       <div class="table-scroll">
         <table class="expense-table">
@@ -106,20 +111,20 @@
         <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
       </div>
 
+      <div class="record-context" id="record-context">
+        <span>Logged by <strong id="context-logged-by">—</strong> on <strong id="context-logged-date">—</strong></span>
+        <span class="not-yours-badge" id="not-yours-badge" hidden>👤 Not logged by you</span>
+        <span class="not-yours-badge" id="old-badge" hidden>⏱ Logged a while ago</span>
+      </div>
+
       <form id="edit-form" novalidate>
         <div class="field">
           <label class="label" for="field-amount">Amount</label>
           <div class="amount-input-wrap">
             <span class="amount-prefix" aria-hidden="true">$</span>
-            <input class="input amount-input" id="field-amount" name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" aria-describedby="error-amount" />
+            <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="error-amount" />
           </div>
           <p class="field-error" id="error-amount" role="alert" hidden>⚠ Amount is required.</p>
-        </div>
-
-        <div class="field">
-          <label class="label" for="field-date">Date</label>
-          <input class="input" id="field-date" name="date" type="date" aria-describedby="error-date" />
-          <p class="field-error" id="error-date" role="alert" hidden>⚠ Date is required.</p>
         </div>
 
         <div class="field">
@@ -135,9 +140,17 @@
           <p class="field-error" id="error-category" role="alert" hidden>⚠ Category is required.</p>
         </div>
 
+        <div class="field">
+          <label class="label" for="field-date">Date</label>
+          <input class="input" id="field-date" name="date" type="date" aria-describedby="error-date hint-date" />
+          <span class="hint" id="hint-date">Any date is allowed, including dates from months ago.</span>
+          <p class="field-error" id="error-date" role="alert" hidden>⚠ Date is required.</p>
+        </div>
+
         <div class="field" style="margin-bottom: 0;">
-          <label class="label" for="field-description">Description <span style="font-weight: var(--font-weight-regular); color: var(--color-fg-muted);">(optional)</span></label>
-          <textarea class="input" id="field-description" name="description" rows="2"></textarea>
+          <label class="label" for="field-description">Description</label>
+          <textarea class="input" id="field-description" name="description" rows="2" placeholder="What was this expense for?" aria-describedby="error-description"></textarea>
+          <p class="field-error" id="error-description" role="alert" hidden>⚠ Description is required.</p>
         </div>
 
         <div class="modal-actions">
