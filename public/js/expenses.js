@@ -132,7 +132,10 @@ function initExpensesApp(doc = document) {
         <td class="logged-by-cell">${escapeHtml(doc, exp.loggedBy)}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
-          <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
+          <div class="row-actions">
+            <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
+            <button class="row-delete-btn" type="button" data-delete-id="${exp.id}">🗑 Delete</button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -143,6 +146,9 @@ function initExpensesApp(doc = document) {
 
     tbody.querySelectorAll('[data-edit-id]').forEach((btn) => {
       btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
+    });
+    tbody.querySelectorAll('[data-delete-id]').forEach((btn) => {
+      btn.addEventListener('click', () => openDeleteModal(btn.getAttribute('data-delete-id')));
     });
   }
 
@@ -440,6 +446,84 @@ function initExpensesApp(doc = document) {
       applyFiltersAndRender();
       showToast('success', 'Expense logged');
     }, 350);
+  });
+
+  // ---------- Delete-confirmation modal ----------
+  const deleteOverlay = doc.getElementById('delete-modal-overlay');
+  const deleteModalWrap = doc.getElementById('delete-modal-wrap');
+  const deleteModalDeleteBtn = doc.getElementById('delete-modal-delete-btn');
+  const confirmSummary = doc.getElementById('confirm-summary');
+  let pendingDeleteId = null;
+  let deleteTimer = null;
+
+  function openDeleteModal(id) {
+    const exp = expenses.find((e) => e.id === id);
+    if (!exp) return;
+    pendingDeleteId = id;
+    confirmSummary.innerHTML = `
+      <div><strong>${escapeHtml(doc, formatDateDisplay(exp.date))}</strong> · ${escapeHtml(doc, exp.category)}</div>
+      <div>${escapeHtml(doc, exp.description) || '—'}</div>
+      <div>Logged by ${escapeHtml(doc, exp.loggedBy)} · ${formatUSD(exp.amount)}</div>
+    `;
+    deleteOverlay.hidden = false;
+    deleteModalWrap.hidden = false;
+    doc.addEventListener('keydown', onDeleteModalKeydown);
+    deleteModalDeleteBtn.focus();
+  }
+
+  function closeDeleteModal() {
+    deleteOverlay.hidden = true;
+    deleteModalWrap.hidden = true;
+    deleteModalDeleteBtn.disabled = false;
+    deleteModalDeleteBtn.textContent = '🗑 Delete expense';
+    doc.removeEventListener('keydown', onDeleteModalKeydown);
+    clearTimeout(deleteTimer);
+    deleteTimer = null;
+    pendingDeleteId = null;
+  }
+
+  function onDeleteModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelDelete();
+    }
+  }
+
+  function cancelDelete() {
+    closeDeleteModal();
+  }
+
+  doc.getElementById('delete-modal-close-btn').addEventListener('click', cancelDelete);
+  doc.getElementById('delete-modal-cancel-btn').addEventListener('click', cancelDelete);
+  deleteOverlay.addEventListener('click', cancelDelete);
+
+  deleteModalDeleteBtn.addEventListener('click', () => {
+    if (!pendingDeleteId) return;
+    const targetId = pendingDeleteId;
+    deleteModalDeleteBtn.disabled = true;
+    deleteModalDeleteBtn.textContent = 'Deleting…';
+
+    const row = doc.querySelector(`[data-delete-id="${targetId}"]`);
+    if (row) row.closest('tr').classList.add('row-removing');
+
+    deleteTimer = setTimeout(() => {
+      if (pendingDeleteId !== targetId) return;
+
+      let updated;
+      try {
+        updated = expenses.filter((e) => e.id !== targetId);
+        persistExpenses(updated);
+      } catch (err) {
+        deleteModalDeleteBtn.disabled = false;
+        deleteModalDeleteBtn.textContent = '🗑 Delete expense';
+        showToast('error', "Couldn't delete expense — please try again");
+        return;
+      }
+      expenses = updated;
+      closeDeleteModal();
+      applyFiltersAndRender();
+      showToast('success', 'Expense deleted');
+    }, 300);
   });
 
   applyFiltersAndRender();
