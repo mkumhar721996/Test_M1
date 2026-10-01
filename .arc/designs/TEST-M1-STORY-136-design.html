@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-136 — Hiring Pipeline: Candidate Lifecycle</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Page-specific styles only — all colour/spacing/radius/type values below are
+    var(--...) references into design-system/tokens.css, matching the pattern
+    already used in guest-profiles.css and hire-profile.css.
+
+    Design-system gap notes (flag for sdlc.design-system-bootstrap, not fixed here):
+      - No dedicated success/danger/warning hue exists. Every status (profile
+        status, run status, validation errors) is distinguished by icon + label
+        + border style (solid/dashed), never by colour alone.
+      - No font-mono alias exists for the reviewer bar's ticket-id label; a
+        literal monospace stack is used below, same exception the base
+        font-family-base token already takes for its sans stack.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .page { max-width: 1040px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .page-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .page-header p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; max-width: 62ch; }
+
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .signed-in-as { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar { display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: flex-end; margin-bottom: var(--space-4); }
+  .toolbar .field { margin-bottom: 0; }
+  .search-field { flex: 1 1 260px; min-width: 220px; }
+  .toolbar-spacer { flex: 1 1 auto; }
+
+  .results-count { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Candidate table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.candidate-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .candidate-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .candidate-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); vertical-align: top; }
+  .candidate-table tbody tr:last-child td { border-bottom: none; }
+  .candidate-row { cursor: pointer; }
+  .candidate-row:hover { background: var(--color-bg); }
+  .candidate-row:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+  .candidate-name-cell { font-weight: var(--font-weight-bold); }
+  .candidate-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .view-link-btn {
+    background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer;
+    padding: var(--space-2) var(--space-3); min-height: 44px;
+  }
+
+  /* ---------- Status chips (profile status + run status) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--none { color: var(--color-fg-muted); }
+  .status-chip--pending { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .status-chip--cancelled { border-style: dashed; color: var(--color-fg-muted); text-decoration: line-through; }
+  .status-chip--completed { border: 1px solid var(--color-primary); color: var(--color-fg); }
+
+  .profile-status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+  .profile-status-chip--active { border-color: var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Empty / not-found states ---------- */
+  .empty-state { padding: var(--space-4); text-align: center; }
+  .empty-state .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state h3 { margin: 0 0 var(--space-1) 0; color: var(--color-fg); font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); }
+  .empty-state p { color: var(--color-fg-muted); margin: 0 auto var(--space-3) auto; max-width: 48ch; }
+  .no-results-note { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); padding: var(--space-4); text-align: center; margin: 0; }
+
+  /* ---------- Consequence / guard notes ---------- */
+  .consequence-note {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3);
+    border: 1px dashed var(--color-primary); border-radius: var(--radius-md); background: var(--color-bg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: var(--space-3);
+  }
+  .guard-note {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3);
+    border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-md); background: var(--color-surface);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-3);
+  }
+  .deactivated-banner {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-md); background: var(--color-surface);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .deactivated-banner[hidden] { display: none; }
+
+  /* ---------- Key/value rows ---------- */
+  .kv-list { border-top: 1px solid var(--color-border); }
+  .kv-row { display: grid; grid-template-columns: 150px 1fr; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+
+  /* ---------- Audit trail ---------- */
+  .audit-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-border); }
+  .audit-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .audit-item:last-child { border-bottom: none; }
+  .audit-actor { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .audit-action { color: var(--color-fg); }
+  .audit-just-now { display: inline-block; margin-left: var(--space-2); padding: 1px var(--space-2); border: 1px solid var(--color-primary); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-fg); }
+
+  /* ---------- Run card ---------- */
+  .run-meta-row { display: flex; justify-content: space-between; gap: var(--space-2); padding: var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); }
+  .run-meta-row .k { color: var(--color-fg-muted); }
+  .run-meta-row .v { color: var(--color-fg); text-align: right; }
+  .progress-track { height: 8px; border-radius: var(--radius-sm); background: var(--color-bg); border: 1px solid var(--color-border); overflow: hidden; margin-top: var(--space-2); }
+  .progress-fill { height: 100%; background: var(--color-primary); transition: width 0.2s ease-out; }
+  @media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
+  .progress-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+  .no-run-note { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+  .fresh-start-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1); margin-top: var(--space-2); padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-primary); border-radius: var(--radius-sm); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg);
+  }
+  .history-toggle { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer; padding: var(--space-2) 0; margin-top: var(--space-3); min-height: 44px; }
+  .history-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; border-top: 1px solid var(--color-border); }
+  .history-list[hidden] { display: none; }
+  .history-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .history-item:last-child { border-bottom: none; }
+
+  /* ---------- Forms ---------- */
+  .field-error-text { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .field-hint { margin: var(--space-1) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .form-banner-error {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); margin-bottom: var(--space-4);
+    border: 2px solid var(--color-fg); border-radius: var(--radius-md); background: var(--color-bg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .form-banner-error[hidden] { display: none; }
+
+  /* ---------- Layout ---------- */
+  .back-link { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px; }
+  .profile-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .profile-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .layout-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
+  @media (min-width: 820px) { .layout-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .card-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); flex-wrap: wrap; }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 0; }
+  .link-btn { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer; padding: var(--space-2) 0; min-height: 44px; text-decoration: underline; }
+
+  /* ---------- Quick-switch preview pills (reviewer aid) ---------- */
+  .preview-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4); padding: var(--space-3); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
+  .preview-switcher .lbl { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-bold); margin-right: var(--space-1); }
+  .pill-btn {
+    background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-lg); padding: var(--space-1) var(--space-3); cursor: pointer; min-height: 32px;
+  }
+  .pill-btn.active { border-color: var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Modal + toast page overrides ---------- */
+  .modal-panel { width: min(92vw, 460px); }
+  .toast { max-width: min(90vw, 340px); }
+
+  /* ---------- Reviewer bar ---------- */
+  #review-bar button {
+    color: var(--color-primary); background: none; border: none; cursor: pointer;
+    font-family: var(--font-family-base); font-size: 13px; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm);
+  }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  #review-bar span[style*="font-mono"] { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;color:var(--color-fg-muted)">TEST-M1-STORY-136</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<!-- App nav: top bar — Hiring Pipeline — Candidates (active) · Onboarding Runs · Reports -->
+
+<script>
+  // ---------------------------------------------------------------------
+  // Fixture data (inline JSON). Shared by the "Candidate Directory —
+  // Populated" and "Candidate Profile" screens. The "Empty state" screen
+  // intentionally keeps its own isolated, empty array so it can
+  // demonstrate the empty→first-candidate transition (AC1, AC2) without
+  // disturbing the main pipeline fixture used elsewhere.
+  // ---------------------------------------------------------------------
+  const MANAGER = 'Morgan Ellis';
+  const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
+
+  const CANDIDATES_SEED = [
+    {
+      id: 'hire_3041',
+      name: 'Jordan Reyes',
+      email: 'jordan.reyes@example.com',
+      phone: '(312) 555-0148',
+      department: 'Engineering',
+      role: 'Software Engineer II',
+      startDate: '2026-10-19',
+      hireStage: 'offer_accepted',
+      profileStatus: 'active',
+      run: { id: 'run_8841', status: 'active', startedAt: '2026-09-22T10:00:00.000Z', tasksDone: 3, totalTasks: 5, freshStart: false },
+      runHistory: [],
+      auditLog: [
+        { ts: '2026-09-15T14:02:00.000Z', actor: MANAGER, action: 'created candidate' },
+        { ts: '2026-09-22T10:00:00.000Z', actor: MANAGER, action: 'updated role, start date' },
+      ],
+    },
+    {
+      id: 'hire_3042',
+      name: 'Alicia Brooks',
+      email: 'alicia.brooks@example.com',
+      phone: '(646) 555-0132',
+      department: 'Product',
+      role: 'Product Manager',
+      startDate: '2026-11-02',
+      hireStage: 'offer_accepted',
+      profileStatus: 'deactivated',
+      run: null,
+      runHistory: [{ id: 'run_8790', status: 'cancelled', reason: 'profile_deactivated' }],
+      auditLog: [
+        { ts: '2026-09-02T09:15:00.000Z', actor: MANAGER, action: 'created candidate' },
+        { ts: '2026-09-10T11:40:00.000Z', actor: MANAGER, action: 'updated start date' },
+        { ts: '2026-09-24T16:05:00.000Z', actor: MANAGER, action: 'rejected candidate' },
+      ],
+    },
+    {
+      id: 'hire_3043',
+      name: 'Marcus Webb',
+      email: 'marcus.webb@example.com',
+      phone: '(702) 555-0119',
+      department: 'Sales',
+      role: 'Account Executive',
+      startDate: '2026-12-01',
+      hireStage: 'draft',
+      profileStatus: 'active',
+      run: null,
+      runHistory: [],
+      auditLog: [
+        { ts: '2026-09-27T13:30:00.000Z', actor: MANAGER, action: 'created candidate' },
+      ],
+    },
+    {
+      id: 'hire_3044',
+      name: 'Priya Chandran',
+      email: 'priya.chandran@example.com',
+      phone: '(415) 555-0177',
+      department: 'People Ops',
+      role: 'People Partner',
+      startDate: '2026-10-26',
+      hireStage: 'offer_accepted',
+      profileStatus: 'active',
+      run: { id: 'run_8902', status: 'active', startedAt: '2026-09-29T08:00:00.000Z', tasksDone: 0, totalTasks: 5, freshStart: true },
+      runHistory: [{ id: 'run_8655', status: 'cancelled', reason: 'profile_deactivated' }],
+      auditLog: [
+        { ts: '2026-08-20T10:00:00.000Z', actor: MANAGER, action: 'created candidate' },
+        { ts: '2026-09-05T09:00:00.000Z', actor: MANAGER, action: 'rejected candidate' },
+        { ts: '2026-09-29T08:00:00.000Z', actor: MANAGER, action: 'reinstated candidate' },
+      ],
+    },
+  ];
+
+  function deepClone(v) { return JSON.parse(JSON.stringify(v)); }
+  function wait(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+  function nowIso() { return new Date().toISOString(); }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function formatDate(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+  function isJustNow(iso) { return Date.now() - new Date(iso).getTime() < 15000; }
+  function normalizePhone(v) { return (v || '').replace(/\D/g, ''); }
+  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function isValidPhone(v) { return normalizePhone(v).length >= 7; }
+
+  function validateCandidate(data) {
+    const fields = {};
+    if (!data.name || !data.name.trim()) fields.name = "Enter the candidate's full name.";
+    if (!data.email || !isValidEmail(data.email)) fields.email = 'Enter a valid email address.';
+    if (!data.phone || !isValidPhone(data.phone)) fields.phone = 'Enter a valid phone number.';
+    if (!data.department) fields.department = 'Select a department.';
+    if (!data.role || !data.role.trim()) fields.role = "Enter the candidate's role.";
+    if (!data.startDate) fields.startDate = 'Choose a start date.';
+    return fields;
+  }
+
+  function departmentOptionsMarkup(selected) {
+    return '<option value="">Select department…</option>' +
+      DEPARTMENTS.map((d) => `<option value="${d}" ${d === selected ? 'selected' : ''}>${d}</option>`).join('');
+  }
+</script>
+
+<div id="screens">
+
+<!-- State: empty (AC1) -->
+<!-- Screen: Candidate Directory — Empty
+     Notes:
+       - Independent, isolated fixture (starts with zero candidates) so the
+         empty→first-candidate flow can be demoed without touching the
+         populated directory fixture used by the other two screens.
+       - "+ Add your first candidate" opens the same create-form pattern
+         (AC2), including inline validation (same rules reused on edit, AC9).
+       - A successful create appends an auditLog entry and the empty state
+         is replaced with a one-row preview — proving the transition live.
+-->
+<div class="screen" data-name="Candidate Directory — Empty">
+  <div class="app-topbar">
+    <span class="brand">Hiring Pipeline</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Candidates</a>
+      <a href="#" onclick="return false;">Onboarding Runs</a>
+      <a href="#" onclick="return false;">Reports</a>
+    </nav>
+    <div class="topbar-actions"><span class="signed-in-as">Signed in as <strong>Morgan Ellis</strong></span></div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Candidates</h1>
+        <p>Track every candidate from application through onboarding — create, update, reject, or reinstate them here.</p>
+      </div>
+    </div>
+
+    <div id="empty-wrap">
+      <div class="card empty-state" id="empty-empty-card">
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No candidates yet</h3>
+        <p>Start your hiring pipeline by adding your first candidate. You'll be able to track their progress, reject them if things don't work out, and reinstate them later — all from one profile.</p>
+        <button class="btn btn-primary" id="empty-add-btn" type="button">+ Add your first candidate</button>
+      </div>
+
+      <div class="card" id="empty-preview-card" hidden>
+        <h3 style="margin:0 0 var(--space-3) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);">Your pipeline has started</h3>
+        <div class="table-scroll">
+          <table class="candidate-table">
+            <thead><tr><th scope="col">Candidate</th><th scope="col">Role &amp; department</th><th scope="col">Status</th><th scope="col" class="col-actions">Actions</th></tr></thead>
+            <tbody id="empty-tbody"></tbody>
+          </table>
+        </div>
+        <p class="u-text-muted" style="font-size:var(--font-size-sm);margin:var(--space-3) 0 0 0;">The full candidate directory (next screen) works exactly the same way, with search and the rest of the pipeline.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create candidate modal (AC2, validation shared with AC9) -->
+  <div class="modal-overlay" id="empty-create-overlay" hidden></div>
+  <div class="modal-wrap" id="empty-create-modal" role="dialog" aria-modal="true" aria-labelledby="empty-create-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="empty-create-title">Add a candidate</h2>
+          <p>All fields are required. New candidates start with status <strong>active</strong>.</p>
+        </div>
+        <button class="icon-btn" id="empty-create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="empty-create-form" novalidate>
+        <div class="field">
+          <label class="label" for="empty-f-name">Full name</label>
+          <input class="input" id="empty-f-name" name="name" type="text" aria-describedby="empty-e-name" />
+          <p class="field-error-text" id="empty-e-name" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="empty-f-email">Email</label>
+          <input class="input" id="empty-f-email" name="email" type="email" aria-describedby="empty-e-email" />
+          <p class="field-error-text" id="empty-e-email" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="empty-f-phone">Phone</label>
+          <input class="input" id="empty-f-phone" name="phone" type="tel" aria-describedby="empty-e-phone" />
+          <p class="field-error-text" id="empty-e-phone" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="empty-f-department">Department</label>
+          <select class="input" id="empty-f-department" name="department" aria-describedby="empty-e-department"></select>
+          <p class="field-error-text" id="empty-e-department" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="empty-f-role">Role</label>
+          <input class="input" id="empty-f-role" name="role" type="text" aria-describedby="empty-e-role" />
+          <p class="field-error-text" id="empty-e-role" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="empty-f-startDate">Start date</label>
+          <input class="input" id="empty-f-startDate" name="startDate" type="date" aria-describedby="empty-e-startDate" />
+          <p class="field-error-text" id="empty-e-startDate" role="alert" hidden></p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="empty-f-stage">Hire stage</label>
+          <select class="input" id="empty-f-stage" name="hireStage">
+            <option value="draft" selected>Draft</option>
+            <option value="offer_accepted">Offer accepted</option>
+          </select>
+          <p class="field-hint">Choosing "Offer accepted" starts the onboarding run immediately.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="empty-create-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="empty-create-save-btn">Create candidate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="empty-toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="empty-toast-message"></span>
+  </div>
+</div>
+
+<!-- State: populated -->
+<!-- Screen: Candidate Directory — Populated
+     Notes:
+       - Lists the shared candidate pipeline (active + deactivated) with
+         search, mirroring the existing Guest directory pattern.
+       - Deactivated candidates stay visible here (unlike the guest
+         directory, which hides deactivated profiles) because a hiring
+         manager needs to see rejected candidates to reinstate them (AC5).
+       - Clicking a row opens that candidate on the Profile screen.
+-->
+<div class="screen" data-name="Candidate Directory — Populated">
+  <div class="app-topbar">
+    <span class="brand">Hiring Pipeline</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Candidates</a>
+      <a href="#" onclick="return false;">Onboarding Runs</a>
+      <a href="#" onclick="return false;">Reports</a>
+    </nav>
+    <div class="topbar-actions"><span class="signed-in-as">Signed in as <strong>Morgan Ellis</strong></span></div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Candidates</h1>
+        <p>Every candidate in the pipeline, active or rejected. Open a row to update, reject, or reinstate.</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field search-field">
+        <label class="label" for="dir-search-input">Search candidates</label>
+        <input class="input" id="dir-search-input" type="search" placeholder="Name, email, role, or department" autocomplete="off" />
+      </div>
+      <div class="toolbar-spacer"></div>
+      <button class="btn btn-primary" id="dir-add-btn" type="button">+ Add candidate</button>
+    </div>
+
+    <p class="results-count" id="dir-results-count" aria-live="polite"></p>
+
+    <div class="card table-card" id="dir-table-wrap">
+      <div class="table-scroll">
+        <table class="candidate-table">
+          <thead>
+            <tr>
+              <th scope="col">Candidate</th>
+              <th scope="col">Role &amp; department</th>
+              <th scope="col">Hire stage</th>
+              <th scope="col">Status</th>
+              <th scope="col">Last updated</th>
+              <th scope="col" class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dir-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="no-results-note" id="dir-no-results" hidden>No candidates match your search. Try a different name, email, role, or department.</p>
+  </div>
+
+  <!-- Create candidate modal (AC2) -->
+  <div class="modal-overlay" id="dir-create-overlay" hidden></div>
+  <div class="modal-wrap" id="dir-create-modal" role="dialog" aria-modal="true" aria-labelledby="dir-create-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="dir-create-title">Add a candidate</h2>
+          <p>All fields are required. New candidates start with status <strong>active</strong>.</p>
+        </div>
+        <button class="icon-btn" id="dir-create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="dir-create-form" novalidate>
+        <div class="field">
+          <label class="label" for="dir-f-name">Full name</label>
+          <input class="input" id="dir-f-name" name="name" type="text" aria-describedby="dir-e-name" />
+          <p class="field-error-text" id="dir-e-name" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="dir-f-email">Email</label>
+          <input class="input" id="dir-f-email" name="email" type="email" aria-describedby="dir-e-email" />
+          <p class="field-error-text" id="dir-e-email" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="dir-f-phone">Phone</label>
+          <input class="input" id="dir-f-phone" name="phone" type="tel" aria-describedby="dir-e-phone" />
+          <p class="field-error-text" id="dir-e-phone" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="dir-f-department">Department</label>
+          <select class="input" id="dir-f-department" name="department" aria-describedby="dir-e-department"></select>
+          <p class="field-error-text" id="dir-e-department" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="dir-f-role">Role</label>
+          <input class="input" id="dir-f-role" name="role" type="text" aria-describedby="dir-e-role" />
+          <p class="field-error-text" id="dir-e-role" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="dir-f-startDate">Start date</label>
+          <input class="input" id="dir-f-startDate" name="startDate" type="date" aria-describedby="dir-e-startDate" />
+          <p class="field-error-text" id="dir-e-startDate" role="alert" hidden></p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="dir-f-stage">Hire stage</label>
+          <select class="input" id="dir-f-stage" name="hireStage">
+            <option value="draft" selected>Draft</option>
+            <option value="offer_accepted">Offer accepted</option>
+          </select>
+          <p class="field-hint">Choosing "Offer accepted" starts the onboarding run immediately.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="dir-create-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="dir-create-save-btn">Create candidate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="dir-toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="dir-toast-message"></span>
+  </div>
+</div>
+
+<!-- State: active-with-run / deactivated / draft-no-run / reinstated-fresh-run / validation-error / blocked-transition -->
+<!-- Screen: Candidate Profile
+     Notes:
+       - One dynamic template renders whichever candidate is selected, like
+         the existing hire-profile.html. The "Preview candidate" pills let a
+         reviewer jump straight to each state without going back to the
+         directory: active+running, deactivated+rejected, active+draft+no
+         run yet, and reinstated-with-fresh-run.
+       - Reject = profileStatus → deactivated + active run cancelled
+         (AC3, AC4). Reinstate = profileStatus → active, a fresh run starts
+         and the old run is not resumed (AC5).
+       - Edit saves last-write-wins (AC6) and is blocked with inline field
+         errors on invalid input, leaving the record unchanged (AC9).
+       - Every create/edit/reject/reinstate appends one auditLog entry
+         { ts, actor, action } (AC7), shown newest-first in Audit trail.
+       - "Demo: attempt again" links reproduce a duplicate/stale request
+         against a record whose state already changed (e.g. a second tab
+         still showing the old state) — the backend guard blocks it and the
+         record is left unchanged (AC8), consistent with the existing
+         reactivateHire guard in src/hires/store.js.
+-->
+<div class="screen" data-name="Candidate Profile">
+  <div class="app-topbar">
+    <span class="brand">Hiring Pipeline</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Candidates</a>
+      <a href="#" onclick="return false;">Onboarding Runs</a>
+      <a href="#" onclick="return false;">Reports</a>
+    </nav>
+    <div class="topbar-actions"><span class="signed-in-as">Signed in as <strong>Morgan Ellis</strong></span></div>
+  </div>
+
+  <div class="page">
+    <button class="back-link" id="prof-back-btn" type="button">← Back to candidate directory</button>
+
+    <div class="preview-switcher">
+      <span class="lbl">Preview candidate:</span>
+      <button class="pill-btn" type="button" data-preview-id="hire_3041">Jordan Reyes · active, run in progress</button>
+      <button class="pill-btn" type="button" data-preview-id="hire_3042">Alicia Brooks · deactivated</button>
+      <button class="pill-btn" type="button" data-preview-id="hire_3043">Marcus Webb · draft, no run yet</button>
+      <button class="pill-btn" type="button" data-preview-id="hire_3044">Priya Chandran · reinstated, fresh run</button>
+    </div>
+
+    <div id="prof-content">
+      <div class="profile-header-row">
+        <div>
+          <h1 id="prof-name" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+          <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="prof-meta"></p>
+        </div>
+        <span id="prof-status-chip"></span>
+      </div>
+
+      <div class="deactivated-banner" id="prof-deactivated-banner" hidden>
+        <span aria-hidden="true">◌</span>
+        <span>This candidate is deactivated (rejected). Their onboarding run was cancelled. Reinstate at any time to set them back to active — a fresh run will start.</span>
+      </div>
+
+      <div class="profile-actions" style="margin-bottom:var(--space-4);">
+        <button class="btn btn-secondary" id="prof-edit-btn" type="button">Edit candidate</button>
+        <button class="btn btn-secondary" id="prof-deactivate-btn" type="button" hidden>Reject / cancel candidate</button>
+        <button class="btn btn-secondary" id="prof-reactivate-btn" type="button" hidden>Reinstate candidate</button>
+      </div>
+
+      <div class="layout-grid">
+        <!-- Profile details -->
+        <div class="card" id="prof-details-view">
+          <h2 class="card-title">Candidate details</h2>
+          <div class="kv-list" id="prof-kv-list"></div>
+        </div>
+
+        <!-- Onboarding run -->
+        <div class="card">
+          <div class="card-header-row">
+            <h2 class="card-title" style="margin:0;">Onboarding run</h2>
+            <span class="status-chip" id="prof-run-chip"></span>
+          </div>
+          <div id="prof-run-body"></div>
+          <button class="history-toggle" id="prof-history-toggle" type="button" aria-expanded="false">Run history (<span id="prof-history-count">0</span>) ▾</button>
+          <ul class="history-list" id="prof-history-list" hidden></ul>
+
+          <div class="guard-note" id="prof-reinstate-guard" hidden>
+            <span aria-hidden="true">ⓘ</span>
+            <span>Already active — there's nothing to reinstate. <button type="button" class="link-btn" id="prof-demo-reinstate-blocked" style="padding:0;min-height:auto;">Demo: attempt to reinstate anyway</button></span>
+          </div>
+        </div>
+
+        <!-- Audit trail (AC7) -->
+        <div class="card">
+          <h2 class="card-title">Audit trail</h2>
+          <ul class="audit-list" id="prof-audit-list"></ul>
+          <div class="guard-note" id="prof-reject-guard" hidden>
+            <span aria-hidden="true">ⓘ</span>
+            <span>Already deactivated — rejecting again has no effect. <button type="button" class="link-btn" id="prof-demo-reject-blocked" style="padding:0;min-height:auto;">Demo: attempt to reject again</button></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit candidate modal (AC6 save / AC9 validation) -->
+  <div class="modal-overlay" id="prof-edit-overlay" hidden></div>
+  <div class="modal-wrap" id="prof-edit-modal" role="dialog" aria-modal="true" aria-labelledby="prof-edit-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="prof-edit-title">Edit candidate</h2>
+          <p>Saving applies immediately — the most recent save always wins.</p>
+        </div>
+        <button class="icon-btn" id="prof-edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <p class="form-banner-error" id="prof-edit-banner-error" role="alert" hidden>
+        <span aria-hidden="true">⚠</span>
+        <span>Fix the highlighted fields below. Nothing has been saved yet.</span>
+      </p>
+      <form id="prof-edit-form" novalidate>
+        <div class="field">
+          <label class="label" for="prof-f-name">Full name</label>
+          <input class="input" id="prof-f-name" name="name" type="text" aria-describedby="prof-e-name" />
+          <p class="field-error-text" id="prof-e-name" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="prof-f-email">Email</label>
+          <input class="input" id="prof-f-email" name="email" type="email" aria-describedby="prof-e-email" />
+          <p class="field-error-text" id="prof-e-email" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="prof-f-phone">Phone</label>
+          <input class="input" id="prof-f-phone" name="phone" type="tel" aria-describedby="prof-e-phone" />
+          <p class="field-error-text" id="prof-e-phone" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="prof-f-department">Department</label>
+          <select class="input" id="prof-f-department" name="department" aria-describedby="prof-e-department"></select>
+          <p class="field-error-text" id="prof-e-department" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="prof-f-role">Role</label>
+          <input class="input" id="prof-f-role" name="role" type="text" aria-describedby="prof-e-role" />
+          <p class="field-error-text" id="prof-e-role" role="alert" hidden></p>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="prof-f-startDate">Start date</label>
+          <input class="input" id="prof-f-startDate" name="startDate" type="date" aria-describedby="prof-e-startDate" />
+          <p class="field-error-text" id="prof-e-startDate" role="alert" hidden></p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="prof-edit-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="prof-edit-save-btn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reject (deactivate) confirm modal (AC3, AC4) -->
+  <div class="modal-overlay" id="prof-deactivate-overlay" hidden></div>
+  <div class="modal-wrap" id="prof-deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="prof-deactivate-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="prof-deactivate-title">Reject this candidate?</h2>
+        <button class="icon-btn" id="prof-deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">⚠</span>
+        <span id="prof-deactivate-copy"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="prof-deactivate-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="prof-deactivate-confirm-btn">Reject candidate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reinstate (reactivate) confirm modal (AC5) -->
+  <div class="modal-overlay" id="prof-reactivate-overlay" hidden></div>
+  <div class="modal-wrap" id="prof-reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="prof-reactivate-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="prof-reactivate-title">Reinstate this candidate?</h2>
+        <button class="icon-btn" id="prof-reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">⚠</span>
+        <span id="prof-reactivate-copy"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="prof-reactivate-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="prof-reactivate-confirm-btn">Reinstate candidate</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="prof-toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="prof-toast-message"></span>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function () {
+  // ---------------------------------------------------------------------
+  // Reviewer bar wiring
+  // ---------------------------------------------------------------------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && !isTypingTarget(e.target)) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !isTypingTarget(e.target)) show(cur - 1);
+    if (e.key === 'Escape') closeAllOverlays();
+  });
+  function isTypingTarget(el) {
+    return el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA');
+  }
+  function closeAllOverlays() {
+    document.querySelectorAll('.modal-wrap, .modal-overlay').forEach((el) => { el.hidden = true; });
+  }
+  window.gotoScreen = show;
+  show(0);
+
+  // ---------------------------------------------------------------------
+  // Shared form helpers
+  // ---------------------------------------------------------------------
+  function clearFieldErrors(prefix, fields) {
+    fields.forEach((f) => {
+      const err = document.getElementById(`${prefix}-e-${f}`);
+      const input = document.getElementById(`${prefix}-f-${f}`);
+      if (err) { err.hidden = true; err.textContent = ''; }
+      if (input) input.classList.remove('input-error');
+    });
+  }
+  function applyFieldErrors(prefix, errors) {
+    Object.keys(errors).forEach((f) => {
+      const err = document.getElementById(`${prefix}-e-${f}`);
+      const input = document.getElementById(`${prefix}-f-${f}`);
+      if (err) { err.hidden = false; err.textContent = `⚠ ${errors[f]}`; }
+      if (input) input.classList.add('input-error');
+    });
+  }
+  const ALL_FIELDS = ['name', 'email', 'phone', 'department', 'role', 'startDate'];
+
+  function readForm(prefix) {
+    return {
+      name: document.getElementById(`${prefix}-f-name`).value.trim(),
+      email: document.getElementById(`${prefix}-f-email`).value.trim(),
+      phone: document.getElementById(`${prefix}-f-phone`).value.trim(),
+      department: document.getElementById(`${prefix}-f-department`).value,
+      role: document.getElementById(`${prefix}-f-role`).value.trim(),
+      startDate: document.getElementById(`${prefix}-f-startDate`).value,
+    };
+  }
+
+  function setBusy(btn, busyLabel, idleLabel) {
+    btn.disabled = true;
+    btn.dataset.idleLabel = idleLabel;
+    btn.textContent = busyLabel;
+  }
+  function clearBusy(btn) {
+    btn.disabled = false;
+    btn.textContent = btn.dataset.idleLabel || btn.textContent;
+  }
+
+  // =======================================================================
+  // Screen: Candidate Directory — Empty
+  // =======================================================================
+  (function emptyScreen() {
+    let candidates = [];
+    const addBtn = document.getElementById('empty-add-btn');
+    const overlay = document.getElementById('empty-create-overlay');
+    const modal = document.getElementById('empty-create-modal');
+    const form = document.getElementById('empty-create-form');
+    const saveBtn = document.getElementById('empty-create-save-btn');
+    const closeBtn = document.getElementById('empty-create-close-btn');
+    const cancelBtn = document.getElementById('empty-create-cancel-btn');
+    const toast = document.getElementById('empty-toast');
+    const toastMsg = document.getElementById('empty-toast-message');
+    let toastTimer = null;
+
+    document.getElementById('empty-f-department').innerHTML = departmentOptionsMarkup('');
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+    function openModal() {
+      form.reset();
+      document.getElementById('empty-f-department').value = '';
+      clearFieldErrors('empty', ALL_FIELDS);
+      overlay.hidden = false;
+      modal.hidden = false;
+      document.getElementById('empty-f-name').focus();
+    }
+    function closeModal() { overlay.hidden = true; modal.hidden = true; }
+
+    addBtn.onclick = openModal;
+    closeBtn.onclick = closeModal;
+    cancelBtn.onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    function render() {
+      document.getElementById('empty-empty-card').hidden = candidates.length > 0;
+      document.getElementById('empty-preview-card').hidden = candidates.length === 0;
+      const tbody = document.getElementById('empty-tbody');
+      tbody.innerHTML = candidates.map((c) => `
+        <tr>
+          <td><span class="candidate-name-cell">${escapeHtml(c.name)}</span><span class="candidate-id">${c.id}</span></td>
+          <td>${escapeHtml(c.role)} · ${escapeHtml(c.department)}</td>
+          <td><span class="profile-status-chip profile-status-chip--active">● Active</span></td>
+          <td class="col-actions"><button class="view-link-btn" type="button" disabled>View (see next screen)</button></td>
+        </tr>
+      `).join('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = readForm('empty');
+      const errors = validateCandidate(data);
+      clearFieldErrors('empty', ALL_FIELDS);
+      if (Object.keys(errors).length > 0) {
+        applyFieldErrors('empty', errors);
+        return;
+      }
+      setBusy(saveBtn, 'Creating…', 'Create candidate');
+      await wait(300);
+      const iso = nowIso();
+      candidates.push({
+        id: 'hire_' + (4000 + candidates.length),
+        ...data,
+        hireStage: document.getElementById('empty-f-stage').value,
+        profileStatus: 'active',
+        run: null,
+        runHistory: [],
+        auditLog: [{ ts: iso, actor: MANAGER, action: 'created candidate' }],
+      });
+      clearBusy(saveBtn);
+      closeModal();
+      render();
+      showToast(`${data.name} added to the pipeline — status active.`);
+    });
+
+    render();
+  })();
+
+  // =======================================================================
+  // Screen: Candidate Directory — Populated  +  Candidate Profile
+  // (share one "candidates" array so edits/reject/reinstate made on the
+  // Profile screen are reflected back in the directory list)
+  // =======================================================================
+  let candidates = deepClone(CANDIDATES_SEED);
+  let currentId = candidates[0].id;
+
+  function findCandidate(id) { return candidates.find((c) => c.id === id); }
+
+  // ---------- Directory ----------
+  const dirSearchInput = document.getElementById('dir-search-input');
+  const dirTbody = document.getElementById('dir-tbody');
+  const dirResultsCount = document.getElementById('dir-results-count');
+  const dirNoResults = document.getElementById('dir-no-results');
+  const dirTableWrap = document.getElementById('dir-table-wrap');
+
+  document.getElementById('dir-f-department').innerHTML = departmentOptionsMarkup('');
+
+  function statusChipMarkup(status) {
+    return status === 'active'
+      ? '<span class="profile-status-chip profile-status-chip--active">● Active</span>'
+      : '<span class="profile-status-chip">○ Deactivated</span>';
+  }
+
+  function renderDirectory() {
+    const q = dirSearchInput.value.trim().toLowerCase();
+    const filtered = candidates.filter((c) => {
+      if (!q) return true;
+      return [c.name, c.email, c.role, c.department].some((v) => v.toLowerCase().includes(q));
+    });
+    dirResultsCount.textContent = `${filtered.length} candidate${filtered.length === 1 ? '' : 's'}${q ? ` matching "${q}"` : ' in the pipeline'}`;
+    dirTableWrap.hidden = filtered.length === 0;
+    dirNoResults.hidden = filtered.length !== 0;
+
+    dirTbody.innerHTML = filtered.map((c) => {
+      const last = c.auditLog[c.auditLog.length - 1];
+      return `
+        <tr class="candidate-row" tabindex="0" data-id="${c.id}">
+          <td><span class="candidate-name-cell">${escapeHtml(c.name)}</span><span class="candidate-id">${c.id}</span></td>
+          <td>${escapeHtml(c.role)}<span class="candidate-id">${escapeHtml(c.department)}</span></td>
+          <td>${c.hireStage === 'offer_accepted' ? 'Offer accepted' : 'Draft'}</td>
+          <td>${statusChipMarkup(c.profileStatus)}</td>
+          <td>${formatDate(last.ts.slice(0, 10))}</td>
+          <td class="col-actions"><button class="view-link-btn" type="button" data-id="${c.id}">View →</button></td>
+        </tr>
+      `;
+    }).join('');
+
+    dirTbody.querySelectorAll('.candidate-row, .view-link-btn').forEach((el) => {
+      el.addEventListener('click', (e) => { e.stopPropagation(); openProfile(el.dataset.id); });
+      if (el.classList.contains('candidate-row')) {
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter') openProfile(el.dataset.id); });
+      }
+    });
+  }
+  dirSearchInput.addEventListener('input', renderDirectory);
+
+  function openProfile(id) {
+    currentId = id;
+    renderProfile();
+    gotoScreen(2);
+  }
+  document.getElementById('prof-back-btn').onclick = () => { renderDirectory(); gotoScreen(1); };
+
+  (function dirCreateModal() {
+    const addBtn = document.getElementById('dir-add-btn');
+    const overlay = document.getElementById('dir-create-overlay');
+    const modal = document.getElementById('dir-create-modal');
+    const form = document.getElementById('dir-create-form');
+    const saveBtn = document.getElementById('dir-create-save-btn');
+    const toast = document.getElementById('dir-toast');
+    const toastMsg = document.getElementById('dir-toast-message');
+    let toastTimer = null;
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+    }
+    function openModal() {
+      form.reset();
+      document.getElementById('dir-f-department').value = '';
+      clearFieldErrors('dir', ALL_FIELDS);
+      overlay.hidden = false; modal.hidden = false;
+      document.getElementById('dir-f-name').focus();
+    }
+    function closeModal() { overlay.hidden = true; modal.hidden = true; }
+
+    addBtn.onclick = openModal;
+    document.getElementById('dir-create-close-btn').onclick = closeModal;
+    document.getElementById('dir-create-cancel-btn').onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = readForm('dir');
+      const errors = validateCandidate(data);
+      clearFieldErrors('dir', ALL_FIELDS);
+      if (Object.keys(errors).length > 0) { applyFieldErrors('dir', errors); return; }
+      setBusy(saveBtn, 'Creating…', 'Create candidate');
+      await wait(300);
+      const iso = nowIso();
+      const hireStage = document.getElementById('dir-f-stage').value;
+      candidates.push({
+        id: 'hire_' + (5000 + candidates.length),
+        ...data,
+        hireStage,
+        profileStatus: 'active',
+        run: hireStage === 'offer_accepted'
+          ? { id: 'run_' + (9000 + candidates.length), status: 'active', startedAt: iso, tasksDone: 0, totalTasks: 5, freshStart: false }
+          : null,
+        runHistory: [],
+        auditLog: [{ ts: iso, actor: MANAGER, action: 'created candidate' }],
+      });
+      clearBusy(saveBtn);
+      closeModal();
+      renderDirectory();
+      showToast(`${data.name} added to the pipeline — status active.`);
+    });
+  })();
+
+  // ---------- Profile ----------
+  const profToast = document.getElementById('prof-toast');
+  const profToastMsg = document.getElementById('prof-toast-message');
+  let profToastTimer = null;
+  function profShowToast(msg) {
+    profToastMsg.textContent = msg;
+    profToast.hidden = false;
+    clearTimeout(profToastTimer);
+    profToastTimer = setTimeout(() => { profToast.hidden = true; }, 3400);
+  }
+
+  document.getElementById('prof-f-department').innerHTML = departmentOptionsMarkup('');
+
+  function runStatusLabel(run) {
+    if (!run) return '<span aria-hidden="true">○</span> No run';
+    if (run.status === 'active') return '<span aria-hidden="true">●</span> Active';
+    if (run.status === 'cancelled') return '<span aria-hidden="true">✕</span> Cancelled';
+    return '<span aria-hidden="true">✓</span> Completed';
+  }
+  function runChipClass(run) {
+    if (!run) return 'status-chip status-chip--none';
+    if (run.status === 'active') return 'status-chip status-chip--active';
+    if (run.status === 'cancelled') return 'status-chip status-chip--cancelled';
+    return 'status-chip status-chip--completed';
+  }
+
+  let historyOpen = false;
+
+  function renderProfile() {
+    const c = findCandidate(currentId);
+    historyOpen = false;
+
+    document.getElementById('prof-name').textContent = c.name;
+    document.getElementById('prof-meta').textContent = `${c.id} · ${c.email}`;
+
+    const statusChip = document.getElementById('prof-status-chip');
+    statusChip.className = 'profile-status-chip' + (c.profileStatus === 'active' ? ' profile-status-chip--active' : '');
+    statusChip.innerHTML = c.profileStatus === 'active'
+      ? '<span aria-hidden="true">●</span> Active'
+      : '<span aria-hidden="true">○</span> Deactivated';
+
+    document.getElementById('prof-deactivated-banner').hidden = c.profileStatus !== 'deactivated';
+    document.getElementById('prof-deactivate-btn').hidden = c.profileStatus !== 'active';
+    document.getElementById('prof-reactivate-btn').hidden = c.profileStatus !== 'deactivated';
+    document.getElementById('prof-reinstate-guard').hidden = c.profileStatus !== 'active';
+    document.getElementById('prof-reject-guard').hidden = c.profileStatus !== 'deactivated';
+
+    document.getElementById('prof-kv-list').innerHTML = `
+      <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value">${escapeHtml(c.email)}</span></div>
+      <div class="kv-row"><span class="kv-label">Phone</span><span class="kv-value">${escapeHtml(c.phone)}</span></div>
+      <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value">${escapeHtml(c.department)}</span></div>
+      <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value">${escapeHtml(c.role)}</span></div>
+      <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value">${formatDate(c.startDate)}</span></div>
+      <div class="kv-row"><span class="kv-label">Hire stage</span><span class="kv-value">${c.hireStage === 'offer_accepted' ? 'Offer accepted ✓' : 'Draft'}</span></div>
+    `;
+
+    const runChip = document.getElementById('prof-run-chip');
+    runChip.className = runChipClass(c.run);
+    runChip.innerHTML = runStatusLabel(c.run);
+
+    const runBody = document.getElementById('prof-run-body');
+    if (c.run) {
+      const pct = Math.round((c.run.tasksDone / c.run.totalTasks) * 100);
+      runBody.innerHTML = `
+        <div class="run-meta-row"><span class="k">Run ID</span><span class="v">${c.run.id}</span></div>
+        <div class="run-meta-row"><span class="k">Started</span><span class="v">${formatDateTime(c.run.startedAt)}</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+        <p class="progress-label">${c.run.tasksDone} of ${c.run.totalTasks} onboarding tasks complete</p>
+        ${c.run.freshStart ? '<span class="fresh-start-tag"><span aria-hidden="true">↻</span> Fresh run after reinstatement</span>' : ''}
+      `;
+    } else {
+      runBody.innerHTML = `<p class="no-run-note">${c.profileStatus === 'deactivated' ? 'No active run — cancelled when this candidate was rejected.' : 'No run yet. A run starts automatically once hire stage is set to "Offer accepted".'}</p>`;
+    }
+
+    document.getElementById('prof-history-count').textContent = c.runHistory.length;
+    const historyList = document.getElementById('prof-history-list');
+    historyList.hidden = true;
+    document.getElementById('prof-history-toggle').setAttribute('aria-expanded', 'false');
+    historyList.innerHTML = c.runHistory.length
+      ? c.runHistory.map((r) => `<li class="history-item">${r.id} — <span class="status-chip status-chip--cancelled" style="display:inline-flex;">✕ Cancelled</span> · ${r.reason === 'profile_deactivated' ? 'cancelled when candidate was rejected' : 'cancelled'}</li>`).join('')
+      : `<li class="history-item">No earlier runs.</li>`;
+
+    const auditList = document.getElementById('prof-audit-list');
+    auditList.innerHTML = [...c.auditLog].reverse().map((a) => `
+      <li class="audit-item">
+        <span class="audit-actor">${escapeHtml(a.actor)}</span> <span class="audit-action">${escapeHtml(a.action)}</span>
+        — ${formatDateTime(a.ts)}${isJustNow(a.ts) ? '<span class="audit-just-now">Just now</span>' : ''}
+      </li>
+    `).join('');
+
+    document.querySelectorAll('.pill-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.previewId === c.id);
+    });
+  }
+
+  document.querySelectorAll('.pill-btn').forEach((btn) => {
+    btn.addEventListener('click', () => { currentId = btn.dataset.previewId; renderProfile(); });
+  });
+
+  document.getElementById('prof-history-toggle').addEventListener('click', () => {
+    historyOpen = !historyOpen;
+    document.getElementById('prof-history-list').hidden = !historyOpen;
+    document.getElementById('prof-history-toggle').setAttribute('aria-expanded', String(historyOpen));
+  });
+
+  // ---- Edit (AC6, AC9) ----
+  (function editModal() {
+    const overlay = document.getElementById('prof-edit-overlay');
+    const modal = document.getElementById('prof-edit-modal');
+    const form = document.getElementById('prof-edit-form');
+    const saveBtn = document.getElementById('prof-edit-save-btn');
+    const bannerError = document.getElementById('prof-edit-banner-error');
+
+    function openModal() {
+      const c = findCandidate(currentId);
+      clearFieldErrors('prof', ALL_FIELDS);
+      bannerError.hidden = true;
+      document.getElementById('prof-f-name').value = c.name;
+      document.getElementById('prof-f-email').value = c.email;
+      document.getElementById('prof-f-phone').value = c.phone;
+      document.getElementById('prof-f-department').value = c.department;
+      document.getElementById('prof-f-role').value = c.role;
+      document.getElementById('prof-f-startDate').value = c.startDate;
+      overlay.hidden = false; modal.hidden = false;
+      document.getElementById('prof-f-name').focus();
+    }
+    function closeModal() { overlay.hidden = true; modal.hidden = true; }
+
+    document.getElementById('prof-edit-btn').onclick = openModal;
+    document.getElementById('prof-edit-close-btn').onclick = closeModal;
+    document.getElementById('prof-edit-cancel-btn').onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = readForm('prof');
+      const errors = validateCandidate(data);
+      clearFieldErrors('prof', ALL_FIELDS);
+      if (Object.keys(errors).length > 0) {
+        applyFieldErrors('prof', errors);
+        bannerError.hidden = false;
+        return; // AC9: rejected, record unchanged, modal stays open with entered values intact
+      }
+      bannerError.hidden = true;
+      setBusy(saveBtn, 'Saving…', 'Save changes');
+      await wait(300);
+      const c = findCandidate(currentId);
+      const changedFields = ALL_FIELDS.filter((f) => String(c[f]) !== String(data[f]));
+      Object.assign(c, data); // AC6: last-write-wins
+      if (changedFields.length > 0) {
+        c.auditLog.push({ ts: nowIso(), actor: MANAGER, action: `updated ${changedFields.join(', ')}` });
+      }
+      clearBusy(saveBtn);
+      closeModal();
+      renderProfile();
+      profShowToast(`Saved changes to ${c.name}.`);
+    });
+  })();
+
+  // ---- Reject / deactivate (AC3, AC4) ----
+  (function deactivateModal() {
+    const overlay = document.getElementById('prof-deactivate-overlay');
+    const modal = document.getElementById('prof-deactivate-modal');
+    const confirmBtn = document.getElementById('prof-deactivate-confirm-btn');
+
+    function openModal() {
+      const c = findCandidate(currentId);
+      document.getElementById('prof-deactivate-copy').textContent =
+        c.run && c.run.status === 'active'
+          ? `Rejecting ${c.name} sets their status to deactivated and cancels their active onboarding run (${c.run.id}). You can reinstate them later — reinstating starts a fresh run.`
+          : `Rejecting ${c.name} sets their status to deactivated. You can reinstate them later — reinstating starts a fresh run.`;
+      overlay.hidden = false; modal.hidden = false;
+    }
+    function closeModal() { overlay.hidden = true; modal.hidden = true; }
+
+    document.getElementById('prof-deactivate-btn').onclick = openModal;
+    document.getElementById('prof-deactivate-close-btn').onclick = closeModal;
+    document.getElementById('prof-deactivate-cancel-btn').onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    confirmBtn.addEventListener('click', async () => {
+      setBusy(confirmBtn, 'Rejecting…', 'Reject candidate');
+      await wait(300);
+      const c = findCandidate(currentId);
+      if (c.run && c.run.status === 'active') {
+        c.runHistory.push({ id: c.run.id, status: 'cancelled', reason: 'profile_deactivated' });
+        c.run = null;
+      }
+      c.profileStatus = 'deactivated';
+      c.auditLog.push({ ts: nowIso(), actor: MANAGER, action: 'rejected candidate' });
+      clearBusy(confirmBtn);
+      closeModal();
+      renderProfile();
+      profShowToast(`${c.name} was rejected. Status: deactivated.`);
+    });
+  })();
+
+  // ---- Reinstate / reactivate (AC5) ----
+  (function reactivateModal() {
+    const overlay = document.getElementById('prof-reactivate-overlay');
+    const modal = document.getElementById('prof-reactivate-modal');
+    const confirmBtn = document.getElementById('prof-reactivate-confirm-btn');
+
+    function openModal() {
+      const c = findCandidate(currentId);
+      document.getElementById('prof-reactivate-copy').textContent =
+        `Reinstating ${c.name} sets their status back to active. A new onboarding run starts from the beginning — the previous run is not resumed.`;
+      overlay.hidden = false; modal.hidden = false;
+    }
+    function closeModal() { overlay.hidden = true; modal.hidden = true; }
+
+    document.getElementById('prof-reactivate-btn').onclick = openModal;
+    document.getElementById('prof-reactivate-close-btn').onclick = closeModal;
+    document.getElementById('prof-reactivate-cancel-btn').onclick = closeModal;
+    overlay.onclick = closeModal;
+
+    confirmBtn.addEventListener('click', async () => {
+      setBusy(confirmBtn, 'Reinstating…', 'Reinstate candidate');
+      await wait(300);
+      const c = findCandidate(currentId);
+      c.profileStatus = 'active';
+      c.run = { id: 'run_' + Math.floor(9000 + Math.random() * 900), status: 'active', startedAt: nowIso(), tasksDone: 0, totalTasks: 5, freshStart: true };
+      c.auditLog.push({ ts: nowIso(), actor: MANAGER, action: 'reinstated candidate' });
+      clearBusy(confirmBtn);
+      closeModal();
+      renderProfile();
+      profShowToast(`${c.name} was reinstated. A fresh onboarding run has started.`);
+    });
+  })();
+
+  // ---- Blocked-transition demos (AC8) ----
+  document.getElementById('prof-demo-reject-blocked').addEventListener('click', async () => {
+    const btn = document.getElementById('prof-demo-reject-blocked');
+    const c = findCandidate(currentId);
+    setBusy(btn, 'Sending…', 'Demo: attempt to reject again');
+    await wait(300);
+    clearBusy(btn);
+    profShowToast(`Blocked — ${c.name} is already deactivated. No changes were made.`);
+  });
+  document.getElementById('prof-demo-reinstate-blocked').addEventListener('click', async () => {
+    const btn = document.getElementById('prof-demo-reinstate-blocked');
+    const c = findCandidate(currentId);
+    setBusy(btn, 'Sending…', 'Demo: attempt to reinstate anyway');
+    await wait(300);
+    clearBusy(btn);
+    profShowToast(`Blocked — ${c.name} is already active. No changes were made.`);
+  });
+
+  renderDirectory();
+  renderProfile();
+})();
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->

@@ -3,6 +3,41 @@ const engineClient = require('../onboarding/engineClient');
 
 const hires = new Map();
 
+const HIRE_STAGES = ['draft', 'offer_accepted'];
+const AUDITABLE_FIELDS = ['name', 'email', 'phone', 'startDate', 'department', 'role', 'hireStage'];
+
+class HireValidationError extends Error {
+  constructor(message, fields = {}) {
+    super(message);
+    this.statusCode = 400;
+    this.fields = fields;
+  }
+}
+
+function isNonEmptyString(v) {
+  return typeof v === 'string' && v.trim().length > 0;
+}
+
+function isValidEmail(v) {
+  return typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function assertValidHire(data) {
+  const fields = {};
+  if (!isNonEmptyString(data.name)) fields.name = "Enter the candidate's full name.";
+  if (!isValidEmail(data.email)) fields.email = 'Enter a valid email address.';
+  if (!isNonEmptyString(data.phone)) fields.phone = 'Enter a valid phone number.';
+  if (!isNonEmptyString(data.department)) fields.department = 'Select a department.';
+  if (!isNonEmptyString(data.role)) fields.role = "Enter the candidate's role.";
+  if (!isNonEmptyString(data.startDate)) fields.startDate = 'Choose a start date.';
+  if (data.hireStage !== undefined && !HIRE_STAGES.includes(data.hireStage)) {
+    fields.hireStage = 'Select a valid hire stage.';
+  }
+  if (Object.keys(fields).length > 0) {
+    throw new HireValidationError('validation_error', fields);
+  }
+}
+
 hires.set('hire_2031', {
   id: 'hire_2031',
   name: 'Jordan Reyes',
@@ -15,15 +50,19 @@ hires.set('hire_2031', {
   profileStatus: 'active',
   run: null,
   runHistory: [],
+  auditLog: [{ ts: '2026-01-01T00:00:00.000Z', actor: 'system', action: 'seeded fixture profile' }],
 });
 
-async function createHire(data) {
+async function createHire(data, actor) {
+  assertValidHire(data);
+
   const hire = {
     ...data,
     id: crypto.randomUUID(),
     profileStatus: 'active',
     run: null,
     runHistory: [],
+    auditLog: [{ ts: new Date().toISOString(), actor, action: 'created candidate' }],
   };
 
   if (hire.hireStage === 'offer_accepted') {
@@ -46,9 +85,13 @@ function listHires() {
   return Array.from(hires.values());
 }
 
-async function updateHire(id, changes) {
+async function updateHire(id, changes, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+
+  assertValidHire({ ...hire, ...changes });
+
+  const changedFields = AUDITABLE_FIELDS.filter((f) => f in changes && changes[f] !== hire[f]);
 
   const hasActiveRun = Boolean(hire.run && hire.run.status === 'active');
   const changingToOfferAccepted = changes.hireStage === 'offer_accepted' && hire.hireStage !== 'offer_accepted';
@@ -73,12 +116,17 @@ async function updateHire(id, changes) {
     Object.assign(hire, changes);
   }
 
+  if (changedFields.length > 0) {
+    hire.auditLog.push({ ts: new Date().toISOString(), actor, action: `updated ${changedFields.join(', ')}` });
+  }
+
   return hire;
 }
 
-async function deactivateHire(id) {
+async function deactivateHire(id, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'deactivated') return hire;
 
   if (hire.run && hire.run.status === 'active') {
     await engineClient.cancelRun(hire.run.id);
@@ -86,10 +134,11 @@ async function deactivateHire(id) {
     hire.run = null;
   }
   hire.profileStatus = 'deactivated';
+  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'rejected candidate' });
   return hire;
 }
 
-async function reactivateHire(id) {
+async function reactivateHire(id, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
   if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
@@ -101,7 +150,16 @@ async function reactivateHire(id) {
   });
   hire.profileStatus = 'active';
   hire.run = { ...run, freshStart: true };
+  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'reinstated candidate' });
   return hire;
 }
 
-module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire };
+module.exports = {
+  HireValidationError,
+  createHire,
+  getHire,
+  listHires,
+  updateHire,
+  deactivateHire,
+  reactivateHire,
+};
