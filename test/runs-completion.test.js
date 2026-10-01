@@ -79,7 +79,7 @@ test('AC7: a missing-field completion logs an error', () => {
 test('AC8: hitting the completion endpoint with a missing-fields payload still returns 200, not an error', async () => {
   const createRes = await request(app).post('/workflows').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
   const workflowId = createRes.body.id;
-  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).send();
+  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).set('x-staff-role', 'manager').send();
 
   const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
   const res = await request(app).post(`/runs/${runRes.body.id}/complete`).send({ name: 'Incomplete' });

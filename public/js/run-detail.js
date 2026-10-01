@@ -211,7 +211,7 @@ function initRunDetailApp(doc, initialRun, api) {
 function createDefaultApi(runId) {
   const post = (action) => fetch(`/runs/${encodeURIComponent(runId)}/${action}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-staff-role': 'manager' },
     body: JSON.stringify({}),
   }).then((res) => {
     if (!res.ok) throw new Error(`request failed with status ${res.status}`);

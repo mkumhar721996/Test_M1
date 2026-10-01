@@ -154,7 +154,7 @@ describe('HTTP', () => {
     const hire = await createHire(hireData);
     const wf = twoStepWorkflow();
 
-    const res = await request(app).post(`/workflows/${wf.workflowId}/runs`).send({ hireId: hire.id });
+    const res = await request(app).post(`/workflows/${wf.workflowId}/runs`).set('x-staff-role', 'manager').send({ hireId: hire.id });
 
     expect(res.status).toBe(201);
     expect(res.body.hireId).toBe(hire.id);
@@ -185,7 +185,7 @@ describe('HTTP', () => {
     const wf = twoStepWorkflow({ requirement: blockingRequirement });
     const run = startRun(wf.workflowId);
 
-    const advanceRes = await request(app).post(`/runs/${run.id}/advance`).send({});
+    const advanceRes = await request(app).post(`/runs/${run.id}/advance`).set('x-staff-role', 'manager').send({});
     expect(advanceRes.status).toBe(200);
     const res = await request(app).get(`/runs/${run.id}`);
 
@@ -197,19 +197,19 @@ describe('HTTP', () => {
   test('POST resolve-requirement then advance resumes a blocked run', async () => {
     const wf = twoStepWorkflow({ requirement: blockingRequirement });
     const run = startRun(wf.workflowId);
-    await request(app).post(`/runs/${run.id}/advance`).send({});
+    await request(app).post(`/runs/${run.id}/advance`).set('x-staff-role', 'manager').send({});
 
-    const resolveRes = await request(app).post(`/runs/${run.id}/resolve-requirement`).send({});
+    const resolveRes = await request(app).post(`/runs/${run.id}/resolve-requirement`).set('x-staff-role', 'hr').send({});
     expect(resolveRes.body.steps[0].requirementMet).toBe(true);
-    const retryRes = await request(app).post(`/runs/${run.id}/advance`).send({});
+    const retryRes = await request(app).post(`/runs/${run.id}/advance`).set('x-staff-role', 'manager').send({});
 
     expect(retryRes.body.status).toBe('active');
     expect(retryRes.body.currentIndex).toBe(1);
   });
 
   test('advance and resolve-requirement return 404 for an unknown run', async () => {
-    expect((await request(app).post('/runs/nope/advance').send({})).status).toBe(404);
-    expect((await request(app).post('/runs/nope/resolve-requirement').send({})).status).toBe(404);
+    expect((await request(app).post('/runs/nope/advance').set('x-staff-role', 'manager').send({})).status).toBe(404);
+    expect((await request(app).post('/runs/nope/resolve-requirement').set('x-staff-role', 'manager').send({})).status).toBe(404);
   });
 
   test('GET /runs lists only hire-linked runs as summaries, including the seeded Jordan Reyes run', async () => {

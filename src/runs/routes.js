@@ -1,6 +1,7 @@
 const express = require('express');
 const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
 const { getHire } = require('../hires/store');
+const { enforceOnboardingRole } = require('./auth');
 
 const router = express.Router();
 
@@ -48,16 +49,16 @@ router.post('/:id/complete', (req, res) => {
   res.status(200).json(run);
 });
 
-router.post('/:id/advance', (req, res) => {
-  const run = advanceStep(req.params.id, req.body.actor);
+router.post('/:id/advance', enforceOnboardingRole, (req, res) => {
+  const run = advanceStep(req.params.id, req.actor);
   if (!run) {
     return res.status(404).json({ error: 'run not found' });
   }
   res.status(200).json(withHire(run));
 });
 
-router.post('/:id/resolve-requirement', (req, res) => {
-  const run = resolveStepRequirement(req.params.id, req.body.actor);
+router.post('/:id/resolve-requirement', enforceOnboardingRole, (req, res) => {
+  const run = resolveStepRequirement(req.params.id, req.actor);
   if (!run) {
     return res.status(404).json({ error: 'run not found' });
   }
