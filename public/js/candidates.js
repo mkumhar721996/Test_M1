@@ -514,6 +514,10 @@ module.exports = { initCandidatesApp, createDefaultApi };
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
     const api = createDefaultApi();
-    api.list().then((candidates) => initCandidatesApp(document, candidates, api));
+    api.list()
+      .then((candidates) => initCandidatesApp(document, candidates, api))
+      .catch((err) => {
+        console.error('Failed to load candidates:', err);
+      });
   });
 }
