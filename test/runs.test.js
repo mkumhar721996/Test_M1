@@ -27,7 +27,7 @@ test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', 
   const createRes = await request(app).post('/workflows').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
   const workflowId = createRes.body.id;
 
-  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).send();
+  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).set('x-staff-role', 'manager').send();
   expect(runRes.status).toBe(201);
   expect(runRes.body.definitionVersion).toBe(1);
 
@@ -49,7 +49,7 @@ test('AC2 (HTTP): a run created after an update is pinned to the new latest vers
     .send({ taskGraph: { tasks: [{ id: 't1', next: ['t2'] }, { id: 't2', next: [] }] } });
   expect(updateRes.body.version).toBe(2);
 
-  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).send();
+  const runRes = await request(app).post(`/workflows/${workflowId}/runs`).set('x-staff-role', 'manager').send();
   expect(runRes.body.definitionVersion).toBe(2);
   expect(runRes.body.taskGraph).toEqual(updateRes.body.taskGraph);
 });

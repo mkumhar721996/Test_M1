@@ -15,6 +15,8 @@ hires.set('hire_2031', {
   profileStatus: 'active',
   run: null,
   runHistory: [],
+  onboardingStatus: null,
+  auditLog: [],
 });
 
 async function createHire(data) {
@@ -24,6 +26,8 @@ async function createHire(data) {
     profileStatus: 'active',
     run: null,
     runHistory: [],
+    onboardingStatus: null,
+    auditLog: [],
   };
 
   if (hire.hireStage === 'offer_accepted') {
@@ -104,4 +108,13 @@ async function reactivateHire(id) {
   return hire;
 }
 
-module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire };
+function appendOnboardingAuditEntry(hireId, actor, action, { completed = false } = {}) {
+  const hire = hires.get(hireId);
+  if (!hire) return undefined;
+  hire.auditLog.push({ ts: new Date().toISOString(), actor, action });
+  if (completed) hire.onboardingStatus = 'completed';
+  else if (!hire.onboardingStatus) hire.onboardingStatus = 'in_progress';
+  return hire;
+}
+
+module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, appendOnboardingAuditEntry };
