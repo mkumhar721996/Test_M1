@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Run Detail — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/runs.css" />
+<script src="./js/run-detail.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="hire-profile.html">Profiles</a>
+      <a href="runs.html" class="active" aria-current="page">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 id="run-heading">Run</h1>
+        <p><span id="run-subheading"></span> Run <span id="run-id-label"></span></p>
+      </div>
+      <span class="status-chip" id="run-status-chip"></span>
+    </div>
+
+    <div class="card" id="run-empty-state" hidden>
+      <div class="empty-state">
+        <p>This onboarding run could not be found.</p>
+        <a class="btn btn-secondary" href="runs.html">Back to runs</a>
+      </div>
+    </div>
+
+    <fieldset class="run-fieldset" id="run-fieldset">
+      <div class="run-layout">
+        <div class="card">
+          <h2 class="card-title" style="margin:0 0 var(--space-1) 0;">Task graph</h2>
+          <p class="progress-label" id="progress-label"></p>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+          <ol class="stepper" id="stepper"><!-- rendered by JS --></ol>
+        </div>
+
+        <div>
+          <div class="card" id="action-card" style="margin-bottom: var(--space-4);">
+            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Current step</h2>
+            <div id="action-panel"><!-- rendered by JS --></div>
+          </div>
+
+          <div class="card hire-record-card" style="margin-bottom: var(--space-4);">
+            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Hire record</h2>
+            <div id="hire-record-body"><!-- rendered by JS --></div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title" style="margin:0;">Audit log</h2>
+            <button class="audit-toggle" id="audit-toggle-btn" type="button" aria-expanded="false">
+              Show entries (<span id="audit-count">0</span>) ▾
+            </button>
+            <ul class="audit-list" id="audit-list" hidden></ul>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="toast" id="error-toast" role="status" aria-live="assertive" hidden>
+    <span aria-hidden="true">⚠</span>
+    <span id="error-toast-message">Couldn't save — step progression failed. Run state unchanged. Try again.</span>
+  </div>
+
+</body>
+</html>

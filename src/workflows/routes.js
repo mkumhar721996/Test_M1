@@ -16,7 +16,7 @@ router.post('/:id/versions', (req, res) => {
 });
 
 router.post('/:id/runs', (req, res) => {
-  const run = startRun(req.params.id);
+  const run = startRun(req.params.id, req.body.hireId);
   if (!run) return res.status(404).json({ error: 'workflow not found' });
   res.status(201).json(run);
 });

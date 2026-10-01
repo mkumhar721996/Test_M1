@@ -41,7 +41,7 @@ test('AC3: the created employee data fields equal exactly the payload fields', (
 test('AC4: a run that is only started, never completed, never gets an employee', () => {
   const run = startTestRun();
 
-  expect(run.status).toBe('in_progress');
+  expect(run.status).toBe('active');
   expect(run.employeeId).toBeFalsy();
 });
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Onboarding runs — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/runs.css" />
+<script src="./js/runs.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="hire-profile.html">Profiles</a>
+      <a href="runs.html" class="active" aria-current="page">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Onboarding runs</h1>
+        <p>Every active, blocked, and completed onboarding run across the task graph.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="runs-table-wrap">
+        <table class="runs-table">
+          <thead>
+            <tr>
+              <th scope="col">New hire</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Current step</th>
+              <th scope="col">Started</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody id="runs-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
