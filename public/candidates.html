@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Candidates — Hiring Pipeline</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/candidates.css" />
+<script src="./js/candidates.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <!-- Screen: Candidate Directory -->
+  <div id="cand-directory-screen">
+    <div class="app-topbar">
+      <span class="brand">Hiring Pipeline</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Candidates</a>
+        <a href="#" onclick="return false;">Onboarding Runs</a>
+        <a href="#" onclick="return false;">Reports</a>
+      </nav>
+      <div class="topbar-actions"><span class="signed-in-as">Signed in as <strong>Morgan Ellis</strong></span></div>
+    </div>
+
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <h1>Candidates</h1>
+          <p>Track every candidate from application through onboarding — create, update, reject, or reinstate them here.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="field search-field">
+          <label class="label" for="cand-search-input">Search candidates</label>
+          <input class="input" id="cand-search-input" type="search" placeholder="Name, email, role, or department" autocomplete="off" />
+        </div>
+        <div class="toolbar-spacer"></div>
+        <button class="btn btn-primary" id="cand-add-btn" type="button">+ Add candidate</button>
+      </div>
+
+      <p class="results-count" id="cand-results-count" aria-live="polite"></p>
+
+      <div class="card empty-state" id="cand-empty-state" hidden>
+        <span class="icon" aria-hidden="true">◎</span>
+        <h3>No candidates yet</h3>
+        <p>Start your hiring pipeline by adding your first candidate. You'll be able to track their progress, reject them if things don't work out, and reinstate them later — all from one profile.</p>
+        <button class="btn btn-primary" id="cand-empty-add-btn" type="button">+ Add your first candidate</button>
+      </div>
+
+      <div class="card table-card" id="cand-table-wrap">
+        <div class="table-scroll">
+          <table class="candidate-table">
+            <thead>
+              <tr>
+                <th scope="col">Candidate</th>
+                <th scope="col">Role &amp; department</th>
+                <th scope="col">Hire stage</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last updated</th>
+                <th scope="col" class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cand-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="no-results-note" id="cand-no-results" hidden>No candidates match your search. Try a different name, email, role, or department.</p>
+    </div>
+
+    <!-- Create candidate modal (AC2, validation shared with AC9) -->
+    <div class="modal-overlay" id="cand-create-overlay" hidden></div>
+    <div class="modal-wrap" id="cand-create-modal" role="dialog" aria-modal="true" aria-labelledby="cand-create-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="cand-create-title">Add a candidate</h2>
+            <p>All fields are required. New candidates start with status <strong>active</strong>.</p>
+          </div>
+          <button class="icon-btn" id="cand-create-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <form id="cand-create-form" novalidate>
+          <div class="field">
+            <label class="label" for="cand-f-name">Full name</label>
+            <input class="input" id="cand-f-name" name="name" type="text" aria-describedby="cand-e-name" />
+            <p class="field-error-text" id="cand-e-name" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-f-email">Email</label>
+            <input class="input" id="cand-f-email" name="email" type="email" aria-describedby="cand-e-email" />
+            <p class="field-error-text" id="cand-e-email" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-f-phone">Phone</label>
+            <input class="input" id="cand-f-phone" name="phone" type="tel" aria-describedby="cand-e-phone" />
+            <p class="field-error-text" id="cand-e-phone" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-f-department">Department</label>
+            <select class="input" id="cand-f-department" name="department" aria-describedby="cand-e-department"></select>
+            <p class="field-error-text" id="cand-e-department" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-f-role">Role</label>
+            <input class="input" id="cand-f-role" name="role" type="text" aria-describedby="cand-e-role" />
+            <p class="field-error-text" id="cand-e-role" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-f-startDate">Start date</label>
+            <input class="input" id="cand-f-startDate" name="startDate" type="date" aria-describedby="cand-e-startDate" />
+            <p class="field-error-text" id="cand-e-startDate" role="alert" hidden></p>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="cand-f-hireStage">Hire stage</label>
+            <select class="input" id="cand-f-hireStage" name="hireStage">
+              <option value="draft" selected>Draft</option>
+              <option value="offer_accepted">Offer accepted</option>
+            </select>
+            <p class="field-hint">Choosing "Offer accepted" starts the onboarding run immediately.</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cand-create-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="cand-create-save-btn">Create candidate</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="cand-toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>
+      <span id="cand-toast-message"></span>
+    </div>
+  </div>
+
+  <!-- Screen: Candidate Profile -->
+  <div id="cand-profile-screen" hidden>
+    <div class="app-topbar">
+      <span class="brand">Hiring Pipeline</span>
+      <nav class="app-nav">
+        <a href="#" class="active" aria-current="page">Candidates</a>
+        <a href="#" onclick="return false;">Onboarding Runs</a>
+        <a href="#" onclick="return false;">Reports</a>
+      </nav>
+      <div class="topbar-actions"><span class="signed-in-as">Signed in as <strong>Morgan Ellis</strong></span></div>
+    </div>
+
+    <div class="page">
+      <button class="back-link" id="cand-back-btn" type="button">← Back to candidate directory</button>
+
+      <div id="cand-prof-content">
+        <div class="profile-header-row">
+          <div>
+            <h1 id="cand-prof-name" style="margin:0 0 var(--space-1) 0;font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);"></h1>
+            <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);" id="cand-prof-meta"></p>
+          </div>
+          <span id="cand-prof-status-chip"></span>
+        </div>
+
+        <div class="deactivated-banner" id="cand-deactivated-banner" hidden>
+          <span aria-hidden="true">◌</span>
+          <span>This candidate is deactivated (rejected). Their onboarding run was cancelled. Reinstate at any time to set them back to active — a fresh run will start.</span>
+        </div>
+
+        <div class="profile-actions" style="margin-bottom:var(--space-4);">
+          <button class="btn btn-secondary" id="cand-edit-btn" type="button">Edit candidate</button>
+          <button class="btn btn-secondary" id="cand-deactivate-btn" type="button" hidden>Reject / cancel candidate</button>
+          <button class="btn btn-secondary" id="cand-reactivate-btn" type="button" hidden>Reinstate candidate</button>
+        </div>
+
+        <div class="layout-grid">
+          <!-- Candidate details -->
+          <div class="card">
+            <h2 class="card-title">Candidate details</h2>
+            <div class="kv-list" id="cand-kv-list"></div>
+          </div>
+
+          <!-- Onboarding run -->
+          <div class="card">
+            <div class="card-header-row">
+              <h2 class="card-title" style="margin:0;">Onboarding run</h2>
+              <span class="status-chip" id="cand-run-chip"></span>
+            </div>
+            <div id="cand-run-body"></div>
+            <button class="history-toggle" id="cand-history-toggle" type="button" aria-expanded="false">Run history (<span id="cand-history-count">0</span>) ▾</button>
+            <ul class="history-list" id="cand-history-list" hidden></ul>
+
+            <div class="guard-note" id="cand-reinstate-guard" hidden>
+              <span aria-hidden="true">ⓘ</span>
+              <span>Already active — there's nothing to reinstate.</span>
+            </div>
+          </div>
+
+          <!-- Audit trail (AC7) -->
+          <div class="card">
+            <h2 class="card-title">Audit trail</h2>
+            <ul class="audit-list" id="cand-audit-list"></ul>
+            <div class="guard-note" id="cand-reject-guard" hidden>
+              <span aria-hidden="true">ⓘ</span>
+              <span>Already deactivated — rejecting again has no effect.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit candidate modal (AC6 save / AC9 validation) -->
+    <div class="modal-overlay" id="cand-edit-overlay" hidden></div>
+    <div class="modal-wrap" id="cand-edit-modal" role="dialog" aria-modal="true" aria-labelledby="cand-edit-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="cand-edit-title">Edit candidate</h2>
+            <p>Saving applies immediately — the most recent save always wins.</p>
+          </div>
+          <button class="icon-btn" id="cand-edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+        </div>
+        <p class="form-banner-error" id="cand-edit-banner-error" role="alert" hidden>
+          <span aria-hidden="true">⚠</span>
+          <span>Fix the highlighted fields below. Nothing has been saved yet.</span>
+        </p>
+        <form id="cand-edit-form" novalidate>
+          <div class="field">
+            <label class="label" for="cand-ef-name">Full name</label>
+            <input class="input" id="cand-ef-name" name="name" type="text" aria-describedby="cand-ee-name" />
+            <p class="field-error-text" id="cand-ee-name" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-ef-email">Email</label>
+            <input class="input" id="cand-ef-email" name="email" type="email" aria-describedby="cand-ee-email" />
+            <p class="field-error-text" id="cand-ee-email" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-ef-phone">Phone</label>
+            <input class="input" id="cand-ef-phone" name="phone" type="tel" aria-describedby="cand-ee-phone" />
+            <p class="field-error-text" id="cand-ee-phone" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-ef-department">Department</label>
+            <select class="input" id="cand-ef-department" name="department" aria-describedby="cand-ee-department"></select>
+            <p class="field-error-text" id="cand-ee-department" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="cand-ef-role">Role</label>
+            <input class="input" id="cand-ef-role" name="role" type="text" aria-describedby="cand-ee-role" />
+            <p class="field-error-text" id="cand-ee-role" role="alert" hidden></p>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="cand-ef-startDate">Start date</label>
+            <input class="input" id="cand-ef-startDate" name="startDate" type="date" aria-describedby="cand-ee-startDate" />
+            <p class="field-error-text" id="cand-ee-startDate" role="alert" hidden></p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cand-edit-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="cand-edit-save-btn">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reject (deactivate) confirm modal (AC3, AC4) -->
+    <div class="modal-overlay" id="cand-deactivate-overlay" hidden></div>
+    <div class="modal-wrap" id="cand-deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="cand-deactivate-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="cand-deactivate-title">Reject this candidate?</h2>
+          <button class="icon-btn" id="cand-deactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <div class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span id="cand-deactivate-copy"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cand-deactivate-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="cand-deactivate-confirm-btn">Reject candidate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reinstate (reactivate) confirm modal (AC5) -->
+    <div class="modal-overlay" id="cand-reactivate-overlay" hidden></div>
+    <div class="modal-wrap" id="cand-reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="cand-reactivate-title" hidden>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="cand-reactivate-title">Reinstate this candidate?</h2>
+          <button class="icon-btn" id="cand-reactivate-close-btn" type="button" aria-label="Close dialog">✕</button>
+        </div>
+        <div class="consequence-note">
+          <span aria-hidden="true">⚠</span>
+          <span id="cand-reactivate-copy"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cand-reactivate-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="cand-reactivate-confirm-btn">Reinstate candidate</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="cand-prof-toast" role="status" aria-live="polite" hidden>
+      <span aria-hidden="true">✓</span>
+      <span id="cand-prof-toast-message"></span>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -52,3 +52,28 @@ test('POST /hires/:id/deactivate then /reactivate starts a fresh Run', async () 
   expect(reactivateRes.status).toBe(200);
   expect(reactivateRes.body.run).toMatchObject({ status: 'active', freshStart: true });
 });
+
+test('security: a path-traversal-shaped id is treated as a literal id and 404s safely', async () => {
+  const res = await request(app).get('/hires/' + encodeURIComponent('../../etc/passwd'));
+  expect(res.status).toBe(404);
+});
+
+test('security: PATCH cannot directly set profileStatus, auditLog, run, or id', async () => {
+  const createRes = await request(app).post('/hires').send({ name: 'A', email: 'a@x.com',
+    phone: '5551234567', startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'draft' });
+  const { id } = createRes.body;
+  const res = await request(app).patch(`/hires/${id}`).send({
+    profileStatus: 'deactivated', auditLog: [{ ts: 'x', actor: 'attacker', action: 'faked' }], run: { status: 'active' }, id: 'hijacked',
+  });
+  expect(res.status).toBe(200);
+  expect(res.body.profileStatus).toBe('active');
+  expect(res.body.id).toBe(id);
+  expect(res.body.auditLog).not.toContainEqual(expect.objectContaining({ actor: 'attacker' }));
+});
+
+test('TEST-M1-STORY-136 AC9: POST /hires with a malformed field responds 400 with field errors', async () => {
+  const res = await request(app).post('/hires').send({ name: '', email: 'not-an-email', phone: '5551234567',
+    startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'draft' });
+  expect(res.status).toBe(400);
+  expect(res.body).toMatchObject({ error: 'validation_error', fields: { name: expect.any(String), email: expect.any(String) } });
+});

@@ -1,5 +1,5 @@
 const express = require('express');
-const { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
 
 const router = express.Router();
 
@@ -22,9 +22,12 @@ router.get('/', (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const hire = await createHire(req.body);
+    const hire = await createHire(req.body, req.body.actor);
     res.status(201).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) {
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    }
     next(err);
   }
 });
@@ -43,19 +46,22 @@ router.get('/:id', (req, res, next) => {
 
 router.patch('/:id', async (req, res, next) => {
   try {
-    const hire = await updateHire(req.params.id, pickPatchableFields(req.body));
+    const hire = await updateHire(req.params.id, pickPatchableFields(req.body), req.body.actor);
     if (!hire) {
       return res.status(404).json({ error: 'hire not found' });
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) {
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    }
     next(err);
   }
 });
 
 router.post('/:id/deactivate', async (req, res, next) => {
   try {
-    const hire = await deactivateHire(req.params.id);
+    const hire = await deactivateHire(req.params.id, req.body.actor);
     if (!hire) {
       return res.status(404).json({ error: 'hire not found' });
     }
@@ -67,7 +73,7 @@ router.post('/:id/deactivate', async (req, res, next) => {
 
 router.post('/:id/reactivate', async (req, res, next) => {
   try {
-    const hire = await reactivateHire(req.params.id);
+    const hire = await reactivateHire(req.params.id, req.body.actor);
     if (!hire) {
       return res.status(404).json({ error: 'hire not found' });
     }
