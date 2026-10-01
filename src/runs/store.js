@@ -131,7 +131,7 @@ function completeRun(runId, payload = {}) {
     return run;
   }
 
-  const employee = createEmployee({ ...payload, employmentStatus: 'active' });
+  const employee = createEmployee({ ...payload, employmentStatus: 'active' }, 'System');
   run.status = 'completed';
   run.employeeId = employee.id;
   return run;

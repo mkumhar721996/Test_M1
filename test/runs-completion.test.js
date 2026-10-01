@@ -33,7 +33,7 @@ test('AC3: the created employee data fields equal exactly the payload fields', (
 
   const completed = completeRun(run.id, fullPayload);
   const employee = getEmployee(completed.employeeId);
-  const { id, employmentStatus, ...rest } = employee;
+  const { id, employmentStatus, auditLog, ...rest } = employee;
 
   expect(rest).toEqual(fullPayload);
 });

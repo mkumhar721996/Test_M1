@@ -57,12 +57,13 @@ describe('POST /workflows/:id/runs', () => {
 
   test('without a role it is 401 and does not touch the hire record', async () => {
     const hire = await createHire(hireData);
+    const before = getHire(hire.id).auditLog.length;
     const wf = blockedWorkflow();
 
     const res = await start(wf.workflowId).send({ hireId: hire.id });
 
     expect(res.status).toBe(401);
-    expect(getHire(hire.id).auditLog).toEqual([]);
+    expect(getHire(hire.id).auditLog).toHaveLength(before);
     expect(getHire(hire.id).onboardingStatus).toBeNull();
   });
 
