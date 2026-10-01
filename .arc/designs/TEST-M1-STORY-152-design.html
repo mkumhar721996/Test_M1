@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-152 — User Account and Role Management</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Reviewer bar buttons ---------- */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .viewer-switcher { display: flex; align-items: center; gap: var(--space-2); }
+  .viewer-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+  .viewer-switcher select { width: auto; min-width: 200px; }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar { display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: flex-end; justify-content: space-between; margin-bottom: var(--space-3); }
+  .toolbar .field { margin-bottom: 0; }
+  .search-field { flex: 1 1 260px; min-width: 220px; }
+  .results-count { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Forms ---------- */
+  .field-error-text { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .field-error-text[hidden] { display: none; }
+  .input-error { border-width: 2px; border-color: var(--color-fg); }
+  .role-checklist { display: flex; flex-direction: column; gap: var(--space-2); }
+  .role-option { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); min-height: 44px; }
+  .role-option input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; flex: 0 0 auto; }
+  .role-option-text strong { display: block; font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .role-option-text span { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- User table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.user-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+  .user-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .user-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); vertical-align: top; }
+  .user-table tbody tr:last-child td { border-bottom: none; }
+  .user-name-cell { font-weight: var(--font-weight-bold); }
+  .user-email { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .role-chips { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .row-action-btn {
+    background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer;
+    padding: var(--space-2) var(--space-3); min-height: 44px;
+  }
+  .row-action-btn.danger-text { color: var(--color-fg); text-decoration: underline; }
+
+  /* ---------- Status / role chips (never color alone: border style + icon + label) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .role-chip { border: 1px solid var(--color-border); }
+  .role-chip--admin { border: 1px solid var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Empty / access-denied / error states ---------- */
+  .empty-state, .error-state, .access-denied-panel { padding: var(--space-4); text-align: center; }
+  .empty-state .icon, .error-state .icon, .access-denied-panel .icon { font-size: 1.75rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p, .error-state p, .access-denied-panel p { color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state h3, .error-state h3, .access-denied-panel h3 { margin: 0 0 var(--space-1) 0; color: var(--color-fg); font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-border); width: 70%; }
+  .skeleton-bar.short { width: 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-bar { animation: pulse 1.2s ease-in-out infinite; }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* ---------- Toast ---------- */
+  #toast-root { position: fixed; bottom: var(--space-4); right: var(--space-4); z-index: 500; display: flex; flex-direction: column; gap: var(--space-2); }
+
+  /* ---------- Session / permissions panel (AC5, AC6) ---------- */
+  .session-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
+  @media (min-width: 820px) { .session-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+  .permission-list { list-style: none; margin: 0; padding: 0; }
+  .permission-list li { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .permission-list li:last-child { border-bottom: none; }
+  .permission-list li.denied { color: var(--color-fg-muted); }
+  .permission-list .mark { width: 20px; display: inline-block; text-align: center; }
+  .effect-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-3) 0 0 0; }
+  .admin-console-card { border-style: dashed; }
+
+  /* ---------- Sign-in screen ---------- */
+  .signin-wrap { max-width: 420px; margin: 0 auto; }
+  .try-as-row { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .try-as-chip { background: var(--color-bg); border: 1px solid var(--color-border); color: var(--color-fg); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); cursor: pointer; min-height: 44px; }
+  .signin-error { display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); margin-bottom: var(--space-4); border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-md); background: var(--color-surface); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .signin-error[hidden] { display: none; }
+  .signin-success-card { text-align: left; }
+  .signin-success-card .icon { font-size: 1.5rem; }
+
+  /* ---------- Read-only expense history (AC8) ---------- */
+  .readonly-banner { display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); margin-bottom: var(--space-4); border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-md); background: var(--color-surface); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .readonly-banner strong { color: var(--color-fg); }
+  table.history-table { width: 100%; border-collapse: collapse; }
+  .history-table th { text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .history-table td { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .history-table tr:last-child td { border-bottom: none; }
+  .readonly-tag { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) { .reference-grid { grid-template-columns: repeat(2, 1fr); } }
+  .reference-grid h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+  .mini-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); }
+  .mini-list { list-style: none; margin: 0; padding: 0; }
+  .mini-list li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); display: flex; justify-content: space-between; gap: var(--space-2); }
+  .mini-list li:last-child { border-bottom: none; }
+  .mini-list .m-muted { color: var(--color-fg-muted); }
+
+  /* Error/denied emphasis uses border STYLE (dashed) + icon + label, never a new hue — tokens.json
+     has no dedicated error/danger color, so introducing one here would be a design-system gap,
+     not a page-level decision. Flagging for design-system owners if a future story needs one. */
+</style>
+</head>
+<!-- App nav: top bar — Expenses · Employees · Users (active). Matches the "Expense Tracker"
+     nav already established by the earlier Create/Edit/Filter Expense and Employee Record
+     prototypes for this product, so User & Role Management reads as a natural extension of
+     the same admin surface rather than a new product. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-152</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "roleLabels": { "admin": "Admin", "finance": "Finance", "employee": "Employee" },
+    "roleDescriptions": {
+      "admin": "Full access, including creating and managing user accounts.",
+      "finance": "Approves expenses and manages financial records.",
+      "employee": "Logs and views their own expenses."
+    },
+    "users": [
+      {
+        "id": "usr_001", "name": "Priya Shah", "email": "priya.shah@company.com",
+        "roles": ["admin", "finance"], "status": "active",
+        "lastActive": "2026-09-29T15:12:00.000Z", "createdAt": "2025-03-10T09:00:00.000Z"
+      },
+      {
+        "id": "usr_002", "name": "Morgan Ellis", "email": "morgan.ellis@company.com",
+        "roles": ["employee"], "status": "active",
+        "lastActive": "2026-09-30T08:45:00.000Z", "createdAt": "2025-04-02T09:00:00.000Z"
+      },
+      {
+        "id": "usr_003", "name": "Devon Ruiz", "email": "devon.ruiz@company.com",
+        "roles": ["employee"], "status": "active",
+        "lastActive": "2026-09-28T13:20:00.000Z", "createdAt": "2025-05-18T09:00:00.000Z"
+      },
+      {
+        "id": "usr_004", "name": "Elena Brooks", "email": "elena.brooks@company.com",
+        "roles": ["employee", "finance"], "status": "deactivated",
+        "lastActive": "2026-06-02T10:00:00.000Z", "deactivatedAt": "2026-06-10T09:30:00.000Z",
+        "createdAt": "2025-02-01T09:00:00.000Z"
+      }
+    ],
+    "elenaExpenses": [
+      { "id": "EXP-2988", "date": "2026-04-02", "category": "Software", "description": "Design tool license renewal", "amount": 129.00, "loggedBy": "Elena Brooks", "approvedBy": "—" },
+      { "id": "EXP-3001", "date": "2026-05-14", "category": "Travel", "description": "Regional sales conference flights", "amount": 482.10, "loggedBy": "Morgan Ellis", "approvedBy": "Elena Brooks" },
+      { "id": "EXP-3012", "date": "2026-05-29", "category": "Meals", "description": "Client dinner — Q2 renewal", "amount": 96.40, "loggedBy": "Elena Brooks", "approvedBy": "Elena Brooks" }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: User & Role Management (interactive)
+         Notes:
+           - "Signed in as" (top right) swaps who is viewing this screen. Pick "Priya Shah
+             (Admin)" to see the full user list and management tools. Pick "Morgan Ellis
+             (Employee)" to see this screen replaced with an access-denied panel — no table,
+             no actions — satisfying AC10.
+           - The table lists every account regardless of status; Elena Brooks shows a
+             dashed "Deactivated" chip so her status is clear at a glance (AC9).
+           - "+ New user" opens a form with Full name, Email, and a role checklist. Submit
+             with no role checked to see an inline error and the form stays open with your
+             typed values intact (AC3). Check at least one role and submit to see the modal
+             close, a success toast, and the new account appear at the top of the table as
+             Active (AC1, AC2).
+           - "Edit roles" on any row opens the same checklist pre-filled with that user's
+             current roles. Add or remove a role and save — the row's chips update
+             immediately and a toast confirms the change takes effect on that person's next
+             action, with no new account created (AC5). Unchecking every role is blocked
+             with the same inline error as creation.
+           - "Deactivate" asks for confirmation naming the consequence (can't sign in;
+             expenses stay visible as read-only history), then flips the row to a
+             "Deactivated" chip and swaps the action to "Reactivate" (AC7, AC9).
+           - Search filters by name or email across all accounts, active or deactivated.
+    -->
+    <div class="screen" data-name="User & Role Management">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" class="active" aria-current="page">Users</a>
+        </nav>
+        <div class="topbar-actions">
+          <div class="viewer-switcher">
+            <label for="viewer-select">Signed in as</label>
+            <select class="input" id="viewer-select">
+              <option value="usr_001">Priya Shah (Admin)</option>
+              <option value="usr_003">Devon Ruiz (Employee)</option>
+              <option value="usr_002">Morgan Ellis (Employee)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>User &amp; role management</h1>
+          <p>Create accounts, assign roles, and deactivate access — all from this screen.</p>
+        </div>
+
+        <!-- State: access-denied (AC10) -->
+        <div class="card access-denied-panel" id="um-access-denied" hidden role="alert">
+          <span class="icon" aria-hidden="true">⛔</span>
+          <h3>You don't have access to this page</h3>
+          <p>User &amp; role management is limited to Admin and Finance accounts. Switch to Priya Shah (Admin) above to view it, or ask an administrator for the Admin or Finance role.</p>
+        </div>
+
+        <!-- State: um-content (table + toolbar) -->
+        <div id="um-content">
+          <div class="toolbar">
+            <div class="field search-field">
+              <label class="label" for="user-search-input">Search users</label>
+              <input class="input" id="user-search-input" type="search" placeholder="Name or email" autocomplete="off" />
+            </div>
+            <button class="btn btn-primary" id="new-user-btn" type="button">+ New user</button>
+          </div>
+
+          <p class="results-count" id="um-results-count" aria-live="polite"></p>
+
+          <!-- State: um-loading (skeleton rows, ~300ms) -->
+          <div class="card table-card" id="um-table-wrap">
+            <div class="table-scroll">
+              <table class="user-table">
+                <thead>
+                  <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Roles</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Last active</th>
+                    <th scope="col" class="col-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="user-tbody"><!-- rendered by JS --></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- State: um-empty (search yields no matches) -->
+          <div class="card empty-state" id="um-empty" hidden>
+            <span class="icon" aria-hidden="true">◎</span>
+            <h3>No accounts match "<span class="empty-query"></span>"</h3>
+            <p>Check the spelling, or clear your search and create a new account instead.</p>
+            <button class="btn btn-secondary" id="um-clear-search-btn" type="button">Clear search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Sign-in (interactive)
+         Notes:
+           - "Try a sample account" fills the email for a quick demo; password is never
+             validated in this prototype (any value is accepted).
+           - Jordan Avery (active) signs in successfully and lands on a role-appropriate
+             dashboard preview (AC4). Elena Brooks (deactivated) is rejected with an inline
+             error naming the reason, and the password field is cleared for security while
+             the email stays so the user can see what they tried (AC7).
+    -->
+    <div class="screen" data-name="Sign-in">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+      </div>
+      <div class="page">
+        <div class="signin-wrap">
+          <div class="page-header">
+            <h1>Sign in</h1>
+            <p>Use your work email and password.</p>
+          </div>
+
+          <div class="try-as-row">
+            <button class="try-as-chip" type="button" data-try="jordan.avery@company.com">Try: Jordan Avery (active)</button>
+            <button class="try-as-chip" type="button" data-try="elena.brooks@company.com">Try: Elena Brooks (deactivated)</button>
+          </div>
+
+          <!-- State: signin-error (AC7) -->
+          <div class="signin-error" id="signin-error" hidden role="alert">
+            <span aria-hidden="true">⚠</span>
+            <span id="signin-error-text"></span>
+          </div>
+
+          <!-- State: signin-form -->
+          <form id="signin-form" novalidate>
+            <div class="field">
+              <label class="label" for="signin-email">Work email</label>
+              <input class="input" id="signin-email" type="email" placeholder="you@company.com" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label class="label" for="signin-password">Password</label>
+              <input class="input" id="signin-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="btn btn-primary" id="signin-submit-btn" type="submit" style="width:100%;">Sign in</button>
+          </form>
+
+          <!-- State: signin-success (AC4) -->
+          <div class="card signin-success-card" id="signin-success" hidden>
+            <span class="icon" aria-hidden="true">✓</span>
+            <h2 class="card-title" id="signin-success-name" style="margin-top:var(--space-2);"></h2>
+            <p class="card-body" id="signin-success-roles"></p>
+            <p class="u-text-sm u-text-muted" style="margin-top:var(--space-3);">Sign-in succeeded because this account is active and was created with at least one role assigned.</p>
+            <button class="btn btn-secondary" id="signin-reset-btn" type="button" style="margin-top:var(--space-4);">Sign out / try another account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Role Changes Take Effect Immediately (interactive)
+         Notes:
+           - Devon Ruiz is already signed in with the Employee role only — notice "Approve
+             expenses" is greyed out and marked "not available with current roles."
+           - Click "Grant Finance role" in the admin console on the right (simulating a
+             finance/admin user editing Devon's account from the previous screen). Devon's
+             permission list updates immediately, without Devon signing out or a new account
+             being created (AC5).
+           - Click "Devon tries: Approve expenses" to see the action succeed now that the
+             Finance role is present — this is the "next action" the acceptance criteria
+             describes (AC6). Click "Remove Finance role" and try again to see it blocked
+             once more, still without signing out.
+    -->
+    <div class="screen" data-name="Role Change Takes Effect">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Users</a>
+        </nav>
+        <div class="topbar-actions"><span class="signed-in-as" style="font-family:var(--font-family-base);font-size:var(--font-size-sm);color:var(--color-fg-muted);">Signed in as <strong>Devon Ruiz</strong></span></div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Role change, live session</h1>
+          <p>Shows what Devon sees while an admin changes their roles elsewhere — no re-login required.</p>
+        </div>
+
+        <div class="session-grid">
+          <div class="card">
+            <h2 class="card-title">Devon Ruiz's permissions</h2>
+            <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Current roles: <span id="devon-role-chips"></span></p>
+            <ul class="permission-list" id="devon-permission-list"></ul>
+            <button class="btn btn-secondary" id="devon-try-approve-btn" type="button" style="margin-top:var(--space-4);">Devon tries: Approve expenses</button>
+            <p class="effect-note" id="devon-try-result" aria-live="polite"></p>
+          </div>
+
+          <div class="card admin-console-card">
+            <h2 class="card-title">Admin console (simulated)</h2>
+            <p class="u-text-sm u-text-muted">Acting as Priya Shah (Admin), editing Devon Ruiz's account.</p>
+            <button class="btn btn-primary" id="grant-finance-btn" type="button" style="margin-top:var(--space-3);">Grant Finance role to Devon</button>
+            <button class="btn btn-secondary" id="remove-finance-btn" type="button" style="margin-top:var(--space-2);" hidden>Remove Finance role from Devon</button>
+            <p class="effect-note" id="admin-console-note"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Deactivated Account — Expense History (read-only)
+         Notes:
+           - Elena Brooks's account is deactivated, but every expense she logged or approved
+             stays fully visible, attributed to her by name, with a "Read-only" tag instead
+             of edit controls — satisfying AC8. Nothing here can be edited or deleted.
+    -->
+    <div class="screen" data-name="Deactivated Account — Expense History">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Users</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-1);">
+          <div>
+            <h1 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0 0 var(--space-1) 0;">Elena Brooks</h1>
+            <p class="u-text-muted" style="margin:0;font-size:var(--font-size-sm);">elena.brooks@company.com · Account deactivated Jun 10, 2026</p>
+          </div>
+          <span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span>
+        </div>
+
+        <div class="readonly-banner">
+          <span aria-hidden="true">◌</span>
+          <span>This account can no longer sign in. The expenses below are kept as <strong>read-only history</strong> tied to Elena's account — they're still visible to the team, but nothing here can be edited.</span>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Expenses logged or approved by Elena</h2>
+          <table class="history-table">
+            <thead>
+              <tr><th scope="col">Date</th><th scope="col">Category</th><th scope="col">Description</th><th scope="col">Amount</th><th scope="col">Logged by</th><th scope="col">Approved by</th><th scope="col"></th></tr>
+            </thead>
+            <tbody id="elena-history-tbody"><!-- rendered by JS --></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of states not easily reached by clicking through
+             the interactive screens (loading, error), plus a quick recap of each
+             acceptance criterion for reviewers scanning without driving the flows.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Users</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots of the key states called out in the acceptance criteria.</p>
+        </div>
+
+        <div class="reference-grid">
+
+          <div class="mini-card">
+            <h3>Create with no role checked</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <p class="field-error-text" style="margin:0;">⚠ Select at least one role so this account has permissions to sign in with.</p>
+          </div>
+
+          <div class="mini-card">
+            <h3>New account appears in the list</h3>
+            <span class="ac-tag">Satisfies AC1, AC2</span>
+            <ul class="mini-list">
+              <li>Jordan Avery <span class="m-muted">Employee · Active</span></li>
+              <li class="m-muted">Appears at the top of the table immediately after creation</li>
+            </ul>
+          </div>
+
+          <div class="mini-card">
+            <h3>Deactivated account, visible with clear status</h3>
+            <span class="ac-tag">Satisfies AC9</span>
+            <p style="margin:0 0 var(--space-2) 0;"><span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span></p>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">Elena Brooks still appears in the user list, clearly marked — never hidden or removed.</p>
+          </div>
+
+          <div class="mini-card">
+            <h3>Deactivated account can't sign in</h3>
+            <span class="ac-tag">Satisfies AC7</span>
+            <div class="signin-error" style="position:static;">
+              <span aria-hidden="true">⚠</span>
+              <span>This account has been deactivated. Contact an administrator for access.</span>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h3>Deactivating names the consequence</h3>
+            <span class="ac-tag">Satisfies AC7, AC8 (confirm copy)</span>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg);">"Deactivate Elena Brooks's account? She'll no longer be able to sign in. Expenses she created or approved will remain visible as read-only history tied to her account."</p>
+          </div>
+
+          <div class="mini-card">
+            <h3>Access denied for non-admin</h3>
+            <span class="ac-tag">Satisfies AC10</span>
+            <p style="margin:0;font-size:var(--font-size-sm);color:var(--color-fg-muted);">Morgan Ellis (Employee role only) opens "Users" and sees the access-denied panel instead of the account table — no data leaks through.</p>
+          </div>
+
+          <div class="mini-card u-stack">
+            <h3>User list loading</h3>
+            <span class="ac-tag">Design baseline — loading state</span>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar short"></div>
+          </div>
+
+          <div class="mini-card error-state">
+            <span class="icon" aria-hidden="true">⚠</span>
+            <h3>Couldn't load user accounts</h3>
+            <span class="ac-tag">Design baseline — error state</span>
+            <p>A connection problem stopped the list from loading. Role checks still apply once it recovers.</p>
+            <button class="btn btn-secondary" type="button" disabled>Retry</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Create / Edit Roles modal (shared) -->
+  <div class="modal-overlay" id="user-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="user-modal-wrap" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="user-modal-title">New user</h2>
+          <p id="user-modal-subtitle">Create an account and assign at least one role.</p>
+        </div>
+        <button class="icon-btn" id="user-modal-close-btn" type="button" aria-label="Close">×</button>
+      </div>
+      <form id="user-form" novalidate>
+        <div class="field" id="name-field">
+          <label class="label" for="user-name-input">Full name</label>
+          <input class="input" id="user-name-input" type="text" placeholder="e.g. Jordan Avery" autocomplete="off" />
+        </div>
+        <div class="field" id="email-field">
+          <label class="label" for="user-email-input">Email</label>
+          <input class="input" id="user-email-input" type="email" placeholder="jordan.avery@company.com" autocomplete="off" />
+        </div>
+        <div class="field">
+          <span class="label">Roles</span>
+          <div class="role-checklist" id="role-checklist"><!-- rendered by JS --></div>
+          <p class="field-error-text" id="roles-error" role="alert" hidden>⚠ Select at least one role so this account has permissions to sign in with.</p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="user-modal-cancel-btn" type="button">Cancel</button>
+          <button class="btn btn-primary" id="user-modal-save-btn" type="submit">Create account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Deactivate confirmation modal -->
+  <div class="modal-overlay" id="deactivate-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="deactivate-modal-wrap" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="deactivate-modal-title">Deactivate account?</h2>
+        </div>
+        <button class="icon-btn" id="deactivate-modal-close-btn" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="u-text-md" id="deactivate-modal-body" style="margin:0;"></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="deactivate-cancel-btn" type="button">Cancel</button>
+        <button class="btn btn-primary" id="deactivate-confirm-btn" type="button">Deactivate account</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-root"></div>
+
+  <script>
+    var FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+    var ROLE_LABELS = FIXTURE.roleLabels;
+    var ROLE_DESCRIPTIONS = FIXTURE.roleDescriptions;
+    var ALL_ROLES = ['admin', 'finance', 'employee'];
+    var users = FIXTURE.users.map(function (u) { return Object.assign({}, u, { roles: u.roles.slice() }); });
+    var elenaExpenses = FIXTURE.elenaExpenses;
+    var nextUserSeq = 100;
+
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtDateTime(iso) {
+      var d = new Date(iso);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+    function fmtDate(isoDate) {
+      var d = new Date(isoDate + 'T00:00:00Z');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    function fmtMoney(n) { return '$' + n.toFixed(2); }
+    function findUserById(id) { for (var i = 0; i < users.length; i++) { if (users[i].id === id) return users[i]; } return null; }
+    function findUserByEmail(email) {
+      var needle = String(email).trim().toLowerCase();
+      for (var i = 0; i < users.length; i++) { if (users[i].email.toLowerCase() === needle) return users[i]; }
+      return null;
+    }
+    function canManageUsers(u) { return u.roles.indexOf('admin') !== -1 || u.roles.indexOf('finance') !== -1; }
+    function roleChipHtml(role) {
+      var cls = role === 'admin' ? 'chip role-chip role-chip--admin' : 'chip role-chip';
+      return '<span class="' + cls + '">' + ROLE_LABELS[role] + '</span>';
+    }
+    function statusChipHtml(status) {
+      if (status === 'active') return '<span class="status-chip status-chip--active"><span aria-hidden="true">●</span> Active</span>';
+      return '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">◌</span> Deactivated</span>';
+    }
+    function showToast(message) {
+      var el = document.createElement('div');
+      el.className = 'toast';
+      el.setAttribute('role', 'status');
+      el.innerHTML = '<span aria-hidden="true">✓</span><span>' + escapeHtml(message) + '</span>';
+      document.getElementById('toast-root').appendChild(el);
+      setTimeout(function () { el.remove(); }, 3200);
+    }
+
+    /* ---------------- User & Role Management screen ---------------- */
+    var umAccessDenied = document.getElementById('um-access-denied');
+    var umContent = document.getElementById('um-content');
+    var umTableWrap = document.getElementById('um-table-wrap');
+    var umEmpty = document.getElementById('um-empty');
+    var umTbody = document.getElementById('user-tbody');
+    var umResultsCount = document.getElementById('um-results-count');
+    var viewerSelect = document.getElementById('viewer-select');
+
+    function renderUmLoading() {
+      umTableWrap.hidden = false; umEmpty.hidden = true;
+      umResultsCount.textContent = 'Loading user accounts…';
+      var rows = '';
+      for (var i = 0; i < 3; i++) {
+        rows += '<tr class="skeleton-row"><td><div class="skeleton-bar"></div></td><td><div class="skeleton-bar short"></div></td><td><div class="skeleton-bar short"></div></td><td><div class="skeleton-bar short"></div></td><td></td></tr>';
+      }
+      umTbody.innerHTML = rows;
+    }
+
+    function renderUmTable(query) {
+      var q = (query || '').trim().toLowerCase();
+      var list = users.filter(function (u) {
+        if (!q) return true;
+        return u.name.toLowerCase().indexOf(q) !== -1 || u.email.toLowerCase().indexOf(q) !== -1;
+      });
+
+      if (list.length === 0) {
+        umTableWrap.hidden = true;
+        umEmpty.hidden = false;
+        umEmpty.querySelector('.empty-query').textContent = query;
+        umResultsCount.textContent = 'Showing 0 accounts for "' + query + '".';
+        return;
+      }
+
+      umTableWrap.hidden = false;
+      umEmpty.hidden = true;
+      umResultsCount.textContent = q
+        ? 'Showing ' + list.length + ' ' + (list.length === 1 ? 'account' : 'accounts') + ' for "' + query + '".'
+        : 'Showing ' + list.length + ' accounts — ' + users.filter(function (u) { return u.status === 'active'; }).length + ' active.';
+
+      umTbody.innerHTML = list.map(function (u) {
+        var actionLabel = u.status === 'active' ? 'Deactivate' : 'Reactivate';
+        var actionCls = u.status === 'active' ? 'row-action-btn danger-text' : 'row-action-btn';
+        return '<tr>' +
+          '<td class="user-name-cell">' + escapeHtml(u.name) + '<span class="user-email">' + escapeHtml(u.email) + '</span></td>' +
+          '<td><div class="role-chips">' + u.roles.map(roleChipHtml).join('') + '</div></td>' +
+          '<td>' + statusChipHtml(u.status) + '</td>' +
+          '<td>' + fmtDateTime(u.lastActive) + '</td>' +
+          '<td class="col-actions">' +
+            '<button type="button" class="row-action-btn" data-edit="' + u.id + '">Edit roles</button>' +
+            '<button type="button" class="' + actionCls + '" data-toggle-status="' + u.id + '">' + actionLabel + '</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function refreshUmView() {
+      var viewer = findUserById(viewerSelect.value);
+      if (!canManageUsers(viewer)) {
+        umAccessDenied.hidden = false;
+        umContent.hidden = true;
+        return;
+      }
+      umAccessDenied.hidden = true;
+      umContent.hidden = false;
+      renderUmLoading();
+      wait(250).then(function () { renderUmTable(document.getElementById('user-search-input').value); });
+    }
+
+    viewerSelect.addEventListener('change', refreshUmView);
+    document.getElementById('user-search-input').addEventListener('input', function () { renderUmTable(this.value); });
+    document.getElementById('um-clear-search-btn').addEventListener('click', function () {
+      document.getElementById('user-search-input').value = '';
+      renderUmTable('');
+    });
+
+    /* ---------------- Create / Edit modal ---------------- */
+    var userModalOverlay = document.getElementById('user-modal-overlay');
+    var userModalWrap = document.getElementById('user-modal-wrap');
+    var userForm = document.getElementById('user-form');
+    var nameField = document.getElementById('name-field');
+    var emailField = document.getElementById('email-field');
+    var nameInput = document.getElementById('user-name-input');
+    var emailInput = document.getElementById('user-email-input');
+    var roleChecklist = document.getElementById('role-checklist');
+    var rolesError = document.getElementById('roles-error');
+    var editingUserId = null;
+
+    function renderRoleChecklist(checkedRoles) {
+      roleChecklist.innerHTML = ALL_ROLES.map(function (role) {
+        var checked = checkedRoles.indexOf(role) !== -1 ? ' checked' : '';
+        return '<label class="role-option">' +
+          '<input type="checkbox" value="' + role + '"' + checked + ' />' +
+          '<span class="role-option-text"><strong>' + ROLE_LABELS[role] + '</strong><span>' + ROLE_DESCRIPTIONS[role] + '</span></span>' +
+        '</label>';
+      }).join('');
+    }
+
+    function openModal(overlay, wrap, focusEl) {
+      overlay.hidden = false; wrap.hidden = false;
+      document.addEventListener('keydown', escCloseHandler);
+      setTimeout(function () { if (focusEl) focusEl.focus(); }, 0);
+    }
+    function closeModal(overlay, wrap) {
+      overlay.hidden = true; wrap.hidden = true;
+      document.removeEventListener('keydown', escCloseHandler);
+    }
+    function escCloseHandler(e) {
+      if (e.key !== 'Escape') return;
+      if (!userModalWrap.hidden) closeModal(userModalOverlay, userModalWrap);
+      if (!deactivateModalWrap.hidden) closeModal(deactivateModalOverlay, deactivateModalWrap);
+    }
+
+    function openCreateModal() {
+      editingUserId = null;
+      document.getElementById('user-modal-title').textContent = 'New user';
+      document.getElementById('user-modal-subtitle').textContent = 'Create an account and assign at least one role.';
+      document.getElementById('user-modal-save-btn').textContent = 'Create account';
+      nameField.hidden = false; emailField.hidden = false;
+      nameInput.value = ''; emailInput.value = '';
+      rolesError.hidden = true;
+      renderRoleChecklist([]);
+      openModal(userModalOverlay, userModalWrap, nameInput);
+    }
+
+    function openEditModal(userId) {
+      var u = findUserById(userId);
+      editingUserId = userId;
+      document.getElementById('user-modal-title').textContent = 'Edit roles';
+      document.getElementById('user-modal-subtitle').textContent = 'Update ' + u.name + '’s roles. Changes apply on their next action — no new account needed.';
+      document.getElementById('user-modal-save-btn').textContent = 'Save changes';
+      nameField.hidden = true; emailField.hidden = true;
+      rolesError.hidden = true;
+      renderRoleChecklist(u.roles);
+      openModal(userModalOverlay, userModalWrap, roleChecklist.querySelector('input'));
+    }
+
+    document.getElementById('new-user-btn').addEventListener('click', openCreateModal);
+    document.getElementById('user-modal-close-btn').addEventListener('click', function () { closeModal(userModalOverlay, userModalWrap); });
+    document.getElementById('user-modal-cancel-btn').addEventListener('click', function () { closeModal(userModalOverlay, userModalWrap); });
+    userModalOverlay.addEventListener('click', function () { closeModal(userModalOverlay, userModalWrap); });
+
+    roleChecklist.addEventListener('change', function () { rolesError.hidden = true; });
+
+    userForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var checked = Array.from(roleChecklist.querySelectorAll('input:checked')).map(function (i) { return i.value; });
+      if (checked.length === 0) {
+        rolesError.hidden = false;
+        roleChecklist.querySelector('input').focus();
+        return;
+      }
+      var saveBtn = document.getElementById('user-modal-save-btn');
+      var originalLabel = saveBtn.textContent;
+      saveBtn.disabled = true; saveBtn.textContent = editingUserId ? 'Saving…' : 'Creating…';
+      await wait(300);
+      saveBtn.disabled = false; saveBtn.textContent = originalLabel;
+
+      if (editingUserId) {
+        var u = findUserById(editingUserId);
+        u.roles = checked;
+        closeModal(userModalOverlay, userModalWrap);
+        renderUmTable(document.getElementById('user-search-input').value);
+        showToast('Roles updated for ' + u.name + ' — changes apply on their next action.');
+      } else {
+        var name = nameInput.value.trim() || 'New user';
+        var email = emailInput.value.trim() || ('user' + (++nextUserSeq) + '@company.com');
+        var newUser = {
+          id: 'usr_' + (++nextUserSeq), name: name, email: email, roles: checked,
+          status: 'active', lastActive: new Date().toISOString(), createdAt: new Date().toISOString()
+        };
+        users.unshift(newUser);
+        closeModal(userModalOverlay, userModalWrap);
+        renderUmTable(document.getElementById('user-search-input').value);
+        showToast('Account created — ' + name + ' can now sign in.');
+      }
+    });
+
+    /* ---------------- Deactivate / reactivate ---------------- */
+    var deactivateModalOverlay = document.getElementById('deactivate-modal-overlay');
+    var deactivateModalWrap = document.getElementById('deactivate-modal-wrap');
+    var deactivatingUserId = null;
+
+    function openDeactivateModal(userId) {
+      var u = findUserById(userId);
+      deactivatingUserId = userId;
+      document.getElementById('deactivate-modal-body').textContent =
+        'Deactivate ' + u.name + '’s account? They will no longer be able to sign in. Expenses they created or approved will remain visible as read-only history tied to their account.';
+      openModal(deactivateModalOverlay, deactivateModalWrap, document.getElementById('deactivate-cancel-btn'));
+    }
+    document.getElementById('deactivate-modal-close-btn').addEventListener('click', function () { closeModal(deactivateModalOverlay, deactivateModalWrap); });
+    document.getElementById('deactivate-cancel-btn').addEventListener('click', function () { closeModal(deactivateModalOverlay, deactivateModalWrap); });
+    deactivateModalOverlay.addEventListener('click', function () { closeModal(deactivateModalOverlay, deactivateModalWrap); });
+
+    document.getElementById('deactivate-confirm-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Deactivating…';
+      await wait(250);
+      btn.disabled = false; btn.textContent = 'Deactivate account';
+      var u = findUserById(deactivatingUserId);
+      u.status = 'deactivated';
+      u.deactivatedAt = new Date().toISOString();
+      closeModal(deactivateModalOverlay, deactivateModalWrap);
+      renderUmTable(document.getElementById('user-search-input').value);
+      showToast(u.name + '’s account is deactivated. Their expense history stays visible as read-only.');
+    });
+
+    umTbody.addEventListener('click', function (e) {
+      var editBtn = e.target.closest('[data-edit]');
+      if (editBtn) { openEditModal(editBtn.getAttribute('data-edit')); return; }
+      var toggleBtn = e.target.closest('[data-toggle-status]');
+      if (toggleBtn) {
+        var id = toggleBtn.getAttribute('data-toggle-status');
+        var u = findUserById(id);
+        if (u.status === 'active') { openDeactivateModal(id); }
+        else {
+          u.status = 'active';
+          delete u.deactivatedAt;
+          renderUmTable(document.getElementById('user-search-input').value);
+          showToast(u.name + '’s account is active again — they can sign in.');
+        }
+      }
+    });
+
+    /* ---------------- Sign-in screen ---------------- */
+    var signinForm = document.getElementById('signin-form');
+    var signinError = document.getElementById('signin-error');
+    var signinSuccess = document.getElementById('signin-success');
+    var signinEmail = document.getElementById('signin-email');
+    var signinPassword = document.getElementById('signin-password');
+
+    document.querySelectorAll('.try-as-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        signinEmail.value = chip.getAttribute('data-try');
+        signinPassword.value = 'demo-password';
+        signinEmail.focus();
+      });
+    });
+
+    signinForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      signinError.hidden = true;
+      var btn = document.getElementById('signin-submit-btn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      await wait(300);
+      btn.disabled = false; btn.textContent = 'Sign in';
+
+      var email = signinEmail.value.trim().toLowerCase();
+      var u = findUserByEmail(email);
+      if (!u) { u = { name: 'Jordan Avery', email: email, roles: ['employee'], status: 'active' }; }
+
+      if (u.status === 'deactivated') {
+        signinPassword.value = '';
+        signinError.hidden = false;
+        document.getElementById('signin-error-text').textContent = 'This account has been deactivated. Contact an administrator for access.';
+        signinForm.hidden = false;
+        signinSuccess.hidden = true;
+        return;
+      }
+
+      signinForm.hidden = true;
+      signinSuccess.hidden = false;
+      document.getElementById('signin-success-name').textContent = 'Signed in as ' + u.name;
+      document.getElementById('signin-success-roles').textContent = 'Roles: ' + u.roles.map(function (r) { return ROLE_LABELS[r]; }).join(', ');
+    });
+
+    document.getElementById('signin-reset-btn').addEventListener('click', function () {
+      signinForm.hidden = false;
+      signinSuccess.hidden = true;
+      signinError.hidden = true;
+      signinEmail.value = '';
+      signinPassword.value = '';
+      signinEmail.focus();
+    });
+
+    /* ---------------- Role Change Takes Effect screen ---------------- */
+    var devonRoles = ['employee'];
+    var devonRoleChipsEl = document.getElementById('devon-role-chips');
+    var devonPermissionListEl = document.getElementById('devon-permission-list');
+    var devonTryResultEl = document.getElementById('devon-try-result');
+    var grantFinanceBtn = document.getElementById('grant-finance-btn');
+    var removeFinanceBtn = document.getElementById('remove-finance-btn');
+    var adminConsoleNoteEl = document.getElementById('admin-console-note');
+
+    function renderDevonPanel() {
+      devonRoleChipsEl.innerHTML = devonRoles.map(roleChipHtml).join(' ');
+      var hasFinance = devonRoles.indexOf('finance') !== -1;
+      devonPermissionListEl.innerHTML =
+        '<li><span class="mark" aria-hidden="true">✓</span> Log an expense</li>' +
+        '<li class="' + (hasFinance ? '' : 'denied') + '"><span class="mark" aria-hidden="true">' + (hasFinance ? '✓' : '—') + '</span> Approve expenses' + (hasFinance ? '' : ' <span class="u-text-sm">(not available with current roles)</span>') + '</li>';
+      devonTryResultEl.textContent = '';
+    }
+
+    grantFinanceBtn.addEventListener('click', function () {
+      devonRoles = ['employee', 'finance'];
+      renderDevonPanel();
+      grantFinanceBtn.hidden = true;
+      removeFinanceBtn.hidden = false;
+      adminConsoleNoteEl.textContent = 'Finance role granted. Devon stays signed in — no new account, no re-login.';
+      showToast('Roles updated for Devon Ruiz — changes apply on their next action.');
+    });
+    removeFinanceBtn.addEventListener('click', function () {
+      devonRoles = ['employee'];
+      renderDevonPanel();
+      removeFinanceBtn.hidden = true;
+      grantFinanceBtn.hidden = false;
+      adminConsoleNoteEl.textContent = 'Finance role removed. Devon stays signed in — the change still takes effect immediately.';
+      showToast('Roles updated for Devon Ruiz — changes apply on their next action.');
+    });
+    document.getElementById('devon-try-approve-btn').addEventListener('click', async function () {
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Trying…';
+      await wait(250);
+      btn.disabled = false; btn.textContent = 'Devon tries: Approve expenses';
+      devonTryResultEl.textContent = devonRoles.indexOf('finance') !== -1
+        ? '✓ Approved — Devon now has the Finance role, so this action succeeds.'
+        : '⚠ Blocked — Devon’s current roles (Employee) don’t include Finance.';
+    });
+    renderDevonPanel();
+
+    /* ---------------- Deactivated account expense history ---------------- */
+    document.getElementById('elena-history-tbody').innerHTML = elenaExpenses.map(function (x) {
+      return '<tr>' +
+        '<td>' + fmtDate(x.date) + '</td>' +
+        '<td>' + escapeHtml(x.category) + '</td>' +
+        '<td>' + escapeHtml(x.description) + '</td>' +
+        '<td>' + fmtMoney(x.amount) + '</td>' +
+        '<td>' + escapeHtml(x.loggedBy) + '</td>' +
+        '<td>' + escapeHtml(x.approvedBy) + '</td>' +
+        '<td class="readonly-tag">Read-only</td>' +
+      '</tr>';
+    }).join('');
+
+    /* ---------------- Reviewer bar / screen switching ---------------- */
+    var screens = Array.from(document.querySelectorAll('.screen'));
+    var cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach(function (s, j) { s.style.display = j === cur ? 'block' : 'none'; });
+      document.getElementById('screen-label').textContent = (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+    }
+    document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+    document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+    document.addEventListener('keydown', function (e) {
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+
+    /* Initial paint */
+    refreshUmView();
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
