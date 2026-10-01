@@ -19,15 +19,16 @@ hires.set('hire_2031', {
   auditLog: [],
 });
 
-async function createHire(data) {
+async function createHire(data, actor) {
+  const { actor: _bodyActor, ...hireData } = data;
   const hire = {
-    ...data,
+    ...hireData,
     id: crypto.randomUUID(),
     profileStatus: 'active',
     run: null,
     runHistory: [],
     onboardingStatus: null,
-    auditLog: [],
+    auditLog: [{ ts: new Date().toISOString(), actor, action: 'created hire record' }],
   };
 
   if (hire.hireStage === 'offer_accepted') {
@@ -50,9 +51,11 @@ function listHires() {
   return Array.from(hires.values());
 }
 
-async function updateHire(id, changes) {
+async function updateHire(id, changes, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+
+  const changedFields = Object.keys(changes).filter((key) => changes[key] !== hire[key]);
 
   const hasActiveRun = Boolean(hire.run && hire.run.status === 'active');
   const changingToOfferAccepted = changes.hireStage === 'offer_accepted' && hire.hireStage !== 'offer_accepted';
@@ -77,10 +80,13 @@ async function updateHire(id, changes) {
     Object.assign(hire, changes);
   }
 
+  if (changedFields.length > 0) {
+    hire.auditLog.push({ ts: new Date().toISOString(), actor, action: `updated ${changedFields.join(', ')}` });
+  }
   return hire;
 }
 
-async function deactivateHire(id) {
+async function deactivateHire(id, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
 
@@ -90,10 +96,11 @@ async function deactivateHire(id) {
     hire.run = null;
   }
   hire.profileStatus = 'deactivated';
+  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'deactivated hire record' });
   return hire;
 }
 
-async function reactivateHire(id) {
+async function reactivateHire(id, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
   if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
@@ -105,6 +112,7 @@ async function reactivateHire(id) {
   });
   hire.profileStatus = 'active';
   hire.run = { ...run, freshStart: true };
+  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'reactivated hire record' });
   return hire;
 }
 

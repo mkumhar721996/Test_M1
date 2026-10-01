@@ -4,7 +4,7 @@ const { createEmployee, getEmployee } = require('./store');
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  const employee = createEmployee(req.body);
+  const employee = createEmployee(req.body, req.body.actor);
   res.status(201).json(employee);
 });
 
