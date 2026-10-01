@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expense history — Expense Tracker</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/users.css" />
+<script src="./js/user-history.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Expense Tracker</span>
+    <nav class="app-nav">
+      <a href="index.html">Expenses</a>
+      <a href="#" onclick="return false;">Employees</a>
+      <a href="users.html" class="active" aria-current="page">Users</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="history-header">
+      <div>
+        <h1 id="history-name"></h1>
+        <p id="history-meta"></p>
+      </div>
+      <span id="history-status"></span>
+    </div>
+
+    <div class="readonly-banner" id="history-banner" hidden>
+      <span aria-hidden="true">◌</span>
+      <span id="history-banner-text"></span>
+    </div>
+
+    <div class="card" id="history-card">
+      <h2 class="card-title" id="history-title">Expenses logged or approved</h2>
+      <table class="history-table">
+        <thead>
+          <tr><th scope="col">Date</th><th scope="col">Category</th><th scope="col">Description</th><th scope="col">Amount</th><th scope="col">Logged by</th><th scope="col">Approved by</th><th scope="col"></th></tr>
+        </thead>
+        <tbody id="history-tbody"><!-- rendered by JS --></tbody>
+      </table>
+    </div>
+
+    <div class="card error-state" id="history-error" role="alert" hidden>
+      <span class="icon" aria-hidden="true">⚠</span>
+      <h3>Couldn't load this account</h3>
+      <p>The account was not found, or you don't have permission to view it.</p>
+    </div>
+  </div>
+
+</body>
+</html>
