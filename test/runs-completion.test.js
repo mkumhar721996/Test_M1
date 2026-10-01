@@ -69,9 +69,10 @@ test('AC7: a missing-field completion logs an error', () => {
   const incomplete = { name: 'No Email', department: 'Engineering', role: 'Engineer', startDate: '2026-01-01' };
   const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-  completeRun(run.id, incomplete);
+  const result = completeRun(run.id, incomplete);
 
   expect(spy).toHaveBeenCalledTimes(1);
+  expect(result.employeeId).toBeFalsy();
   spy.mockRestore();
 });
 
