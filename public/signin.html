@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Expense Tracker</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/users.css" />
+<script src="./js/signin.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Expense Tracker</span>
+  </div>
+
+  <div class="page">
+    <div class="signin-wrap">
+      <div class="page-header">
+        <h1>Sign in</h1>
+        <p>Use your work email and password.</p>
+      </div>
+
+      <!-- State: signin-error -->
+      <div class="signin-error" id="signin-error" hidden role="alert">
+        <span aria-hidden="true">⚠</span>
+        <span id="signin-error-text"></span>
+      </div>
+
+      <!-- State: signin-form -->
+      <form id="signin-form" novalidate>
+        <div class="field">
+          <label class="label" for="signin-email">Work email</label>
+          <input class="input" id="signin-email" type="email" placeholder="you@company.com" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label class="label" for="signin-password">Password</label>
+          <input class="input" id="signin-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button class="btn btn-primary" id="signin-submit-btn" type="submit" style="width:100%;">Sign in</button>
+      </form>
+
+      <!-- State: signin-success -->
+      <div class="card signin-success-card" id="signin-success" hidden>
+        <span class="icon" aria-hidden="true">✓</span>
+        <h2 class="card-title" id="signin-success-name" style="margin-top:var(--space-2);"></h2>
+        <p class="card-body" id="signin-success-roles"></p>
+        <p class="u-text-sm u-text-muted" style="margin-top:var(--space-3);">Sign-in succeeded because this account is active and was created with at least one role assigned.</p>
+        <button class="btn btn-secondary" id="signin-reset-btn" type="button" style="margin-top:var(--space-4);">Sign out / try another account</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
