@@ -58,3 +58,21 @@ test('AC1: GET /hires/:id returns the full auditLog in chronological order', asy
   res.body.auditLog.forEach((entry) => expect(entry.actor).toBe('Morgan Ellis'));
   expect(res.body.actor).toBeUndefined();
 });
+
+test('a missing actor is recorded as Unknown on every hire action', async () => {
+  const hire = await createHire(hireData);
+  await updateHire(hire.id, { phone: '2' });
+  await deactivateHire(hire.id);
+  await reactivateHire(hire.id);
+
+  const entries = getHire(hire.id).auditLog;
+  expect(entries).toHaveLength(4);
+  entries.forEach((entry) => expect(entry.actor).toBe('Unknown'));
+});
+
+test('deactivating an already-deactivated hire is a no-op and appends no extra entry', async () => {
+  const hire = await createHire(hireData, 'Morgan Ellis');
+  await deactivateHire(hire.id, 'Morgan Ellis');
+  const result = await deactivateHire(hire.id, 'Morgan Ellis');
+  expect(result.auditLog).toHaveLength(2);
+});

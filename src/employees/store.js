@@ -7,7 +7,7 @@ function createEmployee(data, actor) {
   const employee = {
     ...employeeData,
     id: crypto.randomUUID(),
-    auditLog: [{ ts: new Date().toISOString(), actor, action: 'created employee record' }],
+    auditLog: [{ ts: new Date().toISOString(), actor: actor || 'Unknown', action: 'created employee record' }],
   };
   employees.set(employee.id, employee);
   return employee;

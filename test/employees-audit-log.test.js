@@ -28,3 +28,8 @@ test('AC3: a run-completion-created employee has exactly one create entry attrib
   expect(employee.auditLog).toHaveLength(1);
   expect(employee.auditLog[0]).toMatchObject({ actor: 'System' });
 });
+
+test('a missing actor is recorded as Unknown on the employee create entry', async () => {
+  const res = await request(app).post('/employees').send({ name: 'Ada Lovelace', email: 'ada@example.com' });
+  expect(res.body.auditLog[0]).toMatchObject({ actor: 'Unknown' });
+});

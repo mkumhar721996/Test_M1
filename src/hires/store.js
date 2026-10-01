@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const engineClient = require('../onboarding/engineClient');
 
+const UNKNOWN_ACTOR = 'Unknown';
+
 const hires = new Map();
 
 hires.set('hire_2031', {
@@ -28,7 +30,7 @@ async function createHire(data, actor) {
     run: null,
     runHistory: [],
     onboardingStatus: null,
-    auditLog: [{ ts: new Date().toISOString(), actor, action: 'created hire record' }],
+    auditLog: [{ ts: new Date().toISOString(), actor: actor || UNKNOWN_ACTOR, action: 'created hire record' }],
   };
 
   if (hire.hireStage === 'offer_accepted') {
@@ -81,7 +83,7 @@ async function updateHire(id, changes, actor) {
   }
 
   if (changedFields.length > 0) {
-    hire.auditLog.push({ ts: new Date().toISOString(), actor, action: `updated ${changedFields.join(', ')}` });
+    hire.auditLog.push({ ts: new Date().toISOString(), actor: actor || UNKNOWN_ACTOR, action: `updated ${changedFields.join(', ')}` });
   }
   return hire;
 }
@@ -89,6 +91,7 @@ async function updateHire(id, changes, actor) {
 async function deactivateHire(id, actor) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'deactivated') return hire;
 
   if (hire.run && hire.run.status === 'active') {
     await engineClient.cancelRun(hire.run.id);
@@ -96,7 +99,7 @@ async function deactivateHire(id, actor) {
     hire.run = null;
   }
   hire.profileStatus = 'deactivated';
-  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'deactivated hire record' });
+  hire.auditLog.push({ ts: new Date().toISOString(), actor: actor || UNKNOWN_ACTOR, action: 'deactivated hire record' });
   return hire;
 }
 
@@ -112,7 +115,7 @@ async function reactivateHire(id, actor) {
   });
   hire.profileStatus = 'active';
   hire.run = { ...run, freshStart: true };
-  hire.auditLog.push({ ts: new Date().toISOString(), actor, action: 'reactivated hire record' });
+  hire.auditLog.push({ ts: new Date().toISOString(), actor: actor || UNKNOWN_ACTOR, action: 'reactivated hire record' });
   return hire;
 }
 
