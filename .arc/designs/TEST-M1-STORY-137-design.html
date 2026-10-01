@@ -390,6 +390,30 @@
   .runs-table tr:last-child td { border-bottom: none; }
   .runs-table .row-highlight td { background: var(--color-surface); }
 
+  /* ---------- Demo-only controls (not part of the real product UI) ---------- */
+  .demo-controls {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .demo-controls input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--color-primary); }
+  .demo-controls label { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; min-height: 44px; }
+
+  /* ---------- Empty state (Runs list) ---------- */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    text-align: center;
+    font-family: var(--font-family-base);
+  }
+  .empty-state p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-md); }
+
   /* ---------- Layout grid for run detail ---------- */
   .run-layout {
     display: grid;
@@ -468,7 +492,7 @@
   .requirement-row .state--met { color: var(--color-fg); font-weight: var(--font-weight-bold); }
 
   .action-panel { margin-top: var(--space-3); }
-  .action-panel p.hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+  p.hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
 
   .spin { display: inline-block; animation: spin 1s linear infinite; }
   @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
@@ -639,6 +663,13 @@
            - While any action is pending, every other control on this screen is disabled
              (see the dashed "Saving run state…" note) — the run is only ever read as
              either its old state or its new one, never a half-updated one (AC12).
+           - Edge case — transient failure: check "Simulate a server error on the next
+             step action" (clearly marked as a demo-only control, not part of the real
+             product), then click "Mark step complete" or "Retry step". The loading
+             state still appears (AC11), but the attempt fails: an error toast explains
+             nothing was saved, and the stepper, run status, and audit log are all left
+             exactly as they were — proving a failed save can never leave the run
+             half-updated (AC12), distinct from a deliberate business `blocked` state.
     -->
     <div class="screen" data-name="Run Detail">
       <div class="app-topbar">
@@ -656,6 +687,13 @@
             <p>Engineering — Software Engineer II · Run <span id="run-id-label"></span></p>
           </div>
           <span class="status-chip" id="run-status-chip"></span>
+        </div>
+
+        <div class="demo-controls">
+          <label for="simulate-failure-checkbox">
+            <input type="checkbox" id="simulate-failure-checkbox" />
+            Demo control (not part of the real product) — simulate a server error on the next step action
+          </label>
         </div>
 
         <fieldset class="run-fieldset" id="run-fieldset">
@@ -697,6 +735,10 @@
          Notes:
            - Static side-by-side snapshots of the key states named in the acceptance
              criteria, for reviewers who want a quick look without driving screen 2.
+           - Also covers edge cases that are easy to miss when only the happy path is
+             demoed: no run started yet, a transient save failure, a run blocked on its
+             very first step with nothing completed yet, and a step with more than one
+             outstanding requirement.
     -->
     <div class="screen" data-name="Reference States">
       <div class="app-topbar">
@@ -782,10 +824,90 @@
               </div>
             </div>
           </div>
+
+          <!-- State: empty-no-run -->
+          <div>
+            <h3>Empty — no run started yet</h3>
+            <span class="ac-tag">Edge case: contrasts with AC8 — nothing to progress until a run exists</span>
+            <div class="card">
+              <div class="empty-state">
+                <p>Taylor Kim doesn't have an onboarding run yet.</p>
+                <p class="u-text-sm u-text-muted" style="margin:0;">A run starts automatically once the hire's offer is marked accepted.</p>
+                <button class="btn btn-secondary" type="button" disabled>View hire profile</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: save-failed -->
+          <div>
+            <h3>Edge case — transient save failure</h3>
+            <span class="ac-tag">Satisfies AC11, AC12: loading shown, failure leaves run state untouched</span>
+            <div class="card">
+              <span class="status-chip status-chip--active"><span class="dot" aria-hidden="true">●</span> Active</span>
+              <p class="progress-label" style="margin-top:var(--space-2);">Step 2 of 5 complete — unchanged after the failed attempt</p>
+              <div class="progress-track"><div class="progress-fill" style="width:20%;"></div></div>
+              <button class="btn btn-primary" disabled style="margin-top:var(--space-3);">Mark step complete</button>
+              <div class="toast" style="position:static; margin-top:var(--space-3); max-width:none;">
+                <span aria-hidden="true">⚠</span>
+                <span>Couldn't save — step progression failed. Run state unchanged. Try again.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: blocked-on-first-step -->
+          <div>
+            <h3>Blocked on the very first step</h3>
+            <span class="ac-tag">Edge case for AC3, AC4, AC5: nothing completed yet when the block happens</span>
+            <div class="card">
+              <span class="status-chip status-chip--blocked"><span aria-hidden="true">⚠</span> Blocked</span>
+              <div class="blocked-banner" style="margin-top:var(--space-3);">
+                <span aria-hidden="true">⚠</span>
+                <div>
+                  <h3>This run is blocked</h3>
+                  <p>Required document missing — Taylor has not yet returned a signed offer letter.</p>
+                </div>
+              </div>
+              <ol class="stepper">
+                <li class="step-item step-item--blocked"><span class="step-marker">⚠</span><p class="step-name">Collect signed offer letter</p><p class="step-tag">Blocked — zero steps completed</p></li>
+                <li class="step-item step-item--upcoming"><span class="step-marker">○</span><p class="step-name">Verify I-9 employment eligibility</p><p class="step-owner">Still upcoming — not skipped</p></li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- State: multiple-blocking-requirements -->
+          <div>
+            <h3>Multiple outstanding requirements</h3>
+            <span class="ac-tag">Edge case for AC6, AC7: retry stays disabled until every requirement is met</span>
+            <div class="card">
+              <span class="status-chip status-chip--blocked"><span aria-hidden="true">⚠</span> Blocked</span>
+              <div class="blocked-banner" style="margin-top:var(--space-3);">
+                <span aria-hidden="true">⚠</span>
+                <div>
+                  <h3>This run is blocked</h3>
+                  <p>Two requirements are outstanding — IT equipment can't be provisioned until both are resolved.</p>
+                </div>
+              </div>
+              <div class="requirement-row">
+                <span class="label">Laptop assigned</span>
+                <span class="state--met">Received ✓</span>
+              </div>
+              <div class="requirement-row">
+                <span class="label">Background check cleared</span>
+                <span class="state--missing">Missing</span>
+              </div>
+              <button class="btn btn-primary" disabled style="margin-top:var(--space-3);">Retry step</button>
+              <p class="hint">Retry stays disabled — one requirement resolved is not enough while the other is still missing.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+  </div>
+
+  <div class="toast" id="error-toast" role="status" aria-live="assertive" hidden>
+    <span aria-hidden="true">⚠</span>
+    <span id="error-toast-message">Couldn't save — step progression failed. Run state unchanged. Try again.</span>
   </div>
 
 <script>
@@ -971,6 +1093,15 @@
     renderAuditLog();
   }
 
+  let toastTimer = null;
+  function showErrorToast(message) {
+    const toast = document.getElementById('error-toast');
+    document.getElementById('error-toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
   function appendAudit(message, actor) {
     run.auditLog.push({
       timestamp: '2026-09-30 ' + new Date().toTimeString().slice(0, 5),
@@ -993,6 +1124,16 @@
     setPending(true);
 
     setTimeout(() => {
+      // Edge case: transient server failure. Checked explicitly via the demo-only
+      // control above — distinct from a business `blocked` status. Nothing about
+      // the run is mutated, so a failed save can never leave it half-updated (AC12).
+      const simulateFailureCheckbox = document.getElementById('simulate-failure-checkbox');
+      if (simulateFailureCheckbox && simulateFailureCheckbox.checked) {
+        setPending(false);
+        showErrorToast("Couldn't save — step progression failed. Run state unchanged. Try again.");
+        return;
+      }
+
       const idx = run.currentIndex;
       const step = run.steps[idx];
       const wasBlocked = step.status === 'blocked';
