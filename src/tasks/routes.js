@@ -3,6 +3,8 @@ const { updateTask } = require('./store');
 
 const router = express.Router();
 
+const PATCHABLE_FIELDS = ['name', 'status'];
+
 class TaskValidationError extends Error {}
 
 function assertValidBody(body) {
@@ -11,10 +13,17 @@ function assertValidBody(body) {
   }
 }
 
+function pickFields(body, fields) {
+  return fields.reduce((changes, field) => {
+    if (field in body) changes[field] = body[field];
+    return changes;
+  }, {});
+}
+
 router.put('/:id', (req, res, next) => {
   try {
     assertValidBody(req.body);
-    const task = updateTask(req.params.id, req.body);
+    const task = updateTask(req.params.id, pickFields(req.body, PATCHABLE_FIELDS));
     if (!task) {
       return res.status(404).json({ error: 'task not found' });
     }
