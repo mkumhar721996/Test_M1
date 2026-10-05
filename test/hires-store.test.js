@@ -69,3 +69,26 @@ test('AC8: the previously cancelled Run is not resumed on reactivation', async (
   expect(updated.run.id).not.toBe(cancelledRunId);
   expect(updated.runHistory.find((r) => r.id === cancelledRunId)).toMatchObject({ status: 'cancelled' });
 });
+
+test('AC3/AC4: changing only role (department unchanged) cancels and restarts the active run', async () => {
+  const hire = await createHire({ name: 'A', department: 'Engineering', role: 'Engineer II', startDate: '2026-10-05', hireStage: 'offer_accepted' });
+  const originalRunId = getHire(hire.id).run.id;
+  const updated = await updateHire(hire.id, { role: 'Senior Engineer' });
+  expect(updated.run.id).not.toBe(originalRunId);
+  expect(updated.runHistory).toContainEqual(expect.objectContaining({ id: originalRunId, status: 'cancelled', reason: 'role_or_department_changed' }));
+  expect(updated.run).toMatchObject({ status: 'active', department: 'Engineering', role: 'Senior Engineer' });
+});
+
+test('AC3/AC4: changing only department (role unchanged) cancels and restarts the active run', async () => {
+  const hire = await createHire({ name: 'A', department: 'Engineering', role: 'Engineer II', startDate: '2026-10-05', hireStage: 'offer_accepted' });
+  const originalRunId = getHire(hire.id).run.id;
+  const updated = await updateHire(hire.id, { department: 'Product' });
+  expect(updated.run.id).not.toBe(originalRunId);
+  expect(updated.run).toMatchObject({ status: 'active', department: 'Product', role: 'Engineer II' });
+});
+
+test('AC3/AC4 (negative): changing department/role on a hire with no active run does not start one', async () => {
+  const hire = await createHire({ name: 'A', department: 'Engineering', role: 'Engineer II', startDate: '2026-10-05', hireStage: 'draft' });
+  const updated = await updateHire(hire.id, { department: 'Product', role: 'Product Manager' });
+  expect(updated.run).toBeNull();
+});
