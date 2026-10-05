@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-161 — Deadline-Approaching Reminders</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* ---------- Page-specific styles (tokens only; no literal colors/sizes) ---------- */
+
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  .runs-table { width: 100%; border-collapse: collapse; font-family: var(--font-family-base); }
+  .runs-table th, .runs-table td {
+    text-align: left;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+  .runs-table th { color: var(--color-fg-muted); font-weight: var(--font-weight-bold); }
+  .runs-table tr:last-child td { border-bottom: none; }
+
+  .breadcrumb {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-2);
+  }
+  .breadcrumb a { color: var(--color-fg-muted); text-decoration: underline; cursor: pointer; }
+  .breadcrumb .sep { margin: 0 var(--space-1); }
+  .breadcrumb .current { color: var(--color-fg); }
+
+  .step-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 var(--space-4) 0;
+  }
+
+  .reminder-card { margin-top: var(--space-4); }
+  .reminder-card .card-title { display: flex; align-items: center; gap: var(--space-2); justify-content: space-between; flex-wrap: wrap; }
+
+  .countdown {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .countdown strong { color: var(--color-fg); }
+
+  .progress-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+  .progress-track {
+    flex: 1;
+    height: 10px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: var(--color-primary); transition: width 200ms ease-out; }
+  .progress-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); white-space: nowrap; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+  }
+  .pill-delivered { color: var(--color-fg); border-color: var(--color-primary); }
+  .pill-failed { color: var(--color-fg); border-color: var(--color-border); background: var(--color-bg); }
+  .pill-capped { color: var(--color-primary-fg); background: var(--color-primary); border-color: var(--color-primary); }
+  .pill-waiting { color: var(--color-fg-muted); }
+
+  .recipients-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+
+  .action-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+
+  .helper-text { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  .log-table { width: 100%; border-collapse: collapse; font-family: var(--font-family-base); }
+  .log-table th, .log-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+  .log-table th { color: var(--color-fg-muted); font-weight: var(--font-weight-bold); position: sticky; top: 0; background: var(--card-default-background); }
+  .log-scroll { max-height: 360px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .log-scroll .log-table { border: none; }
+  .log-scroll thead th { border-bottom: 1px solid var(--color-border); }
+
+  .outcome { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .outcome-ok::before { content: "✓"; }
+  .outcome-fail::before { content: "✕"; }
+
+  .inbox-controls { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); flex-wrap: wrap; }
+  .inbox-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .inbox-item {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+    display: flex;
+    gap: var(--space-3);
+  }
+  .inbox-dot { flex-shrink: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); margin-top: 6px; }
+  .inbox-item.read .inbox-dot { background: var(--color-border); }
+  .inbox-body { flex: 1; min-width: 0; }
+  .inbox-title { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .inbox-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-2) 0; }
+  .inbox-text { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin: 0 0 var(--space-3) 0; max-width: 65ch; }
+  .empty-state { text-align: center; padding: var(--space-4) var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+
+  .email-client { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .email-toolbar { background: var(--color-bg); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .email-head { padding: var(--space-4); border-bottom: 1px solid var(--color-border); }
+  .email-head h3 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+  .email-head dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); }
+  .email-head dt { color: var(--color-fg-muted); }
+  .email-head dd { color: var(--color-fg); margin: 0; }
+  .email-body { padding: var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); max-width: 65ch; }
+  .email-banner { padding: var(--space-3) var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); border-bottom: 1px solid var(--color-border); }
+  .email-banner.ok { color: var(--color-fg); background: var(--color-bg); }
+  .email-banner.fail { color: var(--color-fg); background: var(--color-bg); border-left: 4px solid var(--color-fg-muted); }
+
+  .settings-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap; }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-main { flex: 1; min-width: 220px; }
+  .settings-row-main .label { margin-bottom: var(--space-1); }
+  .settings-row-control { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .settings-number { width: 90px; }
+
+  .chip-pending {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    cursor: not-allowed;
+    flex-shrink: 0;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-fg-muted);
+  }
+  .switch[aria-checked="true"]::after { left: 20px; background: var(--color-primary); }
+
+  @media (max-width: 480px) {
+    .settings-row { flex-direction: column; }
+    .progress-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<!-- App nav: top bar — Profiles · Runs · Notifications · Settings. Extends the "Onboarding"
+     top bar already established for this product (Profiles/Runs from the onboarding-progression
+     prototype). "Notifications" is added here as the in-app home for reminder delivery
+     (AC1); "Settings" is where the reminder window/cadence/cap live (AC1, AC2). -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-161</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "run": { "id": "run_7201", "hireName": "Jordan Reyes", "role": "Software Engineer II", "department": "Engineering" },
+    "step": {
+      "id": "step_it",
+      "name": "Provision IT accounts & equipment",
+      "description": "Assign a laptop and create system accounts for Jordan's first day.",
+      "dueDisplay": "Oct 7, 5:00 PM",
+      "dueIso": "2026-10-07T17:00:00",
+      "reminderWindowHours": 48,
+      "cadenceHours": 12,
+      "maxReminders": 5
+    },
+    "recipients": [
+      { "id": "owner", "name": "Devon Ruiz", "role": "Step owner — IT" },
+      { "id": "hr", "name": "Priya Shah", "role": "HR" },
+      { "id": "manager", "name": "Morgan Ellis", "role": "Manager — Engineering" }
+    ],
+    "schedule": [
+      { "n": 1, "display": "Oct 5, 5:00 PM" },
+      { "n": 2, "display": "Oct 6, 5:00 AM" },
+      { "n": 3, "display": "Oct 6, 5:00 PM" },
+      { "n": 4, "display": "Oct 7, 5:00 AM" },
+      { "n": 5, "display": "Oct 7, 5:00 PM" }
+    ],
+    "otherRuns": [
+      { "hire": "Alicia Brooks", "role": "Product Manager", "step": "Provision IT accounts & equipment — due in 6 days", "status": "On track" },
+      { "hire": "Sam Okafor", "role": "Account Executive", "step": "Manager check-in & 30-day goals sign-off — completed", "status": "Completed" }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Runs
+         Notes:
+           - Entry point. Jordan Reyes's row is the one wired into this story's reminder
+             flow — "View reminders" opens the Run detail screen below. Other rows are
+             static context so the reminder feature reads as part of a live product, not
+             an isolated screen.
+    -->
+    <div class="screen" data-name="Runs">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="go(2)">Notifications</a>
+          <a href="#" onclick="go(5)">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Onboarding runs</h1>
+          <p>Every active onboarding run and its current step.</p>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table class="runs-table">
+              <thead>
+                <tr><th scope="col">New hire</th><th scope="col">Role</th><th scope="col">Current step</th><th scope="col"></th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Jordan Reyes</td>
+                  <td>Software Engineer II</td>
+                  <td>Provision IT accounts &amp; equipment — <span id="runs-row-status">due Oct 7, 5:00 PM</span></td>
+                  <td><button class="btn btn-secondary" onclick="go(1)">View reminders</button></td>
+                </tr>
+                <tr>
+                  <td>Alicia Brooks</td>
+                  <td>Product Manager</td>
+                  <td>Provision IT accounts &amp; equipment — due in 6 days</td>
+                  <td><button class="btn btn-secondary" disabled aria-disabled="true">View reminders</button></td>
+                </tr>
+                <tr>
+                  <td>Sam Okafor</td>
+                  <td>Account Executive</td>
+                  <td>Manager check-in &amp; 30-day goals sign-off — completed</td>
+                  <td><button class="btn btn-secondary" disabled aria-disabled="true">View reminders</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Run detail — Reminders
+         Notes:
+           - AC1: shows the configurable reminder window ("48h before deadline"), and that
+             a reminder, once the window is reached and the owner hasn't acted, goes to the
+             step owner, HR, and the relevant manager via both in-app and email.
+           - "Simulate: reminder window reached" then "Simulate: next reminder interval
+             elapses" walk a reviewer through the whole lifecycle without waiting in real
+             time. Each click disables the button and shows "Sending…" for ~300ms, then
+             appends to the Notifications inbox and the Delivery log (sim. network latency).
+           - AC2: after 5 sends the progress pill switches to "Reminder limit reached (5 of
+             5)" and the button becomes permanently disabled with no destructive affordance.
+           - "Mark step complete" simulates the owner acting — reminders stop immediately
+             and the panel explains why, demonstrating the "hasn't yet acted" condition.
+           - Empty state: on load, the window hasn't been reached yet, so 0 reminders exist
+             and the CTA explains what has to happen for the first one to fire.
+    -->
+    <div class="screen" data-name="Run detail — Reminders">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="go(2)">Notifications</a>
+          <a href="#" onclick="go(5)">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="breadcrumb"><a onclick="go(0)">Runs</a><span class="sep">/</span><span class="current">Jordan Reyes</span></div>
+        <div class="page-header">
+          <h1>Provision IT accounts &amp; equipment</h1>
+          <p>Jordan Reyes — Software Engineer II, Engineering</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Step</h2>
+          <p class="card-body">Assign a laptop and create system accounts for Jordan's first day.</p>
+          <div class="step-meta">
+            <span class="chip">Owner: Devon Ruiz (IT)</span>
+            <span class="chip">Due: Oct 7, 5:00 PM</span>
+            <span class="chip" id="owner-acted-chip" hidden>Completed by Devon Ruiz</span>
+          </div>
+        </div>
+
+        <div class="card reminder-card">
+          <h2 class="card-title">
+            <span>Deadline reminders</span>
+            <span class="pill pill-waiting" id="reminder-state-pill">Not yet due for a reminder</span>
+          </h2>
+          <p class="countdown" id="countdown-text">Reminder window opens in <strong>2 hours</strong> (48h before the Oct 7, 5:00 PM deadline).</p>
+
+          <div class="progress-row">
+            <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-label="Reminders sent"></div></div>
+            <span class="progress-label" id="progress-label">0 of 5 sent</span>
+          </div>
+
+          <div class="recipients-row">
+            <span class="chip">To: Devon Ruiz (owner)</span>
+            <span class="chip">To: Priya Shah (HR)</span>
+            <span class="chip">To: Morgan Ellis (manager)</span>
+            <span class="chip">Channels: in-app + email</span>
+          </div>
+
+          <div class="action-row">
+            <button class="btn btn-primary" id="action-btn" onclick="handleAction()">Simulate: reminder window reached</button>
+            <button class="btn btn-secondary" id="complete-btn" onclick="markComplete()">Mark step complete</button>
+          </div>
+          <p class="helper-text" id="reminder-helper">No reminders have been sent — the step isn't within its reminder window yet.</p>
+        </div>
+
+        <div class="card" style="margin-top:var(--space-4)">
+          <h2 class="card-title">Recent delivery activity</h2>
+          <div id="recent-log-wrap">
+            <p class="empty-state" id="recent-log-empty">Nothing delivered yet for this step.</p>
+            <div class="log-scroll" id="recent-log-scroll" hidden>
+              <table class="log-table">
+                <thead><tr><th>Time</th><th>Recipient</th><th>Channel</th><th>Outcome</th></tr></thead>
+                <tbody id="recent-log-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <p class="helper-text"><a href="#" onclick="go(4); return false;" style="color:var(--color-primary)">View full delivery log →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Notifications — in-app inbox
+         Notes:
+           - AC1: the same reminder lands in every recipient's in-app inbox. "Viewing as"
+             switches between the step owner, HR, and the manager to prove it's not just
+             sent to one role.
+           - Empty state shown when a recipient has 0 reminders yet (before any are sent on
+             the Run detail screen).
+           - Each item shows which reminder number it is (e.g. "2 of 5") so a reviewer can
+             see the cap approaching without leaving this screen.
+    -->
+    <div class="screen" data-name="Notifications">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="go(0)">Runs</a>
+          <a href="#" class="active" aria-current="page">Notifications</a>
+          <a href="#" onclick="go(5)">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Notifications</h1>
+          <p>In-app deadline reminders for this account.</p>
+        </div>
+        <div class="inbox-controls">
+          <label class="label" for="viewing-as" style="margin:0">Viewing inbox as</label>
+          <select class="input" id="viewing-as" style="width:auto" onchange="renderInbox()">
+            <option value="owner">Devon Ruiz — Step owner</option>
+            <option value="hr">Priya Shah — HR</option>
+            <option value="manager">Morgan Ellis — Manager</option>
+          </select>
+        </div>
+        <div class="inbox-list" id="inbox-list"></div>
+      </div>
+    </div>
+
+    <!-- Screen: Email preview
+         Notes:
+           - AC1: shows the email channel carries the same reminder content as the in-app
+             notification, proving channel parity.
+           - AC3: the selector lets a reviewer pick any (recipient, reminder #) pair that's
+             been sent and see its recorded delivery outcome at the top of the mock email
+             client — including the one simulated bounce (Morgan Ellis, reminder 2).
+    -->
+    <div class="screen" data-name="Email preview">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="go(0)">Runs</a>
+          <a href="#" onclick="go(2)">Notifications</a>
+          <a href="#" class="active" aria-current="page" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="breadcrumb"><a onclick="go(5)">Settings</a><span class="sep">/</span><span class="current">Email preview</span></div>
+        <div class="page-header">
+          <h1>Email preview</h1>
+          <p>What a reminder recipient receives by email, matched to the in-app copy.</p>
+        </div>
+        <div class="inbox-controls">
+          <label class="label" for="email-picker" style="margin:0">Sent email</label>
+          <select class="input" id="email-picker" style="width:auto" onchange="renderEmail()"></select>
+        </div>
+        <div class="email-client" id="email-client">
+          <p class="empty-state">No reminder emails have been sent yet. Send one from the Run detail screen, then come back here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Delivery log
+         Notes:
+           - AC3: every attempted delivery — one row per recipient per channel per
+             reminder — is logged with its timestamp, the step/run it belongs to, the
+             recipient, the channel, and whether it succeeded or failed. Scrollable so all
+             attempts across the 5 reminders stay on one screen.
+           - Failure is shown with an icon + the word "Failed" plus a reason, never color
+             alone.
+    -->
+    <div class="screen" data-name="Delivery log">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="go(0)">Runs</a>
+          <a href="#" onclick="go(2)">Notifications</a>
+          <a href="#" class="active" aria-current="page" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="breadcrumb"><a onclick="go(5)">Settings</a><span class="sep">/</span><span class="current">Delivery log</span></div>
+        <div class="page-header">
+          <h1>Reminder delivery log</h1>
+          <p>Every attempted reminder delivery for Jordan Reyes — Provision IT accounts &amp; equipment.</p>
+        </div>
+        <div class="card">
+          <div id="full-log-empty" class="empty-state">No delivery attempts yet. Send a reminder from the Run detail screen to populate this log.</div>
+          <div class="log-scroll" id="full-log-scroll" hidden>
+            <table class="log-table">
+              <thead><tr><th>Time</th><th>Reminder</th><th>Recipient</th><th>Role</th><th>Channel</th><th>Outcome</th></tr></thead>
+              <tbody id="full-log-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reminder settings
+         Notes:
+           - AC1: the reminder window before the deadline is configurable here (hours
+             before due date). Recipients (step owner, HR, relevant manager) and both
+             channels are shown as the fixed rule, not per-step choices.
+           - AC2: the 5-reminder cap is shown as a settled, non-editable rule with an
+             explanation of what happens once it's reached.
+           - The epic scope note flags three open questions: the exact cadence between
+             reminders, whether reminders continue once a step is overdue, and whether a
+             "resolved" notice fires on completion. Those three controls are rendered
+             visibly but disabled with a "Pending decision" chip, so a reviewer can see
+             where this design intentionally stops short of the unconfirmed scope rather
+             than guessing an answer.
+    -->
+    <div class="screen" data-name="Reminder settings">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="go(0)">Runs</a>
+          <a href="#" onclick="go(2)">Notifications</a>
+          <a href="#" class="active" aria-current="page">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Deadline reminder settings</h1>
+          <p>Applies to every step with a deadline, across all onboarding workflows.</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Timing</h2>
+
+          <div class="settings-row">
+            <div class="settings-row-main">
+              <label class="label" for="window-input">Reminder window</label>
+              <p class="helper-text" style="margin-top:0">Start reminding the step owner this many hours before the step's deadline.</p>
+            </div>
+            <div class="settings-row-control">
+              <input class="input settings-number" id="window-input" type="number" min="1" value="48" aria-describedby="window-unit">
+              <span id="window-unit" class="helper-text" style="margin:0">hours before deadline</span>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-main">
+              <label class="label">Repeat interval <span class="chip-pending">Pending decision</span></label>
+              <p class="helper-text" style="margin-top:0">How often a reminder repeats once the window opens. Exact cadence is still being confirmed against epic rules, so it isn't editable yet.</p>
+            </div>
+            <div class="settings-row-control">
+              <span class="chip">Every 12 hours</span>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-main">
+              <label class="label">Maximum reminders per step</label>
+              <p class="helper-text" style="margin-top:0">Once 5 reminders have gone out for an unactioned step, no further reminder is sent for it.</p>
+            </div>
+            <div class="settings-row-control">
+              <span class="chip">5 (fixed)</span>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-main">
+              <label class="label">Continue reminders once overdue <span class="chip-pending">Pending decision</span></label>
+              <p class="helper-text" style="margin-top:0">Whether reminders keep going after the step's deadline has already passed. Not yet confirmed.</p>
+            </div>
+            <div class="settings-row-control">
+              <button class="switch" role="switch" aria-checked="false" disabled aria-label="Continue reminders once overdue (pending decision)"></button>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-main">
+              <label class="label">Send a "resolved" notice on completion <span class="chip-pending">Pending decision</span></label>
+              <p class="helper-text" style="margin-top:0">Whether owner, HR, and the manager get a follow-up once the step is completed. Not yet confirmed.</p>
+            </div>
+            <div class="settings-row-control">
+              <button class="switch" role="switch" aria-checked="false" disabled aria-label="Send a resolved notice on completion (pending decision)"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:var(--space-4)">
+          <h2 class="card-title">Recipients &amp; channels</h2>
+          <p class="card-body" style="margin-bottom:var(--space-3)">Every reminder for a step goes to all three of these, on both channels. This isn't configurable per step.</p>
+          <div class="recipients-row">
+            <span class="chip">Step owner</span>
+            <span class="chip">HR</span>
+            <span class="chip">Relevant manager(s)</span>
+            <span class="chip">In-app</span>
+            <span class="chip">Email</span>
+          </div>
+        </div>
+
+        <div class="action-row" style="margin-top:var(--space-4)">
+          <button class="btn btn-primary" id="save-settings-btn" onclick="saveSettings()">Save settings</button>
+          <a href="#" onclick="go(4); return false;" style="color:var(--color-primary); font-family:var(--font-family-base); font-size:var(--font-size-sm)">View delivery log →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+
+    // ---------- Reminder lifecycle state ----------
+    let windowReached = false;
+    let remindersSent = 0;
+    let ownerActed = false;
+    let sending = false;
+
+    // deliveryLog: { timeDisplay, n, recipientId, recipientName, recipientRole, channel, outcome, reason }
+    const deliveryLog = [];
+    const inbox = { owner: [], hr: [], manager: [] };
+
+    // Fixed scenario: reminder #2's email to the manager bounces, everything else succeeds.
+    function outcomeFor(n, recipientId, channel) {
+      if (n === 2 && recipientId === 'manager' && channel === 'email') {
+        return { outcome: 'failed', reason: 'Mailbox unavailable (bounced)' };
+      }
+      return { outcome: 'delivered', reason: null };
+    }
+
+    function sendReminder(n) {
+      const sched = fixture.schedule.find(s => s.n === n);
+      fixture.recipients.forEach(r => {
+        ['in-app', 'email'].forEach(channel => {
+          const o = outcomeFor(n, r.id, channel);
+          deliveryLog.unshift({
+            timeDisplay: sched.display,
+            n, recipientId: r.id, recipientName: r.name, recipientRole: r.role,
+            channel, outcome: o.outcome, reason: o.reason
+          });
+          if (channel === 'in-app' && o.outcome === 'delivered') {
+            inbox[r.id].unshift({
+              n, timeDisplay: sched.display, read: false
+            });
+          }
+        });
+      });
+    }
+
+    function go(i) { show(i); }
+
+    function fmtPct() { return Math.round((remindersSent / fixture.step.maxReminders) * 100) + '%'; }
+
+    function renderReminderPanel() {
+      const pill = document.getElementById('reminder-state-pill');
+      const countdown = document.getElementById('countdown-text');
+      const fill = document.getElementById('progress-fill');
+      const label = document.getElementById('progress-label');
+      const btn = document.getElementById('action-btn');
+      const completeBtn = document.getElementById('complete-btn');
+      const helper = document.getElementById('reminder-helper');
+      const ownerChip = document.getElementById('owner-acted-chip');
+
+      fill.style.width = fmtPct();
+      fill.setAttribute('aria-valuenow', String(remindersSent));
+      label.textContent = `${remindersSent} of ${fixture.step.maxReminders} sent`;
+
+      ownerChip.hidden = !ownerActed;
+
+      if (ownerActed) {
+        pill.textContent = 'Step completed';
+        pill.className = 'pill pill-capped';
+        countdown.innerHTML = 'Devon Ruiz marked this step complete — no further reminders will be sent.';
+        btn.hidden = true;
+        completeBtn.hidden = true;
+        helper.textContent = 'Reminders stop as soon as the step owner acts, even if the deadline hasn’t passed.';
+        return;
+      }
+
+      completeBtn.hidden = false;
+      completeBtn.disabled = sending;
+
+      if (!windowReached) {
+        pill.textContent = 'Not yet due for a reminder';
+        pill.className = 'pill pill-waiting';
+        countdown.innerHTML = 'Reminder window opens in <strong>2 hours</strong> (48h before the ' + fixture.step.dueDisplay + ' deadline).';
+        btn.hidden = false;
+        btn.disabled = sending;
+        btn.textContent = sending ? 'Sending…' : 'Simulate: reminder window reached';
+        helper.textContent = 'No reminders have been sent — the step isn’t within its reminder window yet.';
+        return;
+      }
+
+      if (remindersSent >= fixture.step.maxReminders) {
+        pill.textContent = `Reminder limit reached (${fixture.step.maxReminders} of ${fixture.step.maxReminders})`;
+        pill.className = 'pill pill-capped';
+        countdown.innerHTML = 'All 5 reminders have been sent for this step. No additional reminder will be sent, even though the deadline has now passed.';
+        btn.hidden = false;
+        btn.disabled = true;
+        btn.textContent = 'Reminder limit reached';
+        helper.textContent = 'This is the hard cap (AC2): once 5 reminders go out for an unactioned step, further interval elapses send nothing more.';
+        return;
+      }
+
+      pill.textContent = `Reminder ${remindersSent} of ${fixture.step.maxReminders} sent`;
+      pill.className = 'pill pill-delivered';
+      const nextN = remindersSent + 1;
+      const nextSched = fixture.schedule.find(s => s.n === nextN);
+      countdown.innerHTML = remindersSent === 0
+        ? 'Window reached — Devon Ruiz hasn’t acted yet. First reminder is ready to send.'
+        : `Next reminder interval: <strong>${nextSched.display}</strong>, unless Devon Ruiz acts first.`;
+      btn.hidden = false;
+      btn.disabled = sending;
+      btn.textContent = sending ? 'Sending…' : (remindersSent === 0 ? 'Simulate: send first reminder' : 'Simulate: next reminder interval elapses');
+      helper.textContent = 'Sent via in-app and email to the step owner, HR, and the relevant manager.';
+    }
+
+    function renderRecentLog() {
+      const empty = document.getElementById('recent-log-empty');
+      const wrap = document.getElementById('recent-log-scroll');
+      const body = document.getElementById('recent-log-body');
+      if (deliveryLog.length === 0) {
+        empty.hidden = false;
+        wrap.hidden = true;
+        return;
+      }
+      empty.hidden = true;
+      wrap.hidden = false;
+      body.innerHTML = deliveryLog.slice(0, 6).map(rowHtml).join('');
+    }
+
+    function rowHtml(row) {
+      const outcomeHtml = row.outcome === 'delivered'
+        ? '<span class="outcome outcome-ok">Delivered</span>'
+        : `<span class="outcome outcome-fail">Failed — ${row.reason}</span>`;
+      return `<tr><td>${row.timeDisplay}</td><td>${row.recipientName}</td><td>${row.channel === 'in-app' ? 'In-app' : 'Email'}</td><td>${outcomeHtml}</td></tr>`;
+    }
+
+    function renderFullLog() {
+      const empty = document.getElementById('full-log-empty');
+      const wrap = document.getElementById('full-log-scroll');
+      const body = document.getElementById('full-log-body');
+      if (deliveryLog.length === 0) {
+        empty.hidden = false;
+        wrap.hidden = true;
+        return;
+      }
+      empty.hidden = true;
+      wrap.hidden = false;
+      body.innerHTML = deliveryLog.map(row => {
+        const outcomeHtml = row.outcome === 'delivered'
+          ? '<span class="outcome outcome-ok">Delivered</span>'
+          : `<span class="outcome outcome-fail">Failed — ${row.reason}</span>`;
+        return `<tr><td>${row.timeDisplay}</td><td>${row.n} of ${fixture.step.maxReminders}</td><td>${row.recipientName}</td><td>${row.recipientRole}</td><td>${row.channel === 'in-app' ? 'In-app' : 'Email'}</td><td>${outcomeHtml}</td></tr>`;
+      }).join('');
+    }
+
+    function renderInbox() {
+      const viewAs = document.getElementById('viewing-as').value;
+      const recipient = fixture.recipients.find(r => r.id === viewAs);
+      const list = document.getElementById('inbox-list');
+      const items = inbox[viewAs];
+      if (!items || items.length === 0) {
+        list.innerHTML = `<div class="empty-state">No reminders in ${recipient.name}'s inbox yet. Trigger one from the Run detail screen.</div>`;
+        return;
+      }
+      list.innerHTML = items.map(item => `
+        <div class="inbox-item ${item.read ? 'read' : ''}">
+          <span class="inbox-dot" aria-hidden="true"></span>
+          <div class="inbox-body">
+            <p class="inbox-title">Reminder ${item.n} of ${fixture.step.maxReminders}: "${fixture.step.name}" is due soon</p>
+            <p class="inbox-meta">${item.timeDisplay} · In-app</p>
+            <p class="inbox-text">${fixture.run.hireName}'s step "${fixture.step.name}" is due ${fixture.step.dueDisplay} and hasn't been marked complete. As step owner, HR, or the hire's manager, please review before the deadline.</p>
+            <button class="btn btn-secondary" onclick="go(1)">Review step</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderEmailPicker() {
+      const picker = document.getElementById('email-picker');
+      const emailEntries = deliveryLog.filter(r => r.channel === 'email');
+      if (emailEntries.length === 0) {
+        picker.innerHTML = '<option>No emails sent yet</option>';
+        document.getElementById('email-client').innerHTML = '<p class="empty-state">No reminder emails have been sent yet. Send one from the Run detail screen, then come back here.</p>';
+        return;
+      }
+      picker.innerHTML = emailEntries.map((r, i) =>
+        `<option value="${i}">Reminder ${r.n} of ${fixture.step.maxReminders} → ${r.recipientName}</option>`
+      ).join('');
+      renderEmail();
+    }
+
+    function renderEmail() {
+      const picker = document.getElementById('email-picker');
+      const emailEntries = deliveryLog.filter(r => r.channel === 'email');
+      if (emailEntries.length === 0) return;
+      const row = emailEntries[Number(picker.value)];
+      const banner = row.outcome === 'delivered'
+        ? `<div class="email-banner ok">Delivered to ${row.recipientName} — ${row.timeDisplay}</div>`
+        : `<div class="email-banner fail">Delivery failed — ${row.reason} (${row.timeDisplay})</div>`;
+      document.getElementById('email-client').innerHTML = `
+        ${banner}
+        <div class="email-toolbar">Onboarding Reminders &lt;no-reply@onboarding.company.com&gt;</div>
+        <div class="email-head">
+          <h3>Reminder ${row.n} of ${fixture.step.maxReminders}: "${fixture.step.name}" is due soon</h3>
+          <dl>
+            <dt>From</dt><dd>Onboarding Reminders &lt;no-reply@onboarding.company.com&gt;</dd>
+            <dt>To</dt><dd>${row.recipientName} (${row.recipientRole})</dd>
+            <dt>Sent</dt><dd>${row.timeDisplay}</dd>
+          </dl>
+        </div>
+        <div class="email-body">
+          <p>Hi ${row.recipientName.split(' ')[0]},</p>
+          <p>${fixture.run.hireName}'s step "${fixture.step.name}" is due ${fixture.step.dueDisplay} and hasn't been marked complete yet.</p>
+          <p>As the step owner, HR, or the hire's manager, please review and take action before the deadline.</p>
+          <p><strong>Review step →</strong> (link to the run in Onboarding)</p>
+        </div>
+      `;
+    }
+
+    function markRead() {
+      ['owner', 'hr', 'manager'].forEach(id => inbox[id].forEach(i => i.read = true));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.hidden = false;
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => { t.hidden = true; }, 3200);
+    }
+
+    function handleAction() {
+      if (sending || ownerActed) return;
+      if (!windowReached) {
+        windowReached = true;
+        renderReminderPanel();
+        showToast('Reminder window reached. Devon Ruiz has not acted — the first reminder can now go out.');
+        return;
+      }
+      if (remindersSent >= fixture.step.maxReminders) return;
+
+      sending = true;
+      renderReminderPanel();
+      setTimeout(() => {
+        remindersSent += 1;
+        sendReminder(remindersSent);
+        sending = false;
+        renderReminderPanel();
+        renderRecentLog();
+        renderFullLog();
+        renderInbox();
+        renderEmailPicker();
+        const names = fixture.recipients.map(r => r.name).join(', ');
+        if (remindersSent >= fixture.step.maxReminders) {
+          showToast(`Reminder ${remindersSent} of ${fixture.step.maxReminders} sent to ${names}. Limit reached — no more will be sent.`);
+        } else {
+          showToast(`Reminder ${remindersSent} of ${fixture.step.maxReminders} sent to ${names} via in-app and email.`);
+        }
+      }, 320);
+    }
+
+    function markComplete() {
+      if (ownerActed) return;
+      ownerActed = true;
+      renderReminderPanel();
+      showToast('Devon Ruiz marked "Provision IT accounts & equipment" complete. Reminders have stopped.');
+    }
+
+    function saveSettings() {
+      const btn = document.getElementById('save-settings-btn');
+      const original = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = original;
+        showToast('Reminder settings saved.');
+      }, 300);
+    }
+
+    // ---------- Reviewer bar wiring ----------
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    let cur = 0;
+    function show(i) {
+      cur = Math.max(0, Math.min(screens.length - 1, i));
+      screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+      document.getElementById('screen-label').textContent =
+        `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+      if (screens[cur].dataset.name === 'Notifications') { renderInbox(); markRead(); }
+      if (screens[cur].dataset.name === 'Email preview') { renderEmailPicker(); }
+    }
+    document.getElementById('prev-btn').onclick = () => show(cur - 1);
+    document.getElementById('next-btn').onclick = () => show(cur + 1);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+
+    renderReminderPanel();
+    renderRecentLog();
+    renderFullLog();
+    show(0);
+  </script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
