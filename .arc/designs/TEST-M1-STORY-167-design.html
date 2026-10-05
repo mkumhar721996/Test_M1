@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-167 — New-Hire Profile Creation &amp; Editing</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per the UX baseline (never encode meaning in colour alone),
+    validation errors, permission-denied notices, and the deactivated/cancelled states
+    below are all signalled with an icon + bold text + border weight using the existing
+    --color-primary/--color-fg tokens, never by hue alone. If
+    sdlc.design-system-bootstrap later adds e.g. `color-danger`/`color-success`,
+    `.field-error`, `.input-invalid`, `.notice--deny`, and the status/run chips are the
+    only places to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Role switcher ---------- */
+  .role-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .role-switcher label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .role-switcher select { width: auto; min-width: 230px; }
+
+  .role-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .role-banner[hidden] { display: none; }
+  .role-banner .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .role-banner strong { color: var(--color-fg); }
+
+  /* ---------- Profile table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.profile-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+  .profile-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .profile-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .profile-table tbody tr:last-child td { border-bottom: none; }
+  .profile-table tbody tr.row-changed { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .profile-table tbody tr.row-changed { animation: none; }
+  }
+  .name-cell .person-name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .contact-cell { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .contact-cell .contact-line { display: flex; align-items: center; gap: var(--space-1); margin-bottom: var(--space-1); }
+  .contact-cell .contact-line:last-child { margin-bottom: 0; }
+  .role-cell .role-line { color: var(--color-fg); }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .col-actions .btn-sm + .btn-sm { margin-left: var(--space-2); }
+
+  .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
+  }
+  .edit-link {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+  }
+  .edit-link:hover { background: var(--color-bg); }
+  .edit-link .lock-icon { margin-right: var(--space-1); }
+
+  /* ---------- Status / run chips ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  .run-line { display: flex; align-items: flex-start; gap: var(--space-1); font-size: var(--font-size-sm); }
+  .run-line.run-active { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .run-line.run-none { color: var(--color-fg-muted); font-style: italic; }
+  .run-line.run-cancelled { color: var(--color-fg-muted); font-style: italic; }
+  .run-id { display: block; color: var(--color-fg-muted); font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); font-style: normal; }
+
+  .empty-state { text-align: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2); }
+  .empty-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  .no-controls-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-top: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .no-controls-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Modal (create/edit profile) ---------- */
+  .modal-panel { width: min(92vw, 480px); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .required-tag { font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+  .fieldset-legend {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0;
+    margin: 0 0 var(--space-3) 0;
+  }
+  .form-fieldset { border: none; margin: 0 0 var(--space-4) 0; padding: 0; }
+
+  /* ---------- Permission-denied notice (reused for create/edit/deactivate/reactivate) ---------- */
+  .notice--deny {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    background: var(--color-bg);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .notice--deny .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); flex: 0 0 auto; }
+  .notice--deny p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .notice--deny p:last-child { margin-bottom: 0; }
+  .notice--deny .notice-sub { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Confirm dialog (deactivate / reactivate) ---------- */
+  .consequence-box {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin: var(--space-3) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .consequence-box .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .consequence-box strong { color: var(--color-fg); }
+
+  /* ---------- Inline field validation ---------- */
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+
+  .lifecycle-compare { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 680px) { .lifecycle-compare { grid-template-columns: 1fr 1fr; } }
+  .lifecycle-card .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .lifecycle-card .kv-row { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .lifecycle-card .kv-row:last-child { border-bottom: none; }
+  .lifecycle-card .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .lifecycle-card .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  .no-delete-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    margin-top: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Profiles (active) · Runs · Settings. Matches the top bar already
+     established by the hire-profile and onboarding-run prototypes (TEST-M1-STORY-055,
+     TEST-M1-STORY-137, TEST-M1-STORY-155), so this surface reads as the same product.
+     This story extends TEST-M1-STORY-155's create/edit form with: (1) an HR/Manager role
+     gate on create, edit, deactivate, and reactivate, (2) email + phone as required
+     fields (TEST-M1-STORY-155 left them optional — this story's AC2/AC3 require all six
+     fields), and (3) the deactivate/reactivate lifecycle, including active-run
+     cancellation and reactivate's fresh run. It intentionally does not touch
+     workflow/run step progression (TEST-M1-STORY-137) or employee-record creation
+     (TEST-M1-STORY-138) — see the "out of scope" note on screen 1. The rehire shortcut
+     from TEST-M1-STORY-155 is out of this story's scope and is not repeated here. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-167</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: New-Hire Profiles (interactive)
+         Notes:
+           - "Signed in as" switches between HR, Manager, and Team member (no HR/Manager
+             access) without reloading the page. Every control below reacts live to that
+             choice (AC1, AC5, AC6).
+           - As HR or Manager: "+ New hire profile" opens a blank create form. All six
+             fields — Full name, Email, Phone, Department, Role, Start date — are marked
+             "(required)". Submit with any field blank to see an inline error naming
+             exactly that field, right under it; the form stays open and nothing is saved
+             (AC3). Fill in all six and submit to see the profile created (AC2). "Edit" on
+             any row reopens the same form pre-filled with that profile's current values;
+             changing any field and saving updates the row in place (AC4), with the same
+             required-field validation blocking an empty field.
+           - As Team member: "+ New hire profile" and every row's "Edit" / "Deactivate" /
+             "Reactivate" stay visible and clickable (so you can see the request actually
+             get made and rejected, same as the API would reject it) but produce a
+             "Request rejected" toast and never open the form or change the row (AC1, AC5,
+             AC6).
+           - As HR or Manager: "Deactivate" on an active profile opens a confirm dialog
+             naming the exact consequence — if the profile has an active onboarding run,
+             confirming cancels that run (AC7); if it has none, confirming just deactivates
+             the profile. "Reactivate" on a deactivated profile opens a confirm dialog
+             explaining that confirming starts a brand-new onboarding run from step 1
+             (AC8). Try both on Sam Okafor's row (currently deactivated) and on Jordan
+             Reyes's row (currently has an active run).
+           - There is no delete action anywhere on this screen or in any row's menu — only
+             "Deactivate" — see the "out of scope" note below the table and the
+             "Deactivate & reactivate lifecycle" reference screen (AC9).
+           - Data is written to real localStorage under `test-m1-story-167-profiles` —
+             reload this file to confirm a change is still present after reload. "Reset
+             demo data" restores the original fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="New-Hire Profiles">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>New-hire profiles</h1>
+            <p>Create a profile when someone is hired, keep it updated, and deactivate or reactivate it to pause or resume onboarding.</p>
+          </div>
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+              <option value="team_member">Team member (no HR/Manager access)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="role-banner" id="role-banner" hidden>
+          <span class="hint-icon" aria-hidden="true">⛔</span>
+          <span><strong>Viewing as Team member.</strong> Only HR or Manager can create, edit, deactivate, or reactivate hire profiles. Every action below is still clickable so you can see it get rejected.</span>
+        </div>
+
+        <div class="page-header">
+          <div></div>
+          <button type="button" class="btn btn-primary" id="new-profile-btn">+ New hire profile</button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="profile-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Department / Role</th>
+                  <th scope="col">Start date</th>
+                  <th scope="col">Profile status</th>
+                  <th scope="col">Onboarding run</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="profile-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="no-controls-note">
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span>
+            Out of scope for this screen, by design: progressing an onboarding run's own
+            steps once it's active (TEST-M1-STORY-137) and employee-record creation on
+            onboarding completion (TEST-M1-STORY-138). "Deactivate" is the only way to
+            remove a profile from active tracking — there is no permanent delete.
+          </span>
+        </p>
+      </div>
+
+      <!-- Create/Edit profile modal: same form serves both flows. As Team member it's
+           replaced entirely by a permission-denied notice — the fields never render. -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">New hire profile</h2>
+              <p id="modal-subtitle">Name, email, phone, department, role, and start date are all required.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <!-- State: permission-denied (create/edit) -->
+          <div class="notice--deny" id="form-deny-notice" hidden>
+            <span class="notice-icon" aria-hidden="true">⛔</span>
+            <div>
+              <p><strong>You don't have permission to do that.</strong></p>
+              <p class="notice-sub">Creating and editing hire profiles is restricted to HR and Manager roles. No profile was created or changed.</p>
+            </div>
+          </div>
+
+          <form id="profile-form" novalidate>
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Identity</legend>
+              <div class="field">
+                <label class="label" for="field-name">Full name <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-name" name="name" type="text" placeholder="e.g. Jordan Reyes" aria-describedby="error-name" />
+                <p class="field-error" id="error-name" role="alert" hidden>⚠ Full name is required.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Contact info</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-email">Email <span class="required-tag">(required)</span></label>
+                  <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" aria-describedby="error-email" />
+                  <p class="field-error" id="error-email" role="alert" hidden>⚠ Email is required.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="field-phone">Phone <span class="required-tag">(required)</span></label>
+                  <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 555-0100" aria-describedby="error-phone" />
+                  <p class="field-error" id="error-phone" role="alert" hidden>⚠ Phone is required.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Department &amp; role</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-department">Department <span class="required-tag">(required)</span></label>
+                  <select class="input" id="field-department" name="department" aria-describedby="error-department">
+                    <option value="">Select a department</option>
+                    <option>Engineering</option>
+                    <option>Product</option>
+                    <option>Sales</option>
+                    <option>People Ops</option>
+                    <option>Finance</option>
+                  </select>
+                  <p class="field-error" id="error-department" role="alert" hidden>⚠ Department is required.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="field-role">Role <span class="required-tag">(required)</span></label>
+                  <input class="input" id="field-role" name="role" type="text" placeholder="e.g. Software Engineer II" aria-describedby="error-role" />
+                  <p class="field-error" id="error-role" role="alert" hidden>⚠ Role is required.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset" style="margin-bottom: 0;">
+              <legend class="fieldset-legend">Start date</legend>
+              <div class="field" style="margin-bottom: 0;">
+                <label class="label" for="field-start-date">Start date <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-start-date" name="startDate" type="date" aria-describedby="error-start-date" />
+                <p class="field-error" id="error-start-date" role="alert" hidden>⚠ Start date is required.</p>
+              </div>
+            </fieldset>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Create profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Deactivate / reactivate confirm modal -->
+      <div class="modal-overlay" id="confirm-overlay" hidden></div>
+      <div class="modal-wrap" id="confirm-wrap" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+        <div class="modal-panel" style="width:min(92vw, 440px);">
+          <div class="modal-header">
+            <div>
+              <h2 id="confirm-title">Deactivate profile</h2>
+            </div>
+            <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+          </div>
+          <p class="card-body" id="confirm-body" style="margin:0;">Are you sure?</p>
+          <div class="consequence-box" id="confirm-consequence">
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span id="confirm-consequence-text"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirm-action-btn">Deactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Profile created</span>
+      </div>
+    </div>
+
+    <!-- Screen: Required-Field Validation (reference)
+         Notes:
+           - Static reference matrix for the exact blocking rule in AC2/AC3: all six
+             fields are required, with no exceptions. Use screen 1 to try these
+             submissions on the real form.
+    -->
+    <div class="screen" data-name="Required-Field Validation">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Required-field validation</h1>
+            <p>Non-interactive reference. Use screen 1 to try these submissions on the real form.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Every field is required — applies to create and edit alike</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Field left blank</th><th>Result</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Full name</td><td><span class="verdict block">Blocked — "Full name is required."</span></td><td>AC2, AC3</td></tr>
+              <tr><td>Email</td><td><span class="verdict block">Blocked — "Email is required."</span></td><td>AC2, AC3</td></tr>
+              <tr><td>Phone</td><td><span class="verdict block">Blocked — "Phone is required."</span></td><td>AC2, AC3</td></tr>
+              <tr><td>Department</td><td><span class="verdict block">Blocked — "Department is required."</span></td><td>AC2, AC3</td></tr>
+              <tr><td>Role</td><td><span class="verdict block">Blocked — "Role is required."</span></td><td>AC2, AC3</td></tr>
+              <tr><td>Start date</td><td><span class="verdict block">Blocked — "Start date is required."</span></td><td>AC2, AC3</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">In every blocked case the form stays open, the error appears directly under the offending field, and nothing is written to the profile list.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All six fields present</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Fields provided</th><th>Result</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Name, email, phone, department, role, start date</td><td><span class="verdict pass">Profile created</span></td><td>AC2</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Role Permissions (reference)
+         Notes:
+           - Summarizes exactly which roles can perform which action, matching the
+             rejection behaviour wired into screen 1's role switcher (AC1, AC5, AC6).
+    -->
+    <div class="screen" data-name="Role Permissions">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Role permissions</h1>
+            <p>Non-interactive reference. Try switching "Signed in as" on screen 1 to see these outcomes live.</p>
+          </div>
+        </div>
+        <div class="card">
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Action</th><th>HR</th><th>Manager</th><th>Team member</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Create hire profile</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Rejected</span></td><td>AC1, AC2</td></tr>
+              <tr><td>Edit hire profile</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Rejected — profile unchanged</span></td><td>AC4, AC5</td></tr>
+              <tr><td>Deactivate profile</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Rejected</span></td><td>AC6, AC7</td></tr>
+              <tr><td>Reactivate profile</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Rejected</span></td><td>AC6, AC8</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">A rejected request never opens the create/edit form, never changes a profile's status, and never starts or cancels a run — the rejection happens at the point the action is attempted, same as the underlying API returning a 403.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Deactivate & Reactivate Lifecycle (reference)
+         Notes:
+           - Before/after comparison for the two lifecycle transitions screen 1 lets you
+             trigger live: deactivating a profile with an active run cancels that run
+             (AC7), and reactivating a deactivated profile starts a brand-new run from
+             step 1 (AC8). Also calls out that deactivate is the only removal action that
+             exists — there is no permanent delete (AC9).
+    -->
+    <div class="screen" data-name="Deactivate &amp; Reactivate Lifecycle">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Deactivate &amp; reactivate lifecycle</h1>
+            <p>Jordan Reyes has an active onboarding run. Sam Okafor's profile is already deactivated — try both transitions live on screen 1.</p>
+          </div>
+        </div>
+
+        <div class="lifecycle-compare" style="margin-bottom: var(--space-4);">
+          <div class="card lifecycle-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">Before: Jordan Reyes</h3>
+              <span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Onboarding run</span><span class="kv-value">run_7001 — active, step 2 of 5</span></div>
+              <div class="kv-row"><span class="kv-label">Profile status</span><span class="kv-value">Active</span></div>
+            </div>
+          </div>
+          <div class="card lifecycle-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">After: Jordan Reyes deactivated</h3>
+              <span class="status-chip status-chip--deactivated"><span aria-hidden="true">⏸</span> Deactivated</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Onboarding run</span><span class="kv-value">run_7001 — cancelled (reason: profile deactivated)</span></div>
+              <div class="kv-row"><span class="kv-label">Profile status</span><span class="kv-value">Deactivated</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lifecycle-compare">
+          <div class="card lifecycle-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">Before: Sam Okafor</h3>
+              <span class="status-chip status-chip--deactivated"><span aria-hidden="true">⏸</span> Deactivated</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Onboarding run</span><span class="kv-value">None — run_6894 cancelled previously</span></div>
+              <div class="kv-row"><span class="kv-label">Profile status</span><span class="kv-value">Deactivated</span></div>
+            </div>
+          </div>
+          <div class="card lifecycle-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">After: Sam Okafor reactivated</h3>
+              <span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Onboarding run</span><span class="kv-value">run_7102 (new) — active, step 1 of 5</span></div>
+              <div class="kv-row"><span class="kv-label">Profile status</span><span class="kv-value">Active</span></div>
+            </div>
+            <span class="no-delete-tag"><span aria-hidden="true">⊘</span> No permanent delete exists for this or any profile</span>
+          </div>
+        </div>
+
+        <p class="hint" style="margin-top: var(--space-4);">Deactivating a profile with no active run (e.g. Taylor Kim, who hasn't started onboarding yet) simply marks it deactivated — there is no run to cancel. Try it on screen 1 to see the confirm dialog adjust its wording accordingly.</p>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>Create rejected without HR/Manager role <span class="ac-id">— AC1</span></h3><p>Switch "Signed in as" to Team member and click "+ New hire profile": a permission-denied notice appears in place of the form and no row is added.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Create succeeds with all six fields <span class="ac-id">— AC2</span></h3><p>As HR or Manager, filling in name, email, phone, department, role, and start date and clicking "Create profile" saves immediately and the new row appears in the table.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>Missing a required field blocks the save with a named error <span class="ac-id">— AC3</span></h3><p>Submitting with any of the six fields blank shows an inline error naming that exact field; nothing is saved — see "Required-field validation".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>Edit persists updated field values <span class="ac-id">— AC4</span></h3><p>"Edit" on any row reopens the same form pre-filled; changing any field and saving updates the row in place.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">5</span>
+            <div><h3>Edit rejected without HR/Manager role; profile unchanged <span class="ac-id">— AC5</span></h3><p>As Team member, "Edit" on any row shows the same permission-denied notice and the row's values never change.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">6</span>
+            <div><h3>Deactivate/reactivate rejected without HR/Manager role <span class="ac-id">— AC6</span></h3><p>As Team member, "Deactivate" and "Reactivate" both show a "Request rejected" toast and never open the confirm dialog — see "Role permissions".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">7</span>
+            <div><h3>Deactivating a profile with an active run cancels it <span class="ac-id">— AC7</span></h3><p>As HR or Manager, "Deactivate" on Jordan Reyes's row names the active run in the confirm dialog; confirming cancels it — see "Deactivate &amp; reactivate lifecycle".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">8</span>
+            <div><h3>Reactivating starts a new run <span class="ac-id">— AC8</span></h3><p>As HR or Manager, "Reactivate" on Sam Okafor's row confirms starting a brand-new run from step 1; confirming creates it immediately.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">9</span>
+            <div><h3>Only deactivation is available — no permanent delete <span class="ac-id">— AC9</span></h3><p>No row, menu, or screen anywhere in this prototype offers a delete action — only "Deactivate" / "Reactivate".</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-167-profiles';
+  const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
+
+  const INITIAL_PROFILES = [
+    {
+      id: 'hire_2031', name: 'Jordan Reyes', email: 'jordan.reyes@example.com', phone: '(312) 555-0148',
+      department: 'Engineering', role: 'Software Engineer II', startDate: '2026-10-05',
+      profileStatus: 'active', createdAt: '2026-09-18',
+      run: { id: 'run_7001', status: 'active', currentStepLabel: 'Step 2 of 5 — Verify I-9 employment eligibility', startedAt: '2026-09-20' },
+      runHistory: [],
+    },
+    {
+      id: 'hire_3108', name: 'Priya Shah', email: 'priya.shah@example.com', phone: '(206) 555-0144',
+      department: 'People Ops', role: 'HR Generalist', startDate: '2026-09-15',
+      profileStatus: 'active', createdAt: '2026-08-30',
+      run: { id: 'run_6950', status: 'active', currentStepLabel: 'Step 4 of 5 — Assign onboarding buddy & complete orientation', startedAt: '2026-08-31' },
+      runHistory: [],
+    },
+    {
+      id: 'hire_3112', name: 'Devon Ruiz', email: 'devon.ruiz@example.com', phone: '(503) 555-0110',
+      department: 'Engineering', role: 'IT Support Specialist', startDate: '2026-10-20',
+      profileStatus: 'active', createdAt: '2026-09-25',
+      run: { id: 'run_7033', status: 'active', currentStepLabel: 'Step 1 of 5 — Collect signed offer letter', startedAt: '2026-09-26' },
+      runHistory: [],
+    },
+    {
+      id: 'hire_3119', name: 'Taylor Kim', email: 'taylor.kim@example.com', phone: '(312) 555-0198',
+      department: 'Finance', role: 'Financial Analyst', startDate: '2026-11-02',
+      profileStatus: 'active', createdAt: '2026-09-28',
+      run: null,
+      runHistory: [],
+    },
+    {
+      id: 'hire_3101', name: 'Sam Okafor', email: 'sam.okafor@example.com', phone: '(415) 555-0132',
+      department: 'Sales', role: 'Account Executive', startDate: '2025-03-10',
+      profileStatus: 'deactivated', createdAt: '2025-02-20',
+      run: null,
+      runHistory: [{ id: 'run_6894', status: 'cancelled', reason: 'profile_deactivated', cancelledAt: '2026-09-02' }],
+    },
+  ];
+
+  function loadProfiles() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PROFILES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_PROFILES.map(p => ({ ...p }));
+  }
+
+  function persistProfiles(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let profiles = loadProfiles();
+  let lastChangedId = null;
+  let nextProfileSeq = 141;
+  let nextRunSeq = 7102;
+
+  function currentRole() {
+    return document.getElementById('role-select').value; // 'hr' | 'manager' | 'team_member'
+  }
+  function hasAccess() {
+    return currentRole() !== 'team_member';
+  }
+
+  // ---------- List rendering ----------
+  function renderList() {
+    const tbody = document.getElementById('profile-tbody');
+    tbody.innerHTML = '';
+
+    if (profiles.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="7"><div class="empty-state"><p>No new-hire profiles yet.</p><button type="button" class="btn btn-primary" onclick="document.getElementById(\'new-profile-btn\').click()">+ New hire profile</button></div></td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    profiles.forEach(p => {
+      const tr = document.createElement('tr');
+      if (p.id === lastChangedId) tr.className = 'row-changed';
+      const emailLine = `<span class="contact-line"><span aria-hidden="true">✉</span> ${escapeHtml(p.email)}</span>`;
+      const phoneLine = `<span class="contact-line"><span aria-hidden="true">☎</span> ${escapeHtml(p.phone)}</span>`;
+
+      const statusChip = p.profileStatus === 'active'
+        ? `<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>`
+        : `<span class="status-chip status-chip--deactivated"><span aria-hidden="true">⏸</span> Deactivated</span>`;
+
+      let runCell;
+      if (p.run) {
+        runCell = `<div class="run-line run-active"><span aria-hidden="true">●</span><span>Active<span class="run-id">${p.run.id} — ${escapeHtml(p.run.currentStepLabel)}</span></span></div>`;
+      } else if (p.runHistory && p.runHistory.length > 0) {
+        const last = p.runHistory[p.runHistory.length - 1];
+        runCell = `<div class="run-line run-cancelled"><span aria-hidden="true">⊘</span><span>No active run<span class="run-id">${last.id} cancelled</span></span></div>`;
+      } else {
+        runCell = `<div class="run-line run-none"><span aria-hidden="true">—</span><span>No active run</span></div>`;
+      }
+
+      const lockIcon = `<span class="lock-icon" aria-hidden="true">🔒</span>`;
+      const editLabel = hasAccess() ? 'Edit' : `${lockIcon}Edit`;
+      const lifecycleLabel = p.profileStatus === 'active'
+        ? (hasAccess() ? 'Deactivate' : `${lockIcon}Deactivate`)
+        : (hasAccess() ? 'Reactivate' : `${lockIcon}Reactivate`);
+
+      tr.innerHTML = `
+        <td class="name-cell"><span class="person-name">${escapeHtml(p.name)}</span><span class="person-id">${p.id}</span></td>
+        <td class="contact-cell">${emailLine}${phoneLine}</td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(p.role)}</span><br/><span class="dept-line">${escapeHtml(p.department)}</span></td>
+        <td>${formatDateDisplay(p.startDate)}</td>
+        <td>${statusChip}</td>
+        <td>${runCell}</td>
+        <td class="col-actions">
+          <button type="button" class="edit-link btn-sm" data-edit-id="${p.id}">${editLabel}</button>
+          <button type="button" class="edit-link btn-sm" data-lifecycle-id="${p.id}">${lifecycleLabel}</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastChangedId = null;
+
+    tbody.querySelectorAll('[data-edit-id]').forEach(btn => {
+      btn.addEventListener('click', () => onEditClick(btn.getAttribute('data-edit-id')));
+    });
+    tbody.querySelectorAll('[data-lifecycle-id]').forEach(btn => {
+      btn.addEventListener('click', () => onLifecycleClick(btn.getAttribute('data-lifecycle-id')));
+    });
+  }
+
+  // ---------- Role switcher ----------
+  const roleSelect = document.getElementById('role-select');
+  const roleBanner = document.getElementById('role-banner');
+  roleSelect.addEventListener('change', () => {
+    roleBanner.hidden = hasAccess();
+    renderList();
+  });
+
+  // ---------- Create/Edit modal ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const modalTitle = document.getElementById('modal-title');
+  const modalSubtitle = document.getElementById('modal-subtitle');
+  const formDenyNotice = document.getElementById('form-deny-notice');
+  const form = document.getElementById('profile-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  const fieldName = document.getElementById('field-name');
+  const fieldEmail = document.getElementById('field-email');
+  const fieldPhone = document.getElementById('field-phone');
+  const fieldDepartment = document.getElementById('field-department');
+  const fieldRole = document.getElementById('field-role');
+  const fieldStartDate = document.getElementById('field-start-date');
+
+  let formMode = 'create'; // 'create' | 'edit'
+  let editingId = null;
+
+  function openModalShell() {
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+  }
+
+  function openCreateModal() {
+    modalTitle.textContent = 'New hire profile';
+    modalSubtitle.textContent = 'Name, email, phone, department, role, and start date are all required.';
+    saveBtn.textContent = 'Create profile';
+
+    if (!hasAccess()) {
+      // AC1: request rejected — show the denial, never the form.
+      formMode = 'create';
+      editingId = null;
+      form.hidden = true;
+      formDenyNotice.hidden = false;
+      openModalShell();
+      return;
+    }
+
+    formMode = 'create';
+    editingId = null;
+    form.reset();
+    form.hidden = false;
+    formDenyNotice.hidden = true;
+    clearAllErrors();
+    openModalShell();
+    fieldName.focus();
+  }
+
+  function openEditModal(id) {
+    const p = profiles.find(x => x.id === id);
+    if (!p) return;
+    modalTitle.textContent = 'Edit profile';
+    saveBtn.textContent = 'Save changes';
+
+    if (!hasAccess()) {
+      // AC5: request rejected — profile stays exactly as it was, form never renders.
+      formMode = 'edit';
+      editingId = id;
+      modalSubtitle.textContent = `Profile ${p.id}.`;
+      form.hidden = true;
+      formDenyNotice.hidden = false;
+      openModalShell();
+      return;
+    }
+
+    formMode = 'edit';
+    editingId = id;
+    clearAllErrors();
+    form.hidden = false;
+    formDenyNotice.hidden = true;
+    fieldName.value = p.name;
+    fieldEmail.value = p.email;
+    fieldPhone.value = p.phone;
+    fieldDepartment.value = p.department;
+    fieldRole.value = p.role;
+    fieldStartDate.value = p.startDate;
+    modalSubtitle.textContent = `Profile ${p.id}. Update any field and save.`;
+    openModalShell();
+    fieldName.focus();
+  }
+
+  function onEditClick(id) {
+    openEditModal(id);
+  }
+
+  let saveTimer = null;
+
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = formMode === 'edit' ? 'Save changes' : 'Create profile';
+    document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelForm();
+    }
+  }
+
+  function cancelForm() {
+    const wasDenied = !formDenyNotice.hidden;
+    const wasEdit = formMode === 'edit';
+    closeModal();
+    if (!wasDenied) {
+      showToast(wasEdit ? 'No changes saved — dialog closed' : 'No profile created — dialog closed');
+    }
+  }
+
+  document.getElementById('new-profile-btn').addEventListener('click', openCreateModal);
+  document.getElementById('modal-close-btn').addEventListener('click', cancelForm);
+  document.getElementById('modal-cancel-btn').addEventListener('click', cancelForm);
+  overlay.addEventListener('click', cancelForm);
+
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldName, document.getElementById('error-name'), '');
+    setFieldError(fieldEmail, document.getElementById('error-email'), '');
+    setFieldError(fieldPhone, document.getElementById('error-phone'), '');
+    setFieldError(fieldDepartment, document.getElementById('error-department'), '');
+    setFieldError(fieldRole, document.getElementById('error-role'), '');
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), '');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    const nameValue = fieldName.value.trim();
+    const emailValue = fieldEmail.value.trim();
+    const phoneValue = fieldPhone.value.trim();
+    const departmentValue = fieldDepartment.value;
+    const roleValue = fieldRole.value.trim();
+    const startDateValue = fieldStartDate.value;
+
+    const nameError = nameValue === '' ? 'Full name is required.' : '';
+    const emailError = emailValue === '' ? 'Email is required.' : '';
+    const phoneError = phoneValue === '' ? 'Phone is required.' : '';
+    const departmentError = departmentValue === '' ? 'Department is required.' : '';
+    const roleError = roleValue === '' ? 'Role is required.' : '';
+    const startDateError = startDateValue === '' ? 'Start date is required.' : '';
+
+    setFieldError(fieldName, document.getElementById('error-name'), nameError);
+    setFieldError(fieldEmail, document.getElementById('error-email'), emailError);
+    setFieldError(fieldPhone, document.getElementById('error-phone'), phoneError);
+    setFieldError(fieldDepartment, document.getElementById('error-department'), departmentError);
+    setFieldError(fieldRole, document.getElementById('error-role'), roleError);
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), startDateError);
+
+    if (nameError || emailError || phoneError || departmentError || roleError || startDateError) {
+      // AC3: form stays open, inline error directly under each offending field, nothing
+      // saved — applies the same way whether creating or editing.
+      const firstInvalid = nameError ? fieldName
+        : emailError ? fieldEmail
+        : phoneError ? fieldPhone
+        : departmentError ? fieldDepartment
+        : roleError ? fieldRole
+        : fieldStartDate;
+      firstInvalid.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = formMode === 'edit' ? 'Saving…' : 'Creating…';
+
+    // Simulated latency — no real network call.
+    saveTimer = setTimeout(() => {
+      let nextList;
+      let savedId;
+
+      if (formMode === 'edit') {
+        nextList = profiles.map(p => p.id === editingId ? {
+          ...p,
+          name: nameValue,
+          email: emailValue,
+          phone: phoneValue,
+          department: departmentValue,
+          role: roleValue,
+          startDate: startDateValue,
+        } : p);
+        savedId = editingId;
+      } else {
+        // AC2: always a fresh record with a new ID.
+        const newProfile = {
+          id: 'hire_' + String(nextProfileSeq++),
+          name: nameValue,
+          email: emailValue,
+          phone: phoneValue,
+          department: departmentValue,
+          role: roleValue,
+          startDate: startDateValue,
+          profileStatus: 'active',
+          createdAt: new Date().toISOString().slice(0, 10),
+          run: null,
+          runHistory: [],
+        };
+        nextList = [newProfile, ...profiles];
+        savedId = newProfile.id;
+      }
+
+      persistProfiles(nextList);
+      profiles = nextList;
+      lastChangedId = savedId;
+      const wasEdit = formMode === 'edit';
+      closeModal();
+      renderList();
+      showToast(wasEdit ? 'Profile updated' : 'Profile created');
+    }, 320);
+  });
+
+  // ---------- Deactivate / reactivate confirm modal ----------
+  const confirmOverlay = document.getElementById('confirm-overlay');
+  const confirmWrap = document.getElementById('confirm-wrap');
+  const confirmTitle = document.getElementById('confirm-title');
+  const confirmBody = document.getElementById('confirm-body');
+  const confirmConsequenceText = document.getElementById('confirm-consequence-text');
+  const confirmActionBtn = document.getElementById('confirm-action-btn');
+  let lifecycleTargetId = null;
+  let lifecycleAction = null; // 'deactivate' | 'reactivate'
+
+  function onLifecycleClick(id) {
+    const p = profiles.find(x => x.id === id);
+    if (!p) return;
+
+    if (!hasAccess()) {
+      // AC6: request rejected — no dialog, no state change.
+      showToast(`Request rejected — HR or Manager role required. ${p.name}'s profile is unchanged.`, true);
+      return;
+    }
+
+    lifecycleTargetId = id;
+    lifecycleAction = p.profileStatus === 'active' ? 'deactivate' : 'reactivate';
+
+    if (lifecycleAction === 'deactivate') {
+      confirmTitle.textContent = `Deactivate ${p.name}'s profile?`;
+      confirmBody.textContent = 'Deactivating stops this profile from being tracked through onboarding until it is reactivated.';
+      if (p.run) {
+        confirmConsequenceText.innerHTML = `This profile has an <strong>active onboarding run</strong> (${p.run.id}, ${p.run.currentStepLabel}). Confirming will <strong>cancel that run</strong>.`;
+      } else {
+        confirmConsequenceText.innerHTML = `This profile has <strong>no active onboarding run</strong> — there is nothing to cancel.`;
+      }
+      confirmActionBtn.textContent = 'Deactivate profile';
+    } else {
+      confirmTitle.textContent = `Reactivate ${p.name}'s profile?`;
+      confirmBody.textContent = 'Reactivating resumes tracking for this profile.';
+      confirmConsequenceText.innerHTML = `Confirming will <strong>start a brand-new onboarding run</strong> from step 1 for this profile.`;
+      confirmActionBtn.textContent = 'Reactivate profile';
+    }
+
+    confirmOverlay.hidden = false;
+    confirmWrap.hidden = false;
+    document.addEventListener('keydown', onConfirmKeydown);
+    confirmActionBtn.focus();
+  }
+
+  function onConfirmKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeConfirm();
+    }
+  }
+
+  function closeConfirm() {
+    confirmOverlay.hidden = true;
+    confirmWrap.hidden = true;
+    confirmActionBtn.disabled = false;
+    document.removeEventListener('keydown', onConfirmKeydown);
+  }
+
+  document.getElementById('confirm-close-btn').addEventListener('click', closeConfirm);
+  document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
+  confirmOverlay.addEventListener('click', closeConfirm);
+
+  let confirmTimer = null;
+  confirmActionBtn.addEventListener('click', () => {
+    confirmActionBtn.disabled = true;
+    const wasDeactivate = lifecycleAction === 'deactivate';
+    confirmActionBtn.textContent = wasDeactivate ? 'Deactivating…' : 'Reactivating…';
+
+    confirmTimer = setTimeout(() => {
+      const p = profiles.find(x => x.id === lifecycleTargetId);
+      if (!p) { closeConfirm(); return; }
+
+      let message;
+      if (wasDeactivate) {
+        if (p.run) {
+          // AC7: active run is cancelled as part of deactivation.
+          p.runHistory.push({ ...p.run, status: 'cancelled', reason: 'profile_deactivated', cancelledAt: new Date().toISOString().slice(0, 10) });
+          p.run = null;
+          message = `Profile deactivated — active run cancelled`;
+        } else {
+          message = `Profile deactivated`;
+        }
+        p.profileStatus = 'deactivated';
+      } else {
+        // AC8: reactivating starts a brand-new run.
+        const newRun = { id: 'run_' + String(nextRunSeq++), status: 'active', currentStepLabel: 'Step 1 of 5 — Collect signed offer letter', startedAt: new Date().toISOString().slice(0, 10), freshStart: true };
+        p.run = newRun;
+        p.profileStatus = 'active';
+        message = `Profile reactivated — new onboarding run started (${newRun.id})`;
+      }
+
+      persistProfiles(profiles);
+      lastChangedId = p.id;
+      closeConfirm();
+      renderList();
+      showToast(message);
+    }, 320);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message, isDenied) {
+    const toast = document.getElementById('toast');
+    const icon = document.getElementById('toast-icon');
+    icon.textContent = isDenied ? '⛔' : '✓';
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+  }
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    profiles = loadProfiles();
+    nextProfileSeq = 141;
+    nextRunSeq = 7102;
+    lastChangedId = null;
+    roleSelect.value = 'hr';
+    roleBanner.hidden = true;
+    renderList();
+    showToast('Demo data reset');
+  });
+
+  renderList();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (modalWrap.hidden === false || confirmWrap.hidden === false) return; // let Esc close a dialog first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

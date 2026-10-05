@@ -27,9 +27,11 @@ class HireValidationError extends Error {
   }
 }
 
-function assertValidHire(name, department, role, startDate) {
+function assertValidHire(name, email, phone, department, role, startDate) {
   const fields = {};
   if (!name || !String(name).trim()) fields.name = 'Full name is required.';
+  if (!email || !String(email).trim()) fields.email = 'Email is required.';
+  if (!phone || !String(phone).trim()) fields.phone = 'Phone is required.';
   if (!department) fields.department = 'Department is required.';
   if (!role || !String(role).trim()) fields.role = 'Role is required.';
   if (!startDate) fields.startDate = 'Start date is required.';
@@ -39,7 +41,7 @@ function assertValidHire(name, department, role, startDate) {
 }
 
 async function createHire(data) {
-  assertValidHire(data.name, data.department, data.role, data.startDate);
+  assertValidHire(data.name, data.email, data.phone, data.department, data.role, data.startDate);
   const hire = {
     ...data,
     id: crypto.randomUUID(),
@@ -82,9 +84,11 @@ async function updateHire(id, changes) {
   const nextDepartment = 'department' in changes ? changes.department : hire.department;
   const nextRole = 'role' in changes ? changes.role : hire.role;
   const nextName = 'name' in changes ? changes.name : hire.name;
+  const nextEmail = 'email' in changes ? changes.email : hire.email;
+  const nextPhone = 'phone' in changes ? changes.phone : hire.phone;
   const nextStartDate = 'startDate' in changes ? changes.startDate : hire.startDate;
 
-  assertValidHire(nextName, nextDepartment, nextRole, nextStartDate);
+  assertValidHire(nextName, nextEmail, nextPhone, nextDepartment, nextRole, nextStartDate);
 
   if (changingToOfferAccepted && !hasActiveRun) {
     const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });

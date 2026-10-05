@@ -64,6 +64,10 @@ function initHireProfileApp(doc, initialHire, api) {
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
   }
 
+  function isAccessDenied(err) {
+    return Boolean(err && (err.status === 401 || err.status === 403));
+  }
+
   function setPending(isPending, label) {
     pendingBanner.hidden = !isPending;
     if (label) pendingBannerText.textContent = label;
@@ -249,10 +253,12 @@ function initHireProfileApp(doc, initialHire, api) {
       closeContactModal();
       renderAll();
       showToast('Profile updated — onboarding Run unaffected');
-    }).catch(() => {
+    }).catch((err) => {
       contactSaveBtn.disabled = false;
       contactSaveBtn.textContent = 'Save changes';
-      showToast('Profile could not be saved — please try again');
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : 'Profile could not be saved — please try again');
     });
   });
 
@@ -300,10 +306,12 @@ function initHireProfileApp(doc, initialHire, api) {
       setPending(false);
       renderAll();
       showToast('Onboarding Run restarted for new role/department');
-    }).catch(() => {
+    }).catch((err) => {
       setPending(false);
       renderAll();
-      showToast('Role & department change could not be saved — please try again');
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : 'Role & department change could not be saved — please try again');
     });
   });
 
@@ -328,10 +336,12 @@ function initHireProfileApp(doc, initialHire, api) {
       setPending(false);
       renderAll();
       showToast('Profile deactivated — onboarding Run cancelled');
-    }).catch(() => {
+    }).catch((err) => {
       setPending(false);
       renderAll();
-      showToast('Deactivation could not be completed — please try again');
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : 'Deactivation could not be completed — please try again');
     });
   });
 
@@ -356,10 +366,12 @@ function initHireProfileApp(doc, initialHire, api) {
       setPending(false);
       renderAll();
       showToast('Profile reactivated — new onboarding Run started');
-    }).catch(() => {
+    }).catch((err) => {
       setPending(false);
       renderAll();
-      showToast('Reactivation could not be completed — please try again');
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : 'Reactivation could not be completed — please try again');
     });
   });
 
@@ -373,38 +385,48 @@ function initHireProfileApp(doc, initialHire, api) {
       if (willTriggerRun) setPending(false);
       renderAll();
       if (willTriggerRun) showToast('Onboarding Run started');
-    }).catch(() => {
+    }).catch((err) => {
       if (willTriggerRun) setPending(false);
       renderAll();
-      showToast('Could not start the onboarding Run — please try again');
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : 'Could not start the onboarding Run — please try again');
     });
   }
 
   renderAll();
 }
 
-function createDefaultApi(hireId) {
-  const patch = (changes) => fetch(`/hires/${hireId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(changes),
-  }).then((res) => res.json());
+function createDefaultApi(hireId, getRole = () => 'manager') {
+  function request(url, method, body) {
+    const opts = { method, headers: { 'x-staff-role': getRole() } };
+    if (body !== undefined) {
+      opts.headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(body);
+    }
+    return fetch(url, opts).then((res) => res.json().catch(() => ({})).then((data) => (
+      res.ok ? data : Promise.reject({ status: res.status, ...data })
+    )));
+  }
+
+  const patch = (changes) => request(`/hires/${hireId}`, 'PATCH', changes);
 
   return {
     saveStage: (hireStage) => patch({ hireStage }),
     updateRoleDepartment: (changes) => patch(changes),
     updateContact: (changes) => patch(changes),
-    deactivate: () => fetch(`/hires/${hireId}/deactivate`, { method: 'POST' }).then((res) => res.json()),
-    reactivate: () => fetch(`/hires/${hireId}/reactivate`, { method: 'POST' }).then((res) => res.json()),
+    deactivate: () => request(`/hires/${hireId}/deactivate`, 'POST'),
+    reactivate: () => request(`/hires/${hireId}/reactivate`, 'POST'),
   };
 }
 
-module.exports = { initHireProfileApp };
+module.exports = { initHireProfileApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.getElementById('role-select');
     fetch('/hires')
       .then((res) => res.json())
-      .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id)));
+      .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id, () => roleSelect.value)));
   });
 }

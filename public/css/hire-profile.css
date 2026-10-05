@@ -13,6 +13,17 @@ body { margin: 0; min-height: 100dvh; }
 .page { max-width: 1040px; }
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
 
+/* ---------- Top bar / role switcher ---------- */
+.topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+.role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.role-switcher label {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+}
+.role-switcher select { width: auto; min-width: 240px; }
+
 .layout-grid {
   display: grid;
   grid-template-columns: 1fr;

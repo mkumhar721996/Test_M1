@@ -122,3 +122,27 @@ describe('Hire Profile — AC9 pending state', () => {
     expect(document.getElementById('pending-banner').hidden).toBe(true);
   });
 });
+
+describe('createDefaultApi', () => {
+  const originalFetch = global.fetch;
+  afterEach(() => { global.fetch = originalFetch; });
+
+  test.each(['deactivate', 'reactivate'])('%s() sends the x-staff-role header', async (action) => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    const { createDefaultApi } = require('../public/js/hire-profile');
+    await createDefaultApi('hire_1')[action]();
+    expect(global.fetch).toHaveBeenCalledWith(`/hires/hire_1/${action}`, expect.objectContaining({
+      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+    }));
+  });
+
+  test('updateContact() sends the x-staff-role header on the PATCH', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    const { createDefaultApi } = require('../public/js/hire-profile');
+    await createDefaultApi('hire_1').updateContact({ name: 'A' });
+    expect(global.fetch).toHaveBeenCalledWith('/hires/hire_1', expect.objectContaining({
+      method: 'PATCH',
+      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+    }));
+  });
+});
