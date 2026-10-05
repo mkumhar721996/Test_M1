@@ -1,11 +1,23 @@
 const crypto = require('crypto');
 const { getLatestVersion, createWorkflow } = require('../workflows/store');
 const { createEmployee } = require('../employees/store');
-const { appendOnboardingAuditEntry } = require('../hires/store');
+const { appendOnboardingAuditEntry, getHire } = require('../hires/store');
 
 const runs = new Map();
 
-const REQUIRED_STAFF_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
+const STAFF_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
+
+function buildEmployeeDataFromHire(hire) {
+  const data = {};
+  const incompleteFields = [];
+  STAFF_FIELDS.forEach((field) => {
+    data[field] = hire[field] || null;
+    if (!hire[field]) incompleteFields.push(field);
+  });
+  if (hire.phone) data.phone = hire.phone;
+  if (incompleteFields.length > 0) data.incompleteFields = incompleteFields;
+  return data;
+}
 
 function buildSteps(taskGraph) {
   const tasks = (taskGraph && taskGraph.tasks) || [];
@@ -89,6 +101,13 @@ function advanceStep(runId, actor = 'Manager') {
     const action = `Stage transition: step ${idx + 1} of ${run.steps.length} (${step.name}) completed — all steps finished. Run marked completed.`;
     run.auditLog.push({ ts: new Date().toISOString(), actor, action });
     if (run.hireId) appendOnboardingAuditEntry(run.hireId, actor, action, { completed: true });
+    if (run.hireId) {
+      const hire = getHire(run.hireId);
+      if (hire) {
+        const employee = createEmployee({ ...buildEmployeeDataFromHire(hire), employmentStatus: 'active' });
+        run.employeeId = employee.id;
+      }
+    }
   } else {
     run.currentIndex = idx + 1;
     const nextStep = run.steps[run.currentIndex];
@@ -119,24 +138,6 @@ function getRun(runId) {
   return runs.get(runId);
 }
 
-function completeRun(runId, payload = {}) {
-  const run = runs.get(runId);
-  if (!run) return undefined;
-  if (run.employeeId) return run;
-
-  const missingFields = REQUIRED_STAFF_FIELDS.filter((field) => !payload[field]);
-  if (missingFields.length > 0) {
-    console.error(`[runs] run ${runId} completion missing required staff fields: ${missingFields.join(', ')}`);
-    run.status = 'completed';
-    return run;
-  }
-
-  const employee = createEmployee({ ...payload, employmentStatus: 'active' });
-  run.status = 'completed';
-  run.employeeId = employee.id;
-  return run;
-}
-
 function seedExampleRun() {
   const workflow = createWorkflow({
     tasks: [
@@ -160,4 +161,4 @@ function seedExampleRun() {
 
 seedExampleRun();
 
-module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };
+module.exports = { startRun, getRun, listRuns, advanceStep, resolveStepRequirement, buildSteps };

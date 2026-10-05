@@ -1,5 +1,5 @@
 const express = require('express');
-const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
+const { getRun, listRuns, advanceStep, resolveStepRequirement } = require('./store');
 const { getHire } = require('../hires/store');
 const { enforceOnboardingRole } = require('./auth');
 
@@ -42,11 +42,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/:id/complete', (req, res) => {
-  const run = completeRun(req.params.id, req.body);
-  if (!run) {
-    return res.status(404).json({ error: 'run not found' });
-  }
-  res.status(200).json(run);
+  res.status(410).json({ error: "This action is no longer available. Employee records are created automatically when a run's final step is completed." });
 });
 
 router.post('/:id/advance', enforceOnboardingRole, (req, res) => {
