@@ -137,6 +137,48 @@ function initRunDetailApp(doc, initialRun, api) {
       <div class="kv-row"><span class="k">Onboarding status</span><span class="v">${escapeHtml(statusLabel)}</span></div>`;
   }
 
+  function renderAlertPanel() {
+    const wrap = doc.getElementById('alert-panel-wrap');
+    if (run.status !== 'blocked') {
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <p>Nothing has blocked on this run yet.</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Alerts appear here once a step enters its blocked state.</p>
+        </div>`;
+      return;
+    }
+    const blockedStep = run.steps[run.currentIndex];
+    const request = api.getDeliveryLog ? api.getDeliveryLog(run.id) : Promise.resolve([]);
+    return Promise.resolve(request).then((attempts) => {
+      const byRecipient = new Map();
+      (attempts || []).forEach((a) => {
+        if (!byRecipient.has(a.recipientName)) byRecipient.set(a.recipientName, { role: a.recipientRole, channels: [] });
+        byRecipient.get(a.recipientName).channels.push(a);
+      });
+      const excluded = run.steps.filter((s) => s.ownerName && s !== blockedStep && !byRecipient.has(s.ownerName));
+      wrap.innerHTML = `
+        <p class="u-text-sm u-text-muted">Sent the instant step ${run.currentIndex + 1} entered its blocked state. In-app and email are sent independently per recipient.</p>
+        <div class="recipient-grid">
+          ${Array.from(byRecipient, ([name, r]) => `
+          <div class="recipient-card">
+            <span class="r-name">${escapeHtml(name)}</span>
+            <span class="r-role">${escapeHtml(r.role)}</span>
+            ${r.channels.map((c) => (c.status === 'failed'
+    ? `<span class="channel-row state--failed">⚠ ${escapeHtml(c.channel)} not delivered</span>`
+    : `<span class="channel-row state--delivered">✓ ${escapeHtml(c.channel)} delivered</span>`)).join('')}
+          </div>`).join('')}
+        </div>
+        <div class="excluded-box">
+          <h4>Not notified</h4>
+          ${excluded.length
+    ? `<ul>${excluded.map((s) => `<li><span aria-hidden="true">–</span> ${escapeHtml(s.ownerName)} — owns "${escapeHtml(s.name)}", a different step</li>`).join('')}</ul>`
+    : '<p style="margin:0;">No other step owners to exclude in this run.</p>'}
+        </div>`;
+    }).catch(() => {
+      wrap.innerHTML = '<p class="u-text-sm u-text-muted" style="margin:0;">Alert delivery details are unavailable right now.</p>';
+    });
+  }
+
   function renderAuditLog() {
     const btn = doc.getElementById('audit-toggle-btn');
     btn.setAttribute('aria-expanded', String(auditOpen));
@@ -170,6 +212,7 @@ function initRunDetailApp(doc, initialRun, api) {
     renderStepper();
     renderActionPanel();
     renderHireRecord();
+    renderAlertPanel();
     renderAuditLog();
     renderPending();
   }
@@ -221,6 +264,7 @@ function createDefaultApi(runId) {
   return {
     advanceStep: () => post('advance'),
     resolveRequirement: () => post('resolve-requirement'),
+    getDeliveryLog: (id) => fetch(`/notifications/delivery-log?runId=${encodeURIComponent(id)}`).then((res) => (res.ok ? res.json() : [])),
   };
 }
 

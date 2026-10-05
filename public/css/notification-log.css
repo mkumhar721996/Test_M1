@@ -1,0 +1,16 @@
+.log-stats { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.stat-chip { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.stat-chip.is-failed { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+.log-table-wrap { overflow-x: auto; }
+.log-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+.log-table th { text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-bold); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); }
+.log-table td { padding: var(--space-2) var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+.log-table tr:last-child td { border-bottom: none; }
+.log-status { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+.log-status.failed { border-bottom: 1px dashed var(--color-primary); }
+.log-detail-row td { border-bottom: 1px solid var(--color-border); padding-top: 0; }
+.log-detail-box { padding: var(--space-3); margin-bottom: var(--space-2); border: 1px dashed var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.log-detail-box dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); }
+.log-detail-box dt { color: var(--color-fg-muted); }
+.log-detail-box dd { margin: 0; color: var(--color-fg); }
+.log-toggle-btn { background: none; border: 1px solid var(--color-border); color: var(--color-primary); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); min-height: 32px; }

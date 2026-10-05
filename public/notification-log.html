@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notification delivery log — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/runs.css" />
+<link rel="stylesheet" href="./css/notification-log.css" />
+<script src="./js/notification-log.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="hire-profile.html">Profiles</a>
+      <a href="runs.html">Runs</a>
+      <a href="notification-log.html" class="active" aria-current="page">Alerts</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Notification delivery log</h1>
+        <p>Support-facing record of every alert attempt, for diagnosing missed notifications.</p>
+      </div>
+    </div>
+
+    <div class="demo-controls" style="display:flex; align-items:center; gap:var(--space-3); margin-bottom:var(--space-4);">
+      <label for="status-filter">Filter</label>
+      <select class="input" id="status-filter" style="max-width:200px;">
+        <option value="all">All attempts</option>
+        <option value="delivered">Delivered only</option>
+        <option value="failed">Failed only</option>
+      </select>
+    </div>
+
+    <div id="log-body"><!-- rendered by JS --></div>
+  </div>
+
+</body>
+</html>
