@@ -21,6 +21,9 @@ app.use('/rooms', roomsRouter);
 app.use('/tasks', tasksRouter);
 
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed' || (err.status >= 400 && err.status < 500)) {
+    return res.status(err.status).json({ error: 'validation_error', message: 'Request body must be valid JSON.' });
+  }
   res.status(500).json({ error: 'internal server error' });
 });
 

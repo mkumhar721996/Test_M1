@@ -38,6 +38,28 @@ test('AC4: PUT /tasks/:id returns 400 with a descriptive error for a malformed r
   expect(res.body.message.length).toBeGreaterThan(0);
 });
 
+test('AC4: PUT /tasks/:id returns 400 with a descriptive error for syntactically invalid JSON', async () => {
+  const task = tasksStore.seedTask({ name: 'Order badge', status: 'pending' });
+  const res = await request(app)
+    .put(`/tasks/${task.id}`)
+    .set('Content-Type', 'application/json')
+    .send('{bad');
+  expect(res.status).toBe(400);
+  expect(res.body.error).toBe('validation_error');
+  expect(typeof res.body.message).toBe('string');
+  expect(res.body.message.length).toBeGreaterThan(0);
+});
+
+test('AC4: PUT /tasks/:id returns 400 with a descriptive error for an invalid field type', async () => {
+  const task = tasksStore.seedTask({ name: 'Order badge', status: 'pending' });
+  const res = await request(app).put(`/tasks/${task.id}`).send({ status: { nested: true } });
+  expect(res.status).toBe(400);
+  expect(res.body.error).toBe('validation_error');
+  expect(typeof res.body.message).toBe('string');
+  expect(res.body.message.length).toBeGreaterThan(0);
+  expect(tasksStore.getTask(task.id).status).toBe('pending');
+});
+
 test('AC5: PUT /tasks/:id succeeds without a version/etag field and does not return one', async () => {
   const task = tasksStore.seedTask({ name: 'Set up desk', status: 'pending' });
   const res = await request(app).put(`/tasks/${task.id}`).send({ status: 'in_progress' });

@@ -11,6 +11,11 @@ function assertValidBody(body) {
   if (body === null || Array.isArray(body) || typeof body !== 'object') {
     throw new TaskValidationError('Request body must be a JSON object.');
   }
+  for (const field of PATCHABLE_FIELDS) {
+    if (field in body && typeof body[field] !== 'string') {
+      throw new TaskValidationError(`Field "${field}" must be a string.`);
+    }
+  }
 }
 
 function pickFields(body, fields) {
