@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-160 — Blocked Step/Run Alerts</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* Design-system gap note: tokens.json has no dedicated success/danger/warning
+     color (only color-fg, color-fg-muted, color-primary/-fg, color-surface,
+     color-bg, color-border). Delivered vs failed vs excluded is distinguished by
+     icon + label + border style (solid/dashed), never by hue alone — matching the
+     convention already established in this product's Run Detail screen. */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .page { max-width: 1040px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+  /* ---------- Status chips (run + step) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--active .dot { color: var(--color-primary); }
+  .status-chip--blocked { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Runs list ---------- */
+  .runs-table-wrap { overflow-x: auto; }
+  .runs-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .runs-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg-muted); font-weight: var(--font-weight-bold);
+    padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border);
+  }
+  .runs-table td {
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-md);
+    color: var(--color-fg); border-bottom: 1px solid var(--color-border); vertical-align: middle;
+  }
+  .runs-table .muted { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .runs-table tr:last-child td { border-bottom: none; }
+  .runs-table .row-highlight td { background: var(--color-surface); }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 0; }
+
+  /* ---------- Demo-only controls ---------- */
+  .demo-controls {
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+    padding: var(--space-3); margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .demo-controls select { min-height: 44px; }
+  .demo-controls label { display: flex; align-items: center; gap: var(--space-2); }
+
+  /* ---------- Layout grid ---------- */
+  .run-layout { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
+  @media (min-width: 860px) { .run-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); } }
+
+  /* ---------- Stepper ---------- */
+  .stepper { list-style: none; margin: var(--space-3) 0 0 0; padding: 0; }
+  .step-item { position: relative; padding: 0 0 var(--space-4) var(--space-4); border-left: 2px solid var(--color-border); margin-left: var(--space-2); }
+  .step-item:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .step-marker {
+    position: absolute; left: -11px; top: 0; width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-bg); border: 2px solid var(--color-border); font-size: 11px; color: var(--color-fg-muted);
+  }
+  .step-item--done .step-marker { border-color: var(--color-primary); color: var(--color-primary); }
+  .step-item--current .step-marker { border-color: var(--color-primary); color: var(--color-fg); background: var(--color-surface); }
+  .step-item--blocked .step-marker { border-style: dashed; border-color: var(--color-primary); color: var(--color-fg); }
+  .step-name { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .step-item--upcoming .step-name { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .step-owner { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+  .step-tag { display: inline-flex; align-items: center; gap: var(--space-1); margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+
+  /* ---------- Blocked banner ---------- */
+  .blocked-banner {
+    display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); margin-bottom: var(--space-3);
+    border: 1px dashed var(--color-primary); border-radius: var(--radius-md); background: var(--color-bg);
+    font-family: var(--font-family-base);
+  }
+  .blocked-banner h3 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); }
+  .blocked-banner p { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .action-panel { margin-top: var(--space-3); }
+  p.hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  fieldset.run-fieldset { border: none; margin: 0; padding: 0; }
+  fieldset.run-fieldset[disabled] .btn { opacity: 0.6; cursor: not-allowed; }
+
+  /* ---------- Alert-fired panel (AC1) ---------- */
+  .alert-panel { margin-top: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .alert-panel h3 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); font-family: var(--font-family-base); }
+  .alert-panel > p.u-text-sm { margin: 0 0 var(--space-3) 0; }
+  .recipient-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+  @media (min-width: 640px) { .recipient-grid { grid-template-columns: 1fr 1fr; } }
+  .recipient-card {
+    display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-family: var(--font-family-base);
+  }
+  .recipient-card .r-name { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .recipient-card .r-role { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .channel-row { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); }
+  .channel-row .state--sending { color: var(--color-fg-muted); }
+  .channel-row .state--delivered { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .channel-row .state--failed { color: var(--color-fg); font-weight: var(--font-weight-bold); border-bottom: 1px dashed var(--color-primary); }
+
+  .excluded-box {
+    margin-top: var(--space-3); padding: var(--space-3); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .excluded-box h4 { margin: 0 0 var(--space-2) 0; font-size: var(--font-size-sm); color: var(--color-fg); font-family: var(--font-family-base); }
+  .excluded-box ul { margin: 0; padding: 0; list-style: none; }
+  .excluded-box li { display: flex; gap: var(--space-2); padding: var(--space-1) 0; }
+  .excluded-box .foot-note { margin-top: var(--space-2); font-style: normal; }
+
+  .link-row { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-3); }
+
+  /* ---------- Empty state ---------- */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-4); text-align: center; font-family: var(--font-family-base); }
+  .empty-state p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-md); }
+
+  /* ---------- Persona switcher (in-app notifications) ---------- */
+  .persona-bar { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .persona-bar label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+
+  .notif-card { display: flex; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-family: var(--font-family-base); }
+  .notif-card.unread { border: 1px solid var(--color-primary); }
+  .notif-card .bell { font-size: var(--font-size-lg); }
+  .notif-card h4 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); }
+  .notif-card p { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .notif-card .meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .notif-card .unread-dot { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Email client mock ---------- */
+  .email-layout { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 760px) { .email-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); } }
+  .email-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+  .email-list li { border-bottom: 1px solid var(--color-border); }
+  .email-list li:last-child { border-bottom: none; }
+  .email-list button {
+    width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: var(--space-3);
+    font-family: var(--font-family-base); color: var(--color-fg); min-height: 44px;
+  }
+  .email-list button.active { background: var(--color-surface); }
+  .email-list .e-to { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); margin: 0 0 var(--space-1) 0; }
+  .email-list .e-subject { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .email-list .e-status { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--font-size-sm); margin-top: var(--space-1); color: var(--color-fg-muted); }
+  .email-list .e-status.failed { border-bottom: 1px dashed var(--color-primary); color: var(--color-fg); display: inline-block; }
+
+  .email-preview { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); font-family: var(--font-family-base); }
+  .email-preview .hdr-row { display: flex; gap: var(--space-2); font-size: var(--font-size-sm); color: var(--color-fg-muted); padding: var(--space-1) 0; border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-3); }
+  .email-preview .hdr-row:last-of-type { margin-bottom: var(--space-4); }
+  .email-preview .hdr-row .k { min-width: 56px; color: var(--color-fg-muted); }
+  .email-preview .hdr-row .v { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .email-preview .subject { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-3) 0; }
+  .email-preview .body p { font-size: var(--font-size-md); color: var(--color-fg); line-height: var(--line-height-base); margin: 0 0 var(--space-3) 0; }
+  .email-preview .footer-note { font-size: var(--font-size-sm); color: var(--color-fg-muted); border-top: 1px solid var(--color-border); padding-top: var(--space-3); }
+
+  /* ---------- Delivery log (support view, AC3) ---------- */
+  .log-stats { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3); }
+  .stat-chip { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .stat-chip.is-failed { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .log-table-wrap { overflow-x: auto; }
+  .log-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .log-table th { text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-bold); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); }
+  .log-table td { padding: var(--space-2) var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .log-status { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .log-status.failed { border-bottom: 1px dashed var(--color-primary); }
+  .log-detail-row td { border-bottom: 1px solid var(--color-border); padding-top: 0; }
+  .log-detail-box { padding: var(--space-3); margin-bottom: var(--space-2); border: 1px dashed var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .log-detail-box dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); }
+  .log-detail-box dt { color: var(--color-fg-muted); }
+  .log-detail-box dd { margin: 0; color: var(--color-fg); }
+  .log-toggle-btn, .resend-btn { background: none; border: 1px solid var(--color-border); color: var(--color-primary); font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); cursor: pointer; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); min-height: 32px; }
+
+  /* ---------- Reference grid ---------- */
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 760px) { .reference-grid { grid-template-columns: 1fr 1fr; } }
+
+  /* ---------- Toast ---------- */
+  .toast-static { padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); display: flex; gap: var(--space-2); align-items: center; }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — Profiles · Runs · Alerts · Settings. Extends the "Onboarding"
+     top bar already established by the hire-profile and Run Detail screens
+     (TEST-M1-STORY-137) with a new "Alerts" item, because this story's delivery
+     log (AC3) is a support/ops surface that spans every run, not something scoped
+     to a single run detail page. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-160</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "run": { "id": "run_7201", "hire": { "name": "Jordan Reyes", "role": "Software Engineer II", "department": "Engineering" }, "started": "2026-09-29" },
+    "hrPartner": { "name": "Priya Shah", "title": "HR Partner", "email": "priya.shah@onboardco.example" },
+    "relevantManagers": [
+      { "name": "Morgan Ellis", "title": "Hiring Manager", "email": "morgan.ellis@onboardco.example" },
+      { "name": "Alex Chen", "title": "Engineering Manager", "email": "alex.chen@onboardco.example" }
+    ],
+    "steps": [
+      { "id": "step_offer", "name": "Collect signed offer letter", "ownerName": "Priya Shah", "ownerTitle": "HR Partner", "ownerEmail": "priya.shah@onboardco.example" },
+      { "id": "step_i9", "name": "Verify I-9 employment eligibility", "ownerName": "Priya Shah", "ownerTitle": "HR Partner", "ownerEmail": "priya.shah@onboardco.example" },
+      { "id": "step_it", "name": "Provision IT accounts & equipment", "ownerName": "Devon Ruiz", "ownerTitle": "IT Systems", "ownerEmail": "devon.ruiz@onboardco.example", "requirementLabel": "Asset tag assigned in IT system", "blockReason": "IT hasn't assigned an asset tag yet, so equipment can't be provisioned until it's recorded." },
+      { "id": "step_orientation", "name": "Assign onboarding buddy & complete orientation", "ownerName": "Riley Chen", "ownerTitle": "Team Lead", "ownerEmail": "riley.chen@onboardco.example", "requirementLabel": "Onboarding buddy assigned", "blockReason": "No buddy has been paired with Jordan yet, so orientation can't be marked complete." },
+      { "id": "step_checkin", "name": "Manager check-in & 30-day goals sign-off", "ownerName": "Morgan Ellis", "ownerTitle": "Hiring Manager", "ownerEmail": "morgan.ellis@onboardco.example" }
+    ],
+    "scenarios": {
+      "it": { "blockedStepId": "step_it", "doneStepIds": ["step_offer", "step_i9"], "pickerLabel": "Step 3 — Provision IT accounts & equipment (owner: Devon Ruiz, IT)" },
+      "orientation": { "blockedStepId": "step_orientation", "doneStepIds": ["step_offer", "step_i9", "step_it"], "pickerLabel": "Step 4 — Assign onboarding buddy & complete orientation (owner: Riley Chen, Team Lead)" }
+    },
+    "personas": [
+      { "id": "priya", "name": "Priya Shah", "title": "HR Partner" },
+      { "id": "morgan", "name": "Morgan Ellis", "title": "Hiring Manager" },
+      { "id": "alex", "name": "Alex Chen", "title": "Engineering Manager" },
+      { "id": "devon", "name": "Devon Ruiz", "title": "IT Systems" },
+      { "id": "riley", "name": "Riley Chen", "title": "Team Lead" }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Runs
+         Notes:
+           - Entry point. Jordan Reyes's row is wired to the interactive detail screen;
+             the others are static context.
+    -->
+    <div class="screen" data-name="Runs">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="window.__showScreen(4); return false;">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Onboarding runs</h1>
+            <p>Every active, blocked, and completed onboarding run across the task graph.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="runs-table-wrap">
+            <table class="runs-table">
+              <thead>
+                <tr><th scope="col">New hire</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Current step</th><th scope="col">Started</th><th scope="col"></th></tr>
+              </thead>
+              <tbody>
+                <tr class="row-highlight">
+                  <td>Jordan Reyes</td>
+                  <td class="muted">Software Engineer II · Engineering</td>
+                  <td id="runs-row-status"><span class="status-chip status-chip--active"><span class="dot" aria-hidden="true">●</span> Active</span></td>
+                  <td id="runs-row-step">Step 2 of 5 — Verify I-9 employment eligibility</td>
+                  <td class="muted">2026-09-29</td>
+                  <td><button class="btn btn-secondary btn-sm" type="button" onclick="window.__showScreen(1)">View run</button></td>
+                </tr>
+                <tr>
+                  <td>Alicia Brooks</td><td class="muted">Product Manager · Product</td>
+                  <td><span class="status-chip status-chip--blocked"><span aria-hidden="true">⚠</span> Blocked</span></td>
+                  <td>Step 3 of 5 — Draft 90-day plan</td><td class="muted">2026-09-22</td>
+                  <td><span class="muted">Illustrative only</span></td>
+                </tr>
+                <tr>
+                  <td>Taylor Kim</td><td class="muted">Financial Analyst · Finance</td>
+                  <td><span class="status-chip status-chip--active"><span class="dot" aria-hidden="true">●</span> Active</span></td>
+                  <td>Step 1 of 5 — Collect signed offer letter</td><td class="muted">2026-09-30</td>
+                  <td><span class="muted">Illustrative only</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Run Detail — Blocked Step Alert (interactive)
+         Notes:
+           - "Demo: which step is about to block" lets you pick between two owners
+             (IT's Devon Ruiz vs. the orientation step's Riley Chen) so you can see
+             the recipient list change with the owner (AC2) without re-reading fixtures.
+           - Click "Attempt to advance" — the requirement is unmet in both scenarios,
+             so the step flips from current to Blocked (same transition shipped in
+             TEST-M1-STORY-137). The instant that happens, the "Alerts sent" panel
+             below animates from Sending → Delivered/Failed for HR, the relevant
+             managers, and the step's owner, on both channels (AC1).
+           - "Not notified" lists the owner of the run's OTHER steps who does NOT get
+             this alert, proving step-scoped targeting (AC2). Switch the demo picker
+             to see the included/excluded owner swap.
+           - "View in-app inbox" / "View sent emails" / "View delivery log" jump to the
+             screens that prove the same event from each angle.
+           - This prototype stops at the moment the alert fires — resolving the block
+             and any "back to normal" follow-up notification are explicitly out of
+             scope for this story (see story description) and aren't simulated here.
+    -->
+    <div class="screen" data-name="Run Detail">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="window.__showScreen(4); return false;">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Run — Jordan Reyes</h1>
+            <p>Engineering — Software Engineer II · Run run_7201</p>
+          </div>
+          <span class="status-chip" id="run-status-chip"></span>
+        </div>
+
+        <div class="demo-controls">
+          <label for="scenario-picker-1">Demo: which step is about to block</label>
+          <select class="input" id="scenario-picker-1" style="max-width:420px;" onchange="window.__setScenario(this.value)"></select>
+        </div>
+
+        <fieldset class="run-fieldset" id="run-fieldset">
+          <div class="run-layout">
+            <div class="card">
+              <h2 class="card-title" style="margin:0 0 var(--space-1) 0;">Task graph</h2>
+              <ol class="stepper" id="stepper"><!-- rendered by JS --></ol>
+            </div>
+
+            <div>
+              <div class="card" id="action-card" style="margin-bottom: var(--space-4);">
+                <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Current step</h2>
+                <div id="action-panel"><!-- rendered by JS --></div>
+              </div>
+
+              <div class="card" id="alert-card">
+                <h2 class="card-title" style="margin:0;">Alerts sent</h2>
+                <div id="alert-panel-wrap"><!-- rendered by JS --></div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <!-- Screen: In-app Notifications (interactive)
+         Notes:
+           - "View inbox as" switches which of the 5 people you're looking at. All five
+             exist regardless of scenario; only the ones who should receive THIS alert
+             see it (AC1, AC2). The step owner not involved in the current scenario sees
+             "No alert for this run" rather than the blocked-step card.
+           - Before "Attempt to advance" has been clicked on Run Detail, nobody has the
+             blocked-step alert yet — switch over there first if every inbox here looks
+             like the empty state.
+    -->
+    <div class="screen" data-name="In-app Notifications">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="window.__showScreen(1); return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div><h1>In-app notifications</h1><p>What each person sees in their own notification center.</p></div>
+        </div>
+
+        <div class="demo-controls">
+          <label for="scenario-picker-2">Demo: which step is about to block</label>
+          <select class="input" id="scenario-picker-2" style="max-width:420px;" onchange="window.__setScenario(this.value)"></select>
+        </div>
+
+        <div class="persona-bar">
+          <label for="persona-picker">View inbox as</label>
+          <select class="input" id="persona-picker" style="max-width:280px;" onchange="window.__renderInbox()"></select>
+        </div>
+
+        <div class="card">
+          <div id="inbox-body"><!-- rendered by JS --></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Email Notifications (interactive)
+         Notes:
+           - Mirrors the in-app screen for the email channel (AC1). The left list is
+             every email the system attempted to send for the current blocked step;
+             a failed send is labeled "Not delivered" (never color alone) and still
+             shows up here so a recipient's missing email is traceable.
+           - Click any row to preview it on the right, including the one that failed.
+    -->
+    <div class="screen" data-name="Email Notifications">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="window.__showScreen(1); return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div><h1>Email notifications</h1><p>Every email the blocked-step alert attempted to send.</p></div>
+        </div>
+
+        <div class="demo-controls">
+          <label for="scenario-picker-3">Demo: which step is about to block</label>
+          <select class="input" id="scenario-picker-3" style="max-width:420px;" onchange="window.__setScenario(this.value)"></select>
+        </div>
+
+        <div id="email-body"><!-- rendered by JS --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Notification Delivery Log (interactive, support/ops view)
+         Notes:
+           - Every in-app and email attempt for the blocked-step alert, successful or
+             not, with enough detail for support to diagnose a "why didn't I get
+             notified" report (AC3): timestamp, recipient, channel, outcome, provider/
+             error detail, and retry count.
+           - "Resend" on a failed row simulates support manually retrying that one
+             delivery — shows a pending state, then flips to delivered with a new log
+             line, never silently losing the original failed attempt.
+           - Filter narrows the table to delivered-only or failed-only for faster triage.
+    -->
+    <div class="screen" data-name="Delivery Log">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="window.__showScreen(1); return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div><h1>Notification delivery log</h1><p>Support-facing record of every alert attempt, for diagnosing missed notifications.</p></div>
+        </div>
+
+        <div class="demo-controls">
+          <label for="scenario-picker-4">Demo: which step is about to block</label>
+          <select class="input" id="scenario-picker-4" style="max-width:420px;" onchange="window.__setScenario(this.value)"></select>
+          <label for="status-filter">Filter</label>
+          <select class="input" id="status-filter" style="max-width:200px;" onchange="window.__renderLog()">
+            <option value="all">All attempts</option>
+            <option value="delivered">Delivered only</option>
+            <option value="failed">Failed only</option>
+          </select>
+        </div>
+
+        <div id="log-body"><!-- rendered by JS --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static snapshots for reviewers who want a quick look without driving the
+             interactive screens.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="window.__showScreen(1); return false;">Runs</a>
+          <a href="#" onclick="window.__showScreen(4); return false;">Alerts</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header"><h1>Reference states</h1><p>Non-interactive snapshots. Use the earlier screens to try the real flow.</p></div>
+
+        <div class="reference-grid">
+          <!-- State: alert-fired-all-delivered -->
+          <div>
+            <h3>Alert fired — every channel delivered</h3>
+            <span class="ac-tag">Satisfies AC1: HR, relevant managers, and the step owner each get in-app + email</span>
+            <div class="card">
+              <div class="blocked-banner">
+                <span aria-hidden="true">⚠</span>
+                <div><h3>This run is blocked</h3><p>No buddy has been paired with Jordan yet, so orientation can't be marked complete.</p></div>
+              </div>
+              <div class="recipient-grid">
+                <div class="recipient-card"><span class="r-name">Priya Shah</span><span class="r-role">HR Partner</span>
+                  <span class="channel-row state--delivered">✓ In-app delivered</span><span class="channel-row state--delivered">✓ Email delivered</span></div>
+                <div class="recipient-card"><span class="r-name">Morgan Ellis</span><span class="r-role">Relevant manager</span>
+                  <span class="channel-row state--delivered">✓ In-app delivered</span><span class="channel-row state--delivered">✓ Email delivered</span></div>
+                <div class="recipient-card"><span class="r-name">Alex Chen</span><span class="r-role">Relevant manager</span>
+                  <span class="channel-row state--delivered">✓ In-app delivered</span><span class="channel-row state--delivered">✓ Email delivered</span></div>
+                <div class="recipient-card"><span class="r-name">Riley Chen</span><span class="r-role">Step owner — Team Lead</span>
+                  <span class="channel-row state--delivered">✓ In-app delivered</span><span class="channel-row state--delivered">✓ Email delivered</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: alert-fired-partial-failure -->
+          <div>
+            <h3>Alert fired — one email failed</h3>
+            <span class="ac-tag">Satisfies AC3: a failed attempt is still logged, with detail support can act on</span>
+            <div class="card">
+              <div class="recipient-card" style="margin-bottom:var(--space-3);">
+                <span class="r-name">Alex Chen</span><span class="r-role">Relevant manager</span>
+                <span class="channel-row state--delivered">✓ In-app delivered</span>
+                <span class="channel-row state--failed">⚠ Email not delivered</span>
+              </div>
+              <div class="log-detail-box">
+                <dl>
+                  <dt>Error</dt><dd>SMTP 550 mailbox unavailable (alex.chen@onboardco.example)</dd>
+                  <dt>Retries</dt><dd>2, automatic, over 5 minutes</dd>
+                  <dt>Support action</dt><dd>Resend manually, or confirm mailbox is active</dd>
+                </dl>
+              </div>
+              <button class="btn btn-secondary btn-sm" type="button" disabled>Resend</button>
+            </div>
+          </div>
+
+          <!-- State: owner-only-targeting -->
+          <div>
+            <h3>Only the blocked step's owner is notified</h3>
+            <span class="ac-tag">Satisfies AC2: other steps' owners are excluded</span>
+            <div class="card">
+              <p class="u-text-sm" style="margin:0 0 var(--space-2) 0;">Step 3 (Provision IT accounts) just blocked:</p>
+              <div class="recipient-card" style="margin-bottom:var(--space-3);"><span class="r-name">Devon Ruiz</span><span class="r-role">Notified — owns the blocked step</span></div>
+              <div class="excluded-box" style="margin-top:0;">
+                <h4>Not notified</h4>
+                <ul><li><span aria-hidden="true">–</span> Riley Chen — owns step 4 (orientation), a different step</li></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: empty-no-alerts-yet -->
+          <div>
+            <h3>No alerts yet for this run</h3>
+            <span class="ac-tag">Empty state: before any step has entered its blocked state</span>
+            <div class="card">
+              <div class="empty-state">
+                <p>Nothing has blocked on this run yet.</p>
+                <p class="u-text-sm u-text-muted" style="margin:0;">An alert fires the moment a current step's advance attempt is blocked by an unmet requirement.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="app-toast" role="status" aria-live="polite" hidden>
+    <span aria-hidden="true">✓</span>
+    <span id="app-toast-message"></span>
+  </div>
+
+<script>
+  const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  function stepById(id) { return fixture.steps.find(s => s.id === id); }
+
+  // ---------- Global demo state ----------
+  const state = {
+    scenario: 'it',
+    triggered: { it: false, orientation: false },
+    deliveryLog: { it: [], orientation: [] },
+    selectedEmailId: null,
+    expandedLogId: null,
+  };
+
+  function currentScenario() { return fixture.scenarios[state.scenario]; }
+  function blockedStep() { return stepById(currentScenario().blockedStepId); }
+
+  function getRecipients() {
+    const owner = blockedStep();
+    return [
+      { role: 'HR', name: fixture.hrPartner.name, title: fixture.hrPartner.title, email: fixture.hrPartner.email },
+      ...fixture.relevantManagers.map(m => ({ role: 'Relevant manager', name: m.name, title: m.title, email: m.email })),
+      { role: "Step owner — " + owner.ownerTitle, name: owner.ownerName, title: owner.ownerTitle, email: owner.ownerEmail },
+    ];
+  }
+
+  function getExcludedOwners() {
+    const recipients = getRecipients();
+    const recipientEmails = new Set(recipients.map(r => r.email));
+    const seen = new Set();
+    const excluded = [];
+    fixture.steps.forEach(s => {
+      if (s.id === currentScenario().blockedStepId) return;
+      if (recipientEmails.has(s.ownerEmail) || seen.has(s.ownerEmail)) return;
+      seen.add(s.ownerEmail);
+      excluded.push({ name: s.ownerName, title: s.ownerTitle, stepName: s.name });
+    });
+    return excluded;
+  }
+
+  function buildDeliveryAttempts() {
+    const recipients = getRecipients();
+    const now = new Date();
+    const base = now.toTimeString().slice(0, 8);
+    const attempts = [];
+    let seq = 0;
+    recipients.forEach(r => {
+      ['In-app', 'Email'].forEach(channel => {
+        seq += 1;
+        let status = 'delivered';
+        let detail = channel === 'In-app'
+          ? `Rendered in ${r.name.split(' ')[0]}'s notification center; unread.`
+          : `Accepted by mail server for ${r.email}.`;
+        let errorCode = null;
+        let retryCount = 0;
+        if (state.scenario === 'it' && r.name === 'Alex Chen' && channel === 'Email') {
+          status = 'failed';
+          detail = `SMTP 550 mailbox unavailable (${r.email}). Auto-retried 2× over 5 minutes, still failing.`;
+          errorCode = 'SMTP 550';
+          retryCount = 2;
+        }
+        attempts.push({
+          id: `${state.scenario}-${r.email}-${channel}-${seq}`,
+          timestamp: base,
+          notificationId: `ntf_${state.scenario}_${7200 + seq}`,
+          runId: fixture.run.id,
+          stepId: currentScenario().blockedStepId,
+          recipientName: r.name,
+          recipientRole: r.role,
+          channel,
+          status,
+          detail,
+          errorCode,
+          retryCount,
+        });
+      });
+    });
+    return attempts;
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('app-toast');
+    document.getElementById('app-toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => { toast.hidden = true; }, 3000);
+  }
+
+  // ---------- Scenario pickers (shared across screens) ----------
+  function populateScenarioPickers() {
+    const opts = Object.keys(fixture.scenarios).map(key =>
+      `<option value="${key}">${escapeHtml(fixture.scenarios[key].pickerLabel)}</option>`
+    ).join('');
+    ['scenario-picker-1', 'scenario-picker-2', 'scenario-picker-3', 'scenario-picker-4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.innerHTML = opts; el.value = state.scenario; }
+    });
+  }
+
+  window.__setScenario = function (key) {
+    state.scenario = key;
+    document.querySelectorAll('[id^="scenario-picker-"]').forEach(el => { el.value = key; });
+    renderRunDetail();
+    window.__renderInbox();
+    window.__renderEmail();
+    window.__renderLog();
+  };
+
+  // ---------- Run Detail (screen 2) ----------
+  function stepRuntimeStatus(step) {
+    const sc = currentScenario();
+    if (sc.doneStepIds.includes(step.id)) return 'done';
+    if (step.id === sc.blockedStepId) return state.triggered[state.scenario] ? 'blocked' : 'current';
+    return 'upcoming';
+  }
+
+  function stepMarkerIcon(status) {
+    if (status === 'done') return '✓';
+    if (status === 'current') return '●';
+    if (status === 'blocked') return '⚠';
+    return '○';
+  }
+
+  function renderRunStatusChip() {
+    const blocked = state.triggered[state.scenario];
+    const chip = document.getElementById('run-status-chip');
+    chip.className = 'status-chip ' + (blocked ? 'status-chip--blocked' : 'status-chip--active');
+    chip.innerHTML = blocked ? '<span aria-hidden="true">⚠</span> Blocked' : '<span class="dot" aria-hidden="true">●</span> Active';
+  }
+
+  function renderStepper() {
+    document.getElementById('stepper').innerHTML = fixture.steps.map(step => {
+      const status = stepRuntimeStatus(step);
+      const label = status === 'done' ? 'Completed'
+        : status === 'current' ? 'Current step'
+        : status === 'blocked' ? 'Blocked'
+        : 'Upcoming';
+      return `
+      <li class="step-item step-item--${status}">
+        <span class="step-marker" aria-hidden="true">${stepMarkerIcon(status)}</span>
+        <p class="step-name">${escapeHtml(step.name)}</p>
+        <p class="step-owner">${escapeHtml(step.ownerName)} · ${escapeHtml(step.ownerTitle)} · ${label}</p>
+        ${status === 'blocked' ? '<p class="step-tag"><span aria-hidden="true">⚠</span> Blocked — not skipped, alert sent</p>' : ''}
+      </li>`;
+    }).join('');
+  }
+
+  function renderActionPanel() {
+    const panel = document.getElementById('action-panel');
+    const step = blockedStep();
+    const blocked = state.triggered[state.scenario];
+
+    if (!blocked) {
+      panel.innerHTML = `
+        <p class="u-text-md" style="margin:0 0 var(--space-1) 0; color: var(--color-fg);">${escapeHtml(step.name)}</p>
+        <p class="u-text-sm u-text-muted" style="margin:0;">Required: ${escapeHtml(step.requirementLabel)} — not yet met.</p>
+        <div class="action-panel">
+          <button class="btn btn-primary" type="button" id="advance-btn">Attempt to advance</button>
+          <p class="hint">The requirement above is unmet, so this attempt will block the step and fire the alert.</p>
+        </div>`;
+      const btn = document.getElementById('advance-btn');
+      if (btn) btn.addEventListener('click', handleAttemptAdvance);
+    } else {
+      panel.innerHTML = `
+        <div class="blocked-banner">
+          <span aria-hidden="true">⚠</span>
+          <div><h3>This run is blocked</h3><p>${escapeHtml(step.blockReason)}</p></div>
+        </div>
+        <p class="hint">Resolving this block and any "back to normal" notification are out of scope for this story — not simulated here.</p>
+        <div class="action-panel">
+          <button class="btn btn-secondary" type="button" id="reset-btn">Reset this demo</button>
+        </div>`;
+      const resetBtn = document.getElementById('reset-btn');
+      if (resetBtn) resetBtn.addEventListener('click', handleResetScenario);
+    }
+  }
+
+  function renderAlertPanel(animate) {
+    const wrap = document.getElementById('alert-panel-wrap');
+    const blocked = state.triggered[state.scenario];
+
+    if (!blocked) {
+      wrap.innerHTML = `
+        <!-- State: no-alerts-yet -->
+        <div class="empty-state">
+          <p>Nothing has blocked on this run yet.</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Click "Attempt to advance" to trigger the blocked-step alert.</p>
+        </div>`;
+      return;
+    }
+
+    const recipients = getRecipients();
+    const excluded = getExcludedOwners();
+    const sendingState = animate ? 'sending' : 'done';
+
+    wrap.innerHTML = `
+      <!-- State: alerts-fired -->
+      <p class="u-text-sm u-text-muted">Sent the instant Step ${fixture.steps.indexOf(blockedStep()) + 1} entered its blocked state. In-app and email are sent independently per recipient.</p>
+      <div class="recipient-grid" id="recipient-grid">
+        ${recipients.map(r => recipientCardMarkup(r, sendingState)).join('')}
+      </div>
+      <div class="excluded-box">
+        <h4>Not notified</h4>
+        ${excluded.length ? `<ul>${excluded.map(e => `<li><span aria-hidden="true">–</span> ${escapeHtml(e.name)} — owns "${escapeHtml(e.stepName)}", a different step</li>`).join('')}</ul>`
+          : '<p style="margin:0;">No other step owners to exclude in this run.</p>'}
+      </div>
+      <div class="link-row">
+        <button class="btn btn-secondary btn-sm" type="button" onclick="window.__showScreen(2)">View in-app inbox</button>
+        <button class="btn btn-secondary btn-sm" type="button" onclick="window.__showScreen(3)">View sent emails</button>
+        <button class="btn btn-secondary btn-sm" type="button" onclick="window.__showScreen(4)">View delivery log</button>
+      </div>`;
+
+    if (animate) {
+      setTimeout(() => {
+        document.querySelectorAll('#recipient-grid .recipient-card').forEach((card, i) => {
+          const r = recipients[i];
+          card.querySelectorAll('.channel-row').forEach((row) => {
+            const channel = row.dataset.channel;
+            const attempt = state.deliveryLog[state.scenario].find(a => a.recipientName === r.name && a.channel === channel);
+            if (!attempt) return;
+            if (attempt.status === 'delivered') {
+              row.className = 'channel-row state--delivered';
+              row.innerHTML = `✓ ${channel} delivered`;
+            } else {
+              row.className = 'channel-row state--failed';
+              row.innerHTML = `⚠ ${channel} not delivered`;
+            }
+          });
+        });
+      }, 350);
+    }
+  }
+
+  function recipientCardMarkup(r, sendingState) {
+    return `
+      <div class="recipient-card">
+        <span class="r-name">${escapeHtml(r.name)}</span>
+        <span class="r-role">${escapeHtml(r.role)}</span>
+        ${['In-app', 'Email'].map(channel => {
+          if (sendingState === 'sending') {
+            return `<span class="channel-row state--sending" data-channel="${channel}"><span class="spin" aria-hidden="true">⏳</span> ${channel} sending…</span>`;
+          }
+          const attempt = state.deliveryLog[state.scenario].find(a => a.recipientName === r.name && a.channel === channel);
+          if (attempt && attempt.status === 'failed') {
+            return `<span class="channel-row state--failed" data-channel="${channel}">⚠ ${channel} not delivered</span>`;
+          }
+          return `<span class="channel-row state--delivered" data-channel="${channel}">✓ ${channel} delivered</span>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function handleAttemptAdvance() {
+    const btn = document.getElementById('advance-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin" aria-hidden="true">⏳</span> Attempting…'; }
+    document.getElementById('run-fieldset').disabled = true;
+
+    setTimeout(() => {
+      state.triggered[state.scenario] = true;
+      state.deliveryLog[state.scenario] = buildDeliveryAttempts();
+      document.getElementById('run-fieldset').disabled = false;
+      renderRunStatusChip();
+      renderStepper();
+      renderActionPanel();
+      renderAlertPanel(true);
+    }, 300);
+  }
+
+  function handleResetScenario() {
+    state.triggered[state.scenario] = false;
+    state.deliveryLog[state.scenario] = [];
+    renderRunStatusChip();
+    renderStepper();
+    renderActionPanel();
+    renderAlertPanel(false);
+  }
+
+  function renderRunDetail() {
+    renderRunStatusChip();
+    renderStepper();
+    renderActionPanel();
+    renderAlertPanel(false);
+  }
+
+  // ---------- In-app Notifications (screen 3) ----------
+  function populatePersonaPicker() {
+    const el = document.getElementById('persona-picker');
+    if (!el) return;
+    el.innerHTML = fixture.personas.map(p => `<option value="${p.id}">${escapeHtml(p.name)} — ${escapeHtml(p.title)}</option>`).join('');
+  }
+
+  function personaMatchesRecipient(persona) {
+    return getRecipients().some(r => r.name === persona.name);
+  }
+
+  window.__renderInbox = function () {
+    const body = document.getElementById('inbox-body');
+    if (!body) return;
+    const personaId = document.getElementById('persona-picker').value;
+    const persona = fixture.personas.find(p => p.id === personaId);
+    const blocked = state.triggered[state.scenario];
+    const step = blockedStep();
+
+    const older = `
+      <div class="notif-card">
+        <span class="bell" aria-hidden="true">🔔</span>
+        <div><h4>Weekly onboarding digest</h4><p>3 runs active, 0 overdue. No action needed.</p><span class="meta">Mon 8:00 AM · Read</span></div>
+      </div>`;
+
+    if (blocked && personaMatchesRecipient(persona)) {
+      body.innerHTML = `
+        <!-- State: inbox-has-alert -->
+        <div class="notif-card unread">
+          <span class="bell" aria-hidden="true">🔔</span>
+          <div>
+            <h4><span class="unread-dot" aria-hidden="true">●</span> Step blocked — action needed</h4>
+            <p>"${escapeHtml(step.name)}" is blocked on ${escapeHtml(fixture.run.hire.name)}'s onboarding run. ${escapeHtml(step.blockReason)}</p>
+            <span class="meta">Today, ${state.deliveryLog[state.scenario][0].timestamp.slice(0,5)} · Run ${escapeHtml(fixture.run.id)} · To: ${escapeHtml(persona.name)} (${escapeHtml(getRecipients().find(r=>r.name===persona.name).role)})</span>
+          </div>
+        </div>
+        ${older}`;
+    } else if (blocked) {
+      body.innerHTML = `
+        <!-- State: inbox-excluded -->
+        <div class="empty-state" style="padding: var(--space-4) var(--space-3);">
+          <p>No alert for this run.</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">${escapeHtml(persona.name)} doesn't own the blocked step and isn't HR or a relevant manager on this run, so no notification was sent.</p>
+        </div>
+        ${older}`;
+    } else {
+      body.innerHTML = `
+        <!-- State: inbox-empty-before-trigger -->
+        <div class="empty-state" style="padding: var(--space-4) var(--space-3);">
+          <p>No alert for this run yet.</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Nothing has blocked. Trigger it from Run Detail to see it land here.</p>
+        </div>
+        ${older}`;
+    }
+  };
+
+  // ---------- Email Notifications (screen 4) ----------
+  window.__renderEmail = function () {
+    const body = document.getElementById('email-body');
+    if (!body) return;
+    const blocked = state.triggered[state.scenario];
+
+    if (!blocked) {
+      body.innerHTML = `
+        <!-- State: no-emails-yet -->
+        <div class="card"><div class="empty-state"><p>No emails sent yet for this run.</p><p class="u-text-sm u-text-muted" style="margin:0;">Trigger the block from Run Detail to generate them.</p></div></div>`;
+      return;
+    }
+
+    const emailAttempts = state.deliveryLog[state.scenario].filter(a => a.channel === 'Email');
+    if (state.selectedEmailId == null || !emailAttempts.find(a => a.id === state.selectedEmailId)) {
+      state.selectedEmailId = emailAttempts[0].id;
+    }
+    const step = blockedStep();
+
+    body.innerHTML = `
+      <div class="email-layout">
+        <ul class="email-list">
+          ${emailAttempts.map(a => `
+            <li>
+              <button type="button" class="${a.id === state.selectedEmailId ? 'active' : ''}" onclick="window.__selectEmail('${a.id}')">
+                <p class="e-to">${escapeHtml(a.recipientName)} <span class="u-text-sm u-text-muted">(${escapeHtml(a.recipientRole)})</span></p>
+                <p class="e-subject">Step blocked — ${escapeHtml(step.name)} (${escapeHtml(fixture.run.hire.name)})</p>
+                <span class="e-status ${a.status === 'failed' ? 'failed' : ''}">${a.status === 'failed' ? '⚠ Not delivered' : '✓ Delivered'}</span>
+              </button>
+            </li>`).join('')}
+        </ul>
+        <div id="email-preview"></div>
+      </div>`;
+    renderEmailPreview();
+  };
+
+  window.__selectEmail = function (id) {
+    state.selectedEmailId = id;
+    window.__renderEmail();
+  };
+
+  function renderEmailPreview() {
+    const el = document.getElementById('email-preview');
+    if (!el) return;
+    const attempt = state.deliveryLog[state.scenario].find(a => a.id === state.selectedEmailId);
+    const recipient = getRecipients().find(r => r.name === attempt.recipientName);
+    const step = blockedStep();
+
+    el.innerHTML = `
+      <!-- State: email-preview-${attempt.status} -->
+      <div class="email-preview">
+        ${attempt.status === 'failed' ? `<div class="toast-static" style="margin-bottom:var(--space-3);"><span aria-hidden="true">⚠</span> Not delivered — ${escapeHtml(attempt.detail)}</div>` : ''}
+        <div class="hdr-row"><span class="k">From</span><span class="v">Onboarding Alerts &lt;alerts@onboardco.example&gt;</span></div>
+        <div class="hdr-row"><span class="k">To</span><span class="v">${escapeHtml(recipient.name)} &lt;${escapeHtml(recipient.email)}&gt;</span></div>
+        <p class="subject">Step blocked — ${escapeHtml(step.name)} (${escapeHtml(fixture.run.hire.name)})</p>
+        <div class="body">
+          <p>Hi ${escapeHtml(recipient.name.split(' ')[0])},</p>
+          <p>${escapeHtml(fixture.run.hire.name)}'s onboarding run (${escapeHtml(fixture.run.id)}) just hit a blocked step: <strong>${escapeHtml(step.name)}</strong>.</p>
+          <p>${escapeHtml(step.blockReason)}</p>
+          <p><strong>View run →</strong> (opens Run Detail in the Onboarding app)</p>
+        </div>
+        <p class="footer-note">You're receiving this because you're ${escapeHtml(recipient.role === 'HR' ? 'the HR partner' : recipient.role.startsWith('Step owner') ? 'the assigned owner of this step' : 'a relevant manager')} on this run.</p>
+      </div>`;
+  }
+
+  // ---------- Delivery Log (screen 5) ----------
+  window.__renderLog = function () {
+    const body = document.getElementById('log-body');
+    if (!body) return;
+    const blocked = state.triggered[state.scenario];
+
+    if (!blocked) {
+      body.innerHTML = `
+        <!-- State: log-empty -->
+        <div class="card"><div class="empty-state">
+          <p>Nothing logged yet for this run.</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Trigger the block from Run Detail, then every delivery attempt will appear here.</p>
+        </div></div>`;
+      return;
+    }
+
+    const filter = document.getElementById('status-filter').value;
+    const attempts = state.deliveryLog[state.scenario].filter(a => filter === 'all' || a.status === filter);
+    const delivered = state.deliveryLog[state.scenario].filter(a => a.status === 'delivered').length;
+    const failed = state.deliveryLog[state.scenario].filter(a => a.status === 'failed').length;
+
+    body.innerHTML = `
+      <div class="log-stats">
+        <span class="stat-chip">${state.deliveryLog[state.scenario].length} attempts</span>
+        <span class="stat-chip">${delivered} delivered</span>
+        ${failed ? `<span class="stat-chip is-failed">⚠ ${failed} failed</span>` : `<span class="stat-chip">0 failed</span>`}
+      </div>
+      <div class="card">
+        <div class="log-table-wrap">
+          <table class="log-table">
+            <thead><tr><th>Time</th><th>Recipient</th><th>Channel</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              ${attempts.map(a => logRowMarkup(a)).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  };
+
+  function logRowMarkup(a) {
+    const expanded = state.expandedLogId === a.id;
+    const row = `
+      <tr>
+        <td>${escapeHtml(a.timestamp)}</td>
+        <td>${escapeHtml(a.recipientName)}<br><span class="u-text-sm u-text-muted">${escapeHtml(a.recipientRole)}</span></td>
+        <td>${escapeHtml(a.channel)}</td>
+        <td><span class="log-status ${a.status === 'failed' ? 'failed' : ''}">${a.status === 'failed' ? '⚠ Failed' : '✓ Delivered'}</span></td>
+        <td>
+          <button class="log-toggle-btn" type="button" onclick="window.__toggleLogDetail('${a.id}')">${expanded ? 'Hide' : 'Details'}</button>
+          ${a.status === 'failed' ? `<button class="resend-btn" type="button" onclick="window.__resendAttempt('${a.id}')">Resend</button>` : ''}
+        </td>
+      </tr>`;
+    if (!expanded) return row;
+    return row + `
+      <tr class="log-detail-row"><td colspan="5">
+        <div class="log-detail-box">
+          <dl>
+            <dt>Notification ID</dt><dd>${escapeHtml(a.notificationId)}</dd>
+            <dt>Run / step</dt><dd>${escapeHtml(a.runId)} / ${escapeHtml(a.stepId)}</dd>
+            <dt>Detail</dt><dd>${escapeHtml(a.detail)}</dd>
+            ${a.errorCode ? `<dt>Error code</dt><dd>${escapeHtml(a.errorCode)}</dd>` : ''}
+            <dt>Retry count</dt><dd>${a.retryCount}</dd>
+          </dl>
+        </div>
+      </td></tr>`;
+  }
+
+  window.__toggleLogDetail = function (id) {
+    state.expandedLogId = state.expandedLogId === id ? null : id;
+    window.__renderLog();
+  };
+
+  window.__resendAttempt = function (id) {
+    const list = state.deliveryLog[state.scenario];
+    const attempt = list.find(a => a.id === id);
+    if (!attempt) return;
+    const idx = list.indexOf(attempt);
+    attempt.detail += ' (resend in progress…)';
+    window.__renderLog();
+    setTimeout(() => {
+      const now = new Date().toTimeString().slice(0, 8);
+      list.splice(idx + 1, 0, {
+        id: id + '-resend',
+        timestamp: now,
+        notificationId: attempt.notificationId,
+        runId: attempt.runId,
+        stepId: attempt.stepId,
+        recipientName: attempt.recipientName,
+        recipientRole: attempt.recipientRole,
+        channel: attempt.channel,
+        status: 'delivered',
+        detail: 'Resent manually by support — delivered on retry.',
+        errorCode: null,
+        retryCount: attempt.retryCount,
+      });
+      attempt.detail = attempt.detail.replace(' (resend in progress…)', '');
+      window.__renderLog();
+      showToast('Resent — delivered to ' + attempt.recipientName + '.');
+    }, 300);
+  };
+
+  // ---------- Reviewer bar / screen switching ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent = `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  window.__showScreen = show;
+
+  // ---------- Init ----------
+  populateScenarioPickers();
+  populatePersonaPicker();
+  renderRunDetail();
+  window.__renderInbox();
+  window.__renderEmail();
+  window.__renderLog();
+  show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->
