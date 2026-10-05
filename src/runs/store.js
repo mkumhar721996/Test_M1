@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { getLatestVersion, createWorkflow } = require('../workflows/store');
 const { createEmployee } = require('../employees/store');
 const { appendOnboardingAuditEntry } = require('../hires/store');
+const { fireBlockedStepAlert } = require('../notifications/store');
 
 const runs = new Map();
 
@@ -28,6 +29,9 @@ function buildSteps(taskGraph) {
     name: t.name || t.id,
     description: t.description || '',
     owner: t.owner || '',
+    ownerName: t.ownerName || '',
+    ownerTitle: t.ownerTitle || '',
+    ownerEmail: t.ownerEmail || '',
     status: i === 0 ? 'current' : 'upcoming',
     requirementLabel: t.requirement ? t.requirement.label : undefined,
     requirementMet: t.requirement ? Boolean(t.requirement.metByDefault) : undefined,
@@ -45,6 +49,7 @@ function startRun(workflowId, hireId = null) {
     workflowId,
     definitionVersion: definition.version,
     taskGraph: definition.taskGraph,
+    notifyRecipients: (definition.taskGraph && definition.taskGraph.notifyRecipients) || { hr: null, managers: [] },
     status: 'active',
     employeeId: null,
     hireId,
@@ -80,6 +85,7 @@ function advanceStep(runId, actor = 'Manager') {
       actor: 'System',
       action: `Attempted step ${idx + 1} of ${run.steps.length} (${step.name}) — blocked: ${step.blockReason}`,
     });
+    if (!wasBlocked) fireBlockedStepAlert(run, step);
     return run;
   }
 
@@ -139,19 +145,27 @@ function completeRun(runId, payload = {}) {
 
 function seedExampleRun() {
   const workflow = createWorkflow({
+    notifyRecipients: {
+      hr: { name: 'Priya Shah', email: 'priya.shah@onboardco.example' },
+      managers: [
+        { name: 'Morgan Ellis', email: 'morgan.ellis@onboardco.example' },
+        { name: 'Alex Chen', email: 'alex.chen@onboardco.example' },
+      ],
+    },
     tasks: [
-      { id: 'step_offer_letter', name: 'Collect signed offer letter', description: 'Confirm Jordan has returned a signed copy of the offer letter.', owner: 'HR — Priya Shah', next: ['step_i9'] },
+      { id: 'step_offer_letter', name: 'Collect signed offer letter', description: 'Confirm Jordan has returned a signed copy of the offer letter.', owner: 'HR — Priya Shah', ownerName: 'Priya Shah', ownerTitle: 'HR Partner', ownerEmail: 'priya.shah@onboardco.example', next: ['step_i9'] },
       {
         id: 'step_i9',
         name: 'Verify I-9 employment eligibility',
         description: 'Confirm the required I-9 supporting document has been uploaded and reviewed.',
         owner: 'HR — Priya Shah',
+        ownerName: 'Priya Shah', ownerTitle: 'HR Partner', ownerEmail: 'priya.shah@onboardco.example', 
         requirement: { label: 'I-9 supporting document', blockReason: 'Required document missing — Jordan has not yet uploaded I-9 supporting documentation.' },
         next: ['step_it'],
       },
-      { id: 'step_it', name: 'Provision IT accounts & equipment', description: 'Assign a laptop and create system accounts.', owner: 'IT — Devon Ruiz', next: ['step_orientation'] },
-      { id: 'step_orientation', name: 'Assign onboarding buddy & complete orientation', description: 'Pair Jordan with a buddy and confirm orientation attendance.', owner: 'Manager — Morgan Ellis', next: ['step_checkin'] },
-      { id: 'step_checkin', name: 'Manager check-in & 30-day goals sign-off', description: 'Document 30-day goals and confirm manager sign-off.', owner: 'Manager — Morgan Ellis', next: [] },
+      { id: 'step_it', name: 'Provision IT accounts & equipment', description: 'Assign a laptop and create system accounts.', owner: 'IT — Devon Ruiz', ownerName: 'Devon Ruiz', ownerTitle: 'IT Systems', ownerEmail: 'devon.ruiz@onboardco.example', next: ['step_orientation'] },
+      { id: 'step_orientation', name: 'Assign onboarding buddy & complete orientation', description: 'Pair Jordan with a buddy and confirm orientation attendance.', owner: 'Manager — Morgan Ellis', ownerName: 'Morgan Ellis', ownerTitle: 'Hiring Manager', ownerEmail: 'morgan.ellis@onboardco.example', next: ['step_checkin'] },
+      { id: 'step_checkin', name: 'Manager check-in & 30-day goals sign-off', description: 'Document 30-day goals and confirm manager sign-off.', owner: 'Manager — Morgan Ellis', ownerName: 'Morgan Ellis', ownerTitle: 'Hiring Manager', ownerEmail: 'morgan.ellis@onboardco.example', next: [] },
     ],
   });
   const run = startRun(workflow.workflowId, 'hire_2031');

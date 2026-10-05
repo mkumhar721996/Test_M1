@@ -16,6 +16,7 @@
     <nav class="app-nav">
       <a href="hire-profile.html">Profiles</a>
       <a href="runs.html" class="active" aria-current="page">Runs</a>
+      <a href="notification-log.html">Alerts</a>
       <a href="#" onclick="return false;">Settings</a>
     </nav>
   </div>
@@ -54,6 +55,11 @@
           <div class="card hire-record-card" style="margin-bottom: var(--space-4);">
             <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Hire record</h2>
             <div id="hire-record-body"><!-- rendered by JS --></div>
+          </div>
+
+          <div class="card" id="alert-card" style="margin-bottom: var(--space-4);">
+            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Alerts sent</h2>
+            <div id="alert-panel-wrap"><!-- rendered by JS --></div>
           </div>
 
           <div class="card">

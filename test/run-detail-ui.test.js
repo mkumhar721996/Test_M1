@@ -157,4 +157,31 @@ describe('Run Detail UI', () => {
     expect(document.getElementById('error-toast').hidden).toBe(false);
     expect(document.getElementById('error-toast-message').textContent).toContain('Run state unchanged');
   });
+
+  test('AC1/AC2: a blocked run lists notified recipients per channel and the excluded owners', async () => {
+    const run = blockedRun(false);
+    run.steps[1].ownerName = 'Priya Shah';
+    run.steps[2].ownerName = 'Devon Ruiz';
+    const api = { getDeliveryLog: jest.fn().mockResolvedValue([
+      { recipientName: 'Priya Shah', recipientRole: 'HR', channel: 'In-app', status: 'delivered' },
+      { recipientName: 'Priya Shah', recipientRole: 'HR', channel: 'Email', status: 'delivered' },
+      { recipientName: 'Morgan Ellis', recipientRole: 'Relevant manager', channel: 'In-app', status: 'delivered' },
+      { recipientName: 'Morgan Ellis', recipientRole: 'Relevant manager', channel: 'Email', status: 'failed' },
+    ]) };
+    const { initRunDetailApp } = require('../public/js/run-detail');
+    initRunDetailApp(document, run, api);
+    await flush();
+
+    expect(api.getDeliveryLog).toHaveBeenCalledWith('run_7201');
+    expect(document.querySelectorAll('#alert-panel-wrap .recipient-card')).toHaveLength(2);
+    expect(document.querySelector('#alert-panel-wrap').textContent).toContain('Email not delivered');
+    expect(document.querySelector('.excluded-box').textContent).toContain('Devon Ruiz');
+    expect(document.querySelector('.excluded-box').textContent).not.toContain('Priya Shah');
+  });
+
+  test('a non-blocked run shows the no-alerts empty state', () => {
+    const { initRunDetailApp } = require('../public/js/run-detail');
+    initRunDetailApp(document, fixtureRun(), {});
+    expect(document.querySelector('#alert-panel-wrap').textContent).toContain('Nothing has blocked on this run yet.');
+  });
 });
