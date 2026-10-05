@@ -19,7 +19,8 @@ const ENDPOINTS = [
 test('AC1: HR can create a new-hire profile', async () => {
   const res = await request(app).post('/hires').set('x-staff-role', 'hr').send(payload);
   expect(res.status).toBe(201);
-  expect(getHire(res.body.id)).toBeTruthy();
+  expect(res.body).toMatchObject(payload);
+  expect(getHire(res.body.id)).toMatchObject(payload);
 });
 
 test('AC2: manager can edit an existing new-hire profile', async () => {
