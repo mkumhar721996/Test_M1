@@ -56,6 +56,7 @@ function initHireProfileApp(doc, initialHire, api) {
 
   const reactivateOverlay = doc.getElementById('reactivate-overlay');
   const reactivateModal = doc.getElementById('reactivate-modal');
+  const reactivateConsequenceCopy = doc.getElementById('reactivate-consequence-copy');
 
   function showToast(message) {
     toastMessage.textContent = message;
@@ -337,6 +338,9 @@ function initHireProfileApp(doc, initialHire, api) {
 
   // ---------- Reactivate modal (AC7, AC8, AC9) ----------
   function openReactivateModal() {
+    reactivateConsequenceCopy.textContent = hire.hireStage === 'offer_accepted'
+      ? 'A fresh onboarding Run starts from the beginning. The previously cancelled Run is not resumed.'
+      : 'Hire stage is still Draft, so no onboarding Run will start. Set hire stage to "Offer accepted" to trigger one later.';
     reactivateOverlay.hidden = false;
     reactivateModal.hidden = false;
   }
@@ -349,13 +353,14 @@ function initHireProfileApp(doc, initialHire, api) {
   reactivateOverlay.addEventListener('click', closeReactivateModal);
 
   doc.getElementById('reactivate-confirm-btn').addEventListener('click', () => {
+    const willStartRun = hire.hireStage === 'offer_accepted';
     closeReactivateModal();
-    setPending(true, 'Starting a fresh onboarding Run…');
+    setPending(true, willStartRun ? 'Starting a fresh onboarding Run…' : 'Reactivating profile…');
     api.reactivate().then((updated) => {
       hire = updated;
       setPending(false);
       renderAll();
-      showToast('Profile reactivated — new onboarding Run started');
+      showToast(hire.run ? 'Profile reactivated — new onboarding Run started' : 'Profile reactivated — no onboarding Run started (hire stage is still Draft)');
     }).catch(() => {
       setPending(false);
       renderAll();
