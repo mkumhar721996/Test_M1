@@ -19,7 +19,27 @@ hires.set('hire_2031', {
   auditLog: [],
 });
 
+class HireValidationError extends Error {
+  constructor(message, fields = {}) {
+    super(message);
+    this.statusCode = 400;
+    this.fields = fields;
+  }
+}
+
+function assertValidHire(name, department, role, startDate) {
+  const fields = {};
+  if (!name || !String(name).trim()) fields.name = 'Full name is required.';
+  if (!department) fields.department = 'Department is required.';
+  if (!role || !String(role).trim()) fields.role = 'Role is required.';
+  if (!startDate) fields.startDate = 'Start date is required.';
+  if (Object.keys(fields).length > 0) {
+    throw new HireValidationError('validation_error', fields);
+  }
+}
+
 async function createHire(data) {
+  assertValidHire(data.name, data.department, data.role, data.startDate);
   const hire = {
     ...data,
     id: crypto.randomUUID(),
@@ -61,6 +81,10 @@ async function updateHire(id, changes) {
   const roleOrDeptChanging = departmentChanging || roleChanging;
   const nextDepartment = 'department' in changes ? changes.department : hire.department;
   const nextRole = 'role' in changes ? changes.role : hire.role;
+  const nextName = 'name' in changes ? changes.name : hire.name;
+  const nextStartDate = 'startDate' in changes ? changes.startDate : hire.startDate;
+
+  assertValidHire(nextName, nextDepartment, nextRole, nextStartDate);
 
   if (changingToOfferAccepted && !hasActiveRun) {
     const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
@@ -117,4 +141,4 @@ function appendOnboardingAuditEntry(hireId, actor, action, { completed = false }
   return hire;
 }
 
-module.exports = { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, appendOnboardingAuditEntry };
+module.exports = { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, appendOnboardingAuditEntry };

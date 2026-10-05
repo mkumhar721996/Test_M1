@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-155 — New-Hire Profile Creation &amp; Editing</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per the UX baseline (never encode meaning in colour alone), the
+    required-field validation errors below are signalled with an icon (⚠) + bold text +
+    a heavier border using the existing --color-primary/--color-fg tokens, and hire-stage
+    chips are distinguished by icon + label, never by hue alone. If
+    sdlc.design-system-bootstrap later adds e.g. `color-danger`, `.field-error` /
+    `.input-invalid` are the only places to swap it in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* ---------- Profile table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.profile-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .profile-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .profile-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .profile-table tbody tr:last-child td { border-bottom: none; }
+  .profile-table tbody tr.row-added { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .profile-table tbody tr.row-added { animation: none; }
+  }
+  .name-cell .person-name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .contact-cell { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .contact-cell .contact-line { display: flex; align-items: center; gap: var(--space-1); margin-bottom: var(--space-1); }
+  .contact-cell .contact-line:last-child { margin-bottom: 0; }
+  .contact-cell .not-set { font-style: italic; }
+  .role-cell .role-line { color: var(--color-fg); }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .col-actions .btn-sm + .btn-sm { margin-left: var(--space-2); }
+
+  .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
+  }
+  .edit-link {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+  }
+  .edit-link:hover { background: var(--color-bg); }
+
+  /* ---------- Hire-stage chip ---------- */
+  .stage-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .stage-chip--offer_accepted { border-color: var(--color-primary); color: var(--color-fg); }
+  .stage-chip--onboarding_in_progress { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .stage-chip--completed { border: 1px solid var(--color-fg); color: var(--color-fg); }
+
+  .empty-state { text-align: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2); }
+  .empty-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  .no-controls-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-top: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .no-controls-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Modal (create/edit profile) ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: var(--color-bg); opacity: 0.72; z-index: 100; }
+  .modal-wrap {
+    position: fixed; inset: 0; z-index: 101;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: var(--space-4); overflow-y: auto;
+  }
+  .modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+  .modal-panel {
+    width: min(92vw, 480px);
+    margin-top: var(--space-4);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4);
+  }
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .modal-header h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .modal-header p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+  .icon-btn { background: none; border: none; color: var(--color-fg-muted); font-size: var(--font-size-lg); line-height: 1; cursor: pointer; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); }
+  .icon-btn:hover { color: var(--color-fg); }
+
+  .field { margin-bottom: var(--space-4); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .optional-tag { font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+  .fieldset-legend {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0;
+    margin: 0 0 var(--space-3) 0;
+  }
+  .form-fieldset { border: none; margin: 0 0 var(--space-4) 0; padding: 0; }
+
+  .rehire-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .rehire-banner[hidden] { display: none; }
+  .rehire-banner .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  .modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+
+  /* ---------- Inline field validation ---------- */
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: var(--space-4); right: var(--space-4); z-index: 200;
+    display: flex; align-items: center; gap: var(--space-2);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    max-width: min(90vw, 340px);
+  }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+
+  .rehire-compare { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 680px) { .rehire-compare { grid-template-columns: 1fr 1fr; } }
+  .rehire-card .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .rehire-card .kv-row { display: grid; grid-template-columns: 110px 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .rehire-card .kv-row:last-child { border-bottom: none; }
+  .rehire-card .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .rehire-card .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .no-link-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    margin-top: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Profiles (active) · Runs · Settings. Matches the "Onboarding" top
+     bar already established in this product by the hire-profile and onboarding-run
+     prototypes (TEST-M1-STORY-055, TEST-M1-STORY-137), so this create/edit surface reads
+     as the same product, not a new one. This story intentionally does NOT touch the
+     Run-triggering behavior or the active/deactivated toggle shown in those other
+     prototypes — see the "no-controls-note" on screen 1 for what's explicitly out of scope. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-155</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: New-Hire Profiles (interactive)
+         Notes:
+           - "+ New hire profile" opens a blank create form. Name, Department, Role, and
+             Start date are marked "Required"; Email and Phone are marked "Optional".
+             Submit with any required field blank to see an inline error naming exactly
+             that field, right under it — the form stays open and nothing is saved
+             (AC3, AC4). Submit with Email and Phone both left blank but every required
+             field filled in to see it save successfully (AC5).
+           - Click "Edit" on any row to reopen the same form pre-filled with that
+             profile's current values. Change contact info, department/role, start date,
+             and/or hire stage, then save — the row updates in place immediately (AC2).
+             The same required-field validation applies on edit: clearing Name,
+             Department, Role, or Start date and saving is blocked the same way as on
+             create.
+           - Sam Okafor's row has a second action, "Create rehire profile", since their
+             hire stage is Completed. It opens the create form (not edit) pre-filled with
+             Sam's name, department, and role, but a blank start date and hire stage reset
+             to Draft — saving it adds a brand-new row with its own ID. There is no field,
+             badge, or link anywhere connecting it back to Sam's original profile (AC6).
+           - This screen deliberately has no "Active/Deactivated" status control and
+             changing Department, Role, or Hire stage here never shows or simulates an
+             onboarding-run being started or cancelled — see the "out of scope" note
+             below the table.
+           - Data is written to real localStorage under `test-m1-story-155-profiles` —
+             reload this file to confirm a change is still present after reload. "Reset
+             demo data" restores the original fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="New-Hire Profiles">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>New-hire profiles</h1>
+            <p>Create a profile when someone is hired, and keep it updated as their info and hire stage change.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="new-profile-btn">+ New hire profile</button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="profile-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Department / Role</th>
+                  <th scope="col">Start date</th>
+                  <th scope="col">Hire stage</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="profile-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="no-controls-note">
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span>
+            Out of scope for this screen, by design: starting or cancelling an onboarding
+            workflow run when hire stage, role, or department changes (a separate story),
+            and an active/deactivated status toggle (also a separate story). Editing here
+            only ever changes the profile's own fields.
+          </span>
+        </p>
+      </div>
+
+      <!-- Create/Edit profile modal: same form serves both flows and the rehire shortcut;
+           only the title, subtitle, submit label, and starting field values differ. -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">New hire profile</h2>
+              <p id="modal-subtitle">Name, department, role, and start date are required. Email and phone are optional.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <div class="rehire-banner" id="rehire-banner" hidden>
+            <span class="hint-icon" aria-hidden="true">↺</span>
+            <span>This creates a brand-new, standalone profile. It will not be linked back to the prior profile in any way.</span>
+          </div>
+
+          <form id="profile-form" novalidate>
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Identity</legend>
+              <div class="field">
+                <label class="label" for="field-name">Full name <span class="optional-tag">(required)</span></label>
+                <input class="input" id="field-name" name="name" type="text" placeholder="e.g. Jordan Reyes" aria-describedby="error-name" />
+                <p class="field-error" id="error-name" role="alert" hidden>⚠ Full name is required.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Contact info <span class="optional-tag">(optional)</span></legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-email">Email</label>
+                  <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" />
+                </div>
+                <div class="field">
+                  <label class="label" for="field-phone">Phone</label>
+                  <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 555-0100" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Department &amp; role</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-department">Department <span class="optional-tag">(required)</span></label>
+                  <select class="input" id="field-department" name="department" aria-describedby="error-department">
+                    <option value="">Select a department</option>
+                    <option>Engineering</option>
+                    <option>Product</option>
+                    <option>Sales</option>
+                    <option>People Ops</option>
+                    <option>Finance</option>
+                  </select>
+                  <p class="field-error" id="error-department" role="alert" hidden>⚠ Department is required.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="field-role">Role <span class="optional-tag">(required)</span></label>
+                  <input class="input" id="field-role" name="role" type="text" placeholder="e.g. Software Engineer II" aria-describedby="error-role" />
+                  <p class="field-error" id="error-role" role="alert" hidden>⚠ Role is required.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset" style="margin-bottom: 0;">
+              <legend class="fieldset-legend">Start date &amp; hire stage</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-start-date">Start date <span class="optional-tag">(required)</span></label>
+                  <input class="input" id="field-start-date" name="startDate" type="date" aria-describedby="error-start-date" />
+                  <p class="field-error" id="error-start-date" role="alert" hidden>⚠ Start date is required.</p>
+                </div>
+                <div class="field" style="margin-bottom: 0;">
+                  <label class="label" for="field-hire-stage">Hire stage</label>
+                  <select class="input" id="field-hire-stage" name="hireStage">
+                    <option value="draft">Draft</option>
+                    <option value="offer_accepted">Offer accepted</option>
+                    <option value="onboarding_in_progress">Onboarding in progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Create profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Profile created</span>
+      </div>
+    </div>
+
+    <!-- Screen: Required-Field Validation (reference)
+         Notes:
+           - Static reference matrix for the exact blocking rule in AC3/AC4 and the
+             blank-optional-fields success path in AC5, since it's easy to click past
+             quickly on screen 1.
+    -->
+    <div class="screen" data-name="Required-Field Validation">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Required-field validation</h1>
+            <p>Non-interactive reference. Use screen 1 to try these submissions on the real form.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Missing a required field blocks the save</h3>
+          <p class="card-body" style="margin-bottom: var(--space-3);">Applies identically whether creating a new profile or editing an existing one.</p>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Field left blank</th><th>Result</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Full name</td><td><span class="verdict block">Blocked — "Full name is required."</span></td><td>AC3, AC4</td></tr>
+              <tr><td>Department</td><td><span class="verdict block">Blocked — "Department is required."</span></td><td>AC3, AC4</td></tr>
+              <tr><td>Role</td><td><span class="verdict block">Blocked — "Role is required."</span></td><td>AC3, AC4</td></tr>
+              <tr><td>Start date</td><td><span class="verdict block">Blocked — "Start date is required."</span></td><td>AC3, AC4</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">In every blocked case the form stays open, the error appears directly under the offending field, and nothing is written to the profile list.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Email and phone are optional</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Fields left blank</th><th>Name / Department / Role / Start date</th><th>Result</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Email, Phone</td><td>All present</td><td><span class="verdict pass">Created successfully — contact shows "No email on file" / "No phone on file"</span></td><td>AC5</td></tr>
+              <tr><td>Email only</td><td>All present</td><td><span class="verdict pass">Created successfully</span></td><td>AC5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Rehire — Standalone Profiles (reference)
+         Notes:
+           - Explains the rehire rule behind the "Create rehire profile" shortcut on
+             screen 1: a new profile for a person with a prior profile is a fully
+             independent record (AC6).
+    -->
+    <div class="screen" data-name="Rehire — Standalone Profiles">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Rehire — standalone profiles</h1>
+            <p>Sam Okafor completed onboarding in 2025. HR is bringing them back for a new role in 2026 — try it live via "Create rehire profile" on screen 1.</p>
+          </div>
+        </div>
+
+        <div class="rehire-compare">
+          <div class="card rehire-card">
+            <div class="card-header-row" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">Prior profile</h3>
+              <span class="stage-chip stage-chip--completed"><span aria-hidden="true">✓</span> Completed</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Profile ID</span><span class="kv-value">hire_3101</span></div>
+              <div class="kv-row"><span class="kv-label">Name</span><span class="kv-value">Sam Okafor</span></div>
+              <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value">Sales</span></div>
+              <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value">Account Executive</span></div>
+              <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value">03/10/2025</span></div>
+              <div class="kv-row"><span class="kv-label">Created</span><span class="kv-value">02/20/2025</span></div>
+            </div>
+          </div>
+
+          <div class="card rehire-card">
+            <div class="card-header-row" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">New profile (rehire)</h3>
+              <span class="stage-chip">Draft</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Profile ID</span><span class="kv-value">hire_3140 (new)</span></div>
+              <div class="kv-row"><span class="kv-label">Name</span><span class="kv-value">Sam Okafor</span></div>
+              <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value">Product</span></div>
+              <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value">Senior Product Manager</span></div>
+              <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value">11/16/2026</span></div>
+              <div class="kv-row"><span class="kv-label">Created</span><span class="kv-value">Today</span></div>
+            </div>
+            <span class="no-link-tag"><span aria-hidden="true">⊘</span> No link to profile hire_3101</span>
+          </div>
+        </div>
+
+        <p class="hint" style="margin-top: var(--space-4);">Same person, two completely independent records — no "linked profile", "previous hire", or "rehire of" field appears on either one, and editing one never touches the other.</p>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>Create &amp; persist with name, department, role, start date <span class="ac-id">— AC1</span></h3><p>Filling in Full name, Department, Role, and Start date and clicking "Create profile" saves immediately and the new row appears in the table.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Edit persists contact info, department/role, start date, hire stage <span class="ac-id">— AC2</span></h3><p>"Edit" on any row reopens the same form pre-filled; changing any of those fields and saving updates the row in place.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>Missing a required field is not saved <span class="ac-id">— AC3</span></h3><p>Submitting with Name, Department, Role, or Start date blank leaves the table unchanged — nothing is written.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>Validation error names the missing field <span class="ac-id">— AC4</span></h3><p>Each blocked submission shows an inline error directly under the offending field — see "Required-field validation".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">5</span>
+            <div><h3>Blank email/phone still creates successfully <span class="ac-id">— AC5</span></h3><p>With Name, Department, Role, and Start date present, leaving Email and Phone blank saves without error.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">6</span>
+            <div><h3>Rehire saves as a standalone profile <span class="ac-id">— AC6</span></h3><p>"Create rehire profile" on Sam Okafor's row creates a new profile with its own ID and no reference back to the prior one — see "Rehire — standalone profiles".</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-155-profiles';
+  const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
+  const STAGE_LABELS = {
+    draft: 'Draft',
+    offer_accepted: 'Offer accepted',
+    onboarding_in_progress: 'Onboarding in progress',
+    completed: 'Completed',
+  };
+  const STAGE_ICONS = {
+    draft: '○',
+    offer_accepted: '◐',
+    onboarding_in_progress: '◑',
+    completed: '✓',
+  };
+
+  const INITIAL_PROFILES = [
+    { id: 'hire_3101', name: 'Sam Okafor', email: 'sam.okafor@example.com', phone: '(415) 555-0132', department: 'Sales', role: 'Account Executive', startDate: '2025-03-10', hireStage: 'completed', createdAt: '2025-02-20' },
+    { id: 'hire_3108', name: 'Priya Shah', email: '', phone: '(206) 555-0144', department: 'People Ops', role: 'HR Generalist', startDate: '2026-09-15', hireStage: 'onboarding_in_progress', createdAt: '2026-08-30' },
+    { id: 'hire_3112', name: 'Devon Ruiz', email: 'devon.ruiz@example.com', phone: '', department: 'Engineering', role: 'IT Support Specialist', startDate: '2026-10-20', hireStage: 'offer_accepted', createdAt: '2026-09-25' },
+    { id: 'hire_3119', name: 'Taylor Kim', email: 'taylor.kim@example.com', phone: '(312) 555-0198', department: 'Finance', role: 'Financial Analyst', startDate: '2026-11-02', hireStage: 'draft', createdAt: '2026-09-28' },
+  ];
+
+  function loadProfiles() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PROFILES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_PROFILES.map(p => ({ ...p }));
+  }
+
+  function persistProfiles(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let profiles = loadProfiles();
+  let lastAddedId = null;
+  let nextSeq = 141;
+
+  // ---------- List rendering ----------
+  function renderList() {
+    const tbody = document.getElementById('profile-tbody');
+    tbody.innerHTML = '';
+
+    if (profiles.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="6"><div class="empty-state"><p>No new-hire profiles yet.</p><button type="button" class="btn btn-primary" onclick="document.getElementById(\'new-profile-btn\').click()">+ New hire profile</button></div></td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    profiles.forEach(p => {
+      const tr = document.createElement('tr');
+      if (p.id === lastAddedId) tr.className = 'row-added';
+      const emailLine = p.email
+        ? `<span class="contact-line"><span aria-hidden="true">✉</span> ${escapeHtml(p.email)}</span>`
+        : `<span class="contact-line not-set">No email on file</span>`;
+      const phoneLine = p.phone
+        ? `<span class="contact-line"><span aria-hidden="true">☎</span> ${escapeHtml(p.phone)}</span>`
+        : `<span class="contact-line not-set">No phone on file</span>`;
+      const stageClass = 'stage-chip stage-chip--' + p.hireStage;
+      tr.innerHTML = `
+        <td class="name-cell"><span class="person-name">${escapeHtml(p.name)}</span><span class="person-id">${p.id}</span></td>
+        <td class="contact-cell">${emailLine}${phoneLine}</td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(p.role)}</span><br/><span class="dept-line">${escapeHtml(p.department)}</span></td>
+        <td>${formatDateDisplay(p.startDate)}</td>
+        <td><span class="${stageClass}"><span aria-hidden="true">${STAGE_ICONS[p.hireStage]}</span> ${STAGE_LABELS[p.hireStage]}</span></td>
+        <td class="col-actions">
+          <button type="button" class="edit-link btn-sm" data-edit-id="${p.id}">Edit</button>
+          ${p.hireStage === 'completed' ? `<button type="button" class="edit-link btn-sm" data-rehire-id="${p.id}">Create rehire profile</button>` : ''}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastAddedId = null;
+
+    tbody.querySelectorAll('[data-edit-id]').forEach(btn => {
+      btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-edit-id')));
+    });
+    tbody.querySelectorAll('[data-rehire-id]').forEach(btn => {
+      btn.addEventListener('click', () => openRehireModal(btn.getAttribute('data-rehire-id')));
+    });
+  }
+
+  // ---------- Modal (shared by create, edit, and rehire) ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const modalTitle = document.getElementById('modal-title');
+  const modalSubtitle = document.getElementById('modal-subtitle');
+  const rehireBanner = document.getElementById('rehire-banner');
+  const form = document.getElementById('profile-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  const fieldName = document.getElementById('field-name');
+  const fieldEmail = document.getElementById('field-email');
+  const fieldPhone = document.getElementById('field-phone');
+  const fieldDepartment = document.getElementById('field-department');
+  const fieldRole = document.getElementById('field-role');
+  const fieldStartDate = document.getElementById('field-start-date');
+  const fieldHireStage = document.getElementById('field-hire-stage');
+
+  let formMode = 'create'; // 'create' | 'edit'
+  let editingId = null;
+
+  function openModalShell() {
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+    fieldName.focus();
+  }
+
+  function openCreateModal() {
+    formMode = 'create';
+    editingId = null;
+    form.reset();
+    clearAllErrors();
+    rehireBanner.hidden = true;
+    fieldHireStage.value = 'draft';
+    modalTitle.textContent = 'New hire profile';
+    modalSubtitle.textContent = 'Name, department, role, and start date are required. Email and phone are optional.';
+    saveBtn.textContent = 'Create profile';
+    openModalShell();
+  }
+
+  // Pre-fills every field with the profile's actual current values — not blank, not a
+  // default — so editing never pretends a field is unset.
+  function openEditModal(id) {
+    const p = profiles.find(x => x.id === id);
+    if (!p) return;
+    formMode = 'edit';
+    editingId = id;
+    clearAllErrors();
+    rehireBanner.hidden = true;
+    fieldName.value = p.name;
+    fieldEmail.value = p.email || '';
+    fieldPhone.value = p.phone || '';
+    fieldDepartment.value = p.department;
+    fieldRole.value = p.role;
+    fieldStartDate.value = p.startDate;
+    fieldHireStage.value = p.hireStage;
+    modalTitle.textContent = 'Edit profile';
+    modalSubtitle.textContent = `Profile ${p.id}. Update any field and save.`;
+    saveBtn.textContent = 'Save changes';
+    openModalShell();
+  }
+
+  // Opens the CREATE form (not edit) pre-filled with the prior profile's name, department,
+  // and role, but a blank start date and hire stage reset to Draft — saving produces a
+  // brand-new row with its own ID and no link back to the source profile (AC6).
+  function openRehireModal(priorId) {
+    const prior = profiles.find(x => x.id === priorId);
+    if (!prior) return;
+    formMode = 'create';
+    editingId = null;
+    form.reset();
+    clearAllErrors();
+    fieldName.value = prior.name;
+    fieldDepartment.value = prior.department;
+    fieldRole.value = prior.role;
+    fieldHireStage.value = 'draft';
+    rehireBanner.hidden = false;
+    modalTitle.textContent = 'New hire profile';
+    modalSubtitle.textContent = `Rehiring ${prior.name}. Name, department, role, and start date are required.`;
+    saveBtn.textContent = 'Create profile';
+    openModalShell();
+  }
+
+  let saveTimer = null;
+
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = formMode === 'edit' ? 'Save changes' : 'Create profile';
+    document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelForm();
+    }
+  }
+
+  function cancelForm() {
+    const wasEdit = formMode === 'edit';
+    closeModal();
+    showToast(wasEdit ? 'No changes saved — dialog closed' : 'No profile created — dialog closed');
+  }
+
+  document.getElementById('new-profile-btn').addEventListener('click', openCreateModal);
+  document.getElementById('modal-close-btn').addEventListener('click', cancelForm);
+  document.getElementById('modal-cancel-btn').addEventListener('click', cancelForm);
+  overlay.addEventListener('click', cancelForm);
+
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldName, document.getElementById('error-name'), '');
+    setFieldError(fieldDepartment, document.getElementById('error-department'), '');
+    setFieldError(fieldRole, document.getElementById('error-role'), '');
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), '');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    const nameValue = fieldName.value.trim();
+    const emailValue = fieldEmail.value.trim();
+    const phoneValue = fieldPhone.value.trim();
+    const departmentValue = fieldDepartment.value;
+    const roleValue = fieldRole.value.trim();
+    const startDateValue = fieldStartDate.value;
+    const hireStageValue = fieldHireStage.value;
+
+    const nameError = nameValue === '' ? 'Full name is required.' : '';
+    const departmentError = departmentValue === '' ? 'Department is required.' : '';
+    const roleError = roleValue === '' ? 'Role is required.' : '';
+    const startDateError = startDateValue === '' ? 'Start date is required.' : '';
+
+    setFieldError(fieldName, document.getElementById('error-name'), nameError);
+    setFieldError(fieldDepartment, document.getElementById('error-department'), departmentError);
+    setFieldError(fieldRole, document.getElementById('error-role'), roleError);
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), startDateError);
+
+    if (nameError || departmentError || roleError || startDateError) {
+      // AC3/AC4: form stays open, inline error directly under each offending field,
+      // nothing saved — applies the same way whether creating or editing. Email and
+      // phone are never checked here, since they're optional (AC5).
+      const firstInvalid = nameError ? fieldName
+        : departmentError ? fieldDepartment
+        : roleError ? fieldRole
+        : fieldStartDate;
+      firstInvalid.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = formMode === 'edit' ? 'Saving…' : 'Creating…';
+
+    // Simulated latency — no real network call.
+    saveTimer = setTimeout(() => {
+      let nextList;
+      let savedId;
+
+      if (formMode === 'edit') {
+        nextList = profiles.map(p => p.id === editingId ? {
+          ...p,
+          name: nameValue,
+          email: emailValue,
+          phone: phoneValue,
+          department: departmentValue,
+          role: roleValue,
+          startDate: startDateValue,
+          hireStage: hireStageValue,
+        } : p);
+        savedId = editingId;
+      } else {
+        // AC1/AC6: always a fresh record with a new ID — never merged with or linked to
+        // any existing profile, even one with the same name.
+        const newProfile = {
+          id: 'hire_' + String(nextSeq++),
+          name: nameValue,
+          email: emailValue,
+          phone: phoneValue,
+          department: departmentValue,
+          role: roleValue,
+          startDate: startDateValue,
+          hireStage: hireStageValue,
+          createdAt: new Date().toISOString().slice(0, 10),
+        };
+        nextList = [newProfile, ...profiles];
+        savedId = newProfile.id;
+      }
+
+      persistProfiles(nextList);
+      profiles = nextList;
+      lastAddedId = savedId;
+      const wasEdit = formMode === 'edit';
+      closeModal();
+      renderList();
+      showToast(wasEdit ? 'Profile updated' : 'Profile created');
+    }, 320);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+  }
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    profiles = loadProfiles();
+    nextSeq = 141;
+    lastAddedId = null;
+    renderList();
+    showToast('Demo data reset');
+  });
+
+  renderList();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (modalWrap.hidden === false) return; // let Esc close the modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
