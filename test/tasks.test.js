@@ -2,6 +2,10 @@ const request = require('supertest');
 const app = require('../src/server');
 const tasksStore = require('../src/tasks/store');
 
+beforeEach(() => {
+  tasksStore.clearTasks();
+});
+
 test('GET /tasks returns all Task records', async () => {
   const t1 = tasksStore.createTask({ runId: 'run_aaa', name: 'Step 1' });
   const t2 = tasksStore.createTask({ runId: 'run_bbb', name: 'Step 2' });
