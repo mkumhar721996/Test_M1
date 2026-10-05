@@ -84,6 +84,7 @@ test('AC3/AC4: changing only department (role unchanged) cancels and restarts th
   const originalRunId = getHire(hire.id).run.id;
   const updated = await updateHire(hire.id, { department: 'Product' });
   expect(updated.run.id).not.toBe(originalRunId);
+  expect(updated.runHistory).toContainEqual(expect.objectContaining({ id: originalRunId, status: 'cancelled', reason: 'role_or_department_changed' }));
   expect(updated.run).toMatchObject({ status: 'active', department: 'Product', role: 'Engineer II' });
 });
 
