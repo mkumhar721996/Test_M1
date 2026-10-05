@@ -1,5 +1,6 @@
 const express = require('express');
 const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { enforceOnboardingRole } = require('../runs/auth');
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.get('/', (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', enforceOnboardingRole, async (req, res, next) => {
   try {
     const hire = await createHire(req.body);
     res.status(201).json(hire);
@@ -44,7 +45,7 @@ router.get('/:id', (req, res, next) => {
   }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', enforceOnboardingRole, async (req, res, next) => {
   try {
     const hire = await updateHire(req.params.id, pickPatchableFields(req.body));
     if (!hire) {
@@ -59,7 +60,7 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/:id/deactivate', async (req, res, next) => {
+router.post('/:id/deactivate', enforceOnboardingRole, async (req, res, next) => {
   try {
     const hire = await deactivateHire(req.params.id);
     if (!hire) {
@@ -71,7 +72,7 @@ router.post('/:id/deactivate', async (req, res, next) => {
   }
 });
 
-router.post('/:id/reactivate', async (req, res, next) => {
+router.post('/:id/reactivate', enforceOnboardingRole, async (req, res, next) => {
   try {
     const hire = await reactivateHire(req.params.id);
     if (!hire) {

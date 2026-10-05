@@ -45,14 +45,14 @@ test('AC6: a new profile created for a person with a prior profile has its own i
 });
 
 test('POST /hires with a missing required field returns 400 validation_error naming the field', async () => {
-  const res = await request(app).post('/hires').send({ department: 'Sales', role: 'AE', startDate: '2026-10-05' });
+  const res = await request(app).post('/hires').set('x-staff-role', 'hr').send({ department: 'Sales', role: 'AE', startDate: '2026-10-05' });
   expect(res.status).toBe(400);
   expect(res.body).toMatchObject({ error: 'validation_error', fields: { name: 'Full name is required.' } });
 });
 
 test('PATCH /hires/:id clearing a required field returns 400 validation_error', async () => {
-  const created = await request(app).post('/hires').send({ name: 'A', department: 'Sales', role: 'AE', startDate: '2026-10-05' });
-  const res = await request(app).patch(`/hires/${created.body.id}`).send({ role: '  ' });
+  const created = await request(app).post('/hires').set('x-staff-role', 'hr').send({ name: 'A', department: 'Sales', role: 'AE', startDate: '2026-10-05' });
+  const res = await request(app).patch(`/hires/${created.body.id}`).set('x-staff-role', 'hr').send({ role: '  ' });
   expect(res.status).toBe(400);
   expect(res.body).toMatchObject({ error: 'validation_error', fields: { role: 'Role is required.' } });
 });
