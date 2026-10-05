@@ -185,3 +185,35 @@ fieldset.run-fieldset[disabled] .btn { opacity: 0.6; cursor: not-allowed; }
 .hire-record-card .kv-row:last-child { border-bottom: none; }
 .hire-record-card .k { color: var(--color-fg-muted); }
 .hire-record-card .v { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+/* ---------- Deadline reminders ---------- */
+.reminder-card .card-title { display: flex; align-items: center; gap: var(--space-2); justify-content: space-between; flex-wrap: wrap; margin: 0 0 var(--space-2) 0; }
+.reminder-card .countdown { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+.reminder-card .progress-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.reminder-card .progress-track { flex: 1; }
+.reminder-card .progress-label { font-weight: var(--font-weight-bold); color: var(--color-fg); white-space: nowrap; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+  font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+  border: 1px solid var(--color-border);
+}
+.pill-delivered { color: var(--color-fg); border-color: var(--color-primary); }
+.pill-capped { color: var(--color-primary-fg); background: var(--color-primary); border-color: var(--color-primary); }
+.pill-waiting { color: var(--color-fg-muted); }
+
+.recipients-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+
+.log-table { width: 100%; border-collapse: collapse; font-family: var(--font-family-base); }
+.log-table th, .log-table td {
+  text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm); color: var(--color-fg); white-space: nowrap;
+}
+.log-table th { color: var(--color-fg-muted); font-weight: var(--font-weight-bold); position: sticky; top: 0; background: var(--card-default-background); }
+.log-scroll { max-height: 360px; overflow: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-top: var(--space-3); }
+.log-scroll[hidden] { display: none; }
+
+.outcome { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+.outcome-ok::before { content: "✓"; }
+.outcome-fail::before { content: "✕"; }
