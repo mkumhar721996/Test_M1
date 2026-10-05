@@ -28,9 +28,8 @@ function formatUSD(amount) {
 }
 
 function validateExpenseFields({ amount, date, category }) {
-  const amountValue = parseFloat(amount);
   return {
-    amount: (amount === '' || Number.isNaN(amountValue) || amountValue <= 0) ? 'Amount is required.' : null,
+    amount: validateAmount(amount) || null,
     date: date === '' ? 'Date is required.' : null,
     category: category === '' ? 'Category is required.' : null,
   };
@@ -244,9 +243,9 @@ function initExpensesApp(doc = document) {
 
     const errors = validateExpenseFields({ amount: amountRaw, date: dateValue, category: categoryValue });
 
-    setFieldError(fieldAmount, errorAmount, Boolean(errors.amount));
-    setFieldError(fieldDate, errorDate, Boolean(errors.date));
-    setFieldError(fieldCategory, errorCategory, Boolean(errors.category));
+    setFieldError(fieldAmount, errorAmount, Boolean(errors.amount), errors.amount);
+    setFieldError(fieldDate, errorDate, Boolean(errors.date), errors.date);
+    setFieldError(fieldCategory, errorCategory, Boolean(errors.category), errors.category);
 
     if (errors.amount || errors.date || errors.category) {
       const firstInvalid = errors.amount ? fieldAmount : errors.date ? fieldDate : fieldCategory;
@@ -271,6 +270,7 @@ function initExpensesApp(doc = document) {
         date: dateValue,
         category: categoryValue,
         description: fieldDescription.value.trim(),
+        loggedBy: viewerSelect.value,
       };
       try {
         persistExpenses([

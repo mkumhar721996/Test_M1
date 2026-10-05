@@ -210,4 +210,35 @@ describe('Create Expense via Modal Form', () => {
   test('the expense list page states that logging an expense is visible to every staff member', () => {
     expect(document.querySelector('.shared-visibility-hint').textContent).toMatch(/visible to everyone/i);
   });
+
+  test.each(['0', '-12.50'])('AC3: validateAmount rejects %s', (value) => {
+    const { validateAmount } = require('../public/js/expenses');
+    expect(validateAmount(value)).toMatch(/greater than \$0\.00|valid amount/i);
+  });
+
+  test('AC3: validateAmount rejects zero with the greater-than message', () => {
+    const { validateAmount } = require('../public/js/expenses');
+    expect(validateAmount('0')).toMatch(/greater than \$0\.00/i);
+  });
+
+  test('AC2: a blocked blank create submit applies no default value', () => {
+    document.getElementById('add-expense-btn').click();
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    expect(document.getElementById('create-field-category').value).toBe('');
+    expect(document.getElementById('create-field-date').value).toBe('');
+    expect(document.getElementById('create-field-amount').value).toBe('');
+  });
+
+  test('AC5/AC6: both forms offer only the fixed categories with no management control', () => {
+    const opts = (sel) => Array.from(document.querySelectorAll(sel)).map((o) => o.textContent);
+    expect(opts('#create-field-category option')).toEqual(['Select a category', 'Travel', 'Meals', 'Software', 'Office Supplies', 'Other']);
+    expect(opts('#create-field-category option')).toEqual(opts('#field-category option'));
+    expect(document.querySelector('[id*="category" i][id*="add" i], [id*="manage-categor" i]')).toBeNull();
+  });
+
+  test('AC10/AC11: no attachment or delete control on the create flow', () => {
+    document.getElementById('add-expense-btn').click();
+    expect(document.querySelector('#create-form input[type="file"], [id*="receipt" i], [id*="attach" i]')).toBeNull();
+    expect(Array.from(document.querySelectorAll('button')).some((b) => /delete/i.test(b.textContent) || /delete/i.test(b.id))).toBe(false);
+  });
 });

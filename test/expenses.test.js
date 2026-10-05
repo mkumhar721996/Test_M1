@@ -210,4 +210,87 @@ describe('Edit Expense via Modal Form', () => {
 
     setItemSpy.mockRestore();
   });
+
+  const submitEdit = () => document.getElementById('edit-form').dispatchEvent(new Event('submit', { cancelable: true }));
+  const storedExpense = (id) => JSON.parse(localStorage.getItem('expenses')).find((e) => e.id === id);
+
+  test('AC1: a blank Date blocks the edit with an inline error', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-date').value = '';
+    submitEdit();
+    expect(document.getElementById('error-date').hidden).toBe(false);
+    expect(document.getElementById('modal-wrap').hidden).toBe(false);
+  });
+
+  test('AC2: a blocked edit applies no default to the invalid field or the untouched fields', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-category').value = '';
+    submitEdit();
+    expect(document.getElementById('field-category').value).toBe('');
+    expect(document.getElementById('field-date').value).toBe('2026-09-02');
+  });
+
+  test.each(['0', '-12.50'])('AC3: edit amount %s is blocked with an inline error', (value) => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = value;
+    submitEdit();
+    expect(document.getElementById('error-amount').hidden).toBe(false);
+    expect(storedExpense('exp_001')?.amount ?? 482.5).toBe(482.5);
+  });
+
+  test('AC3: edit amount with more than 2 decimal places is blocked, not rounded', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '19.999';
+    submitEdit();
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('error-amount').hidden).toBe(false);
+    expect(document.getElementById('error-amount').textContent).toMatch(/at most 2 decimal places/i);
+    expect(storedExpense('exp_001').amount).toBe(482.5);
+  });
+
+  test('AC4: an arbitrarily large 2-decimal amount saves on edit', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '1500000.00';
+    submitEdit();
+    jest.advanceTimersByTime(350);
+    expect(storedExpense('exp_001').amount).toBe(1500000);
+  });
+
+  test('AC5/AC6: the edit category select offers only the fixed list and no management control', () => {
+    const opts = Array.from(document.querySelectorAll('#field-category option')).map((o) => o.textContent);
+    expect(opts).toEqual(['Select a category', 'Travel', 'Meals', 'Software', 'Office Supplies', 'Other']);
+    expect(document.querySelector('[id*="category" i][id*="add" i], [id*="manage-categor" i]')).toBeNull();
+  });
+
+  test('AC7/AC8: editing re-attributes loggedBy to the current viewer and stays visible to other viewers', () => {
+    const viewer = document.getElementById('viewer-select');
+    viewer.value = 'Priya Shah';
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '500.00';
+    submitEdit();
+    jest.advanceTimersByTime(350);
+    expect(storedExpense('exp_001').loggedBy).toBe('Priya Shah');
+
+    viewer.value = 'Devon Ruiz';
+    viewer.dispatchEvent(new Event('change'));
+    expect(document.querySelector('[data-edit-id="exp_001"]')).not.toBeNull();
+  });
+
+  test('AC9: a saved edit shows no pending/approval/status workflow state', () => {
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '512.50';
+    submitEdit();
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('modal-wrap').hidden).toBe(true);
+    expect(document.querySelector('[class*="pending" i], [class*="approval" i], [class*="status" i]')).toBeNull();
+  });
+
+  test('AC10: no receipt or attachment control on either form', () => {
+    expect(document.querySelector('#edit-form input[type="file"], #create-form input[type="file"], [id*="receipt" i], [id*="attach" i]')).toBeNull();
+  });
+
+  test('AC11: no delete control anywhere in the document', () => {
+    const buttons = Array.from(document.querySelectorAll('button'));
+    expect(buttons.some((b) => /delete/i.test(b.textContent) || /delete/i.test(b.id))).toBe(false);
+  });
 });
