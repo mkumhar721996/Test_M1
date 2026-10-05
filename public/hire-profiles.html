@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New-Hire Profiles — Onboarding</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hire-profiles.css" />
+<script src="./js/hire-profiles.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Onboarding</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Profiles</a>
+      <a href="#" onclick="return false;">Runs</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>New-hire profiles</h1>
+      <p>Create a profile when someone is hired, and keep it updated as their info and hire stage change.</p>
+    </div>
+    <button type="button" class="btn btn-primary" id="new-profile-btn">+ New hire profile</button>
+  </div>
+
+  <div class="card table-card">
+    <div class="table-scroll">
+      <table class="profile-table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Department / Role</th>
+            <th scope="col">Start date</th>
+            <th scope="col">Hire stage</th>
+            <th scope="col" class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="profile-tbody">
+          <!-- rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="no-controls-note">
+    <span class="hint-icon" aria-hidden="true">ℹ</span>
+    <span>
+      Out of scope for this screen, by design: starting or cancelling an onboarding
+      workflow run when hire stage, role, or department changes (a separate story),
+      and an active/deactivated status toggle (also a separate story). Editing here
+      only ever changes the profile's own fields.
+    </span>
+  </p>
+</div>
+
+<!-- Create/Edit profile modal: same form serves both flows and the rehire shortcut;
+     only the title, subtitle, submit label, and starting field values differ. -->
+<div class="modal-overlay" id="modal-overlay" hidden></div>
+<div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-title">New hire profile</h2>
+        <p id="modal-subtitle">Name, department, role, and start date are required. Email and phone are optional.</p>
+      </div>
+      <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+    </div>
+
+    <div class="rehire-banner" id="rehire-banner" hidden>
+      <span class="hint-icon" aria-hidden="true">↺</span>
+      <span>This creates a brand-new, standalone profile. It will not be linked back to the prior profile in any way.</span>
+    </div>
+
+    <form id="profile-form" novalidate>
+      <fieldset class="form-fieldset">
+        <legend class="fieldset-legend">Identity</legend>
+        <div class="field">
+          <label class="label" for="field-name">Full name <span class="optional-tag">(required)</span></label>
+          <input class="input" id="field-name" name="name" type="text" placeholder="e.g. Jordan Reyes" aria-describedby="error-name" />
+          <p class="field-error" id="error-name" role="alert" hidden>⚠ Full name is required.</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="fieldset-legend">Contact info <span class="optional-tag">(optional)</span></legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="label" for="field-email">Email</label>
+            <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" />
+          </div>
+          <div class="field">
+            <label class="label" for="field-phone">Phone</label>
+            <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 555-0100" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="fieldset-legend">Department &amp; role</legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="label" for="field-department">Department <span class="optional-tag">(required)</span></label>
+            <select class="input" id="field-department" name="department" aria-describedby="error-department">
+              <option value="">Select a department</option>
+              <option>Engineering</option>
+              <option>Product</option>
+              <option>Sales</option>
+              <option>People Ops</option>
+              <option>Finance</option>
+            </select>
+            <p class="field-error" id="error-department" role="alert" hidden>⚠ Department is required.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="field-role">Role <span class="optional-tag">(required)</span></label>
+            <input class="input" id="field-role" name="role" type="text" placeholder="e.g. Software Engineer II" aria-describedby="error-role" />
+            <p class="field-error" id="error-role" role="alert" hidden>⚠ Role is required.</p>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset" style="margin-bottom: 0;">
+        <legend class="fieldset-legend">Start date &amp; hire stage</legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="label" for="field-start-date">Start date <span class="optional-tag">(required)</span></label>
+            <input class="input" id="field-start-date" name="startDate" type="date" aria-describedby="error-start-date" />
+            <p class="field-error" id="error-start-date" role="alert" hidden>⚠ Start date is required.</p>
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label class="label" for="field-hire-stage">Hire stage</label>
+            <select class="input" id="field-hire-stage" name="hireStage">
+              <option value="draft">Draft</option>
+              <option value="offer_accepted">Offer accepted</option>
+              <option value="onboarding_in_progress">Onboarding in progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="modal-save-btn">Create profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+  <span id="toast-message">Profile created</span>
+</div>
+</body>
+</html>

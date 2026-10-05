@@ -1,5 +1,5 @@
 const express = require('express');
-const { createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
 
 const router = express.Router();
 
@@ -25,6 +25,9 @@ router.post('/', async (req, res, next) => {
     const hire = await createHire(req.body);
     res.status(201).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) {
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    }
     next(err);
   }
 });
@@ -49,6 +52,9 @@ router.patch('/:id', async (req, res, next) => {
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) {
+      return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    }
     next(err);
   }
 });
