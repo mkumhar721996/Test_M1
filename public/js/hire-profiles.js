@@ -235,7 +235,7 @@ function createDefaultApi() {
   function request(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': 'hr' },
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })
