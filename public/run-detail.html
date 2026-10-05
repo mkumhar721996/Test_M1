@@ -51,6 +51,27 @@
             <div id="action-panel"><!-- rendered by JS --></div>
           </div>
 
+          <div class="card reminder-card" id="reminder-card" style="margin-bottom: var(--space-4);" hidden>
+            <h2 class="card-title">
+              <span>Deadline reminders</span>
+              <span class="pill pill-waiting" id="reminder-state-pill">Not yet due for a reminder</span>
+            </h2>
+            <p class="countdown" id="reminder-status-text"></p>
+            <div class="progress-row">
+              <div class="progress-track"><div class="progress-fill" id="reminder-progress-fill" style="width:0%"></div></div>
+              <span class="progress-label" id="reminder-progress-label">0 of 5 sent</span>
+            </div>
+            <div class="recipients-row" id="reminder-recipients-row"></div>
+            <button class="btn btn-secondary" type="button" id="check-reminders-btn">Check reminders now</button>
+            <p class="empty-state" id="reminder-log-empty">Nothing delivered yet for this step.</p>
+            <div class="log-scroll" id="reminder-log-scroll" hidden>
+              <table class="log-table">
+                <thead><tr><th>Time</th><th>Recipient</th><th>Channel</th><th>Outcome</th></tr></thead>
+                <tbody id="reminder-log-body"></tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="card hire-record-card" style="margin-bottom: var(--space-4);">
             <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Hire record</h2>
             <div id="hire-record-body"><!-- rendered by JS --></div>

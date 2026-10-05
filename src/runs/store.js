@@ -7,7 +7,7 @@ const runs = new Map();
 
 const REQUIRED_STAFF_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
 
-function buildSteps(taskGraph) {
+function buildSteps(taskGraph, startedAt) {
   const tasks = (taskGraph && taskGraph.tasks) || [];
   if (tasks.length === 0) return [];
   const byId = new Map(tasks.map((t) => [t.id, t]));
@@ -23,7 +23,9 @@ function buildSteps(taskGraph) {
     task = byId.get((task.next || [])[0]);
   }
 
-  return ordered.map((t, i) => ({
+  return ordered.map((t, i) => {
+    const hasDeadline = t.deadlineOffsetHours != null;
+    return {
     id: t.id,
     name: t.name || t.id,
     description: t.description || '',
@@ -32,14 +34,25 @@ function buildSteps(taskGraph) {
     requirementLabel: t.requirement ? t.requirement.label : undefined,
     requirementMet: t.requirement ? Boolean(t.requirement.metByDefault) : undefined,
     blockReason: t.requirement ? t.requirement.blockReason : undefined,
-  }));
+    dueAt: hasDeadline ? new Date(new Date(startedAt).getTime() + t.deadlineOffsetHours * 3600000).toISOString() : null,
+    ...(hasDeadline && {
+      reminderWindowHours: t.reminderWindowHours || 48,
+      reminderCadenceHours: 12,
+      maxReminders: 5,
+      remindersSent: 0,
+      lastReminderAt: null,
+      hrContact: t.hrContact || 'HR',
+      managerContact: t.managerContact || 'Manager',
+    }),
+    };
+  });
 }
 
 function startRun(workflowId, hireId = null) {
   const definition = getLatestVersion(workflowId);
   if (!definition) return undefined;
-  const steps = buildSteps(definition.taskGraph);
   const startedAt = new Date().toISOString();
+  const steps = buildSteps(definition.taskGraph, startedAt);
   const run = {
     id: crypto.randomUUID(),
     workflowId,
@@ -119,6 +132,10 @@ function getRun(runId) {
   return runs.get(runId);
 }
 
+function getActiveRuns() {
+  return Array.from(runs.values()).filter((run) => run.status !== 'completed');
+}
+
 function completeRun(runId, payload = {}) {
   const run = runs.get(runId);
   if (!run) return undefined;
@@ -149,7 +166,7 @@ function seedExampleRun() {
         requirement: { label: 'I-9 supporting document', blockReason: 'Required document missing — Jordan has not yet uploaded I-9 supporting documentation.' },
         next: ['step_it'],
       },
-      { id: 'step_it', name: 'Provision IT accounts & equipment', description: 'Assign a laptop and create system accounts.', owner: 'IT — Devon Ruiz', next: ['step_orientation'] },
+      { id: 'step_it', name: 'Provision IT accounts & equipment', description: 'Assign a laptop and create system accounts.', owner: 'IT — Devon Ruiz', deadlineOffsetHours: 72, reminderWindowHours: 48, hrContact: 'HR — Priya Shah', managerContact: 'Manager — Morgan Ellis', next: ['step_orientation'] },
       { id: 'step_orientation', name: 'Assign onboarding buddy & complete orientation', description: 'Pair Jordan with a buddy and confirm orientation attendance.', owner: 'Manager — Morgan Ellis', next: ['step_checkin'] },
       { id: 'step_checkin', name: 'Manager check-in & 30-day goals sign-off', description: 'Document 30-day goals and confirm manager sign-off.', owner: 'Manager — Morgan Ellis', next: [] },
     ],
@@ -160,4 +177,4 @@ function seedExampleRun() {
 
 seedExampleRun();
 
-module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };
+module.exports = { startRun, getActiveRuns, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };

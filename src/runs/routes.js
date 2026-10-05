@@ -1,6 +1,7 @@
 const express = require('express');
 const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
 const { getHire } = require('../hires/store');
+const { evaluateRun, getReminderStatus } = require('../reminders/store');
 const { enforceOnboardingRole } = require('./auth');
 
 const router = express.Router();
@@ -10,7 +11,7 @@ function withHire(run) {
   const summary = hire
     ? { id: hire.id, name: hire.name, role: hire.role, department: hire.department, onboardingStatus: hire.onboardingStatus }
     : null;
-  return { ...run, hire: summary };
+  return { ...run, hire: summary, reminders: getReminderStatus(run) };
 }
 
 router.get('/', (req, res) => {
@@ -39,6 +40,23 @@ router.get('/:id', (req, res) => {
     return res.status(404).json({ error: 'run not found' });
   }
   res.status(200).json(withHire(run));
+});
+
+router.get('/:id/reminders', (req, res) => {
+  const run = getRun(req.params.id);
+  if (!run) {
+    return res.status(404).json({ error: 'run not found' });
+  }
+  res.status(200).json(getReminderStatus(run));
+});
+
+router.post('/:id/reminders/check', enforceOnboardingRole, (req, res) => {
+  const run = getRun(req.params.id);
+  if (!run) {
+    return res.status(404).json({ error: 'run not found' });
+  }
+  evaluateRun(run, new Date());
+  res.status(200).json(getReminderStatus(run));
 });
 
 router.post('/:id/complete', (req, res) => {

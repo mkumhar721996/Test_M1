@@ -150,6 +150,39 @@ function initRunDetailApp(doc, initialRun, api) {
     list.hidden = !auditOpen;
   }
 
+  function renderReminders() {
+    const card = doc.getElementById('reminder-card');
+    const rem = run.reminders;
+    card.hidden = !rem;
+    if (!rem) return;
+
+    const pill = doc.getElementById('reminder-state-pill');
+    let state = { cls: 'pill-waiting', text: 'Not yet due for a reminder' };
+    if (rem.ownerActed) state = { cls: 'pill-capped', text: 'Step completed' };
+    else if (rem.capped) state = { cls: 'pill-capped', text: `Reminder limit reached (${rem.maxReminders} of ${rem.maxReminders})` };
+    else if (rem.remindersSent > 0) state = { cls: 'pill-delivered', text: `Reminder ${rem.remindersSent} of ${rem.maxReminders} sent` };
+    pill.className = `pill ${state.cls}`;
+    pill.textContent = state.text;
+
+    doc.getElementById('reminder-status-text').textContent = `Due ${formatTimestamp(rem.dueAt)} UTC · reminder window ${rem.reminderWindowHours}h before the deadline.`;
+    doc.getElementById('reminder-progress-fill').style.width = `${Math.round((rem.remindersSent / rem.maxReminders) * 100)}%`;
+    doc.getElementById('reminder-progress-label').textContent = `${rem.remindersSent} of ${rem.maxReminders} sent`;
+    doc.getElementById('reminder-recipients-row').innerHTML = rem.recipients
+      .map((r) => `<span class="chip">To: ${escapeHtml(r.label)} (${escapeHtml(r.role)})</span>`).join('')
+      + '<span class="chip">Channels: in-app + email</span>';
+    doc.getElementById('check-reminders-btn').disabled = rem.capped || rem.ownerActed || pendingAction === 'check';
+
+    const log = rem.deliveryLog || [];
+    doc.getElementById('reminder-log-empty').hidden = log.length > 0;
+    doc.getElementById('reminder-log-scroll').hidden = log.length === 0;
+    doc.getElementById('reminder-log-body').innerHTML = log.map((e) => {
+      const outcome = e.outcome === 'delivered'
+        ? '<span class="outcome outcome-ok">Delivered</span>'
+        : `<span class="outcome outcome-fail">Failed — ${escapeHtml(e.reason)}</span>`;
+      return `<tr><td>${escapeHtml(formatTimestamp(e.ts))}</td><td>${escapeHtml(e.recipientLabel)}</td><td>${e.channel === 'in-app' ? 'In-app' : 'Email'}</td><td>${outcome}</td></tr>`;
+    }).join('');
+  }
+
   function renderPending() {
     fieldset.disabled = Boolean(pendingAction);
     let note = doc.getElementById('pending-note');
@@ -169,6 +202,7 @@ function initRunDetailApp(doc, initialRun, api) {
     renderProgress();
     renderStepper();
     renderActionPanel();
+    renderReminders();
     renderHireRecord();
     renderAuditLog();
     renderPending();
@@ -200,6 +234,18 @@ function initRunDetailApp(doc, initialRun, api) {
     });
   }
 
+  doc.getElementById('check-reminders-btn').addEventListener('click', () => {
+    if (pendingAction) return undefined;
+    pendingAction = 'check';
+    renderReminders();
+    return Promise.resolve(api.checkReminders()).then((reminders) => {
+      run = { ...run, reminders };
+    }).catch(() => showErrorToast()).then(() => {
+      pendingAction = null;
+      renderReminders();
+    });
+  });
+
   doc.getElementById('audit-toggle-btn').addEventListener('click', () => {
     auditOpen = !auditOpen;
     renderAuditLog();
@@ -221,6 +267,7 @@ function createDefaultApi(runId) {
   return {
     advanceStep: () => post('advance'),
     resolveRequirement: () => post('resolve-requirement'),
+    checkReminders: () => post('reminders/check'),
   };
 }
 
