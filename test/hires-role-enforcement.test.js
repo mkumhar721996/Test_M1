@@ -2,10 +2,10 @@ const request = require('supertest');
 const app = require('../src/server');
 const { createHire, getHire, listHires } = require('../src/hires/store');
 
-const payload = { name: 'X', department: 'Sales', role: 'AE', startDate: '2026-01-01' };
+const payload = { email: 'x@example.com', phone: '555-0100', name: 'X', department: 'Sales', role: 'AE', startDate: '2026-01-01' };
 
 function seedHire(overrides = {}) {
-  return createHire({ name: 'A', department: 'Sales', role: 'AE', startDate: '2026-01-01', ...overrides });
+  return createHire({ email: 'a@x.com', phone: '555-0100', name: 'A', department: 'Sales', role: 'AE', startDate: '2026-01-01', ...overrides });
 }
 
 test('AC1: a non-HR/Manager role creating a profile gets 403 and nothing is created', async () => {

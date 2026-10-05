@@ -36,12 +36,12 @@ function initHireProfilesApp(doc, initialHires, api) {
   const saveBtn = $('modal-save-btn');
   const fields = {
     name: { input: $('field-name'), error: $('error-name') },
+    email: { input: $('field-email'), error: $('error-email') },
+    phone: { input: $('field-phone'), error: $('error-phone') },
     department: { input: $('field-department'), error: $('error-department') },
     role: { input: $('field-role'), error: $('error-role') },
     startDate: { input: $('field-start-date'), error: $('error-start-date') },
   };
-  const fieldEmail = $('field-email');
-  const fieldPhone = $('field-phone');
   const fieldHireStage = $('field-hire-stage');
 
   function showToast(message) {
@@ -107,8 +107,8 @@ function initHireProfilesApp(doc, initialHires, api) {
     clearAllErrors();
     rehireBanner.hidden = !banner;
     fields.name.input.value = values.name || '';
-    fieldEmail.value = values.email || '';
-    fieldPhone.value = values.phone || '';
+    fields.email.input.value = values.email || '';
+    fields.phone.input.value = values.phone || '';
     fields.department.input.value = values.department || '';
     fields.role.input.value = values.role || '';
     fields.startDate.input.value = values.startDate || '';
@@ -139,7 +139,7 @@ function initHireProfilesApp(doc, initialHires, api) {
     openModal({
       mode: 'create',
       title: 'New hire profile',
-      subtitle: 'Name, department, role, and start date are required. Email and phone are optional.',
+      subtitle: 'Name, email, phone, department, role, and start date are all required.',
       saveLabel: 'Create profile',
       values: {},
     });
@@ -165,7 +165,7 @@ function initHireProfilesApp(doc, initialHires, api) {
     openModal({
       mode: 'create',
       title: 'New hire profile',
-      subtitle: `Rehiring ${prior.name}. Name, department, role, and start date are required.`,
+      subtitle: `Rehiring ${prior.name}. Name, email, phone, department, role, and start date are all required.`,
       saveLabel: 'Create profile',
       banner: true,
       values: { name: prior.name, department: prior.department, role: prior.role },
@@ -187,8 +187,8 @@ function initHireProfilesApp(doc, initialHires, api) {
     e.preventDefault();
     const values = {
       name: fields.name.input.value.trim(),
-      email: fieldEmail.value.trim(),
-      phone: fieldPhone.value.trim(),
+      email: fields.email.input.value.trim(),
+      phone: fields.phone.input.value.trim(),
       department: fields.department.input.value,
       role: fields.role.input.value.trim(),
       startDate: fields.startDate.input.value,
@@ -196,6 +196,8 @@ function initHireProfilesApp(doc, initialHires, api) {
     };
     const messages = {
       name: values.name ? '' : 'Full name is required.',
+      email: values.email ? '' : 'Email is required.',
+      phone: values.phone ? '' : 'Phone is required.',
       department: values.department ? '' : 'Department is required.',
       role: values.role ? '' : 'Role is required.',
       startDate: values.startDate ? '' : 'Start date is required.',
@@ -235,7 +237,7 @@ function createDefaultApi() {
   function request(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': 'manager' },
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })

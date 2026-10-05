@@ -8,11 +8,13 @@ const $ = (id) => document.getElementById(id);
 const submit = () => $('profile-form').dispatchEvent(new Event('submit', { cancelable: true }));
 const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
 function fillRequired(overrides = {}) {
-  const v = { name: 'Jamie Lee', department: 'Engineering', role: 'QA Engineer', startDate: '2026-12-01', ...overrides };
+  const v = { email: 'jamie@example.com', phone: '555-0100', name: 'Jamie Lee', department: 'Engineering', role: 'QA Engineer', startDate: '2026-12-01', ...overrides };
   $('field-name').value = v.name;
   $('field-department').value = v.department;
   $('field-role').value = v.role;
   $('field-start-date').value = v.startDate;
+  $('field-email').value = v.email;
+  $('field-phone').value = v.phone;
 }
 
 beforeEach(() => {
@@ -35,7 +37,7 @@ test('AC1: creating a profile with all required fields adds it to the table', as
 });
 
 test('AC2: editing a profile updates the row in place', async () => {
-  const existing = { id: 'hire_3112', name: 'Devon Ruiz', email: 'devon.ruiz@example.com', phone: '', department: 'Engineering', role: 'IT Support Specialist', startDate: '2026-10-20', hireStage: 'offer_accepted' };
+  const existing = { id: 'hire_3112', name: 'Devon Ruiz', email: 'devon.ruiz@example.com', phone: '555-0100', department: 'Engineering', role: 'IT Support Specialist', startDate: '2026-10-20', hireStage: 'offer_accepted' };
   const updated = { ...existing, phone: '555-1212', department: 'Product', role: 'Product Analyst', startDate: '2026-11-01', hireStage: 'onboarding_in_progress' };
   const api = { update: jest.fn().mockResolvedValue(updated) };
   const { initHireProfilesApp } = require('../public/js/hire-profiles');
@@ -55,6 +57,8 @@ test('AC2: editing a profile updates the row in place', async () => {
 
 test.each([
   ['field-name', 'error-name', 'Full name is required.'],
+  ['field-email', 'error-email', 'Email is required.'],
+  ['field-phone', 'error-phone', 'Phone is required.'],
   ['field-department', 'error-department', 'Department is required.'],
   ['field-role', 'error-role', 'Role is required.'],
   ['field-start-date', 'error-start-date', 'Start date is required.'],
@@ -85,8 +89,8 @@ test('AC3/AC4: a server-side rejection keeps the table unchanged and shows an er
   expect($('modal-wrap').hidden).toBe(false);
 });
 
-test('AC5: leaving email and phone blank with every required field present creates successfully', async () => {
-  const created = { id: 'hire_901', name: 'Robin Tran', email: '', phone: '', department: 'Finance', role: 'Analyst', startDate: '2026-12-10', hireStage: 'draft' };
+test('AC5: a profile with every required field present creates successfully', async () => {
+  const created = { id: 'hire_901', name: 'Robin Tran', email: 'robin@example.com', phone: '555-0100', department: 'Finance', role: 'Analyst', startDate: '2026-12-10', hireStage: 'draft' };
   const api = { create: jest.fn().mockResolvedValue(created) };
   const { initHireProfilesApp } = require('../public/js/hire-profiles');
   initHireProfilesApp(document, [], api);
@@ -112,6 +116,8 @@ test('AC6: "Create rehire profile" pre-fills name/department/role, resets start 
   $('field-department').value = 'Product';
   $('field-role').value = 'Senior Product Manager';
   $('field-start-date').value = '2026-11-16';
+  $('field-email').value = 'sam.okafor@example.com';
+  $('field-phone').value = '555-0100';
   submit();
   await flush();
   const [sentPayload] = api.create.mock.calls[0];
@@ -119,4 +125,27 @@ test('AC6: "Create rehire profile" pre-fills name/department/role, resets start 
   const rows = $('profile-tbody').textContent;
   expect(rows).toContain('hire_3101');
   expect(rows).toContain('hire_3140');
+});
+
+describe('createDefaultApi', () => {
+  const originalFetch = global.fetch;
+  afterEach(() => { global.fetch = originalFetch; });
+
+  test('create() sends the x-staff-role header', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ id: 'hire_1' }) });
+    const { createDefaultApi } = require('../public/js/hire-profiles');
+    await createDefaultApi().create({ name: 'A' });
+    expect(global.fetch).toHaveBeenCalledWith('/hires', expect.objectContaining({
+      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+    }));
+  });
+
+  test('update() sends the x-staff-role header', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ id: 'hire_1' }) });
+    const { createDefaultApi } = require('../public/js/hire-profiles');
+    await createDefaultApi().update('hire_1', { name: 'A' });
+    expect(global.fetch).toHaveBeenCalledWith('/hires/hire_1', expect.objectContaining({
+      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+    }));
+  });
 });

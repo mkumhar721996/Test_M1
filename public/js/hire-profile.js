@@ -386,7 +386,7 @@ function initHireProfileApp(doc, initialHire, api) {
 function createDefaultApi(hireId) {
   const patch = (changes) => fetch(`/hires/${hireId}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-staff-role': 'manager' },
     body: JSON.stringify(changes),
   }).then((res) => res.json());
 
@@ -394,12 +394,12 @@ function createDefaultApi(hireId) {
     saveStage: (hireStage) => patch({ hireStage }),
     updateRoleDepartment: (changes) => patch(changes),
     updateContact: (changes) => patch(changes),
-    deactivate: () => fetch(`/hires/${hireId}/deactivate`, { method: 'POST' }).then((res) => res.json()),
-    reactivate: () => fetch(`/hires/${hireId}/reactivate`, { method: 'POST' }).then((res) => res.json()),
+    deactivate: () => fetch(`/hires/${hireId}/deactivate`, { method: 'POST', headers: { 'x-staff-role': 'manager' } }).then((res) => res.json()),
+    reactivate: () => fetch(`/hires/${hireId}/reactivate`, { method: 'POST', headers: { 'x-staff-role': 'manager' } }).then((res) => res.json()),
   };
 }
 
-module.exports = { initHireProfileApp };
+module.exports = { initHireProfileApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {

@@ -68,7 +68,7 @@
     <div class="modal-header">
       <div>
         <h2 id="modal-title">New hire profile</h2>
-        <p id="modal-subtitle">Name, department, role, and start date are required. Email and phone are optional.</p>
+        <p id="modal-subtitle">Name, email, phone, department, role, and start date are all required.</p>
       </div>
       <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
     </div>
@@ -89,15 +89,17 @@
       </fieldset>
 
       <fieldset class="form-fieldset">
-        <legend class="fieldset-legend">Contact info <span class="optional-tag">(optional)</span></legend>
+        <legend class="fieldset-legend">Contact info <span class="optional-tag">(required)</span></legend>
         <div class="field-row">
           <div class="field">
-            <label class="label" for="field-email">Email</label>
-            <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" />
+            <label class="label" for="field-email">Email <span class="optional-tag">(required)</span></label>
+            <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" aria-describedby="error-email" />
+            <p class="field-error" id="error-email" role="alert" hidden>⚠ Email is required.</p>
           </div>
           <div class="field">
-            <label class="label" for="field-phone">Phone</label>
-            <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 555-0100" />
+            <label class="label" for="field-phone">Phone <span class="optional-tag">(required)</span></label>
+            <input class="input" id="field-phone" name="phone" type="tel" placeholder="(555) 555-0100" aria-describedby="error-phone" />
+            <p class="field-error" id="error-phone" role="alert" hidden>⚠ Phone is required.</p>
           </div>
         </div>
       </fieldset>
