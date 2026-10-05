@@ -222,6 +222,10 @@ function initHireProfilesApp(doc, initialHires, api) {
       showToast(wasEdit ? 'Profile updated' : 'Profile created');
     }, (err) => {
       saveBtn.disabled = false;
+      if (err && (err.status === 401 || err.status === 403)) {
+        showToast(`Request rejected — HR or Manager role required. ${wasEdit ? 'No changes were saved' : 'No profile was created'}.`);
+        return;
+      }
       const serverFields = err && err.fields;
       if (serverFields) {
         Object.keys(fields).forEach((key) => { if (serverFields[key]) setFieldError(key, serverFields[key]); });
@@ -233,11 +237,11 @@ function initHireProfilesApp(doc, initialHires, api) {
   renderList();
 }
 
-function createDefaultApi() {
+function createDefaultApi(getRole = () => 'manager') {
   function request(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', 'x-staff-role': 'manager' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': getRole() },
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })
@@ -255,7 +259,8 @@ if (typeof module !== 'undefined') module.exports = { initHireProfilesApp, creat
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
-    const api = createDefaultApi();
+    const roleSelect = document.getElementById('role-select');
+    const api = createDefaultApi(() => roleSelect.value);
     api.list().then((hires) => initHireProfilesApp(document, hires, api));
   });
 }
