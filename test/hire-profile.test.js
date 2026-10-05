@@ -121,4 +121,21 @@ describe('Hire Profile — AC9 pending state', () => {
 
     expect(document.getElementById('pending-banner').hidden).toBe(true);
   });
+  test('AC6/AC7: reactivating a Draft-stage profile shows Draft-specific copy and starts no Run', async () => {
+    let resolveReactivate;
+    const api = { reactivate: () => new Promise((resolve) => { resolveReactivate = resolve; }) };
+    const deactivatedDraftHire = { ...fixtureHire(), hireStage: 'draft', profileStatus: 'deactivated', run: null };
+    const { initHireProfileApp } = require('../public/js/hire-profile');
+    initHireProfileApp(document, deactivatedDraftHire, api);
+
+    document.getElementById('reactivate-btn').click();
+    expect(document.getElementById('reactivate-consequence-copy').textContent).toContain('no onboarding Run will start');
+
+    document.getElementById('reactivate-confirm-btn').click();
+    resolveReactivate({ ...deactivatedDraftHire, profileStatus: 'active', run: null });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.getElementById('toast-message').textContent).toContain('no onboarding Run started');
+  });
 });

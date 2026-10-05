@@ -52,3 +52,18 @@ test('POST /hires/:id/deactivate then /reactivate starts a fresh Run', async () 
   expect(reactivateRes.status).toBe(200);
   expect(reactivateRes.body.run).toMatchObject({ status: 'active', freshStart: true });
 });
+
+test('POST /hires/:id/reactivate on a Draft-stage profile returns active status with no Run, and GET reflects it', async () => {
+  const payload = { name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Sales', role: 'AE', hireStage: 'draft' };
+  const createRes = await request(app).post('/hires').send(payload);
+  const { id } = createRes.body;
+
+  await request(app).post(`/hires/${id}/deactivate`);
+  const reactivateRes = await request(app).post(`/hires/${id}/reactivate`);
+  expect(reactivateRes.status).toBe(200);
+  expect(reactivateRes.body.profileStatus).toBe('active');
+  expect(reactivateRes.body.run).toBeNull();
+
+  const getRes = await request(app).get(`/hires/${id}`);
+  expect(getRes.body.profileStatus).toBe('active');
+});

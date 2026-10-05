@@ -69,3 +69,19 @@ test('AC8: the previously cancelled Run is not resumed on reactivation', async (
   expect(updated.run.id).not.toBe(cancelledRunId);
   expect(updated.runHistory.find((r) => r.id === cancelledRunId)).toMatchObject({ status: 'cancelled' });
 });
+
+test('AC6: reactivating a profile deactivated while hireStage was still draft starts no onboarding Run', async () => {
+  const hire = await createHire({ name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'draft' });
+  await deactivateHire(hire.id);
+  const updated = await reactivateHire(hire.id);
+  expect(updated.profileStatus).toBe('active');
+  expect(updated.run).toBeNull();
+});
+
+test('AC7: reactivating a profile with hireStage offer_accepted starts a new Run without HR re-setting the hire stage', async () => {
+  const hire = await createHire({ name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'offer_accepted' });
+  await deactivateHire(hire.id);
+  const updated = await reactivateHire(hire.id);
+  expect(updated.hireStage).toBe('offer_accepted');
+  expect(updated.run).toMatchObject({ status: 'active', freshStart: true });
+});

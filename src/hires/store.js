@@ -122,13 +122,15 @@ async function reactivateHire(id) {
   if (!hire) return undefined;
   if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
 
-  const run = await engineClient.triggerRun({
-    hireId: hire.id,
-    department: hire.department,
-    role: hire.role,
-  });
+  if (hire.hireStage === 'offer_accepted') {
+    const run = await engineClient.triggerRun({
+      hireId: hire.id,
+      department: hire.department,
+      role: hire.role,
+    });
+    hire.run = { ...run, freshStart: true };
+  }
   hire.profileStatus = 'active';
-  hire.run = { ...run, freshStart: true };
   return hire;
 }
 
