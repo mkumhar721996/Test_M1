@@ -101,3 +101,25 @@ describe('POST /workflows/:id/runs', () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe('run read routes require a manager/HR role', () => {
+  test.each(['list', 'detail'])('GET %s without a role header is 401', async (kind) => {
+    const run = startRun(blockedWorkflow().workflowId);
+    const res = await request(app).get(kind === 'list' ? '/runs' : `/runs/${run.id}`);
+    expect(res.status).toBe(401);
+  });
+
+  test.each(['list', 'detail'])('GET %s with a non-permitted role is 403', async (kind) => {
+    const run = startRun(blockedWorkflow().workflowId);
+    const res = await request(app).get(kind === 'list' ? '/runs' : `/runs/${run.id}`).set('x-staff-role', 'new_hire');
+    expect(res.status).toBe(403);
+  });
+
+  test('GET /runs/:id exposes the workflow name for HR', async () => {
+    const wf = createWorkflow({ tasks: [{ id: 't1', next: [] }] }, 'Named Flow');
+    const run = startRun(wf.workflowId);
+    const res = await request(app).get(`/runs/${run.id}`).set('x-staff-role', 'hr');
+    expect(res.status).toBe(200);
+    expect(res.body.workflowName).toBe('Named Flow');
+  });
+});
