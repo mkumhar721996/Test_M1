@@ -206,7 +206,7 @@ describe('Edit Expense via Modal Form', () => {
     expect(saveBtn.disabled).toBe(false);
     expect(saveBtn.textContent).toBe('Save changes');
     expect(document.getElementById('toast').hidden).toBe(false);
-    expect(document.getElementById('toast-message').textContent).toMatch(/could not be saved/i);
+    expect(document.getElementById('toast-message').textContent).toBe("Couldn't save changes — please try again");
 
     setItemSpy.mockRestore();
   });
@@ -262,18 +262,43 @@ describe('Edit Expense via Modal Form', () => {
     expect(document.querySelector('[id*="category" i][id*="add" i], [id*="manage-categor" i]')).toBeNull();
   });
 
-  test('AC7/AC8: editing re-attributes loggedBy to the current viewer and stays visible to other viewers', () => {
+  test('AC1/AC4: editing preserves the original logger, shows who last edited it, and stays visible after switching viewers', () => {
     const viewer = document.getElementById('viewer-select');
     viewer.value = 'Priya Shah';
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    expect(document.getElementById('origin-note').textContent).toBe('Originally logged by Morgan Ellis on 09/02/2026.');
+    document.getElementById('field-amount').value = '500.00';
+    submitEdit();
+    jest.advanceTimersByTime(350);
+    expect(storedExpense('exp_001').loggedBy).toBe('Morgan Ellis');
+    expect(storedExpense('exp_001').lastEditedBy).toBe('Priya Shah');
+
+    viewer.value = 'Devon Ruiz';
+    viewer.dispatchEvent(new Event('change'));
+    const row = document.querySelector('[data-edit-id="exp_001"]').closest('tr');
+    expect(row.querySelector('.logged-by-cell').textContent).toBe('Morgan EllisEdited by Priya Shah');
+  });
+
+  test('AC2/AC3: the edit Amount field matches the design and still blocks invalid values', () => {
+    expect(document.getElementById('field-amount').type).toBe('text');
+    expect(document.getElementById('field-amount').getAttribute('inputmode')).toBe('decimal');
+    expect(document.getElementById('field-amount').placeholder).toBe('0.00');
+    document.querySelector('[data-edit-id="exp_001"]').click();
+    document.getElementById('field-amount').value = '19.999';
+    submitEdit();
+    expect(document.getElementById('error-amount').textContent).toMatch(/at most 2 decimal places/i);
+    expect(storedExpense('exp_001').amount).toBe(482.5);
+  });
+
+  test('AC5: the row for an edited expense still has only an Edit action', () => {
     document.querySelector('[data-edit-id="exp_001"]').click();
     document.getElementById('field-amount').value = '500.00';
     submitEdit();
     jest.advanceTimersByTime(350);
-    expect(storedExpense('exp_001').loggedBy).toBe('Priya Shah');
-
-    viewer.value = 'Devon Ruiz';
-    viewer.dispatchEvent(new Event('change'));
-    expect(document.querySelector('[data-edit-id="exp_001"]')).not.toBeNull();
+    const row = document.querySelector('[data-edit-id="exp_001"]').closest('tr');
+    const buttons = Array.from(row.querySelectorAll('button'));
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].textContent).toBe('Edit');
   });
 
   test('AC9: a saved edit shows no pending/approval/status workflow state', () => {
