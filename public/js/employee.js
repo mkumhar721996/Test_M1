@@ -1,14 +1,4 @@
-function escapeHtml(str) {
-  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
-}
-
-function formatDateDisplay(iso) {
-  if (!iso) return '—';
-  const [y, m, d] = String(iso).slice(0, 10).split('-');
-  return `${m}/${d}/${y}`;
-}
+const { escapeHtml, formatDateDisplay } = require('./utils');
 
 function isAccessDenied(err) {
   return Boolean(err && (err.status === 401 || err.status === 403));
@@ -43,7 +33,7 @@ function initEmployeeProfileApp(doc, initialEmployee, api, getRole = () => 'mana
           <span class="history-dot" aria-hidden="true"></span>
           <div class="history-body">
             <p class="history-headline">${h.status === 'active' ? 'Reactivated — status set to Active' : 'Deactivated — status set to Deactivated'}</p>
-            <p class="history-meta">${escapeHtml(h.actor)} · ${escapeHtml(formatDateDisplay(h.at))}</p>
+            <p class="history-meta">${escapeHtml(doc, h.actor)} · ${escapeHtml(doc, formatDateDisplay(h.at.slice(0, 10)))}</p>
           </div>
         </li>`).join('');
   }
@@ -60,7 +50,7 @@ function initEmployeeProfileApp(doc, initialEmployee, api, getRole = () => 'mana
     $('profile-email').textContent = employee.email || '—';
     $('profile-department').textContent = employee.department || '—';
     $('profile-role').textContent = employee.role || '—';
-    $('profile-start-date').textContent = formatDateDisplay(employee.startDate);
+    $('profile-start-date').textContent = employee.startDate ? formatDateDisplay(employee.startDate) : '—';
     renderHistory();
   }
 
@@ -74,8 +64,8 @@ function initEmployeeProfileApp(doc, initialEmployee, api, getRole = () => 'mana
     $('confirm-title').textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
     $('confirm-body').textContent = `${willDeactivate ? 'Deactivate' : 'Reactivate'} ${employee.name}?`;
     $('confirm-consequence-text').innerHTML = willDeactivate
-      ? `Marking <strong>${escapeHtml(employee.name)}</strong> as deactivated takes effect immediately. Their record stays fully viewable to anyone who opens it — nothing is deleted.`
-      : `Marking <strong>${escapeHtml(employee.name)}</strong> as active takes effect immediately and is visible the moment this dialog closes.`;
+      ? `Marking <strong>${escapeHtml(doc, employee.name)}</strong> as deactivated takes effect immediately. Their record stays fully viewable to anyone who opens it — nothing is deleted.`
+      : `Marking <strong>${escapeHtml(doc, employee.name)}</strong> as active takes effect immediately and is visible the moment this dialog closes.`;
     actionBtn.textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
     actionBtn.disabled = false;
     $('confirm-overlay').hidden = false;
@@ -138,7 +128,7 @@ if (typeof window !== 'undefined') {
     const roleSelect = document.getElementById('role-select');
     const getRole = () => roleSelect.value;
     document.getElementById('profile-back-btn').addEventListener('click', () => { window.location.href = 'employees.html'; });
-    fetch(`/employees/${encodeURIComponent(employeeId)}`)
+    fetch(`/employees/${encodeURIComponent(employeeId)}`, { headers: { 'x-staff-role': getRole() } })
       .then((res) => (res.ok ? res.json() : null))
       .then((employee) => {
         if (!employee) return showEmployeeNotFound(document);

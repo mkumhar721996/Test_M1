@@ -4,6 +4,7 @@ const ALLOWED_ROLES = ['hr', 'manager'];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const STATUS_DISPLAY = {
   active: { label: 'Active', className: 'status-chip--active' },
+  deactivated: { label: 'Deactivated', className: 'status-chip--deactivated' },
   on_leave: { label: 'On leave', className: 'status-chip--leave' },
   terminated: { label: 'Terminated', className: 'status-chip--terminated' },
 };
@@ -196,6 +197,16 @@ function initEmployeeProfileApp(doc, employeeId, api, getRole) {
     fieldDepartment.appendChild(option);
   }
 
+  function ensureStatusOption(status) {
+    if (!status) return;
+    const known = Array.from(fieldEmploymentStatus.options).some((o) => o.value === status);
+    if (known) return;
+    const option = doc.createElement('option');
+    option.value = status;
+    option.textContent = (STATUS_DISPLAY[status] || {}).label || status;
+    fieldEmploymentStatus.appendChild(option);
+  }
+
   function onEditClick() {
     saveErrorBanner.hidden = true;
     if (viewDenied || !hasAccess()) {
@@ -217,8 +228,9 @@ function initEmployeeProfileApp(doc, employeeId, api, getRole) {
     fieldDepartment.value = employee.department || '';
     fieldRole.value = employee.role || '';
     fieldStartDate.value = employee.startDate || '';
+    ensureStatusOption(employee.employmentStatus);
     fieldEmploymentStatus.value = employee.employmentStatus;
-    modalSubtitle.textContent = `Profile ${employee.id}. Update any field and save.`;
+    modalSubtitle.textContent = `Profile ${employee.id}. Update any field and save. Employment status is changed from the Employee Directory, not here.`;
     openModalShell();
     fieldName.focus();
   }
@@ -234,7 +246,6 @@ function initEmployeeProfileApp(doc, employeeId, api, getRole) {
       department: fieldDepartment.value,
       role: fieldRole.value.trim(),
       startDate: fieldStartDate.value,
-      employmentStatus: fieldEmploymentStatus.value,
     };
     const errors = {
       name: changes.name === '' ? 'Full name is required.' : '',

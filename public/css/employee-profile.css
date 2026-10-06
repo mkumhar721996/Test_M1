@@ -147,6 +147,7 @@ body { margin: 0; min-height: 100dvh; }
 .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
 .status-chip--leave { border: 1px dashed var(--color-fg-muted); color: var(--color-fg); }
 .status-chip--terminated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+.status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
 /* ---------- Permission-denied notice ---------- */
 .notice--deny {
   display: flex;

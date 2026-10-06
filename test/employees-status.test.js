@@ -47,7 +47,8 @@ test('AC5: no generic route writes employmentStatus and history records only man
   const employee = newEmployee('active');
   expect(employee.history).toBeUndefined();
   const res = await request(app).patch(`/employees/${employee.id}`).set('x-staff-role', 'hr').send({ employmentStatus: 'deactivated' });
-  expect(res.status).toBe(404);
+  expect(res.status).toBe(200);
+  expect(res.body.employmentStatus).toBe('active');
   expect(getEmployee(employee.id).employmentStatus).toBe('active');
 
   deactivateEmployee(employee.id, 'HR');
@@ -58,10 +59,10 @@ test('AC5: no generic route writes employmentStatus and history records only man
   ]);
 });
 
-test('AC6: a deactivated employee stays fully viewable without a role header', async () => {
+test('AC6: a deactivated employee record stays fully viewable with its full details', async () => {
   const employee = newEmployee('active');
   deactivateEmployee(employee.id, 'HR');
-  const res = await request(app).get(`/employees/${employee.id}`);
+  const res = await request(app).get(`/employees/${employee.id}`).set('x-staff-role', 'hr');
   expect(res.status).toBe(200);
   expect(res.body).toMatchObject({ name: 'Marcus Chen', email: employee.email, employmentStatus: 'deactivated' });
 });

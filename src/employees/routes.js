@@ -12,7 +12,9 @@ const { pickFields } = require('../lib/pickFields');
 
 const router = express.Router();
 
-const PATCHABLE_FIELDS = ['name', 'email', 'department', 'role', 'startDate', 'employmentStatus'];
+// employmentStatus is intentionally excluded: it may only change through the audited
+// /deactivate and /reactivate routes below, never through this generic field editor (AC5).
+const PATCHABLE_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
 
 router.post('/', (req, res) => {
   const employee = createEmployee(req.body);
@@ -38,12 +40,6 @@ router.get('/:id', enforceOnboardingRole, (req, res) => {
   res.status(200).json(employee);
 });
 
-// TODO(rebase): uncertain merge — STORY-170 added this generic PATCH (with 'employmentStatus'
-// among PATCHABLE_FIELDS) so HR/Manager can set arbitrary status values as one of six editable
-// fields, while STORY-171's AC5 asserts no generic route should ever write employmentStatus
-// (status changes must go through /deactivate and /reactivate so they are audit-logged in
-// employee.history). Kept main's already-merged generic PATCH behavior intact; please confirm
-// whether employmentStatus should be removed from PATCHABLE_FIELDS to satisfy AC5.
 router.patch('/:id', enforceOnboardingRole, (req, res) => {
   const employee = updateEmployee(req.params.id, pickFields(req.body, PATCHABLE_FIELDS));
   if (!employee) return res.status(404).json({ error: 'employee not found' });
