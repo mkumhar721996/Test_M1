@@ -60,13 +60,58 @@ describe('Create Expense via Modal Form', () => {
     expect(document.getElementById('create-error-amount').textContent).toMatch(/at most 2 decimal places/i);
   });
 
-  test('submitting with every field empty shows an inline error under every field', () => {
+  test('AC4: submitting with every required field empty shows inline errors for amount, date, and category only', () => {
     document.getElementById('add-expense-btn').click();
     document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
     expect(document.getElementById('create-error-amount').hidden).toBe(false);
     expect(document.getElementById('create-error-date').hidden).toBe(false);
     expect(document.getElementById('create-error-category').hidden).toBe(false);
-    expect(document.getElementById('create-error-description').hidden).toBe(false);
+    expect(document.getElementById('create-error-description')).toBeNull();
+  });
+
+  test('AC4 boundary: a blank Description does not block submission and saves as empty', () => {
+    document.getElementById('add-expense-btn').click();
+    document.getElementById('create-field-amount').value = '24.50';
+    document.getElementById('create-field-date').value = '2026-09-20';
+    document.getElementById('create-field-category').value = 'Travel';
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    expect(document.getElementById('create-modal-wrap').hidden).toBe(true);
+    const stored = JSON.parse(localStorage.getItem('expenses'));
+    expect(stored[0].description).toBe('');
+  });
+
+  test('the Description field label indicates it is optional', () => {
+    document.getElementById('add-expense-btn').click();
+    expect(document.querySelector('label[for="create-field-description"]').textContent.trim())
+      .toBe('Description (optional)');
+  });
+
+  test('AC1: a valid submit creates a record with exactly the submitted date, category, description, and amount', () => {
+    document.getElementById('add-expense-btn').click();
+    document.getElementById('create-field-amount').value = '24.50';
+    document.getElementById('create-field-date').value = '2026-09-20';
+    document.getElementById('create-field-category').value = 'Travel';
+    document.getElementById('create-field-description').value = 'Taxi to airport';
+    document.getElementById('create-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    jest.advanceTimersByTime(350);
+    const stored = JSON.parse(localStorage.getItem('expenses'))[0];
+    expect(stored).toMatchObject({
+      date: '2026-09-20',
+      category: 'Travel',
+      description: 'Taxi to airport',
+      amount: 24.5,
+    });
+  });
+
+  test('AC3: validateAmount flags more than two decimal places with the design copy', () => {
+    const { validateAmount } = require('../public/js/expenses');
+    expect(validateAmount('19.999')).toBe('Amount can have at most 2 decimal places, e.g. 24.50.');
+  });
+
+  test.each(['abc', '1.2.3'])('validateAmount rejects garbage %s as not a valid number', (value) => {
+    const { validateAmount } = require('../public/js/expenses');
+    expect(validateAmount(value)).toBe('Enter a valid number, e.g. 24.50.');
   });
 
   test('submitting with invalid fields adds nothing to the table and keeps the modal open', () => {
@@ -158,7 +203,7 @@ describe('Create Expense via Modal Form', () => {
     document.getElementById('add-expense-btn').click();
     expect(document.getElementById('create-modal-title').textContent).toBe('Log an expense');
     expect(document.querySelector('#create-modal-wrap .modal-header p').textContent)
-      .toBe('Fill in every field below to add it to the shared expense list.');
+      .toBe('Fill in the details below to add it to the shared expense list.');
     expect(document.getElementById('create-modal-save-btn').textContent).toBe('Log expense');
   });
 
@@ -211,9 +256,9 @@ describe('Create Expense via Modal Form', () => {
     expect(document.querySelector('.shared-visibility-hint').textContent).toMatch(/visible to everyone/i);
   });
 
-  test.each(['0', '-12.50'])('AC3: validateAmount rejects %s', (value) => {
+  test.each(['0', '-12.50'])('AC2: validateAmount blocks %s with the exact greater-than message', (value) => {
     const { validateAmount } = require('../public/js/expenses');
-    expect(validateAmount(value)).toMatch(/greater than \$0\.00|valid amount/i);
+    expect(validateAmount(value)).toBe('Amount must be greater than $0.00.');
   });
 
   test('AC3: validateAmount rejects zero with the greater-than message', () => {
