@@ -14,7 +14,7 @@ test('GET /employees/:id returns the employee information unchanged', async () =
   const createRes = await request(app).post('/employees').send(payload);
   const { id } = createRes.body;
 
-  const getRes = await request(app).get(`/employees/${id}`);
+  const getRes = await request(app).get(`/employees/${id}`).set('x-staff-role', 'hr');
   expect(getRes.status).toBe(200);
   expect(getRes.body).toEqual(createRes.body);
 });

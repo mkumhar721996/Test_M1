@@ -12,4 +12,11 @@ function getEmployee(id) {
   return employees.get(id);
 }
 
-module.exports = { createEmployee, getEmployee };
+function updateEmployee(id, changes) {
+  const employee = employees.get(id);
+  if (!employee) return undefined;
+  Object.assign(employee, changes);
+  return employee;
+}
+
+module.exports = { createEmployee, getEmployee, updateEmployee };
