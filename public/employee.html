@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Profile — Workforce</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/employees.css" />
+<link rel="stylesheet" href="./css/employee.css" />
+<script src="./js/employee.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce</span>
+    <nav class="app-nav">
+      <a href="employees.html" class="active" aria-current="page">Directory</a>
+      <a href="#" onclick="return false;">Org chart</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+    <div class="role-switcher" style="margin-left:auto;">
+      <label for="role-select">Signed in as</label>
+      <select class="input" id="role-select">
+        <option value="hr">HR</option>
+        <option value="manager">Manager</option>
+        <option value="employee">Employee (no HR/Manager access)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="page">
+    <a class="back-link" id="profile-back-link" href="employees.html"><span aria-hidden="true">←</span> Back to directory</a>
+
+    <div class="card" id="profile-empty-state" hidden>
+      <div class="empty-state"><p>Employee not found.</p></div>
+    </div>
+
+    <fieldset class="profile-fieldset" id="profile-fieldset" style="border:none;padding:0;margin:0;">
+      <div class="profile-header">
+        <div>
+          <h1 id="profile-name">—</h1>
+          <p class="sub" id="profile-role-line">—</p>
+        </div>
+        <div class="profile-header-meta">
+          <span id="profile-status-chip"></span>
+          <button type="button" class="btn btn-primary" id="profile-lifecycle-btn">Deactivate</button>
+        </div>
+      </div>
+
+      <div class="role-banner" id="profile-role-banner" hidden>
+        <span class="hint-icon" aria-hidden="true">⛔</span>
+        <span><strong>Viewing as Employee.</strong> Only HR or Manager can change this employee's status. The record below is still fully viewable.</span>
+      </div>
+
+      <div class="card" style="margin-bottom: var(--space-4);">
+        <h3 class="card-title">Employee details</h3>
+        <div class="kv-list">
+          <div class="kv-row"><span class="kv-label">Employee ID</span><span class="kv-value" id="profile-id">—</span></div>
+          <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value" id="profile-email">—</span></div>
+          <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value" id="profile-department">—</span></div>
+          <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value" id="profile-role">—</span></div>
+          <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value" id="profile-start-date">—</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Status history</h3>
+        <ul class="history-list" id="profile-history"></ul>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="modal-overlay" id="confirm-overlay" hidden></div>
+  <div class="modal-wrap" id="confirm-wrap" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="modal-panel" style="width:min(92vw, 440px);">
+      <div class="modal-header">
+        <div><h2 id="confirm-title">Deactivate employee</h2></div>
+        <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+      </div>
+      <p class="card-body" id="confirm-body" style="margin:0;"></p>
+      <div class="consequence-box">
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span id="confirm-consequence-text"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-action-btn">Deactivate employee</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast-icon" aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+</body>
+</html>
