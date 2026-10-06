@@ -70,6 +70,11 @@ function formatNumber(n) {
   return (Math.round(n * 1e9) / 1e9).toString();
 }
 
+// Matches expenses.js's validateAmount, which rejects more than 2 decimal places.
+function formatAmountForField(n) {
+  return (Math.round(n * 100) / 100).toString();
+}
+
 function createInitialState() {
   return { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
 }
@@ -136,11 +141,20 @@ function fitExpressionFontSize(el, sizes) {
   return sizes[i];
 }
 
+function getFocusableElements(container) {
+  return Array.from(
+    container.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => !el.hidden);
+}
+
 function initCalculatorApp(doc = document) {
   const $ = (id) => doc.getElementById(id);
   const openBtn = $('open-calculator');
   const overlay = $('calculator-overlay');
   const modalWrap = $('calculator-modal-wrap');
+  const modalPanel = $('calculator-modal');
   const expressionEl = $('calc-expression');
   const resultRowEl = $('calc-result-row');
   const liveRegionEl = $('calc-live-region');
@@ -233,6 +247,23 @@ function initCalculatorApp(doc = document) {
     });
   });
 
+  function trapModalTab(e) {
+    const focusable = getFocusableElements(modalPanel);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (doc.activeElement === first || !modalPanel.contains(doc.activeElement)) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (doc.activeElement === last || !modalPanel.contains(doc.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   openBtn.addEventListener('click', open);
   $('calc-close').addEventListener('click', close);
   $('calc-cancel').addEventListener('click', close);
@@ -249,6 +280,7 @@ function initCalculatorApp(doc = document) {
         close();
       } else if (e.key === 'Tab') {
         e.stopImmediatePropagation();
+        trapModalTab(e);
       }
     },
     true,
@@ -257,7 +289,7 @@ function initCalculatorApp(doc = document) {
   useBtn.addEventListener('click', () => {
     if (useBtn.disabled) return;
     const value = state.finalized ? state.finalizedValue : previewEvaluate(state.expression);
-    amountField.value = formatNumber(value);
+    amountField.value = formatAmountForField(value);
     close();
   });
 }
@@ -270,6 +302,7 @@ module.exports = {
   evaluate,
   previewEvaluate,
   formatNumber,
+  formatAmountForField,
   createInitialState,
   pressKey,
   fitExpressionFontSize,

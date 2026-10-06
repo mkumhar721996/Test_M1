@@ -6,7 +6,15 @@ const HTML_PATH = path.join(__dirname, '..', 'public', 'index.html');
 const CSS_PATH = path.join(__dirname, '..', 'public', 'css', 'calculator.css');
 
 const calc = require('../public/js/calculator');
-const { createInitialState, pressKey, evaluate, previewEvaluate, ERROR_MESSAGES, fitExpressionFontSize } = calc;
+const {
+  createInitialState,
+  pressKey,
+  evaluate,
+  previewEvaluate,
+  ERROR_MESSAGES,
+  fitExpressionFontSize,
+  formatAmountForField,
+} = calc;
 
 const press = (keys) => keys.reduce((s, k) => pressKey(s, k), createInitialState());
 
@@ -65,6 +73,12 @@ describe('calculator engine', () => {
     state = pressKey(pressKey(state, '+'), '.');
     expect(state.expression).toBe('3.14+0.');
     expect(pressKey(createInitialState(), '.').expression).toBe('0.');
+  });
+
+  test('formatAmountForField rounds to the 2 decimal places validateAmount allows', () => {
+    expect(formatAmountForField(10 / 3)).toBe('3.33');
+    expect(formatAmountForField(24.5)).toBe('24.5');
+    expect(formatAmountForField(1 / 3)).toBe('0.33');
   });
 
   test('AC5 fitExpressionFontSize steps down progressively', () => {
@@ -179,6 +193,28 @@ describe('calculator UI', () => {
     document.getElementById('calc-use').click();
     expect(document.getElementById('create-field-amount').value).toBe('24.5');
     expect(document.getElementById('calculator-modal-wrap').hidden).toBe(true);
+  });
+
+  test('Use this amount rounds to 2 decimal places to satisfy validateAmount', () => {
+    tap(['1', '0', '÷', '3']);
+    document.getElementById('calc-use').click();
+    expect(document.getElementById('create-field-amount').value).toBe('3.33');
+  });
+
+  test('Tab wraps focus inside the calculator dialog instead of escaping it', () => {
+    const closeBtn = document.getElementById('calc-close');
+    const useBtn = document.getElementById('calc-use');
+    useBtn.disabled = false;
+    useBtn.focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+    expect(document.activeElement).toBe(closeBtn);
+
+    closeBtn.focus();
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }),
+    );
+    expect(document.activeElement).toBe(useBtn);
   });
 
   test('reopening starts blank; Escape and overlay close', () => {
