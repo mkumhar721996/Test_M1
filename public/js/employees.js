@@ -32,12 +32,56 @@ function initEmployeesListApp(doc, initialEmployees, api, getRole = () => 'manag
   const roleBanner = $('role-banner');
   const roleSelect = $('role-select');
   const actionBtn = $('confirm-action-btn');
+  const confirmWrap = $('confirm-wrap');
+  const confirmPanel = confirmWrap.querySelector('.modal-panel');
+  const confirmCancelBtn = $('confirm-cancel-btn');
+  let confirmOpenerEl = null;
 
-  function showToast(message) {
+  function showToast(message, kind = 'status') {
+    const toast = $('toast');
+    toast.setAttribute('role', kind === 'error' ? 'alert' : 'status');
     $('toast-message').textContent = message;
-    $('toast').hidden = false;
+    toast.classList.add('is-visible');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3500);
+    toastTimer = setTimeout(() => { toast.classList.remove('is-visible'); }, 3500);
+  }
+
+  function getFocusableElements(container) {
+    return Array.from(
+      container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+    ).filter((el) => !el.hidden);
+  }
+
+  function trapConfirmTab(e) {
+    const focusable = getFocusableElements(confirmPanel);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (doc.activeElement === first || !confirmPanel.contains(doc.activeElement)) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (doc.activeElement === last || !confirmPanel.contains(doc.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  function onConfirmKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeConfirm();
+    } else if (e.key === 'Tab') {
+      trapConfirmTab(e);
+    }
+  }
+
+  function focusRowControl(id) {
+    const row = Array.from(tbody.querySelectorAll('[data-lifecycle-id]')).find((b) => b.getAttribute('data-lifecycle-id') === id)
+      || Array.from(tbody.querySelectorAll('[data-view-id]')).find((b) => b.getAttribute('data-view-id') === id);
+    if (row) row.focus();
+    else statusFilter.focus();
   }
 
   function renderBanner() {
@@ -67,8 +111,13 @@ function initEmployeesListApp(doc, initialEmployees, api, getRole = () => 'manag
 
   function closeConfirm() {
     $('confirm-overlay').hidden = true;
-    $('confirm-wrap').hidden = true;
+    confirmWrap.hidden = true;
     pending = null;
+    doc.removeEventListener('keydown', onConfirmKeydown);
+    if (confirmOpenerEl && typeof confirmOpenerEl.focus === 'function' && doc.contains(confirmOpenerEl)) {
+      confirmOpenerEl.focus();
+    }
+    confirmOpenerEl = null;
   }
 
   function openConfirm(id) {
@@ -76,6 +125,7 @@ function initEmployeesListApp(doc, initialEmployees, api, getRole = () => 'manag
     if (!e) return;
     const willDeactivate = e.employmentStatus !== 'deactivated';
     pending = { id, willDeactivate };
+    confirmOpenerEl = doc.activeElement;
     $('confirm-title').textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
     $('confirm-body').textContent = `${willDeactivate ? 'Deactivate' : 'Reactivate'} ${e.name}?`;
     $('confirm-consequence-text').innerHTML = willDeactivate
@@ -84,7 +134,9 @@ function initEmployeesListApp(doc, initialEmployees, api, getRole = () => 'manag
     actionBtn.textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
     actionBtn.disabled = false;
     $('confirm-overlay').hidden = false;
-    $('confirm-wrap').hidden = false;
+    confirmWrap.hidden = false;
+    doc.addEventListener('keydown', onConfirmKeydown);
+    confirmCancelBtn.focus();
   }
 
   function confirmLifecycle() {
@@ -98,12 +150,13 @@ function initEmployeesListApp(doc, initialEmployees, api, getRole = () => 'manag
       lastChangedId = saved.id;
       closeConfirm();
       renderList();
+      focusRowControl(saved.id);
       showToast(`${saved.name} ${willDeactivate ? 'deactivated' : 'reactivated'}`);
     }, (err) => {
       closeConfirm();
       showToast(isAccessDenied(err)
         ? 'Request rejected — HR or Manager role required. Status is unchanged.'
-        : 'Status could not be changed — please try again');
+        : 'Status could not be changed — please try again', 'error');
     });
   }
 

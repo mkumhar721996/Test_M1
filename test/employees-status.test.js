@@ -67,9 +67,16 @@ test('AC6: a deactivated employee record stays fully viewable with its full deta
   expect(res.body).toMatchObject({ name: 'Marcus Chen', email: employee.email, employmentStatus: 'deactivated' });
 });
 
-test('GET /employees lists employees ungated', async () => {
+test('GET /employees requires an HR/Manager role, matching GET /:id', async () => {
   const employee = newEmployee('active');
-  const res = await request(app).get('/employees');
+
+  const noHeaderRes = await request(app).get('/employees');
+  expect(noHeaderRes.status).toBe(401);
+
+  const deniedRes = await request(app).get('/employees').set('x-staff-role', 'employee');
+  expect(deniedRes.status).toBe(403);
+
+  const res = await request(app).get('/employees').set('x-staff-role', 'hr');
   expect(res.status).toBe(200);
   expect(res.body.map((e) => e.id)).toContain(employee.id);
 });

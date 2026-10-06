@@ -1,6 +1,10 @@
 /* App shell (.app-topbar, .btn, .card, .modal-*, .toast) lives in design-system/prototype-utils.css. */
 * { box-sizing: border-box; }
 body { margin: 0; min-height: 100dvh; }
+  /* The toast stays in the accessibility tree at all times (no [hidden]) so screen readers
+     reliably announce it; visibility is controlled visually instead. */
+  #toast { opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+  #toast.is-visible { opacity: 1; pointer-events: auto; }
   /* ---------- Role switcher ---------- */
   .role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
   .role-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }

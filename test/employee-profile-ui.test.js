@@ -54,4 +54,45 @@ test('AC3/AC4: a rejected request keeps the status and shows the rejection toast
   await flush();
   expect(document.getElementById('profile-status-chip').textContent).toContain('Active');
   expect(document.getElementById('toast-message').textContent).toMatch(/Request rejected/i);
+  expect(document.getElementById('toast').getAttribute('role')).toBe('alert');
+});
+
+test('opening the confirm dialog moves focus in; Escape closes it and restores focus to the trigger', () => {
+  app.initEmployeeProfileApp(document, fixtureEmployee(), {});
+  const trigger = document.getElementById('profile-lifecycle-btn');
+  trigger.focus();
+  trigger.click();
+  expect(document.activeElement).toBe(document.getElementById('confirm-cancel-btn'));
+
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  expect(document.getElementById('confirm-wrap').hidden).toBe(true);
+  expect(document.activeElement).toBe(trigger);
+});
+
+test('Tab wraps focus inside the confirm dialog instead of escaping it', () => {
+  app.initEmployeeProfileApp(document, fixtureEmployee(), {});
+  document.getElementById('profile-lifecycle-btn').click();
+  const closeBtn = document.getElementById('confirm-close-btn');
+  const actionBtn = document.getElementById('confirm-action-btn');
+
+  actionBtn.focus();
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+  expect(document.activeElement).toBe(closeBtn);
+
+  closeBtn.focus();
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }));
+  expect(document.activeElement).toBe(actionBtn);
+});
+
+test('the toast never gets a hidden attribute, so it stays in the accessibility tree', async () => {
+  const api = { deactivate: jest.fn().mockResolvedValue({ ...fixtureEmployee(), employmentStatus: 'deactivated' }) };
+  app.initEmployeeProfileApp(document, fixtureEmployee(), api);
+  const toast = document.getElementById('toast');
+  expect(toast.hidden).toBe(false);
+  document.getElementById('profile-lifecycle-btn').click();
+  document.getElementById('confirm-action-btn').click();
+  await flush();
+  expect(toast.hidden).toBe(false);
+  expect(toast.classList.contains('is-visible')).toBe(true);
+  expect(toast.getAttribute('role')).toBe('status');
 });
