@@ -14,6 +14,7 @@ const {
   ERROR_MESSAGES,
   fitExpressionFontSize,
   formatAmountForField,
+  formatNumber,
 } = calc;
 
 const press = (keys) => keys.reduce((s, k) => pressKey(s, k), createInitialState());
@@ -73,6 +74,31 @@ describe('calculator engine', () => {
     state = pressKey(pressKey(state, '+'), '.');
     expect(state.expression).toBe('3.14+0.');
     expect(pressKey(createInitialState(), '.').expression).toBe('0.');
+  });
+
+  test('a leading unary minus (continuing from a negative finalized result) is not a syntax error', () => {
+    let state = press(['2', '-', '5', 'equals']);
+    expect(state.finalizedValue).toBe(-3);
+    state = pressKey(state, '+');
+    expect(state.expression).toBe('-3+');
+    state = pressKey(state, '1');
+    expect(state.expression).toBe('-3+1');
+    expect(evaluate('-3+1')).toBe(-2);
+    expect(evaluate('-3×4')).toBe(-12);
+    state = pressKey(state, 'equals');
+    expect(state).toMatchObject({ finalized: true, finalizedValue: -2 });
+  });
+
+  test('a bare or doubled leading minus is still a syntax error', () => {
+    expect(() => evaluate('-')).toThrow(expect.objectContaining({ type: 'syntax' }));
+    expect(() => evaluate('-+3')).toThrow(expect.objectContaining({ type: 'syntax' }));
+  });
+
+  test('formatNumber avoids exponential notation at small and large magnitudes', () => {
+    expect(formatNumber(1e-7)).toBe('0.0000001');
+    expect(formatNumber(1e-7)).not.toMatch(/e/i);
+    expect(formatNumber(20)).toBe('20');
+    expect(formatNumber(10 / 3)).toBe('3.333333333');
   });
 
   test('formatAmountForField rounds to the 2 decimal places validateAmount allows', () => {
@@ -199,6 +225,22 @@ describe('calculator UI', () => {
     tap(['1', '0', '÷', '3']);
     document.getElementById('calc-use').click();
     expect(document.getElementById('create-field-amount').value).toBe('3.33');
+  });
+
+  test('AC6 scrolls to keep the newest character visible once min font size overflows', () => {
+    const el = document.getElementById('calc-expression');
+    Object.defineProperty(el, 'clientWidth', { value: 100, configurable: true });
+    Object.defineProperty(el, 'scrollWidth', { value: 240, configurable: true });
+    let scrollLeft = 0;
+    Object.defineProperty(el, 'scrollLeft', {
+      get: () => scrollLeft,
+      set: (v) => {
+        scrollLeft = v;
+      },
+      configurable: true,
+    });
+    tap(['1', '2', '3']);
+    expect(el.scrollLeft).toBe(el.scrollWidth);
   });
 
   test('Tab wraps focus inside the calculator dialog instead of escaping it', () => {

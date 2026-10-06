@@ -28,7 +28,16 @@ function currentSegment(expr) {
 function evaluate(expr) {
   const tokens = expr.match(/\d+\.?\d*|\.\d+|[+\-×÷]/g);
   if (!tokens || tokens.join('') !== expr) throw { type: 'syntax' };
-  if (isOperator(tokens[0]) || isOperator(tokens[tokens.length - 1])) throw { type: 'syntax' };
+
+  // A leading '-' is a unary minus on the first operand (e.g. continuing from a negative
+  // finalized result), not a binary operator, so fold it into the first number token.
+  if (tokens[0] === '-') {
+    if (tokens.length < 2 || isOperator(tokens[1])) throw { type: 'syntax' };
+    tokens.splice(0, 2, '-' + tokens[1]);
+  } else if (isOperator(tokens[0])) {
+    throw { type: 'syntax' };
+  }
+  if (isOperator(tokens[tokens.length - 1])) throw { type: 'syntax' };
 
   // Pass 1: × and ÷ left-to-right.
   const reduced = [tokens[0]];
@@ -67,7 +76,12 @@ function previewEvaluate(expr) {
 }
 
 function formatNumber(n) {
-  return (Math.round(n * 1e9) / 1e9).toString();
+  const rounded = Math.round(n * 1e9) / 1e9;
+  if (!Number.isFinite(rounded)) return rounded.toString();
+  // toString() switches to exponential notation outside ~1e-6..1e21, which the tokenizer
+  // can't parse back; toFixed keeps plain decimal digits for every magnitude this engine
+  // can produce (results are capped at OVERFLOW_LIMIT, well under toFixed's own 1e21 limit).
+  return rounded.toFixed(9).replace(/\.?0+$/, '');
 }
 
 // Matches expenses.js's validateAmount, which rejects more than 2 decimal places.
@@ -186,6 +200,9 @@ function initCalculatorApp(doc = document) {
   function render(announcement) {
     expressionEl.textContent = state.expression;
     fitExpressionFontSize(expressionEl, EXPR_SIZES);
+    // At minimum font size the expression can still overflow; keep the newest character
+    // (right edge) visible instead of the start of the expression.
+    expressionEl.scrollLeft = expressionEl.scrollWidth;
 
     let errorType = null;
     let value = null;
