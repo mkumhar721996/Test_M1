@@ -7,7 +7,9 @@
 <link rel="stylesheet" href="../design-system/tokens.css" />
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/expenses.css" />
+<link rel="stylesheet" href="./css/calculator.css" />
 <script src="./js/expenses.js" defer></script>
+<script src="./js/calculator.js" defer></script>
 </head>
 <body class="u-surface">
 
@@ -166,9 +168,15 @@
         <div class="field">
           <label class="label" for="create-field-amount">Amount</label>
           <div class="amount-input-wrap">
-            <span class="amount-prefix" aria-hidden="true">$</span>
-            <input class="input amount-input" id="create-field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="create-error-amount" />
+            <div class="amount-input-inner">
+              <span class="amount-prefix" aria-hidden="true">$</span>
+              <input class="input amount-input" id="create-field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="create-error-amount create-amount-hint" />
+            </div>
+            <button type="button" class="calc-launch-btn" id="open-calculator" aria-haspopup="dialog" aria-controls="calculator-modal">
+              <span aria-hidden="true">🧮</span> Open calculator
+            </button>
           </div>
+          <p class="field-hint" id="create-amount-hint">Opens a basic keypad — digits, + − × ÷, decimal, clear, equals.</p>
           <p class="field-error" id="create-error-amount" role="alert" hidden>⚠ Amount is required.</p>
         </div>
 
@@ -201,6 +209,58 @@
           <button type="submit" class="btn btn-primary" id="create-modal-save-btn">Log expense</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Calculator modal: opened from the create modal's Amount field; own ids so it
+       stacks above the create modal without collisions. -->
+  <div class="modal-overlay" id="calculator-overlay" hidden></div>
+  <div class="modal-wrap" id="calculator-modal-wrap" hidden>
+    <div class="modal-panel" id="calculator-modal" role="dialog" aria-modal="true" aria-labelledby="calculator-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="calculator-title">Calculator</h2>
+          <p>Basic arithmetic — tap digits and operators to build your amount.</p>
+        </div>
+        <button type="button" class="icon-btn" id="calc-close" aria-label="Close calculator">&times;</button>
+      </div>
+
+      <div class="calc-display" role="group" aria-label="Calculator display">
+        <div class="calc-expression" id="calc-expression" aria-hidden="true"></div>
+        <div class="calc-result-row" id="calc-result-row">
+          <span class="calc-result is-preview" id="calc-result"></span>
+        </div>
+      </div>
+      <div class="sr-only" aria-live="polite" id="calc-live-region"></div>
+
+      <div class="calc-keypad" role="group" aria-label="Calculator keys">
+        <button type="button" class="calc-key clear span-3" data-key="clear">C</button>
+        <button type="button" class="calc-key op" data-key="÷" aria-label="Divide">÷</button>
+
+        <button type="button" class="calc-key" data-key="7">7</button>
+        <button type="button" class="calc-key" data-key="8">8</button>
+        <button type="button" class="calc-key" data-key="9">9</button>
+        <button type="button" class="calc-key op" data-key="×" aria-label="Multiply">×</button>
+
+        <button type="button" class="calc-key" data-key="4">4</button>
+        <button type="button" class="calc-key" data-key="5">5</button>
+        <button type="button" class="calc-key" data-key="6">6</button>
+        <button type="button" class="calc-key op" data-key="-" aria-label="Subtract">−</button>
+
+        <button type="button" class="calc-key" data-key="1">1</button>
+        <button type="button" class="calc-key" data-key="2">2</button>
+        <button type="button" class="calc-key" data-key="3">3</button>
+        <button type="button" class="calc-key op" data-key="+" aria-label="Add">+</button>
+
+        <button type="button" class="calc-key span-2" data-key="0">0</button>
+        <button type="button" class="calc-key" data-key="." aria-label="Decimal point">.</button>
+        <button type="button" class="calc-key equals" data-key="equals" aria-label="Equals">=</button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="calc-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="calc-use" disabled>Use this amount</button>
+      </div>
     </div>
   </div>
 

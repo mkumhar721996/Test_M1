@@ -154,7 +154,26 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 }
 
 /* ---------- Expense-specific form fields ---------- */
-.amount-input-wrap { position: relative; }
+.amount-input-wrap { position: relative; display: flex; gap: var(--space-2); align-items: stretch; }
+.amount-input-inner { position: relative; flex: 1; }
+.calc-launch-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border: 1px solid var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.calc-launch-btn:hover { background: var(--color-surface); }
+.field-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
 .amount-prefix {
   position: absolute;
   left: var(--space-3);
