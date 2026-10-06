@@ -1,5 +1,6 @@
 const express = require('express');
 const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
+const { getWorkflowName } = require('../workflows/store');
 const { getHire } = require('../hires/store');
 const { enforceOnboardingRole } = require('./auth');
 
@@ -10,10 +11,10 @@ function withHire(run) {
   const summary = hire
     ? { id: hire.id, name: hire.name, role: hire.role, department: hire.department, onboardingStatus: hire.onboardingStatus }
     : null;
-  return { ...run, hire: summary };
+  return { ...run, hire: summary, workflowName: getWorkflowName(run.workflowId) || run.workflowId };
 }
 
-router.get('/', (req, res) => {
+router.get('/', enforceOnboardingRole, (req, res) => {
   const summaries = listRuns()
     .filter((run) => run.hireId)
     .map((run) => {
@@ -33,7 +34,7 @@ router.get('/', (req, res) => {
   res.status(200).json(summaries);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', enforceOnboardingRole, (req, res) => {
   const run = getRun(req.params.id);
   if (!run) {
     return res.status(404).json({ error: 'run not found' });

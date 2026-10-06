@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Onboarding runs — Onboarding</title>
+<title>Start onboarding run — Onboarding</title>
 <link rel="stylesheet" href="../design-system/tokens.css" />
 <link rel="stylesheet" href="../design-system/prototype-utils.css" />
 <link rel="stylesheet" href="./css/runs.css" />
-<script src="./js/runs.js" defer></script>
+<script src="./js/start-run.js" defer></script>
 </head>
 <body class="u-surface">
 
@@ -31,14 +31,7 @@
   </div>
 
   <div class="page">
-    <div class="page-header">
-      <div>
-        <h1>Onboarding runs</h1>
-        <p>Every active, blocked, and completed onboarding run across the task graph.</p>
-      </div>
-      <button class="btn btn-primary" type="button" id="start-run-btn">Start onboarding run</button>
-    </div>
-    <div id="runs-screen-body"><!-- rendered by JS: runs table or access-denied panel --></div>
+    <div id="start-run-screen-body"><!-- rendered by JS: the form, empty state, or access-denied panel --></div>
   </div>
 
 </body>

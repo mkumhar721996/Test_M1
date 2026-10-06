@@ -111,19 +111,6 @@ body { margin: 0; min-height: 100dvh; }
 }
 .step-item--blocked .step-tag { color: var(--color-fg); }
 
-/* ---------- Blocked banner ---------- */
-.blocked-banner {
-  display: flex; gap: var(--space-2); align-items: flex-start;
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
-  border: 1px dashed var(--color-primary);
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  font-family: var(--font-family-base);
-}
-.blocked-banner h3 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); }
-.blocked-banner p { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
-
 .requirement-row {
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
@@ -168,20 +155,58 @@ fieldset.run-fieldset[disabled] .btn { opacity: 0.6; cursor: not-allowed; }
 .success-panel h3 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); }
 .success-panel p { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
 
-/* ---------- Audit log ---------- */
-.audit-toggle {
-  background: none; border: none; color: var(--color-primary);
-  font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
-  cursor: pointer; padding: var(--space-2) 0; margin-top: var(--space-3);
+/* ---------- Top bar / role switcher ---------- */
+.topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+.role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.role-switcher label {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  white-space: nowrap;
 }
-.audit-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; border-top: 1px solid var(--color-border); }
-.audit-list[hidden] { display: none; }
-.audit-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); }
-.audit-item:last-child { border-bottom: none; }
-.audit-item .meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
-.audit-item .msg { font-size: var(--font-size-sm); color: var(--color-fg); margin: 0; }
+.role-switcher select { width: auto; min-width: 240px; }
 
-.hire-record-card .kv-row { display: flex; justify-content: space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); }
-.hire-record-card .kv-row:last-child { border-bottom: none; }
-.hire-record-card .k { color: var(--color-fg-muted); }
-.hire-record-card .v { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+/* ---------- Access denied ---------- */
+.access-denied {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: center;
+  font-family: var(--font-family-base);
+}
+.access-denied .icon { font-size: var(--font-size-lg); }
+.access-denied h2 { margin: 0; font-size: var(--font-size-lg); color: var(--color-fg); }
+.access-denied p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-md); max-width: 46ch; }
+
+/* ---------- Inline validation error under Advance ---------- */
+.field-error {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  margin: var(--space-2) 0 0 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+}
+.field-error[hidden] { display: none; }
+
+/* ---------- Run activity + summary ---------- */
+.activity-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; border-top: 1px solid var(--color-border); }
+.activity-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); }
+.activity-item:last-child { border-bottom: none; }
+.activity-item .meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+.activity-item .msg { font-size: var(--font-size-sm); color: var(--color-fg); margin: 0; }
+
+.run-meta-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); }
+.run-meta-row:last-child { border-bottom: none; }
+.run-meta-row .k { color: var(--color-fg-muted); }
+.run-meta-row .v { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+/* ---------- Start run form ---------- */
+.workflow-preview-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; }
+.workflow-preview-list li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+.workflow-preview-list li:last-child { border-bottom: none; }
+.workflow-preview-list .req { display: block; color: var(--color-fg-muted); margin-top: var(--space-1); }
+.form-actions { display: flex; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }

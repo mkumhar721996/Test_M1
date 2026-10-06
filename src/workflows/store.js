@@ -6,9 +6,9 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function createWorkflow(taskGraph) {
+function createWorkflow(taskGraph, name) {
   const id = crypto.randomUUID();
-  workflows.set(id, { id, versions: [{ version: 1, taskGraph: clone(taskGraph) }] });
+  workflows.set(id, { id, name: name || null, versions: [{ version: 1, taskGraph: clone(taskGraph) }] });
   return getVersion(id, 1);
 }
 
@@ -30,7 +30,16 @@ function getVersion(workflowId, version) {
   const workflow = workflows.get(workflowId);
   if (!workflow) return undefined;
   const found = workflow.versions.find((v) => v.version === version);
-  return found ? { workflowId, version: found.version, taskGraph: clone(found.taskGraph) } : undefined;
+  return found ? { workflowId, name: workflow.name, version: found.version, taskGraph: clone(found.taskGraph) } : undefined;
 }
 
-module.exports = { createWorkflow, updateWorkflow, getLatestVersion, getVersion };
+function listWorkflows() {
+  return Array.from(workflows.keys()).map((id) => getLatestVersion(id));
+}
+
+function getWorkflowName(workflowId) {
+  const workflow = workflows.get(workflowId);
+  return workflow ? (workflow.name || workflow.id) : undefined;
+}
+
+module.exports = { listWorkflows, getWorkflowName, createWorkflow, updateWorkflow, getLatestVersion, getVersion };
