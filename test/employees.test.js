@@ -18,3 +18,10 @@ test('GET /employees/:id returns the employee information unchanged', async () =
   expect(getRes.status).toBe(200);
   expect(getRes.body).toEqual(createRes.body);
 });
+
+test('GET /employees lists every employee record created so far', async () => {
+  const created = (await request(app).post('/employees').send({ name: 'List Test', email: 'list@example.com', jobTitle: 'QA' })).body;
+  const res = await request(app).get('/employees');
+  expect(res.status).toBe(200);
+  expect(res.body.some((e) => e.id === created.id)).toBe(true);
+});
