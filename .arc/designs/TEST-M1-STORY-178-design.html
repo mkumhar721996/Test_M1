@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-178 — Edit Any Expense in the Shared List</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated error/danger color — only
+    color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg, color-border.
+    Inline validation errors and the error toast below are signalled with an icon (⚠) +
+    bold text + a heavier border using the existing --color-primary token, never color
+    alone (UX baseline: never encode meaning in colour alone). If
+    sdlc.design-system-bootstrap later adds e.g. `color-danger`, the `.field-error` /
+    `.input-invalid` / `.toast` rules below are the only place to swap it in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  .viewer-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .viewer-switcher label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .viewer-switcher select { width: auto; }
+
+  .shared-visibility-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .shared-visibility-hint .hint-icon { flex: 0 0 auto; color: var(--color-primary); }
+
+  /* ---------- Expense table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  .expense-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .expense-table tbody tr.row-updated { animation: flash-updated 1.6s ease-out; }
+  @keyframes flash-updated {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .expense-table tbody tr.row-updated { animation: none; }
+  }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 220px; }
+  .logged-by-cell { color: var(--color-fg-muted); white-space: nowrap; }
+  .edited-badge {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    color: var(--color-primary);
+  }
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2);
+  }
+  .empty-state p {
+    font-family: var(--font-family-base);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  /* No delete control exists anywhere in this table — AC5. Edit is a plain secondary
+     button sized consistently with every other secondary action in this product. */
+  .edit-btn { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+
+  /* ---------- Amount field with $ prefix ---------- */
+  .amount-input-wrap { position: relative; }
+  .amount-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+  }
+  .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
+
+  /* ---------- Inline field validation ---------- */
+  .input-invalid {
+    border-color: var(--color-primary);
+    border-width: 2px;
+  }
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+
+  .origin-note {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+  .origin-note strong { color: var(--color-fg); }
+
+  /* ---------- Demo-only affordances (not part of the shipped product) ---------- */
+  .demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+    box-shadow: var(--shadow-sm);
+  }
+  .demo-note-icon {
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-base);
+  }
+  .demo-note label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .demo-note input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  /* ---------- Validation-matrix reference screen ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th {
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-weight: var(--font-weight-bold);
+  }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .mini-modal {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. Matches the "Expense Tracker" nav
+     already established for this product by its earlier expense-logging prototypes
+     (TEST-M1-STORY-177, -179), so this story reads as editing the same shared list those
+     prototypes write to and filter, not a new surface.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered. -->
+<body class="u-surface">
+
+  <!-- Fixture data: inline JSON, parsed by the script at the bottom of the file.
+       Each row is logged by a different team member on purpose, so a reviewer can pick
+       any "Signed in as" identity and immediately edit a row someone else logged (AC1)
+       without first having to hunt for a mismatched one. lastEditedBy starts null on
+       every row — it is set the first time that row is successfully edited. -->
+  <script type="application/json" id="fixture-expenses">
+  [
+    { "id": "exp_001", "date": "2026-09-15", "category": "Travel", "description": "Flight to Denver for client kickoff", "loggedBy": "Morgan Ellis", "lastEditedBy": null, "amount": 412.75 },
+    { "id": "exp_002", "date": "2026-09-21", "category": "Meals", "description": "Team lunch after sprint demo", "loggedBy": "Priya Shah", "lastEditedBy": null, "amount": 86.40 },
+    { "id": "exp_003", "date": "2026-09-27", "category": "Software", "description": "Annual seat renewal — design tool", "loggedBy": "Devon Ruiz", "lastEditedBy": null, "amount": 149.00 }
+  ]
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-178</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Shared Expense List (interactive)
+         Notes:
+           - Every row shows who originally logged it ("Logged by"). There is no "my
+             expenses" scoping anywhere — any row's "Edit" button is always enabled,
+             regardless of who is "Signed in as" (top right) (AC1).
+           - Try it: with "Signed in as" set to Priya Shah, click "Edit" on the Sep 15
+             row — it was logged by Morgan Ellis. The form opens pre-filled with that
+             row's values and a note confirms who logged it originally. Change a value
+             and click "Save changes" to confirm a different team member can modify and
+             save it.
+           - The edit form enforces the same rules as logging an expense: clear the
+             Amount, set it to "0" or a negative number, give it 3+ decimal places, or
+             clear Category/Date, then click "Save changes" — each offending field gets
+             its own inline error directly beneath it, the form stays open with your
+             input intact, and the stored row is untouched (AC2, AC3). Reopen "Edit" on
+             the same row afterward to confirm its values never changed.
+           - Fix the values and save to see the modal close, the row update in place
+             with a brief highlight flash, an "Edited by {name}" note appear under
+             "Logged by", and a confirmation toast — all without a page reload (AC4).
+           - Switch "Signed in as" after saving: the same updated values render for every
+             identity, immediately, proving this is one shared list, not a personal copy.
+           - "Simulate save failure" is a demo-only affordance (clearly marked, not part
+             of the real product) that previews the error-feedback state for a backend
+             failure: check it, make a valid edit, and save to see an error toast while
+             the form stays open with your edits intact and the stored row still
+             unchanged.
+           - Cancel, the × button, a backdrop click, or Esc all discard the in-progress
+             edit — the row is left exactly as it was.
+           - No row has a delete control of any kind — editing is the only way to correct
+             a mistaken entry (AC5).
+           - Data is written to real localStorage under `test-m1-story-178-expenses` —
+             reload this file to confirm a saved edit survives. "Reset demo data"
+             restores the three original fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="Shared Expense List">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+        <div class="viewer-switcher">
+          <label for="viewer-select">Signed in as</label>
+          <select class="input" id="viewer-select">
+            <option>Priya Shah</option>
+            <option>Morgan Ellis</option>
+            <option>Devon Ruiz</option>
+          </select>
+        </div>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Expenses</h1>
+          <p>Open any expense to correct it — there's no delete, so editing is how mistakes get fixed.</p>
+        </div>
+
+        <p class="shared-visibility-hint">
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span>Any team member can edit any expense here, not just the one they logged themselves. Saved changes are visible to everyone immediately.</span>
+        </p>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Logged by</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expense-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit-expense modal: hidden until a row's "Edit" button is activated -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">Edit expense</h2>
+              <p id="modal-subtitle">Update the details below and save to correct the shared record.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <p class="origin-note" id="origin-note"></p>
+
+          <div class="demo-note" style="margin-top: var(--space-4);">
+            <span class="demo-note-icon" aria-hidden="true">&#9888;</span>
+            <label for="simulate-failure-checkbox">
+              <input type="checkbox" id="simulate-failure-checkbox" />
+              Simulate save failure (demo only)
+            </label>
+          </div>
+
+          <form id="edit-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <span class="amount-prefix" aria-hidden="true">$</span>
+                <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="error-amount" />
+              </div>
+              <p class="field-error" id="error-amount" role="alert" hidden>⚠ Amount is required.</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-category">Category</label>
+              <select class="input" id="field-category" name="category" aria-describedby="error-category">
+                <option value="">Select a category</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Office Supplies</option>
+                <option>Other</option>
+              </select>
+              <p class="field-error" id="error-category" role="alert" hidden>⚠ Category is required.</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-date">Date</label>
+              <input class="input" id="field-date" name="date" type="date" aria-describedby="error-date" />
+              <p class="field-error" id="error-date" role="alert" hidden>⚠ Date is required.</p>
+            </div>
+
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="field-description">Description <span class="u-text-muted">(optional)</span></label>
+              <textarea class="input" id="field-description" name="description" rows="2" placeholder="What was this expense for?"></textarea>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Expense updated</span>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static, non-interactive snapshots mapping each acceptance criterion to the
+             exact input and expected result, for a reviewer who wants the full picture
+             in one place. Use screen 1 to try any of these inputs on the real form.
+           - "Edited by a different team member" shows the pre-filled form opened by
+             someone other than the original logger (AC1).
+           - "Amount validation matrix" lists every blocking rule reused from the
+             logging form, plus one passing example (AC2).
+           - "Invalid edit leaves the record unchanged" shows a blocked required-field
+             submission with the inline error and the explicit "nothing changed" note
+             (AC2, AC3).
+           - "Visible to everyone immediately" shows the same edited row rendered for two
+             different "Signed in as" team members right after save, with no reload
+             (AC4).
+           - "No delete control" shows one row's full action set — Edit only (AC5).
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive reference. Use screen 1 to try these inputs on the real form.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Edited by a different team member</h3>
+            <span class="ac-tag">Satisfies AC1</span>
+            <div class="mini-modal">
+              <p class="u-text-sm u-text-muted" style="margin:0 0 var(--space-3) 0;">Signed in as <strong style="color: var(--color-fg);">Priya Shah</strong>, editing a row logged by someone else:</p>
+              <p class="origin-note" style="margin-bottom: var(--space-3);">Originally logged by <strong>Morgan Ellis</strong> on 09/15/2026.</p>
+              <div class="field" style="margin-bottom: var(--space-3);">
+                <label class="label">Category</label>
+                <input class="input" type="text" value="Travel" readonly />
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Amount</label>
+                <input class="input" type="text" value="$412.75" readonly />
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">"Save changes" is enabled — editing is never restricted to the original logger.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 0;">
+            <h3 class="card-title">Amount validation matrix</h3>
+            <span class="ac-tag">Satisfies AC2</span>
+            <table class="matrix-table">
+              <thead>
+                <tr><th>Input</th><th>Rule</th><th>Result</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>(blank)</td><td>Required</td><td><span class="verdict block">Blocked — "Amount is required."</span></td></tr>
+                <tr><td>0 / 0.00</td><td>Must be greater than $0.00</td><td><span class="verdict block">Blocked — "Amount must be greater than $0.00."</span></td></tr>
+                <tr><td>-12.50</td><td>Must be positive</td><td><span class="verdict block">Blocked — "Amount must be greater than $0.00."</span></td></tr>
+                <tr><td>19.999</td><td>Max 2 decimal places</td><td><span class="verdict block">Blocked — "Amount can have at most 2 decimal places."</span></td></tr>
+                <tr><td>24.50</td><td>Positive, ≤ 2 decimals</td><td><span class="verdict pass">Saved</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Invalid edit leaves the record unchanged</h3>
+            <span class="ac-tag">Satisfies AC2, AC3</span>
+            <div class="mini-modal">
+              <div class="field">
+                <label class="label">Category</label>
+                <input class="input input-invalid" type="text" value="Select a category" readonly />
+                <p class="field-error">⚠ Category is required.</p>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label">Date</label>
+                <input class="input input-invalid" type="text" value="" placeholder="mm/dd/yyyy" readonly />
+                <p class="field-error">⚠ Date is required.</p>
+              </div>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">
+                Rejected before save — the stored record keeps its previous values exactly as they were.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Visible to everyone immediately</h3>
+            <span class="ac-tag">Satisfies AC4 — edited row appears for every viewer, no reload</span>
+            <div style="display:grid; grid-template-columns: 1fr; gap: var(--space-3);">
+              <div class="mini-modal">
+                <p class="u-text-sm u-text-muted" style="margin: 0 0 var(--space-3) 0;">Signed in as <strong style="color: var(--color-fg);">Priya Shah</strong> — just saved this correction:</p>
+                <table class="expense-table" style="min-width: 0;">
+                  <tbody>
+                    <tr>
+                      <td>09/15/2026</td>
+                      <td><span class="chip">Travel</span></td>
+                      <td class="desc-cell">Flight to Denver — corrected fare</td>
+                      <td class="logged-by-cell">Morgan Ellis<span class="edited-badge">Edited by Priya Shah</span></td>
+                      <td class="col-amount">$398.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mini-modal">
+                <p class="u-text-sm u-text-muted" style="margin: 0 0 var(--space-3) 0;">Signed in as <strong style="color: var(--color-fg);">Devon Ruiz</strong> — same row, same values, no extra step:</p>
+                <table class="expense-table" style="min-width: 0;">
+                  <tbody>
+                    <tr>
+                      <td>09/15/2026</td>
+                      <td><span class="chip">Travel</span></td>
+                      <td class="desc-cell">Flight to Denver — corrected fare</td>
+                      <td class="logged-by-cell">Morgan Ellis<span class="edited-badge">Edited by Priya Shah</span></td>
+                      <td class="col-amount">$398.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>No delete control</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <div class="mini-modal">
+              <table class="expense-table" style="min-width: 0;">
+                <thead>
+                  <tr><th scope="col">Date</th><th scope="col">Description</th><th scope="col" class="col-actions">Actions</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>09/21/2026</td>
+                    <td class="desc-cell">Team lunch after sprint demo</td>
+                    <td class="col-actions"><button type="button" class="btn btn-secondary edit-btn" disabled>Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">"Edit" is the only action on any row, in every state — there is no delete button, icon, or menu item anywhere in this list.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-178-expenses';
+  const INITIAL_EXPENSES = JSON.parse(document.getElementById('fixture-expenses').textContent);
+
+  function loadExpenses() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EXPENSES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_EXPENSES.map(e => ({ ...e }));
+  }
+
+  function persistExpenses(list) {
+    // Demo-only failure injection — see #simulate-failure-checkbox.
+    if (document.getElementById('simulate-failure-checkbox').checked) {
+      throw new Error('Simulated save failure');
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function formatUSD(amount) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  let expenses = loadExpenses();
+  let lastUpdatedId = null;
+
+  // ---------- List rendering ----------
+  // Deliberately renders the exact same `expenses` array regardless of who is
+  // "Signed in as" — there is no per-submitter scoping anywhere in this function, and
+  // every row's "Edit" button is always enabled (AC1, AC4).
+  function renderList() {
+    const tbody = document.getElementById('expense-tbody');
+    tbody.innerHTML = '';
+
+    if (expenses.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="6"><div class="empty-state"><p>No expenses logged yet.</p></div></td>';
+      tbody.appendChild(tr);
+      return;
+    }
+
+    expenses.forEach(exp => {
+      const tr = document.createElement('tr');
+      if (exp.id === lastUpdatedId) tr.className = 'row-updated';
+      const editedBadge = exp.lastEditedBy ? `<span class="edited-badge">Edited by ${escapeHtml(exp.lastEditedBy)}</span>` : '';
+      tr.innerHTML = `
+        <td>${formatDateDisplay(exp.date)}</td>
+        <td><span class="chip">${escapeHtml(exp.category)}</span></td>
+        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
+        <td class="logged-by-cell">${escapeHtml(exp.loggedBy)}${editedBadge}</td>
+        <td class="col-amount">${formatUSD(exp.amount)}</td>
+        <td class="col-actions"><button type="button" class="btn btn-secondary edit-btn" data-id="${exp.id}">Edit</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastUpdatedId = null;
+
+    tbody.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => openEditModal(btn.getAttribute('data-id')));
+    });
+  }
+
+  // ---------- Modal ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const form = document.getElementById('edit-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+  const originNote = document.getElementById('origin-note');
+
+  const fieldAmount = document.getElementById('field-amount');
+  const fieldCategory = document.getElementById('field-category');
+  const fieldDate = document.getElementById('field-date');
+  const fieldDescription = document.getElementById('field-description');
+  const simulateFailureCheckbox = document.getElementById('simulate-failure-checkbox');
+  const viewerSelect = document.getElementById('viewer-select');
+
+  let editingId = null;
+
+  function openEditModal(id) {
+    const exp = expenses.find(e => e.id === id);
+    if (!exp) return;
+    editingId = id;
+
+    clearAllErrors();
+    simulateFailureCheckbox.checked = false;
+
+    fieldAmount.value = exp.amount.toFixed(2);
+    fieldCategory.value = exp.category;
+    fieldDate.value = exp.date;
+    fieldDescription.value = exp.description || '';
+
+    originNote.innerHTML = `Originally logged by <strong>${escapeHtml(exp.loggedBy)}</strong> on ${formatDateDisplay(exp.date)}.`;
+
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+    fieldAmount.focus();
+  }
+
+  let saveTimer = null;
+
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save changes';
+    editingId = null;
+    document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
+    }
+  }
+
+  function cancelEdit() {
+    closeModal();
+    showToast('success', 'No changes saved — expense left as it was');
+  }
+
+  document.getElementById('modal-close-btn').addEventListener('click', cancelEdit);
+  document.getElementById('modal-cancel-btn').addEventListener('click', cancelEdit);
+  overlay.addEventListener('click', cancelEdit);
+
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldAmount, document.getElementById('error-amount'), '');
+    setFieldError(fieldCategory, document.getElementById('error-category'), '');
+    setFieldError(fieldDate, document.getElementById('error-date'), '');
+  }
+
+  // Same rules as logging an expense — each reports its own message so a blank amount,
+  // a non-positive amount, and too many decimal places are each visibly distinct to a
+  // reviewer (AC2).
+  function validateAmount(raw) {
+    const trimmed = raw.trim();
+    if (trimmed === '') return 'Amount is required.';
+    if (!/^-?\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid number, e.g. 24.50.';
+    if (parseFloat(trimmed) <= 0) return 'Amount must be greater than $0.00.';
+    const decimals = trimmed.match(/\.(\d+)$/);
+    if (decimals && decimals[1].length > 2) return 'Amount can have at most 2 decimal places, e.g. 24.50.';
+    return '';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    const amountRaw = fieldAmount.value;
+    const categoryValue = fieldCategory.value;
+    const dateValue = fieldDate.value.trim();
+    const descriptionValue = fieldDescription.value.trim();
+
+    const amountError = validateAmount(amountRaw);
+    const categoryError = categoryValue === '' ? 'Category is required.' : '';
+    const dateError = dateValue === '' ? 'Date is required.' : '';
+
+    setFieldError(fieldAmount, document.getElementById('error-amount'), amountError);
+    setFieldError(fieldCategory, document.getElementById('error-category'), categoryError);
+    setFieldError(fieldDate, document.getElementById('error-date'), dateError);
+
+    if (amountError || categoryError || dateError) {
+      // AC2/AC3: form stays open, inline error under each offending field, nothing is
+      // written back to `expenses` — the stored record is untouched.
+      const firstInvalid = amountError ? fieldAmount
+        : categoryError ? fieldCategory
+        : fieldDate;
+      firstInvalid.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    const original = expenses.find(exp => exp.id === editingId);
+    const updated = {
+      ...original,
+      amount: Math.round(parseFloat(amountRaw) * 100) / 100,
+      category: categoryValue,
+      date: dateValue,
+      description: descriptionValue,
+      lastEditedBy: viewerSelect.value,
+    };
+
+    // Simulated latency — no real network call.
+    saveTimer = setTimeout(() => {
+      const next = expenses.map(exp => (exp.id === editingId ? updated : exp));
+      try {
+        persistExpenses(next);
+      } catch (err) {
+        // Save failed: `expenses` is never reassigned, so the stored record is left
+        // exactly as it was (AC3), and the form stays open with the attempted edits.
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save changes';
+        showToast('error', "Couldn't save changes — please try again");
+        return;
+      }
+      // AC1: a different team member's edit is accepted and saved. AC4: the shared list
+      // reflects it immediately — nothing here scopes the update to the editor.
+      expenses = next;
+      lastUpdatedId = updated.id;
+      closeModal();
+      renderList();
+      showToast('success', 'Expense updated');
+    }, 320);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(kind, message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-icon').textContent = kind === 'error' ? '⚠' : '✓';
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+  }
+
+  // ---------- Reset demo data ----------
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    expenses = loadExpenses();
+    lastUpdatedId = null;
+    viewerSelect.value = 'Priya Shah';
+    renderList();
+    showToast('success', 'Demo data reset');
+  });
+
+  renderList();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (modalWrap.hidden === false) return; // let Esc close the modal first
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
