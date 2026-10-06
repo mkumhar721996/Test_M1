@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-173 — Leave Type &amp; Balance Setup</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated warning/danger/success color —
+    only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border. The open-decision blocker banner, the "no starting balance" state, and
+    inline validation errors below are all signalled with an icon + bold text + border
+    weight using --color-primary/--color-fg, never by hue alone (UX baseline: never
+    encode meaning in colour alone). If sdlc.design-system-bootstrap later adds e.g.
+    `color-warning`/`color-danger`, `.blocker-banner`, `.balances-na`, and `.field-error`
+    are the only places to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- Switchers (policy preview + signed-in-as) ---------- */
+  .switcher-row { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-4); }
+  .role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .role-switcher label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .role-switcher select { width: auto; min-width: 230px; }
+
+  /* ---------- Blocker banner (permanent — open product decision) ---------- */
+  .blocker-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    background: var(--color-bg);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .blocker-banner .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); flex: 0 0 auto; }
+  .blocker-banner p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .blocker-banner p:last-child { margin-bottom: 0; }
+  .blocker-banner .notice-sub { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Role banner (restricted preview) ---------- */
+  .role-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .role-banner[hidden] { display: none; }
+  .role-banner .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .role-banner strong { color: var(--color-fg); }
+
+  /* ---------- Balances table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.balance-table { width: 100%; border-collapse: collapse; min-width: 820px; }
+  .balance-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .balance-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .balance-table tbody tr:last-child td { border-bottom: none; }
+  .balance-table tbody tr.row-changed { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .balance-table tbody tr.row-changed { animation: none; }
+  }
+  .name-cell .person-name { font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .role-cell .role-line { color: var(--color-fg); }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .col-actions { text-align: right; white-space: nowrap; }
+
+  .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
+  }
+  .action-link {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    min-height: 44px;
+  }
+  .action-link:hover { background: var(--color-surface); }
+  .action-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .action-link .lock-icon { margin-right: var(--space-1); }
+
+  /* ---------- Onboarding status chip ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--complete { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--progress { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--not-started { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Balance pills + "not available" states ---------- */
+  .balance-pills { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .balance-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    background: var(--chip-default-background);
+    color: var(--chip-default-foreground);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+  }
+  .balances-na, .balances-pending {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    max-width: 30ch;
+  }
+  .balances-na .hint-icon, .balances-pending .hint-icon { flex: 0 0 auto; }
+
+  /* ---------- Modal fields ---------- */
+  .field-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .required-tag { font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Leave types reference (screen 1) ---------- */
+  .type-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+  @media (min-width: 680px) { .type-grid { grid-template-columns: repeat(3, 1fr); } }
+  .type-card .type-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-1); }
+
+  /* ---------- Balance summary cards (screens 3 & 4) ---------- */
+  .balance-summary-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-4); }
+  @media (min-width: 640px) { .balance-summary-grid { grid-template-columns: repeat(3, 1fr); } }
+  .balance-summary-card { text-align: center; }
+  .balance-summary-card .summary-type { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 var(--space-2) 0; }
+  .balance-summary-card .summary-value { font-family: var(--font-family-base); font-size: 1.75rem; font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .balance-summary-card .summary-unit { font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+
+  .request-card { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
+  .request-card .request-title { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .request-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .request-meta strong { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .request-reason { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; }
+  .request-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2); }
+
+  /* ---------- Open-decision screen ---------- */
+  .access-compare { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 680px) { .access-compare { grid-template-columns: 1fr 1fr; } }
+  .access-compare .option-list { margin: var(--space-3) 0 0 0; padding-left: 1.2em; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .access-compare .option-list li { margin-bottom: var(--space-1); }
+  .access-compare .option-list li:last-child { margin-bottom: 0; }
+
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+  .verdict.pending::before { content: "?"; color: var(--color-primary); }
+
+  /* ---------- AC checklist ---------- */
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  .reset-link {
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: var(--space-2);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — People Ops: Leave (active) · Employees · Settings. New product
+     surface (no prior leave-domain prototype exists in this repo to borrow structure
+     from), so the shell follows the same top-bar + page pattern already established by
+     the Onboarding and Expense Tracker prototypes for this product family: brand +
+     nav on the left, a "Signed in as" / viewer switcher on the right, a card-based page
+     body, and the same modal/toast/checklist components.
+
+     This story carries a BLOCKER: who may set/adjust an employee's leave balance (HR
+     only, vs HR + Manager) is undecided by Product. Rather than silently picking one,
+     screen 2 ("Balances") exposes a "Previewing access policy" switch so the PO can try
+     both live, and screen 5 ("Open decision") writes the blocker up explicitly with a
+     side-by-side comparison — this story should not be scheduled for build until that
+     screen's question is answered and the switch is removed in favor of one fixed rule. -->
+<body class="u-surface">
+
+  <!-- Fixture data: inline JSON, parsed by the script at the bottom of the file.
+       Five employees span every onboarding state this story's ACs care about: two
+       "complete" (one with starting balances already set, one still needing them), one
+       "in progress", and one "not started" — so AC2/AC3's contrast is visible without
+       any interaction. One pending leave request is included for the approval screen
+       (AC4). -->
+  <script type="application/json" id="fixture-leave-data">
+  {
+    "leaveTypes": [
+      { "id": "annual", "label": "Annual", "description": "Planned paid time off — vacations, personal days, and other time away booked in advance." },
+      { "id": "sick", "label": "Sick", "description": "Paid time off to recover from illness or attend a medical appointment." },
+      { "id": "unpaid", "label": "Unpaid", "description": "Extended time away without pay, for situations paid leave doesn't cover." }
+    ],
+    "employees": [
+      { "id": "emp_2031", "name": "Jordan Reyes", "department": "Engineering", "role": "Software Engineer II", "onboardingStatus": "complete", "balances": { "annual": 15, "sick": 8, "unpaid": 0 }, "balancesSetAt": "2026-09-20" },
+      { "id": "emp_3108", "name": "Priya Shah", "department": "People Ops", "role": "HR Generalist", "onboardingStatus": "complete", "balances": null, "balancesSetAt": null },
+      { "id": "emp_3112", "name": "Devon Ruiz", "department": "Engineering", "role": "IT Support Specialist", "onboardingStatus": "in_progress", "balances": null, "balancesSetAt": null },
+      { "id": "emp_3119", "name": "Taylor Kim", "department": "Finance", "role": "Financial Analyst", "onboardingStatus": "not_started", "balances": null, "balancesSetAt": null },
+      { "id": "emp_2890", "name": "Morgan Blake", "department": "Sales", "role": "Account Executive", "onboardingStatus": "complete", "balances": { "annual": 10, "sick": 5, "unpaid": 0 }, "balancesSetAt": "2026-05-02" }
+    ],
+    "requests": [
+      { "id": "req_501", "employeeId": "emp_2031", "type": "annual", "startDate": "2026-10-20", "endDate": "2026-10-24", "days": 5, "reason": "Family trip", "status": "pending", "submittedAt": "2026-10-01" }
+    ]
+  }
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-173</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Leave Types (interactive)
+         Notes:
+           - Satisfies AC1: the catalog is fixed at exactly three types — annual, sick,
+             and unpaid. "Preview available types for" lets you pick any employee,
+             including ones who haven't finished onboarding (e.g. Taylor Kim) — the
+             three-item list underneath never changes, demonstrating these are global
+             types every employee can request against, not something configured
+             per-employee.
+           - Read-only by design: there is no add/edit/remove control for leave types
+             anywhere in this prototype — expanding the fixed set is out of this story's
+             scope.
+    -->
+    <div class="screen" data-name="Leave Types">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Leave types</h1>
+          <p>Every employee can request against the same three leave types. This set is fixed — there's no screen to add, rename, or remove a type.</p>
+        </div>
+
+        <div class="field" style="max-width: 360px;">
+          <label class="label" for="ac1-employee-select">Preview available types for</label>
+          <select class="input" id="ac1-employee-select"></select>
+        </div>
+        <p class="hint" id="ac1-note" style="margin-bottom: var(--space-4);"></p>
+
+        <div class="type-grid" id="type-grid"><!-- rendered by JS --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Balances (interactive)
+         Notes:
+           - Satisfies AC2/AC3. Jordan Reyes and Morgan Blake have completed onboarding
+             and already have starting balances; Priya Shah has completed onboarding but
+             has none yet, so her row shows "Set starting balances". Devon Ruiz (in
+             progress) and Taylor Kim (not started) have not completed onboarding — their
+             "Starting balances" column reads "No starting balance exists" and there is no
+             action available at all, which is the point of AC3.
+           - Click "Set starting balances" on Priya Shah's row, enter 0 or more days for
+             each of the three types, and save — her row updates immediately with the new
+             balances and a confirmation toast (AC2). "Adjust balances" on Jordan Reyes's
+             or Morgan Blake's row reopens the same form pre-filled with their current
+             numbers.
+           - BLOCKER preview: this story does not yet say whether balance-setting is
+             restricted to HR only or to HR + Manager. "Previewing access policy" lets you
+             try both answers without reloading; "Signed in as" lets you see each role's
+             experience under whichever policy is selected. Every action stays clickable
+             under a denied combination so you can see it get rejected, same as the
+             underlying API would reject it — see "Open decision: balance-setting access"
+             for the full write-up this switch is standing in for.
+           - Data is written to real localStorage under `test-m1-story-173-balances` —
+             reload this file to confirm a saved balance is still present after reload.
+             "Reset demo data" restores the original fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="Balances">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Leave balances</h1>
+          <p>Set each onboarded employee's starting balance for annual, sick, and unpaid leave. No accrual, carryover, or expiry — this is a one-time starting point.</p>
+        </div>
+
+        <div class="blocker-banner">
+          <span class="notice-icon" aria-hidden="true">⚠</span>
+          <div>
+            <p><strong>Open product decision — not yet settled.</strong></p>
+            <p class="notice-sub">Whether a Manager (in addition to HR) can set or adjust an employee's starting balance hasn't been decided. Use the two switches below to preview both answers; see "Open decision: balance-setting access" for the full write-up. This story should not be scheduled for build until Product confirms one option.</p>
+          </div>
+        </div>
+
+        <div class="switcher-row">
+          <div class="role-switcher">
+            <label for="access-policy-select">Previewing access policy</label>
+            <select class="input" id="access-policy-select">
+              <option value="hr_only">HR only (Option A)</option>
+              <option value="hr_manager">HR + Manager (Option B)</option>
+            </select>
+          </div>
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+              <option value="team_member">Team member</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="role-banner" id="role-banner" hidden>
+          <span class="hint-icon" aria-hidden="true">⛔</span>
+          <span id="role-banner-text"></span>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="balance-table">
+              <thead>
+                <tr>
+                  <th scope="col">Employee</th>
+                  <th scope="col">Department / role</th>
+                  <th scope="col">Onboarding</th>
+                  <th scope="col">Starting balances</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="balance-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Set/adjust starting balances modal -->
+      <div class="modal-overlay" id="balance-modal-overlay" hidden></div>
+      <div class="modal-wrap" id="balance-modal-wrap" role="dialog" aria-modal="true" aria-labelledby="balance-modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="balance-modal-title">Set starting balances</h2>
+              <p id="balance-modal-subtitle">Annual, sick, and unpaid are each required — enter 0 if a type doesn't apply yet.</p>
+            </div>
+            <button class="icon-btn" id="balance-modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <form id="balance-form" novalidate>
+            <input type="hidden" id="balance-form-employee-id" />
+            <div class="field-row">
+              <div class="field">
+                <label class="label" for="field-annual">Annual <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-annual" name="annual" type="number" min="0" step="1" inputmode="numeric" aria-describedby="error-annual" />
+                <p class="field-error" id="error-annual" role="alert" hidden>⚠ Enter 0 or more days.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="field-sick">Sick <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-sick" name="sick" type="number" min="0" step="1" inputmode="numeric" aria-describedby="error-sick" />
+                <p class="field-error" id="error-sick" role="alert" hidden>⚠ Enter 0 or more days.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="field-unpaid">Unpaid <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-unpaid" name="unpaid" type="number" min="0" step="1" inputmode="numeric" aria-describedby="error-unpaid" />
+                <p class="field-error" id="error-unpaid" role="alert" hidden>⚠ Enter 0 or more days.</p>
+              </div>
+            </div>
+            <p class="hint">Values are in days. There's no accrual or carryover logic in this story — this number is exactly what the employee starts with.</p>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="balance-modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="balance-modal-save-btn">Save starting balances</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="balances-toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="balances-toast-icon" aria-hidden="true">✓</span>
+        <span id="balances-toast-message">Starting balances saved</span>
+      </div>
+    </div>
+
+    <!-- Screen: Request Time Off (interactive)
+         Notes:
+           - Satisfies AC4 from the requester's side: switch "Viewing as" to Jordan Reyes
+             or Morgan Blake (both have starting balances) and the current balance per
+             leave type appears at the top before any request is made. Switch to Priya
+             Shah, Devon Ruiz, or Taylor Kim (no starting balance — AC3) and the summary
+             is replaced by a notice explaining there's nothing to request against yet,
+             and the form is disabled.
+           - Submitting a request only shows a confirmation toast — it does not change the
+             numbers shown here. Deciding how an approved request draws down the balance
+             is a separate, future story (see the hint under the balance cards).
+    -->
+    <div class="screen" data-name="Request Time Off">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Request time off</h1>
+          <p>Choose a leave type and see your current balance before you submit.</p>
+        </div>
+
+        <div class="field" style="max-width: 360px;">
+          <label class="label" for="request-viewer-select">Viewing as</label>
+          <select class="input" id="request-viewer-select"></select>
+        </div>
+
+        <div id="request-balance-area" style="margin-bottom: var(--space-4);"><!-- rendered by JS --></div>
+
+        <div class="card">
+          <h3 class="card-title">New request</h3>
+          <form id="request-form">
+            <div class="field">
+              <label class="label" for="request-type">Leave type <span class="required-tag">(required)</span></label>
+              <select class="input" id="request-type">
+                <option value="annual">Annual</option>
+                <option value="sick">Sick</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+            </div>
+            <div class="field-row" style="grid-template-columns: 1fr 1fr;">
+              <div class="field">
+                <label class="label" for="request-start">Start date <span class="required-tag">(required)</span></label>
+                <input class="input" id="request-start" type="date" />
+              </div>
+              <div class="field">
+                <label class="label" for="request-end">End date <span class="required-tag">(required)</span></label>
+                <input class="input" id="request-end" type="date" />
+              </div>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label class="label" for="request-reason">Reason (optional)</label>
+              <input class="input" id="request-reason" type="text" placeholder="e.g. Family trip" />
+            </div>
+            <div class="modal-actions" style="justify-content: flex-start; margin-top: var(--space-4);">
+              <button type="submit" class="btn btn-primary" id="request-submit-btn">Submit request</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="request-toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" aria-hidden="true">✓</span>
+        <span id="request-toast-message">Request submitted</span>
+      </div>
+    </div>
+
+    <!-- Screen: Approve Leave Request (interactive)
+         Notes:
+           - Satisfies AC4 from the approver's side: Jordan Reyes's current balance per
+             leave type is shown directly alongside the pending request, without needing
+             to navigate anywhere else to look it up.
+           - Approve / Deny give immediate visible feedback (status chip + toast) and then
+             disable, same as any one-time decision. Neither changes the balance numbers
+             shown — see the hint note, same scope boundary as the request screen.
+    -->
+    <div class="screen" data-name="Approve Leave Request">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Approve leave request</h1>
+          <p>Review the request alongside the employee's current balance for that leave type.</p>
+        </div>
+
+        <div class="card request-card" id="approve-request-card"><!-- rendered by JS --></div>
+
+        <h3 class="card-title" style="margin-bottom: var(--space-3);" id="approve-balances-heading"></h3>
+        <div class="balance-summary-grid" id="approve-balance-area"><!-- rendered by JS --></div>
+
+        <p class="hint">Approving or denying here doesn't change the balance shown above — deciding how an approved request draws down the balance is a future story.</p>
+      </div>
+
+      <div class="toast" id="approve-toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" aria-hidden="true">✓</span>
+        <span id="approve-toast-message">Request approved</span>
+      </div>
+    </div>
+
+    <!-- Screen: Open Decision — Balance-Setting Access (reference)
+         Notes:
+           - Spells out the BLOCKER from the story description in full, with a
+             side-by-side comparison of the two options under discussion. Not
+             interactive — go back to "Balances" to try both options live via the
+             "Previewing access policy" switch.
+    -->
+    <div class="screen" data-name="Open Decision">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Open decision: balance-setting access</h1>
+          <p>This has to be settled by the product owner before this story can be scheduled for build.</p>
+        </div>
+
+        <div class="blocker-banner">
+          <span class="notice-icon" aria-hidden="true">⚠</span>
+          <div>
+            <p><strong>Blocker: who may set or adjust a starting leave balance?</strong></p>
+            <p class="notice-sub">The story description names two candidate answers — HR only, or HR and the employee's manager — without picking one. Until Product confirms a single answer, engineering has nothing to build the permission check against.</p>
+          </div>
+        </div>
+
+        <div class="access-compare" style="margin-bottom: var(--space-4);">
+          <div class="card">
+            <h3 class="card-title">Option A: HR only</h3>
+            <p class="card-body">The narrower rule. Managers can view an employee's balances in a request or approval view (AC4) but cannot create or change them.</p>
+            <ul class="option-list">
+              <li>HR: can set and adjust balances</li>
+              <li>Manager: view-only</li>
+              <li>Team member: view-only, own balance</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Option B: HR + Manager</h3>
+            <p class="card-body">The broader rule. A direct manager can set up or correct their own report's balance without routing through HR first.</p>
+            <ul class="option-list">
+              <li>HR: can set and adjust balances</li>
+              <li>Manager: can set and adjust balances for their reports</li>
+              <li>Team member: view-only, own balance</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">What's already certain, regardless of which option is chosen</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Action</th><th>HR</th><th>Manager</th><th>Team member</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>View current balance in a request or approval view</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed (own)</span></td></tr>
+              <tr><td>Set starting balances for a newly onboarded employee</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pending">Pending decision</span></td><td><span class="verdict block">Not allowed</span></td></tr>
+              <tr><td>Adjust an existing balance</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pending">Pending decision</span></td><td><span class="verdict block">Not allowed</span></td></tr>
+            </tbody>
+          </table>
+          <p class="hint">Go to "Balances" and switch "Previewing access policy" to compare the Manager row's experience under Option A and Option B directly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, plus the one open blocker this story carries.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">People Ops</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Leave</a>
+          <a href="#" onclick="return false;">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>All three leave types are always available <span class="ac-id">— AC1</span></h3><p>On "Leave types", pick any employee from "Preview available types for" — annual, sick, and unpaid are always the three types returned, regardless of who's selected.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Onboarded employees get a starting balance per type <span class="ac-id">— AC2</span></h3><p>On "Balances", click "Set starting balances" on Priya Shah's row (onboarding complete, no balances yet), enter a value for each of the three types, and save — all three are recorded immediately.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>No starting balance exists before onboarding is complete <span class="ac-id">— AC3</span></h3><p>Devon Ruiz (in progress) and Taylor Kim (not started) show "No starting balance exists" with no action available on "Balances", and a disabled request form with the same explanation on "Request time off".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>Current balance per type is shown in request and approval views <span class="ac-id">— AC4</span></h3><p>"Request time off" (viewing as Jordan Reyes or Morgan Blake) and "Approve leave request" (Jordan Reyes's pending request) both show the employee's current balance per leave type inline, before any decision is made.</p></div>
+          </div>
+        </div>
+
+        <div class="blocker-banner" style="margin-top: var(--space-4);">
+          <span class="notice-icon" aria-hidden="true">⚠</span>
+          <div>
+            <p><strong>Unresolved blocker — not covered by any AC above.</strong></p>
+            <p class="notice-sub">Who may set or adjust a balance (HR only vs. HR + Manager) is still undecided. See "Open decision: balance-setting access". This story should not move to build until that's answered.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const FIXTURE = JSON.parse(document.getElementById('fixture-leave-data').textContent);
+  const LEAVE_TYPES = FIXTURE.leaveTypes;
+  const STORAGE_KEY = 'test-m1-story-173-balances';
+
+  function loadEmployees() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(FIXTURE.employees));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return FIXTURE.employees.map(e => ({ ...e, balances: e.balances ? { ...e.balances } : null }));
+  }
+
+  function persistEmployees(list) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
+  }
+
+  let employees = loadEmployees();
+  let requests = FIXTURE.requests.map(r => ({ ...r }));
+  let lastChangedId = null;
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function typeLabel(typeId) {
+    const t = LEAVE_TYPES.find(l => l.id === typeId);
+    return t ? t.label : typeId;
+  }
+
+  function onboardingLabel(status) {
+    if (status === 'complete') return { text: 'Complete', icon: '✓', cls: 'status-chip--complete' };
+    if (status === 'in_progress') return { text: 'In progress', icon: '◐', cls: 'status-chip--progress' };
+    return { text: 'Not started', icon: '—', cls: 'status-chip--not-started' };
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  // ---------- Toast helper ----------
+  function showToast(toastId, iconId, messageId, message, icon) {
+    const toast = document.getElementById(toastId);
+    if (iconId) document.getElementById(iconId).textContent = icon || '✓';
+    document.getElementById(messageId).textContent = message;
+    toast.hidden = false;
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
+  // =====================================================================
+  // Screen: Leave Types
+  // =====================================================================
+  function renderLeaveTypesScreen() {
+    const select = document.getElementById('ac1-employee-select');
+    select.innerHTML = employees.map(e => `<option value="${e.id}">${escapeHtml(e.name)} — ${onboardingLabel(e.onboardingStatus).text}</option>`).join('');
+
+    function render() {
+      const emp = employees.find(e => e.id === select.value) || employees[0];
+      document.getElementById('ac1-note').textContent =
+        `Previewing for ${emp.name} (onboarding: ${onboardingLabel(emp.onboardingStatus).text.toLowerCase()}) — the list below never changes based on who's selected.`;
+      document.getElementById('type-grid').innerHTML = LEAVE_TYPES.map(t => `
+        <div class="card type-card">
+          <h3 class="card-title">${escapeHtml(t.label)}</h3>
+          <p class="card-body">${escapeHtml(t.description)}</p>
+          <span class="type-id">id: ${t.id}</span>
+        </div>
+      `).join('');
+    }
+    select.addEventListener('change', render);
+    render();
+  }
+
+  // =====================================================================
+  // Screen: Balances
+  // =====================================================================
+  function currentRole() { return document.getElementById('role-select').value; }
+  function currentPolicy() { return document.getElementById('access-policy-select').value; }
+  function hasBalanceAccess() {
+    const role = currentRole();
+    if (role === 'team_member') return false;
+    if (role === 'hr') return true;
+    return currentPolicy() === 'hr_manager';
+  }
+
+  function renderRoleBanner() {
+    const banner = document.getElementById('role-banner');
+    const text = document.getElementById('role-banner-text');
+    if (hasBalanceAccess()) { banner.hidden = true; return; }
+    banner.hidden = false;
+    if (currentRole() === 'team_member') {
+      text.innerHTML = `<strong>Viewing as Team member.</strong> Setting or adjusting leave balances is never available to Team members under either option. Every action below is still clickable so you can see it get rejected.`;
+    } else {
+      text.innerHTML = `<strong>Viewing as Manager, previewing "HR only" (Option A).</strong> Under this option, Manager cannot set or adjust balances. Switch "Previewing access policy" to "HR + Manager" to see Option B instead.`;
+    }
+  }
+
+  function balanceActionLabel(emp) {
+    const verb = emp.balances ? 'Adjust balances' : 'Set starting balances';
+    return hasBalanceAccess() ? verb : `<span class="lock-icon" aria-hidden="true">🔒</span>${verb}`;
+  }
+
+  function renderBalancesTable() {
+    const tbody = document.getElementById('balance-tbody');
+    tbody.innerHTML = '';
+
+    employees.forEach(emp => {
+      const tr = document.createElement('tr');
+      if (emp.id === lastChangedId) tr.className = 'row-changed';
+
+      const ob = onboardingLabel(emp.onboardingStatus);
+      const statusChip = `<span class="status-chip ${ob.cls}"><span aria-hidden="true">${ob.icon}</span> ${ob.text}</span>`;
+
+      let balancesCell;
+      if (emp.onboardingStatus !== 'complete') {
+        balancesCell = `<span class="balances-na"><span class="hint-icon" aria-hidden="true">⊘</span> No starting balance exists — onboarding not complete</span>`;
+      } else if (!emp.balances) {
+        balancesCell = `<span class="balances-pending"><span class="hint-icon" aria-hidden="true">○</span> Not set yet</span>`;
+      } else {
+        balancesCell = `<div class="balance-pills">` + LEAVE_TYPES.map(t =>
+          `<span class="balance-pill">${t.label} ${emp.balances[t.id]}d</span>`
+        ).join('') + `</div>`;
+      }
+
+      let actionsCell = '—';
+      if (emp.onboardingStatus === 'complete') {
+        actionsCell = `<button type="button" class="action-link btn-sm" data-balance-id="${emp.id}">${balanceActionLabel(emp)}</button>`;
+      }
+
+      tr.innerHTML = `
+        <td class="name-cell"><span class="person-name">${escapeHtml(emp.name)}</span><span class="person-id">${emp.id}</span></td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(emp.role)}</span><br/><span class="dept-line">${escapeHtml(emp.department)}</span></td>
+        <td>${statusChip}</td>
+        <td>${balancesCell}</td>
+        <td class="col-actions">${actionsCell}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    lastChangedId = null;
+
+    tbody.querySelectorAll('[data-balance-id]').forEach(btn => {
+      btn.addEventListener('click', () => onBalanceActionClick(btn.getAttribute('data-balance-id')));
+    });
+  }
+
+  function onBalanceActionClick(employeeId) {
+    if (!hasBalanceAccess()) {
+      showToast('balances-toast', 'balances-toast-icon', 'balances-toast-message', 'Request rejected — your role can\'t set or adjust balances under the policy currently being previewed.', '⛔');
+      return;
+    }
+    openBalanceModal(employeeId);
+  }
+
+  function openBalanceModal(employeeId) {
+    const emp = employees.find(e => e.id === employeeId);
+    document.getElementById('balance-form-employee-id').value = employeeId;
+    const isEdit = !!emp.balances;
+    document.getElementById('balance-modal-title').textContent = isEdit ? `Adjust starting balances for ${emp.name}` : `Set starting balances for ${emp.name}`;
+    document.getElementById('balance-modal-save-btn').textContent = isEdit ? 'Save changes' : 'Save starting balances';
+    document.getElementById('field-annual').value = emp.balances ? emp.balances.annual : 0;
+    document.getElementById('field-sick').value = emp.balances ? emp.balances.sick : 0;
+    document.getElementById('field-unpaid').value = emp.balances ? emp.balances.unpaid : 0;
+    ['annual', 'sick', 'unpaid'].forEach(t => {
+      document.getElementById(`field-${t}`).classList.remove('input-invalid');
+      document.getElementById(`error-${t}`).hidden = true;
+    });
+    document.getElementById('balance-modal-overlay').hidden = false;
+    document.getElementById('balance-modal-wrap').hidden = false;
+    document.getElementById('field-annual').focus();
+  }
+
+  function closeBalanceModal() {
+    document.getElementById('balance-modal-overlay').hidden = true;
+    document.getElementById('balance-modal-wrap').hidden = true;
+  }
+
+  function validateBalanceField(typeId) {
+    const input = document.getElementById(`field-${typeId}`);
+    const error = document.getElementById(`error-${typeId}`);
+    const raw = input.value.trim();
+    const isValid = raw !== '' && Number(raw) >= 0 && Number.isFinite(Number(raw));
+    input.classList.toggle('input-invalid', !isValid);
+    error.hidden = isValid;
+    return isValid;
+  }
+
+  function wireBalanceForm() {
+    document.getElementById('balance-modal-close-btn').addEventListener('click', closeBalanceModal);
+    document.getElementById('balance-modal-cancel-btn').addEventListener('click', closeBalanceModal);
+    document.getElementById('balance-modal-overlay').addEventListener('click', closeBalanceModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !document.getElementById('balance-modal-wrap').hidden) closeBalanceModal();
+    });
+
+    document.getElementById('balance-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const validAnnual = validateBalanceField('annual');
+      const validSick = validateBalanceField('sick');
+      const validUnpaid = validateBalanceField('unpaid');
+      if (!validAnnual || !validSick || !validUnpaid) return;
+
+      const employeeId = document.getElementById('balance-form-employee-id').value;
+      const emp = employees.find(e => e.id === employeeId);
+      const saveBtn = document.getElementById('balance-modal-save-btn');
+      const originalLabel = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+
+      setTimeout(() => {
+        emp.balances = {
+          annual: Number(document.getElementById('field-annual').value),
+          sick: Number(document.getElementById('field-sick').value),
+          unpaid: Number(document.getElementById('field-unpaid').value),
+        };
+        emp.balancesSetAt = new Date().toISOString().slice(0, 10);
+        persistEmployees(employees);
+        lastChangedId = employeeId;
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalLabel;
+        closeBalanceModal();
+        renderBalancesTable();
+        showToast('balances-toast', 'balances-toast-icon', 'balances-toast-message', `Starting balances saved for ${emp.name}`, '✓');
+        renderRequestScreen();
+        renderApproveScreen();
+      }, 300);
+    });
+  }
+
+  function renderBalancesScreen() {
+    document.getElementById('access-policy-select').addEventListener('change', () => { renderRoleBanner(); renderBalancesTable(); });
+    document.getElementById('role-select').addEventListener('change', () => { renderRoleBanner(); renderBalancesTable(); });
+    document.getElementById('reset-data-btn').addEventListener('click', () => {
+      employees = FIXTURE.employees.map(e => ({ ...e, balances: e.balances ? { ...e.balances } : null }));
+      persistEmployees(employees);
+      renderRoleBanner();
+      renderBalancesTable();
+      renderRequestScreen();
+      renderApproveScreen();
+      showToast('balances-toast', 'balances-toast-icon', 'balances-toast-message', 'Demo data reset', 'ℹ');
+    });
+    wireBalanceForm();
+    renderRoleBanner();
+    renderBalancesTable();
+  }
+
+  // =====================================================================
+  // Screen: Request Time Off
+  // =====================================================================
+  function renderRequestScreen() {
+    const select = document.getElementById('request-viewer-select');
+    const prevValue = select.value;
+    select.innerHTML = employees.map(e => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
+    if (prevValue) select.value = prevValue;
+
+    function render() {
+      const emp = employees.find(e => e.id === select.value) || employees[0];
+      const area = document.getElementById('request-balance-area');
+      const form = document.getElementById('request-form');
+      const submitBtn = document.getElementById('request-submit-btn');
+
+      if (!emp.balances) {
+        area.innerHTML = `
+          <div class="card">
+            <p class="balances-na" style="max-width: none;"><span class="hint-icon" aria-hidden="true">⊘</span> No starting balance exists for ${escapeHtml(emp.name)} yet — onboarding ${emp.onboardingStatus === 'complete' ? 'is complete, but HR hasn\'t set starting balances' : 'isn\'t complete'}. There's nothing to request against until a starting balance is set.</p>
+          </div>`;
+        Array.from(form.elements).forEach(el => { el.disabled = true; });
+      } else {
+        area.innerHTML = `
+          <div class="balance-summary-grid">
+            ${LEAVE_TYPES.map(t => `
+              <div class="card balance-summary-card">
+                <p class="summary-type">${escapeHtml(t.label)}</p>
+                <p class="summary-value">${emp.balances[t.id]} <span class="summary-unit">days available</span></p>
+              </div>
+            `).join('')}
+          </div>
+          <p class="hint">Submitting a request below doesn't change these numbers — deciding how an approved request draws down the balance is a future story.</p>`;
+        Array.from(form.elements).forEach(el => { el.disabled = false; });
+      }
+    }
+    select.removeEventListener('change', select._handler || (() => {}));
+    select._handler = render;
+    select.addEventListener('change', render);
+    render();
+  }
+
+  function wireRequestForm() {
+    document.getElementById('request-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('request-submit-btn');
+      const originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        showToast('request-toast', null, 'request-toast-message', 'Request submitted — this preview stops here; approval routing isn\'t part of this story.', '✓');
+      }, 300);
+    });
+  }
+
+  // =====================================================================
+  // Screen: Approve Leave Request
+  // =====================================================================
+  function renderApproveScreen() {
+    const req = requests[0];
+    const emp = employees.find(e => e.id === req.employeeId);
+    const statusChip = req.status === 'pending'
+      ? `<span class="status-chip status-chip--progress"><span aria-hidden="true">◐</span> Pending</span>`
+      : req.status === 'approved'
+        ? `<span class="status-chip status-chip--complete"><span aria-hidden="true">✓</span> Approved</span>`
+        : `<span class="status-chip status-chip--not-started"><span aria-hidden="true">⊘</span> Denied</span>`;
+
+    document.getElementById('approve-request-card').innerHTML = `
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+        <h3 class="request-title">${escapeHtml(emp.name)} — ${typeLabel(req.type)} leave</h3>
+        ${statusChip}
+      </div>
+      <div class="request-meta">
+        <span><strong>Dates:</strong> ${formatDateDisplay(req.startDate)}–${formatDateDisplay(req.endDate)} (${req.days} days)</span>
+        <span><strong>Submitted:</strong> ${formatDateDisplay(req.submittedAt)}</span>
+      </div>
+      <p class="request-reason">"${escapeHtml(req.reason)}"</p>
+      <div class="request-actions" id="approve-actions"></div>
+    `;
+
+    document.getElementById('approve-balances-heading').textContent = `${emp.name}'s current balances`;
+    document.getElementById('approve-balance-area').innerHTML = LEAVE_TYPES.map(t => `
+      <div class="card balance-summary-card">
+        <p class="summary-type">${escapeHtml(t.label)}</p>
+        <p class="summary-value">${emp.balances ? emp.balances[t.id] : '—'} <span class="summary-unit">${emp.balances ? 'days available' : ''}</span></p>
+      </div>
+    `).join('');
+
+    const actions = document.getElementById('approve-actions');
+    if (req.status === 'pending') {
+      actions.innerHTML = `
+        <button type="button" class="btn btn-primary" id="approve-btn">Approve</button>
+        <button type="button" class="btn btn-secondary" id="deny-btn">Deny</button>
+      `;
+      document.getElementById('approve-btn').addEventListener('click', () => decideRequest('approved'));
+      document.getElementById('deny-btn').addEventListener('click', () => decideRequest('denied'));
+    } else {
+      actions.innerHTML = '';
+    }
+  }
+
+  function decideRequest(decision) {
+    const req = requests[0];
+    req.status = decision;
+    renderApproveScreen();
+    showToast('approve-toast', null, 'approve-toast-message', decision === 'approved' ? 'Request approved' : 'Request denied', '✓');
+  }
+
+  // ---------- Boot ----------
+  renderLeaveTypesScreen();
+  renderBalancesScreen();
+  renderRequestScreen();
+  wireRequestForm();
+  renderApproveScreen();
+
+  // ---------- Reviewer bar navigation ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
