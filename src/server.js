@@ -6,6 +6,7 @@ const runsRouter = require('./runs/routes');
 const hiresRouter = require('./hires/routes');
 const guestsRouter = require('./guests/routes');
 const roomsRouter = require('./rooms/routes');
+const leaveRouter = require('./leave/routes');
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use('/runs', runsRouter);
 app.use('/hires', hiresRouter);
 app.use('/guests', guestsRouter);
 app.use('/rooms', roomsRouter);
+app.use('/leave', leaveRouter);
 
 app.use((err, req, res, next) => {
   res.status(500).json({ error: 'internal server error' });

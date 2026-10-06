@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Balance lookup — Leave Admin</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/leave-common.css" />
+<link rel="stylesheet" href="./css/leave-lookup.css" />
+<script src="./js/leave-lookup.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Leave Admin</span>
+    <nav class="app-nav">
+      <a href="./leave-types.html">Leave Types</a>
+      <a href="./leave-balances.html">Employee Balances</a>
+      <a href="./leave-lookup.html" class="active" aria-current="page">Balance Lookup</a>
+    </nav>
+  </div>
+<div class="page">
+  <div class="page-header">
+    <h1>Balance lookup</h1>
+    <p>The current balance per leave type for one employee — the same view embedded inside leave request and approval screens.</p>
+  </div>
+
+  <div class="picker">
+    <label class="label" for="lookup-employee-select">Employee</label>
+    <select class="input" id="lookup-employee-select"></select>
+  </div>
+
+  <div id="lookup-region"></div>
+</div>
+</body>
+</html>

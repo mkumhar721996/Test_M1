@@ -1,0 +1,6 @@
+.picker { max-width: 320px; margin-bottom: var(--space-4); }
+.lookup-card { display: flex; flex-direction: column; gap: var(--space-2); }
+.lookup-item { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); }
+.lookup-item .type-name { font-family: var(--font-family-base); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+.lookup-item .type-amount { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+.lookup-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-1); }

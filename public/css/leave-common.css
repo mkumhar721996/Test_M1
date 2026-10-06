@@ -1,0 +1,23 @@
+/* App shell, buttons, cards, chips, modal and toast live in design-system/prototype-utils.css. */
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100dvh; }
+.btn, .icon-btn, select.input, input.input { min-height: 44px; }
+.page { max-width: 920px; }
+
+.muted-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+.skeleton { display: inline-block; border-radius: var(--radius-sm); background: var(--color-border); opacity: 0.5; animation: pulse 1.1s ease-in-out infinite; }
+.skeleton-row { width: 100%; height: 64px; margin-bottom: var(--space-2); }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; opacity: 0.35; } }
+@keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.65; } }
+
+.empty-state, .error-state {
+  text-align: center;
+  padding: var(--space-4);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  background: var(--card-default-background);
+}
+.empty-state .icon, .error-state .icon { font-size: 28px; margin-bottom: var(--space-2); }
+.empty-state h3, .error-state h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+.empty-state p, .error-state p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }

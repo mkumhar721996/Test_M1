@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leave types — Leave Admin</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/leave-common.css" />
+<link rel="stylesheet" href="./css/leave-types.css" />
+<script src="./js/leave-types.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Leave Admin</span>
+    <nav class="app-nav">
+      <a href="./leave-types.html" class="active" aria-current="page">Leave Types</a>
+      <a href="./leave-balances.html">Employee Balances</a>
+      <a href="./leave-lookup.html">Balance Lookup</a>
+    </nav>
+  </div>
+<div class="page">
+  <div class="page-header">
+    <h1>Leave types</h1>
+    <p>The fixed set of leave types every employee can request against. This list can't be changed — there's no custom type creation in this story's scope.</p>
+  </div>
+
+  <div id="leave-types-region"></div>
+
+  <div class="selector-preview">
+    <h2>Preview — requesting time off</h2>
+    <p class="muted-note">How this list surfaces on an employee's leave request form (built in a later story). Static preview — not interactive here.</p>
+    <div style="max-width:320px;">
+      <label class="label" for="preview-leave-type">Leave type</label>
+      <select class="input" id="preview-leave-type" disabled aria-disabled="true"></select>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -19,4 +19,8 @@ function updateEmployee(id, changes) {
   return employee;
 }
 
-module.exports = { createEmployee, getEmployee, updateEmployee };
+function listEmployees() {
+  return Array.from(employees.values());
+}
+
+module.exports = { createEmployee, getEmployee, updateEmployee, listEmployees };
