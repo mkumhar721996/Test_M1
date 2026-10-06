@@ -274,8 +274,6 @@ function initEmployeeProfileApp(doc, employeeId, api, getRole) {
   doc.getElementById('modal-close-btn').addEventListener('click', cancelForm);
   doc.getElementById('modal-cancel-btn').addEventListener('click', cancelForm);
   overlay.addEventListener('click', cancelForm);
-  fieldEmployeeId.addEventListener('keydown', (e) => { e.preventDefault(); });
-  fieldEmployeeId.addEventListener('paste', (e) => { e.preventDefault(); });
   form.addEventListener('submit', onSubmit);
 
   loadProfile();
