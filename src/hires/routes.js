@@ -2,17 +2,11 @@ const express = require('express');
 const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
 
 const { enforceOnboardingRole } = require('../runs/auth');
+const { pickFields } = require('../lib/pickFields');
 
 const router = express.Router();
 
 const PATCHABLE_FIELDS = ['name', 'email', 'phone', 'startDate', 'department', 'role', 'hireStage'];
-
-function pickPatchableFields(body) {
-  return PATCHABLE_FIELDS.reduce((changes, field) => {
-    if (field in body) changes[field] = body[field];
-    return changes;
-  }, {});
-}
 
 router.get('/', (req, res, next) => {
   try {
@@ -48,7 +42,7 @@ router.get('/:id', (req, res, next) => {
 
 router.patch('/:id', enforceOnboardingRole, async (req, res, next) => {
   try {
-    const hire = await updateHire(req.params.id, pickPatchableFields(req.body));
+    const hire = await updateHire(req.params.id, pickFields(req.body, PATCHABLE_FIELDS));
     if (!hire) {
       return res.status(404).json({ error: 'hire not found' });
     }
