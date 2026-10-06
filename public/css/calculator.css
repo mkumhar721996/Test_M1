@@ -1,0 +1,111 @@
+/* Calculator display and keypad (TEST-M1-STORY-183). The three sizes below are local,
+   non-token values: tokens.css has no hero numeric size or expression size above --font-size-lg. */
+:root {
+  --calc-display-result-size: 2.25rem;   /* proposed: hero/result size, no existing token covers this */
+  --calc-display-expr-size-max: 1.75rem; /* proposed: roomiest expression size, above --font-size-lg */
+  --calc-display-expr-size-mid: 1.375rem; /* proposed: mid shrink step, between lg and md */
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Calculator display ---------- */
+.calc-display {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.calc-expression {
+  width: 100%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-align: right;
+  direction: ltr;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-fg-muted);
+  font-size: var(--calc-display-expr-size-max);
+  min-height: 1.4em;
+  transition: font-size 180ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .calc-expression { transition: none; }
+}
+.calc-result-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  min-height: 1.3em;
+}
+.calc-result {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--calc-display-result-size);
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+}
+.calc-result.is-preview { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+.calc-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  width: 100%;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-fg);
+}
+.calc-error-icon { color: var(--color-primary); }
+
+/* ---------- Keypad ---------- */
+.calc-keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+.calc-key {
+  min-height: 44px; /* AC12: WCAG 2.5.5-aligned touch target floor, not a design-system spacing token */
+  min-width: 44px;
+  height: 58px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.calc-key:hover { background: var(--color-border); }
+.calc-key:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.calc-key.op {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+}
+.calc-key.op:hover { background: var(--color-surface); }
+.calc-key.clear {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+}
+.calc-key.equals {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-color: var(--button-primary-background);
+}
+.calc-key.equals:hover { filter: brightness(1.08); }
+.calc-key.span-2 { grid-column: span 2; }
+.calc-key.span-3 { grid-column: span 3; }
