@@ -192,3 +192,18 @@ table.expense-table { width: 100%; border-collapse: collapse; min-width: 560px; 
 
 /* ---------- Toast icon variants (color stays the token default; icon + text carry meaning) ---------- */
 .toast .toast-icon { flex: 0 0 auto; }
+
+.edited-badge {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-family-base);
+  font-size: 0.75rem;
+  color: var(--color-primary);
+}
+.origin-note {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.origin-note strong { color: var(--color-fg); }

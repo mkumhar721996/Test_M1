@@ -3,9 +3,9 @@ const { escapeHtml, formatDateDisplay } = require('./utils');
 const STORAGE_KEY = 'expenses';
 const CATEGORIES = ['Travel', 'Meals', 'Software', 'Office Supplies', 'Other'];
 const INITIAL_EXPENSES = [
-  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50, loggedBy: 'Morgan Ellis' },
-  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18, loggedBy: 'Priya Shah' },
-  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00, loggedBy: 'Devon Ruiz' },
+  { id: 'exp_001', date: '2026-09-02', category: 'Travel', description: 'Flight to Chicago client site', amount: 482.50, loggedBy: 'Morgan Ellis', lastEditedBy: null },
+  { id: 'exp_002', date: '2026-09-05', category: 'Meals', description: 'Team lunch — Q3 kickoff', amount: 96.18, loggedBy: 'Priya Shah', lastEditedBy: null },
+  { id: 'exp_003', date: '2026-09-10', category: 'Software', description: 'Figma seat renewal', amount: 15.00, loggedBy: 'Devon Ruiz', lastEditedBy: null },
 ];
 
 function loadExpenses() {
@@ -92,6 +92,7 @@ function initExpensesApp(doc = document) {
   const saveBtn = doc.getElementById('modal-save-btn');
 
   const fieldAmount = doc.getElementById('field-amount');
+  const originNote = doc.getElementById('origin-note');
   const fieldDate = doc.getElementById('field-date');
   const fieldCategory = doc.getElementById('field-category');
   const fieldDescription = doc.getElementById('field-description');
@@ -147,11 +148,12 @@ function initExpensesApp(doc = document) {
       const tr = doc.createElement('tr');
       if (exp.id === lastUpdatedId) tr.className = 'row-updated';
       if (exp.id === lastAddedId) tr.className = 'row-added';
+      const editedBadge = exp.lastEditedBy ? `<span class="edited-badge">Edited by ${escapeHtml(doc, exp.lastEditedBy)}</span>` : '';
       tr.innerHTML = `
         <td>${escapeHtml(doc, formatDateDisplay(exp.date))}</td>
         <td><span class="chip">${escapeHtml(doc, exp.category)}</span></td>
         <td class="desc-cell">${escapeHtml(doc, exp.description) || '—'}</td>
-        <td class="logged-by-cell">${escapeHtml(doc, exp.loggedBy)}</td>
+        <td class="logged-by-cell">${escapeHtml(doc, exp.loggedBy)}${editedBadge}</td>
         <td class="col-amount">${formatUSD(exp.amount)}</td>
         <td class="col-actions">
           <button class="btn btn-secondary btn-sm" type="button" data-edit-id="${exp.id}">Edit</button>
@@ -226,6 +228,7 @@ function initExpensesApp(doc = document) {
     fieldDate.value = exp.date;
     fieldCategory.value = exp.category;
     fieldDescription.value = exp.description;
+    originNote.innerHTML = `Originally logged by <strong>${escapeHtml(doc, exp.loggedBy)}</strong> on ${formatDateDisplay(exp.date)}.`;
     clearAllErrors();
 
     overlay.hidden = false;
@@ -303,7 +306,7 @@ function initExpensesApp(doc = document) {
         date: dateValue,
         category: categoryValue,
         description: fieldDescription.value.trim(),
-        loggedBy: viewerSelect.value,
+        lastEditedBy: viewerSelect.value,
       };
       try {
         persistExpenses([
@@ -314,7 +317,7 @@ function initExpensesApp(doc = document) {
       } catch (err) {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save changes';
-        showToast('error', 'Expense could not be saved — please try again');
+        showToast('error', "Couldn't save changes — please try again");
         return;
       }
       expenses[idx] = updated;
