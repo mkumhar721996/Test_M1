@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-170 — Employee Profile Editing</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per the UX baseline (never encode meaning in colour alone), the
+    permission-denied notice, the locked employee-ID field, and the error/partial
+    profile states below are all signalled with an icon + bold text + border weight
+    using the existing --color-primary/--color-fg tokens, never by hue alone. If
+    sdlc.design-system-bootstrap later adds e.g. `color-danger`/`color-success` or a
+    `.field-locked` component alias, this page's `.notice--deny`, `.field-readonly`,
+    and `.status-chip` variants are the only places to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- Role / employee pickers ---------- */
+  .picker-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+  }
+  .picker-field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .picker-field label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .picker-field select { width: auto; min-width: 230px; }
+
+  .role-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .role-banner[hidden] { display: none; }
+  .role-banner .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .role-banner strong { color: var(--color-fg); }
+
+  .demo-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .demo-toggles label { display: flex; align-items: center; gap: var(--space-2); }
+
+  /* ---------- Content states ---------- */
+  .profile-area { min-height: 320px; }
+
+  .empty-state, .error-state {
+    text-align: center;
+    padding: calc(var(--space-4) * 2) var(--space-4);
+  }
+  .empty-state p, .error-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state .state-icon, .error-state .state-icon { font-size: var(--font-size-lg); display: block; margin-bottom: var(--space-2); color: var(--color-fg-muted); }
+  .error-state .state-icon { color: var(--color-primary); }
+
+  .skeleton-line {
+    height: 1em;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-sweep 1.3s ease-in-out infinite;
+    margin-bottom: var(--space-3);
+  }
+  @keyframes skeleton-sweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-line { animation: none; }
+  }
+  .skeleton-label { width: 35%; }
+  .skeleton-value { width: 70%; height: 1.4em; margin-bottom: var(--space-4); }
+
+  /* ---------- Profile card ---------- */
+  .profile-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+  }
+  .profile-id-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .profile-id-line .lock-icon { color: var(--color-fg-muted); }
+
+  .kv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+  @media (max-width: 560px) { .kv-grid { grid-template-columns: 1fr; } }
+  .kv-item { min-width: 0; }
+  .kv-label {
+    display: block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: var(--space-1);
+  }
+  .kv-value {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    word-break: break-word;
+  }
+  .kv-value.is-not-set { color: var(--color-fg-muted); font-style: italic; }
+  .kv-item.field-changed { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kv-item.field-changed { animation: none; }
+  }
+
+  .partial-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-bg);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-top: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .partial-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--leave { border: 1px dashed var(--color-fg-muted); color: var(--color-fg); }
+  .status-chip--terminated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Permission-denied notice ---------- */
+  .notice--deny {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    background: var(--color-bg);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .notice--deny .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); flex: 0 0 auto; }
+  .notice--deny p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .notice--deny p:last-child { margin-bottom: 0; }
+  .notice--deny .notice-sub { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .locked-btn .lock-icon { margin-right: var(--space-1); }
+
+  /* ---------- Edit modal ---------- */
+  .modal-panel { width: min(92vw, 480px); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .required-tag { font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+  .fieldset-legend {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0;
+    margin: 0 0 var(--space-3) 0;
+  }
+  .form-fieldset { border: none; margin: 0 0 var(--space-4) 0; padding: 0; }
+
+  .field-readonly {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--input-default-border);
+    border-radius: var(--input-default-radius);
+  }
+  .field-readonly input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    padding: 0;
+    cursor: not-allowed;
+  }
+  .field-readonly input:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .field-readonly .lock-icon { flex: 0 0 auto; color: var(--color-fg-muted); }
+
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .hint { display: block; margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .save-error-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .save-error-banner[hidden] { display: none; }
+  .save-error-banner .notice-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+
+  .lock-compare { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 680px) { .lock-compare { grid-template-columns: 1fr 1fr; } }
+  .lock-card .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .lock-card .kv-row { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .lock-card .kv-row:last-child { border-bottom: none; }
+  .lock-card .kv-row-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .lock-card .kv-row-value { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Onboarding brand, same shell as TEST-M1-STORY-155/167's hire-profile
+     prototypes. Nav adds "Employees" (active here) alongside the existing Profiles · Runs ·
+     Settings: Profiles/Runs cover the pre-completion hire-profile and onboarding-run work
+     item; once onboarding completes an employee record exists and this story's "Employees"
+     view takes over for viewing/editing it. This story covers only the onboarding-captured
+     field set (name, email, department, role, startDate, employmentStatus) plus the locked
+     employeeId; it does not cover deactivate/reactivate status transitions (that lifecycle
+     belongs to the hire-profile, not this employee record) or directory search — the
+     "Viewing" picker on screen 1 is a demo convenience for switching between fixture
+     employees, not a search feature. -->
+<body class="u-surface">
+
+  <!-- Fixture data: three onboarding-completed employee records. Jordan Reyes and Priya
+       Shah are fully populated; Taylor Kim's department was never captured (a legacy gap)
+       to demonstrate the "partial" data state. -->
+  <script type="application/json" id="fixture-employees">
+  [
+    {
+      "employeeId": "emp_2031",
+      "name": "Jordan Reyes",
+      "email": "jordan.reyes@example.com",
+      "department": "Engineering",
+      "role": "Software Engineer II",
+      "startDate": "2026-09-20",
+      "employmentStatus": "Active"
+    },
+    {
+      "employeeId": "emp_3108",
+      "name": "Priya Shah",
+      "email": "priya.shah@example.com",
+      "department": "People Ops",
+      "role": "HR Generalist",
+      "startDate": "2026-08-31",
+      "employmentStatus": "On leave"
+    },
+    {
+      "employeeId": "emp_3119",
+      "name": "Taylor Kim",
+      "email": "taylor.kim@example.com",
+      "department": "",
+      "role": "Financial Analyst",
+      "startDate": "2026-11-02",
+      "employmentStatus": "Active"
+    }
+  ]
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-170</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Employee Profile (interactive)
+         Notes:
+           - "Signed in as" switches between HR, Manager, and Team member (no HR/Manager
+             access) live. "Viewing" picks which fixture employee's profile is requested.
+             Both react immediately, no reload.
+           - As HR or Manager, picking an employee simulates a GET request: a brief loading
+             skeleton, then the profile renders with name, email, department, role, start
+             date, and employment status, plus the locked employee ID (AC1). Taylor Kim's
+             profile is missing a department (never captured) — it renders as "Not set"
+             rather than blank, demonstrating the partial-data state.
+           - Check "Simulate load failure (demo only)" before picking an employee to see the
+             error state instead — a named problem and a "Retry" button that re-attempts the
+             same request.
+           - As Team member, any selection — or the "no employee selected yet" empty state —
+             is replaced by a permission-denied panel; the profile's fields are never shown
+             (AC2). Its "Edit profile" button stays visible and clickable (so you can see the
+             request actually get made and rejected) but only ever opens a matching
+             permission-denied notice and changes nothing (AC4).
+           - As HR or Manager, "Edit profile" opens a form pre-filled with the current
+             values. Name, email, department, role, start date, and employment status are
+             all editable; changing any of them and saving updates the profile in place
+             (AC3). Employee ID is shown read-only with a lock icon — it cannot be typed
+             into here, and stays unchanged no matter what the rest of the form submits
+             (AC5); see "Employee ID lock" for a concrete before/after.
+           - Check "Simulate save failure (demo only)" before saving to see an inline error
+             banner inside the form — the dialog stays open and every entered value is kept,
+             nothing is saved.
+           - Data is written to real localStorage under `test-m1-story-170-employees` —
+             reload this file to confirm a change is still present. "Reset demo data"
+             restores the original fixture values.
+    -->
+    <div class="screen" data-name="Employee Profile">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button" style="background:none;border:none;color:var(--color-fg-muted);font-family:var(--font-family-base);font-size:var(--font-size-sm);cursor:pointer;text-decoration:underline;padding:var(--space-2);">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>Employee profile</h1>
+            <p>View and update an employee's profile once their onboarding is complete.</p>
+          </div>
+          <div class="picker-bar" style="margin-bottom:0;">
+            <div class="picker-field">
+              <label for="role-select">Signed in as</label>
+              <select class="input" id="role-select">
+                <option value="hr">HR</option>
+                <option value="manager">Manager</option>
+                <option value="team_member">Team member (no HR/Manager access)</option>
+              </select>
+            </div>
+            <div class="picker-field">
+              <label for="employee-select">Viewing</label>
+              <select class="input" id="employee-select">
+                <option value="">— Select an employee —</option>
+                <option value="emp_2031">Jordan Reyes (emp_2031)</option>
+                <option value="emp_3108">Priya Shah (emp_3108)</option>
+                <option value="emp_3119">Taylor Kim (emp_3119)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-toggles" style="margin-bottom: var(--space-4);">
+          <label><input type="checkbox" id="simulate-load-failure-checkbox" /> Simulate load failure (demo only)</label>
+        </div>
+
+        <div class="role-banner" id="role-banner" hidden>
+          <span class="hint-icon" aria-hidden="true">⛔</span>
+          <span><strong>Viewing as Team member.</strong> Only HR or Manager can view or update employee profiles. The request below is still made so you can see it get rejected.</span>
+        </div>
+
+        <div class="card profile-area" id="profile-area">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Edit profile modal -->
+      <div class="modal-overlay" id="modal-overlay" hidden></div>
+      <div class="modal-wrap" id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+        <div class="modal-panel">
+          <div class="modal-header">
+            <div>
+              <h2 id="modal-title">Edit profile</h2>
+              <p id="modal-subtitle">Update any field and save.</p>
+            </div>
+            <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+
+          <!-- State: permission-denied (edit) -->
+          <div class="notice--deny" id="form-deny-notice" hidden>
+            <span class="notice-icon" aria-hidden="true">⛔</span>
+            <div>
+              <p><strong>You don't have permission to do that.</strong></p>
+              <p class="notice-sub">Updating employee profiles is restricted to HR and Manager roles. No changes were made.</p>
+            </div>
+          </div>
+
+          <form id="profile-form" novalidate>
+            <!-- State: save-error -->
+            <div class="save-error-banner" id="save-error-banner" hidden role="alert">
+              <span class="notice-icon" aria-hidden="true">⚠</span>
+              <span><strong>Couldn't save this profile.</strong> Nothing was changed — your edits are still here. Try saving again.</span>
+            </div>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Identity</legend>
+              <div class="field">
+                <label class="label" for="field-employee-id">Employee ID</label>
+                <span class="field-readonly">
+                  <input id="field-employee-id" type="text" readonly tabindex="0" aria-readonly="true" aria-describedby="hint-employee-id" />
+                  <span class="lock-icon" aria-hidden="true">🔒</span>
+                </span>
+                <span class="hint" id="hint-employee-id">Locked once set during onboarding — this value can't be changed here, even if a different one is submitted.</span>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="field-name">Full name <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-name" name="name" type="text" placeholder="e.g. Jordan Reyes" aria-describedby="error-name" />
+                <p class="field-error" id="error-name" role="alert" hidden>⚠ Full name is required.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Contact</legend>
+              <div class="field" style="margin-bottom:0;">
+                <label class="label" for="field-email">Email <span class="required-tag">(required)</span></label>
+                <input class="input" id="field-email" name="email" type="email" placeholder="jordan.reyes@example.com" aria-describedby="error-email" />
+                <p class="field-error" id="error-email" role="alert" hidden>⚠ Enter a valid email address.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Department &amp; role</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-department">Department <span class="required-tag">(required)</span></label>
+                  <select class="input" id="field-department" name="department" aria-describedby="error-department">
+                    <option value="">Select a department</option>
+                    <option>Engineering</option>
+                    <option>Product</option>
+                    <option>Sales</option>
+                    <option>People Ops</option>
+                    <option>Finance</option>
+                  </select>
+                  <p class="field-error" id="error-department" role="alert" hidden>⚠ Department is required.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="field-role">Role <span class="required-tag">(required)</span></label>
+                  <input class="input" id="field-role" name="role" type="text" placeholder="e.g. Software Engineer II" aria-describedby="error-role" />
+                  <p class="field-error" id="error-role" role="alert" hidden>⚠ Role is required.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset" style="margin-bottom: 0;">
+              <legend class="fieldset-legend">Employment</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label class="label" for="field-start-date">Start date <span class="required-tag">(required)</span></label>
+                  <input class="input" id="field-start-date" name="startDate" type="date" aria-describedby="error-start-date" />
+                  <p class="field-error" id="error-start-date" role="alert" hidden>⚠ Start date is required.</p>
+                </div>
+                <div class="field" style="margin-bottom:0;">
+                  <label class="label" for="field-employment-status">Employment status <span class="required-tag">(required)</span></label>
+                  <select class="input" id="field-employment-status" name="employmentStatus">
+                    <option>Active</option>
+                    <option>On leave</option>
+                    <option>Terminated</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="demo-toggles" style="margin-bottom: var(--space-3);">
+              <label><input type="checkbox" id="simulate-save-failure-checkbox" /> Simulate save failure (demo only)</label>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="modal-save-btn">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Profile updated</span>
+      </div>
+    </div>
+
+    <!-- Screen: Role & Request Permissions (reference)
+         Notes:
+           - Summarizes exactly which roles can view and update an employee's profile,
+             matching the rejection behaviour wired into screen 1's role switcher.
+    -->
+    <div class="screen" data-name="Role &amp; Request Permissions">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Role &amp; request permissions</h1>
+            <p>Non-interactive reference. Try switching "Signed in as" on screen 1 to see these outcomes live.</p>
+          </div>
+        </div>
+        <div class="card">
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Request</th><th>HR</th><th>Manager</th><th>Team member</th><th>Satisfies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>View employee profile</td><td><span class="verdict pass">Allowed — full profile shown</span></td><td><span class="verdict pass">Allowed — full profile shown</span></td><td><span class="verdict block">Rejected — profile never shown</span></td><td>AC1, AC2</td></tr>
+              <tr><td>Update employee profile</td><td><span class="verdict pass">Allowed — profile saved</span></td><td><span class="verdict pass">Allowed — profile saved</span></td><td><span class="verdict block">Rejected — profile unchanged</span></td><td>AC3, AC4</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">A rejected request never renders profile data and never saves a change — the rejection happens at the point the request is made, same as the underlying API returning a 403.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Employee ID Lock (reference)
+         Notes:
+           - Concrete before/after for AC5: even when an update submission includes a
+             different employeeId, the stored profile keeps its original one. Screen 1's
+             edit form shows the same read-only, locked field live.
+    -->
+    <div class="screen" data-name="Employee ID Lock">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div>
+            <h1>Employee ID lock</h1>
+            <p>Jordan Reyes's employeeId (emp_2031) was set when onboarding completed. Here's what happens if an update submission tries to change it anyway.</p>
+          </div>
+        </div>
+
+        <div class="lock-compare">
+          <div class="card lock-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">Submitted update</h3>
+              <span class="status-chip"><span aria-hidden="true">⚠</span> Includes a different ID</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-row-label">employeeId</span><span class="kv-row-value">emp_9999 (attempted)</span></div>
+              <div class="kv-row"><span class="kv-row-label">role</span><span class="kv-row-value">Senior Software Engineer</span></div>
+              <div class="kv-row"><span class="kv-row-label">employmentStatus</span><span class="kv-row-value">Active</span></div>
+            </div>
+          </div>
+          <div class="card lock-card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3);">
+              <h3 class="card-title" style="margin:0;">Saved profile</h3>
+              <span class="status-chip status-chip--active"><span aria-hidden="true">🔒</span> ID unchanged</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-row-label">employeeId</span><span class="kv-row-value">emp_2031 (unchanged)</span></div>
+              <div class="kv-row"><span class="kv-row-label">role</span><span class="kv-row-value">Senior Software Engineer (updated)</span></div>
+              <div class="kv-row"><span class="kv-row-label">employmentStatus</span><span class="kv-row-value">Active (unchanged)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="hint" style="margin-top: var(--space-4);">Every other submitted field — role, in this example — still saves normally. Only employeeId is ever rejected and held at its original value.</p>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" onclick="return false;">Runs</a>
+          <a href="#" class="active" aria-current="page">Employees</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>HR/Manager sees all six fields <span class="ac-id">— AC1</span></h3><p>As HR or Manager, selecting an employee from "Viewing" renders name, email, department, role, start date, and employment status.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Non-HR/Manager view is rejected <span class="ac-id">— AC2</span></h3><p>As Team member, selecting any employee shows a permission-denied panel instead of the profile — the fields never render.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>HR/Manager update saves the new values <span class="ac-id">— AC3</span></h3><p>"Edit profile" opens a form pre-filled with current values; changing any of the six fields and saving updates the profile in place.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>Non-HR/Manager update is rejected <span class="ac-id">— AC4</span></h3><p>As Team member, "Edit profile" shows the same permission-denied notice and the profile's values never change.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">5</span>
+            <div><h3>employeeId stays unchanged once set <span class="ac-id">— AC5</span></h3><p>The edit form's Employee ID field is read-only and locked; see "Employee ID lock" for the before/after when a different ID is submitted anyway.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-170-employees';
+  const INITIAL_EMPLOYEES = JSON.parse(document.getElementById('fixture-employees').textContent);
+
+  function loadEmployees() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_EMPLOYEES));
+    } catch (e) { /* storage unavailable — fall back to in-memory defaults */ }
+    return INITIAL_EMPLOYEES.map(e => ({ ...e }));
+  }
+
+  function persistEmployees(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function statusChipClass(status) {
+    if (status === 'Active') return 'status-chip--active';
+    if (status === 'On leave') return 'status-chip--leave';
+    return 'status-chip--terminated';
+  }
+
+  let employees = loadEmployees();
+  let pendingLoadTimer = null;
+
+  function currentRole() {
+    return document.getElementById('role-select').value; // 'hr' | 'manager' | 'team_member'
+  }
+  function hasAccess() {
+    return currentRole() !== 'team_member';
+  }
+  function selectedEmployeeId() {
+    return document.getElementById('employee-select').value;
+  }
+  function findEmployee(id) {
+    return employees.find(e => e.employeeId === id);
+  }
+
+  // ---------- Profile area rendering ----------
+  const profileArea = document.getElementById('profile-area');
+  const roleBanner = document.getElementById('role-banner');
+
+  // State: empty (no employee selected)
+  function renderEmptyState() {
+    profileArea.innerHTML = `
+      <div class="empty-state">
+        <span class="state-icon" aria-hidden="true">👤</span>
+        <p>Select an employee from "Viewing" to see their profile.</p>
+      </div>`;
+  }
+
+  // State: access-denied (view request rejected — AC2)
+  function renderDeniedState() {
+    profileArea.innerHTML = `
+      <div class="notice--deny">
+        <span class="notice-icon" aria-hidden="true">⛔</span>
+        <div>
+          <p><strong>You don't have permission to view this profile.</strong></p>
+          <p class="notice-sub">Viewing employee profiles is restricted to HR and Manager roles. No profile data was returned.</p>
+        </div>
+      </div>
+      <div style="margin-top: var(--space-4); text-align:right;">
+        <button type="button" class="btn btn-secondary locked-btn" id="edit-profile-btn"><span class="lock-icon" aria-hidden="true">🔒</span>Edit profile</button>
+      </div>`;
+    document.getElementById('edit-profile-btn').addEventListener('click', onEditClick);
+  }
+
+  // State: loading
+  function renderSkeleton() {
+    profileArea.innerHTML = `
+      <div class="profile-card-header">
+        <div class="skeleton-line skeleton-label" style="width:40%; height:1.5em; margin-bottom:0;"></div>
+      </div>
+      <div class="kv-grid">
+        ${Array.from({ length: 6 }).map(() => `
+          <div class="kv-item">
+            <div class="skeleton-line skeleton-label"></div>
+            <div class="skeleton-line skeleton-value"></div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  // State: error (load failure)
+  function renderErrorState(id) {
+    profileArea.innerHTML = `
+      <div class="error-state">
+        <span class="state-icon" aria-hidden="true">⚠</span>
+        <p><strong>Couldn't load this profile.</strong><br/>Something went wrong fetching this employee's record.</p>
+        <button type="button" class="btn btn-primary" id="retry-load-btn">Retry</button>
+      </div>`;
+    document.getElementById('retry-load-btn').addEventListener('click', () => loadProfile(id));
+  }
+
+  // State: success (full) — or partial when a field like department was never captured
+  function renderProfile(emp, changedKeys) {
+    changedKeys = changedKeys || [];
+    const isPartial = !emp.department;
+    const fieldCell = (key, label, value) => {
+      const empty = value === '' || value === undefined || value === null;
+      const displayValue = empty ? 'Not set' : escapeHtml(value);
+      const cls = 'kv-item' + (changedKeys.includes(key) ? ' field-changed' : '');
+      const valueCls = 'kv-value' + (empty ? ' is-not-set' : '');
+      return `<div class="${cls}"><span class="kv-label">${label}</span><span class="${valueCls}">${displayValue}</span></div>`;
+    };
+
+    profileArea.innerHTML = `
+      <div class="profile-card-header">
+        <h2 class="card-title" style="margin:0;">${escapeHtml(emp.name)}</h2>
+        <button type="button" class="btn btn-primary" id="edit-profile-btn">Edit profile</button>
+      </div>
+      <div class="profile-id-line"><span class="lock-icon" aria-hidden="true">🔒</span><span>Employee ID: ${emp.employeeId} (locked)</span></div>
+      <div class="kv-grid" style="margin-top: var(--space-4);">
+        ${fieldCell('name', 'Full name', emp.name)}
+        ${fieldCell('email', 'Email', emp.email)}
+        ${fieldCell('department', 'Department', emp.department)}
+        ${fieldCell('role', 'Role', emp.role)}
+        ${fieldCell('startDate', 'Start date', emp.startDate ? formatDateDisplay(emp.startDate) : '')}
+        <div class="kv-item${changedKeys.includes('employmentStatus') ? ' field-changed' : ''}"><span class="kv-label">Employment status</span><span class="kv-value"><span class="status-chip ${statusChipClass(emp.employmentStatus)}">${escapeHtml(emp.employmentStatus)}</span></span></div>
+      </div>
+      ${isPartial ? `<p class="partial-note"><span class="hint-icon" aria-hidden="true">ℹ</span><span>Department was never captured for this employee during onboarding. Use "Edit profile" to fill it in.</span></p>` : ''}
+    `;
+    document.getElementById('edit-profile-btn').addEventListener('click', onEditClick);
+  }
+
+  function loadProfile(id) {
+    clearTimeout(pendingLoadTimer);
+    const simulateFailure = document.getElementById('simulate-load-failure-checkbox').checked;
+    renderSkeleton();
+    pendingLoadTimer = setTimeout(() => {
+      if (simulateFailure) {
+        renderErrorState(id);
+        return;
+      }
+      const emp = findEmployee(id);
+      if (!emp) { renderErrorState(id); return; }
+      renderProfile(emp, []);
+    }, 280);
+  }
+
+  function renderProfileArea() {
+    roleBanner.hidden = hasAccess();
+    const id = selectedEmployeeId();
+
+    if (!hasAccess()) {
+      // AC2: view request rejected regardless of which employee was requested.
+      renderDeniedState();
+      return;
+    }
+
+    if (!id) {
+      renderEmptyState();
+      return;
+    }
+
+    loadProfile(id);
+  }
+
+  document.getElementById('role-select').addEventListener('change', renderProfileArea);
+  document.getElementById('employee-select').addEventListener('change', renderProfileArea);
+  document.getElementById('simulate-load-failure-checkbox').addEventListener('change', () => {
+    if (hasAccess() && selectedEmployeeId()) loadProfile(selectedEmployeeId());
+  });
+
+  document.getElementById('reset-data-btn').addEventListener('click', () => {
+    employees = INITIAL_EMPLOYEES.map(e => ({ ...e }));
+    persistEmployees(employees);
+    renderProfileArea();
+    showToast('Demo data reset');
+  });
+
+  // ---------- Edit modal ----------
+  const overlay = document.getElementById('modal-overlay');
+  const modalWrap = document.getElementById('modal-wrap');
+  const modalSubtitle = document.getElementById('modal-subtitle');
+  const formDenyNotice = document.getElementById('form-deny-notice');
+  const saveErrorBanner = document.getElementById('save-error-banner');
+  const form = document.getElementById('profile-form');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  const fieldEmployeeId = document.getElementById('field-employee-id');
+  const fieldName = document.getElementById('field-name');
+  const fieldEmail = document.getElementById('field-email');
+  const fieldDepartment = document.getElementById('field-department');
+  const fieldRole = document.getElementById('field-role');
+  const fieldStartDate = document.getElementById('field-start-date');
+  const fieldEmploymentStatus = document.getElementById('field-employment-status');
+
+  let editingId = null;
+
+  function openModalShell() {
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    document.addEventListener('keydown', onModalKeydown);
+  }
+
+  function onEditClick() {
+    const id = selectedEmployeeId();
+    const emp = findEmployee(id);
+    editingId = id;
+    saveErrorBanner.hidden = true;
+
+    if (!hasAccess()) {
+      // AC4: request rejected — profile stays exactly as it was, form never renders.
+      form.hidden = true;
+      formDenyNotice.hidden = false;
+      modalSubtitle.textContent = emp ? `Profile ${emp.employeeId}.` : '';
+      openModalShell();
+      return;
+    }
+
+    if (!emp) return;
+    form.hidden = false;
+    formDenyNotice.hidden = true;
+    clearAllErrors();
+    fieldEmployeeId.value = emp.employeeId;
+    fieldName.value = emp.name;
+    fieldEmail.value = emp.email;
+    fieldDepartment.value = emp.department || '';
+    fieldRole.value = emp.role;
+    fieldStartDate.value = emp.startDate;
+    fieldEmploymentStatus.value = emp.employmentStatus;
+    modalSubtitle.textContent = `Profile ${emp.employeeId}. Update any field and save.`;
+    openModalShell();
+    fieldName.focus();
+  }
+
+  let saveTimer = null;
+
+  function closeModal() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save changes';
+    document.removeEventListener('keydown', onModalKeydown);
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+
+  function onModalKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelForm();
+    }
+  }
+
+  function cancelForm() {
+    const wasDenied = !formDenyNotice.hidden;
+    closeModal();
+    if (!wasDenied) showToast('No changes saved — dialog closed');
+  }
+
+  document.getElementById('modal-close-btn').addEventListener('click', cancelForm);
+  document.getElementById('modal-cancel-btn').addEventListener('click', cancelForm);
+  overlay.addEventListener('click', cancelForm);
+
+  // AC5: the employee ID field is readonly — any attempted keystroke is a no-op, and the
+  // field is never part of the submitted form data, so the stored ID never changes.
+  fieldEmployeeId.addEventListener('keydown', (e) => { e.preventDefault(); });
+  fieldEmployeeId.addEventListener('paste', (e) => { e.preventDefault(); });
+
+  function setFieldError(fieldEl, errorEl, message) {
+    if (message) {
+      errorEl.hidden = false;
+      errorEl.textContent = '⚠ ' + message;
+      fieldEl.classList.add('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'true');
+    } else {
+      errorEl.hidden = true;
+      fieldEl.classList.remove('input-invalid');
+      fieldEl.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  function clearAllErrors() {
+    setFieldError(fieldName, document.getElementById('error-name'), '');
+    setFieldError(fieldEmail, document.getElementById('error-email'), '');
+    setFieldError(fieldDepartment, document.getElementById('error-department'), '');
+    setFieldError(fieldRole, document.getElementById('error-role'), '');
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), '');
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+    saveErrorBanner.hidden = true;
+
+    const nameValue = fieldName.value.trim();
+    const emailValue = fieldEmail.value.trim();
+    const departmentValue = fieldDepartment.value;
+    const roleValue = fieldRole.value.trim();
+    const startDateValue = fieldStartDate.value;
+    const employmentStatusValue = fieldEmploymentStatus.value;
+
+    const nameError = nameValue === '' ? 'Full name is required.' : '';
+    const emailError = emailValue === '' ? 'Email is required.' : (!isValidEmail(emailValue) ? 'Enter a valid email address.' : '');
+    const departmentError = departmentValue === '' ? 'Department is required.' : '';
+    const roleError = roleValue === '' ? 'Role is required.' : '';
+    const startDateError = startDateValue === '' ? 'Start date is required.' : '';
+
+    setFieldError(fieldName, document.getElementById('error-name'), nameError);
+    setFieldError(fieldEmail, document.getElementById('error-email'), emailError);
+    setFieldError(fieldDepartment, document.getElementById('error-department'), departmentError);
+    setFieldError(fieldRole, document.getElementById('error-role'), roleError);
+    setFieldError(fieldStartDate, document.getElementById('error-start-date'), startDateError);
+
+    if (nameError || emailError || departmentError || roleError || startDateError) {
+      const firstInvalid = nameError ? fieldName
+        : emailError ? fieldEmail
+        : departmentError ? fieldDepartment
+        : roleError ? fieldRole
+        : fieldStartDate;
+      firstInvalid.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    const simulateFailure = document.getElementById('simulate-save-failure-checkbox').checked;
+
+    // Simulated latency — no real network call.
+    saveTimer = setTimeout(() => {
+      if (simulateFailure) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save changes';
+        saveErrorBanner.hidden = false;
+        return;
+      }
+
+      const before = findEmployee(editingId);
+      const changedKeys = [];
+      if (before.name !== nameValue) changedKeys.push('name');
+      if (before.email !== emailValue) changedKeys.push('email');
+      if (before.department !== departmentValue) changedKeys.push('department');
+      if (before.role !== roleValue) changedKeys.push('role');
+      if (before.startDate !== startDateValue) changedKeys.push('startDate');
+      if (before.employmentStatus !== employmentStatusValue) changedKeys.push('employmentStatus');
+
+      // AC3 + AC5: every field is saved except employeeId, which always keeps its
+      // original value — the readonly field above never contributes a new one.
+      const nextList = employees.map(emp => emp.employeeId === editingId ? {
+        ...emp,
+        name: nameValue,
+        email: emailValue,
+        department: departmentValue,
+        role: roleValue,
+        startDate: startDateValue,
+        employmentStatus: employmentStatusValue,
+      } : emp);
+
+      persistEmployees(nextList);
+      employees = nextList;
+      closeModal();
+      renderProfile(findEmployee(editingId), changedKeys);
+      showToast('Profile updated');
+    }, 320);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+
+  // ---------- Init ----------
+  renderProfileArea();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !modalWrap.contains(document.activeElement) && modalWrap.hidden) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !modalWrap.contains(document.activeElement) && modalWrap.hidden) show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
