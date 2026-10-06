@@ -38,21 +38,20 @@ function validateExpenseFields({ amount, date, category }) {
 function validateAmount(raw) {
   const trimmed = (raw || '').trim();
   if (trimmed === '') return 'Amount is required.';
-  if (!/^\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid amount, e.g. 24.50.';
+  if (!/^-?\d+(\.\d+)?$/.test(trimmed)) return 'Enter a valid number, e.g. 24.50.';
+  if (parseFloat(trimmed) <= 0) return 'Amount must be greater than $0.00.';
   const decimalMatch = trimmed.match(/\.(\d+)$/);
   if (decimalMatch && decimalMatch[1].length > 2) {
-    return 'Amount can have at most 2 decimal places.';
+    return 'Amount can have at most 2 decimal places, e.g. 24.50.';
   }
-  if (parseFloat(trimmed) <= 0) return 'Enter an amount greater than $0.00.';
   return '';
 }
 
-function validateCreateExpenseFields({ amount, date, category, description }) {
+function validateCreateExpenseFields({ amount, date, category }) {
   return {
     amount: validateAmount(amount) || null,
     date: date === '' ? 'Date is required.' : null,
     category: category === '' ? 'Category is required.' : null,
-    description: (description || '').trim() === '' ? 'Description is required.' : null,
   };
 }
 
@@ -306,7 +305,6 @@ function initExpensesApp(doc = document) {
   const createErrorAmount = doc.getElementById('create-error-amount');
   const createErrorDate = doc.getElementById('create-error-date');
   const createErrorCategory = doc.getElementById('create-error-category');
-  const createErrorDescription = doc.getElementById('create-error-description');
   const createModalPanel = createModalWrap.querySelector('.modal-panel');
   const viewerSelect = doc.getElementById('viewer-select');
   let createSaveTimer = null;
@@ -316,7 +314,6 @@ function initExpensesApp(doc = document) {
     setFieldError(createFieldAmount, createErrorAmount, false);
     setFieldError(createFieldDate, createErrorDate, false);
     setFieldError(createFieldCategory, createErrorCategory, false);
-    setFieldError(createFieldDescription, createErrorDescription, false);
   }
 
   function getFocusableElements(container) {
@@ -396,19 +393,16 @@ function initExpensesApp(doc = document) {
       amount: amountRaw,
       date: dateValue,
       category: categoryValue,
-      description: descriptionValue,
     });
 
     setFieldError(createFieldAmount, createErrorAmount, Boolean(errors.amount), errors.amount);
     setFieldError(createFieldDate, createErrorDate, Boolean(errors.date), errors.date);
     setFieldError(createFieldCategory, createErrorCategory, Boolean(errors.category), errors.category);
-    setFieldError(createFieldDescription, createErrorDescription, Boolean(errors.description), errors.description);
 
-    if (errors.amount || errors.date || errors.category || errors.description) {
+    if (errors.amount || errors.date || errors.category) {
       const firstInvalid = errors.amount ? createFieldAmount
         : errors.date ? createFieldDate
-        : errors.category ? createFieldCategory
-        : createFieldDescription;
+        : createFieldCategory;
       firstInvalid.focus();
       return;
     }
