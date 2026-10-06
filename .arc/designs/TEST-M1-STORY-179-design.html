@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-179 — Shared Expense List with Filters</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated error/danger color — only
+    color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg, color-border.
+    The inline date-range validation error and the "no match" callout below are signalled
+    with an icon (⚠) + bold text + a heavier border using --color-primary, never color
+    alone (UX baseline: never encode meaning in colour alone). If
+    sdlc.design-system-bootstrap later adds e.g. `color-danger`, `.field-error` /
+    `.input-invalid` / `.no-match-state` are the only places to swap it in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .viewer-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .viewer-switcher label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    white-space: nowrap;
+  }
+  .viewer-switcher select { width: auto; }
+
+  .shared-visibility-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .shared-visibility-hint .hint-icon { flex: 0 0 auto; color: var(--color-primary); }
+
+  /* ---------- Filter bar ---------- */
+  .filter-card { margin-bottom: var(--space-4); }
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-3);
+  }
+  .filter-row .field { margin-bottom: 0; min-width: 160px; }
+  .filter-row .field.date-field { min-width: 150px; }
+  .filter-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .active-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  .active-filter-chips[hidden] { display: none; }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .result-summary {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  /* ---------- Expense table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.expense-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .expense-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .expense-table td {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .expense-table tbody tr:last-child td { border-bottom: none; }
+  .col-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .desc-cell { color: var(--color-fg-muted); max-width: 260px; }
+  .logged-by-cell { color: var(--color-fg-muted); white-space: nowrap; }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2);
+  }
+  .empty-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  /* Distinct from the plain empty-state: a bordered callout so "no matches" never reads
+     as a blank/broken table (AC4). */
+  .no-match-state {
+    text-align: center;
+    padding: calc(var(--space-4) * 1.5) var(--space-4);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    margin: var(--space-4);
+  }
+  .no-match-state .no-match-icon { font-size: var(--font-size-lg); color: var(--color-primary); display: block; margin-bottom: var(--space-2); }
+  .no-match-state p { font-family: var(--font-family-base); margin: 0 0 var(--space-3) 0; }
+  .no-match-state p.no-match-title { color: var(--color-fg); font-weight: var(--font-weight-bold); font-size: var(--font-size-md); }
+  .no-match-state p.no-match-detail { color: var(--color-fg-muted); font-size: var(--font-size-sm); max-width: 48ch; margin-left: auto; margin-right: auto; }
+
+  /* ---------- Inline field validation ---------- */
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-2) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+
+  /* ---------- Reference-states screen ---------- */
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 720px) { .reference-grid { grid-template-columns: repeat(2, 1fr); } }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .mini-modal {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. Matches the "Expense Tracker" nav
+     already established by this product's earlier expense-logging prototypes, so this
+     story reads as the same product surface (a filtered view of the same list those
+     prototypes write to), not a new one.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered. -->
+<body class="u-surface">
+
+  <!-- Fixture data: inline JSON, parsed by the script at the bottom of the file.
+       Deliberately spans three categories and two months so category, date-range, and
+       combined filters all have matching and non-matching rows to demonstrate against,
+       including exact start/end boundary dates for AC6. Sorted here newest-first to make
+       the fixture itself legible, but the renderer re-sorts regardless (AC5) rather than
+       trusting fixture order. -->
+  <script type="application/json" id="fixture-expenses">
+  [
+    { "id": "exp_007", "date": "2026-10-05", "category": "Other", "description": "Workshop registration: advanced facilitation", "loggedBy": "Jordan Lee", "amount": 220.00 },
+    { "id": "exp_006", "date": "2026-10-02", "category": "Travel", "description": "Taxi to airport for conference", "loggedBy": "Priya Shah", "amount": 34.20 },
+    { "id": "exp_005", "date": "2026-09-30", "category": "Office Supplies", "description": "Replacement laptop charger", "loggedBy": "Morgan Ellis", "amount": 42.99 },
+    { "id": "exp_003", "date": "2026-09-27", "category": "Software", "description": "Annual seat renewal — design tool", "loggedBy": "Devon Ruiz", "amount": 149.00 },
+    { "id": "exp_002", "date": "2026-09-21", "category": "Meals", "description": "Team lunch after sprint demo", "loggedBy": "Priya Shah", "amount": 86.40 },
+    { "id": "exp_001", "date": "2026-09-15", "category": "Travel", "description": "Flight to Denver for client kickoff", "loggedBy": "Morgan Ellis", "amount": 412.75 },
+    { "id": "exp_008", "date": "2026-09-10", "category": "Meals", "description": "Client dinner — Q3 renewal", "loggedBy": "Devon Ruiz", "amount": 128.50 },
+    { "id": "exp_009", "date": "2026-08-22", "category": "Software", "description": "Monitoring tool upgrade", "loggedBy": "Jordan Lee", "amount": 65.00 },
+    { "id": "exp_010", "date": "2026-08-05", "category": "Other", "description": "Professional certification exam fee", "loggedBy": "Morgan Ellis", "amount": 175.00 }
+  ]
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-179</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Shared Expense List (interactive)
+         Notes:
+           - Every row from the fixture is visible to every "Signed in as" identity — the
+             switcher (top right) only previews whose seat you're looking from; it never
+             filters or hides rows. Switch identities and confirm the table doesn't change
+             at all (AC1).
+           - On load, with no filters applied, rows are sorted by date descending, most
+             recent first (AC5) — try "Clear filters" after filtering to see the same
+             order restored (AC3).
+           - Category and the two date fields can be used alone or together. Click "Apply
+             filters" to see only matching rows and a result-summary line update to match
+             (AC2).
+           - Boundary check (AC6): set From = 2026-09-15 and To = 2026-09-27 with no
+             category — both boundary-dated rows (Sep 15 and Sep 27) are included, not just
+             the ones strictly between them.
+           - No-match check (AC4): set Category = "Office Supplies" and a date range of
+             2026-08-01 to 2026-08-31 (that category's only row is dated Sep 30, outside
+             this range) — a distinct "No expenses match these filters" callout replaces
+             the table instead of a blank table.
+           - Validation check (AC9, AC10): set From = 2026-09-27 and To = 2026-09-15 (From
+             after To) and click "Apply filters" — an inline error appears directly under
+             the date fields and the list underneath is left exactly as it was before the
+             attempt; nothing is applied until the dates are corrected.
+           - Every row shows a "Logged by" field (AC7). No row has an edit or delete
+             action of any kind — this list is read-only by design; creating/editing
+             expenses is out of scope for this story and deleting is explicitly excluded
+             by AC8.
+    -->
+    <div class="screen" data-name="Shared Expense List">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+        <div class="viewer-switcher">
+          <label for="viewer-select">Signed in as</label>
+          <select class="input" id="viewer-select">
+            <option>Morgan Ellis</option>
+            <option>Priya Shah</option>
+            <option>Devon Ruiz</option>
+            <option>Jordan Lee</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Expenses</h1>
+          <p>One shared list for the whole team — filter by category or date range to find a record quickly.</p>
+        </div>
+
+        <p class="shared-visibility-hint">
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span>Every team member sees the same list, with the same filters available — there's no private or per-person view.</span>
+        </p>
+
+        <div class="card filter-card">
+          <div class="filter-row">
+            <div class="field">
+              <label class="label" for="filter-category">Category</label>
+              <select class="input" id="filter-category">
+                <option value="">All categories</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Office Supplies</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field date-field">
+              <label class="label" for="filter-start-date">From</label>
+              <input class="input" type="date" id="filter-start-date" aria-describedby="error-date-range" />
+            </div>
+            <div class="field date-field">
+              <label class="label" for="filter-end-date">To</label>
+              <input class="input" type="date" id="filter-end-date" aria-describedby="error-date-range" />
+            </div>
+            <div class="filter-actions">
+              <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
+              <button type="button" class="btn btn-primary" id="apply-filters-btn">Apply filters</button>
+            </div>
+          </div>
+          <p class="field-error" id="error-date-range" role="alert" hidden>⚠ The "From" date must be on or before the "To" date.</p>
+          <div class="active-filter-chips" id="active-filter-chips" hidden></div>
+        </div>
+
+        <p class="result-summary" id="result-summary" role="status" aria-live="polite"></p>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Logged by</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="expense-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static, non-interactive snapshots mapping each acceptance criterion to the
+             exact filter input and expected result, for a reviewer who wants the full
+             picture in one place. Use screen 1 to try any of these inputs on the real
+             filter bar.
+           - "Boundary dates included" and "No-match message" mirror the two walkthroughs
+             described on screen 1 (AC6, AC4).
+           - "Invalid date range" shows the inline error exactly as it renders, with the
+             list beneath explicitly called out as unchanged (AC9, AC10).
+           - "Read-only by design" shows one row's full field set, highlighting "Logged
+             by" as a visible field (AC7) and the complete absence of any row action,
+             including delete (AC8).
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive reference. Use screen 1 to try these filters on the real list.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Boundary dates included</h3>
+            <span class="ac-tag">Satisfies AC6 — From 09/15/2026, To 09/27/2026</span>
+            <div class="mini-modal">
+              <table class="expense-table" style="min-width: 0;">
+                <tbody>
+                  <tr><td>09/15/2026</td><td><span class="chip">Travel</span></td><td class="desc-cell">Flight to Denver for client kickoff</td><td class="logged-by-cell">Morgan Ellis</td><td class="col-amount">$412.75</td></tr>
+                  <tr><td>09/21/2026</td><td><span class="chip">Meals</span></td><td class="desc-cell">Team lunch after sprint demo</td><td class="logged-by-cell">Priya Shah</td><td class="col-amount">$86.40</td></tr>
+                  <tr><td>09/27/2026</td><td><span class="chip">Software</span></td><td class="desc-cell">Annual seat renewal — design tool</td><td class="logged-by-cell">Devon Ruiz</td><td class="col-amount">$149.00</td></tr>
+                </tbody>
+              </table>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">Both the 09/15 row (the "From" date) and the 09/27 row (the "To" date) are included, not just rows strictly between them.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>No-match message</h3>
+            <span class="ac-tag">Satisfies AC4 — Category "Office Supplies", 08/01/2026–08/31/2026</span>
+            <div class="mini-modal" style="padding: 0;">
+              <div class="no-match-state">
+                <span class="no-match-icon" aria-hidden="true">🔍</span>
+                <p class="no-match-title">No expenses match these filters</p>
+                <p class="no-match-detail">Try a different category, widen the date range, or clear filters to see the full list.</p>
+                <button type="button" class="btn btn-secondary" disabled>Clear filters</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Invalid date range</h3>
+            <span class="ac-tag">Satisfies AC9, AC10 — From 09/27/2026, To 09/15/2026</span>
+            <div class="mini-modal">
+              <div class="field date-field" style="display:inline-block; width: 48%;">
+                <label class="label">From</label>
+                <input class="input input-invalid" type="text" value="09/27/2026" readonly />
+              </div>
+              <div class="field date-field" style="display:inline-block; width: 48%; margin-left: 4%;">
+                <label class="label">To</label>
+                <input class="input input-invalid" type="text" value="09/15/2026" readonly />
+              </div>
+              <p class="field-error">⚠ The "From" date must be on or before the "To" date.</p>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">Filters were not applied — the list below stays exactly as it was before this attempt.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Read-only by design</h3>
+            <span class="ac-tag">Satisfies AC7, AC8</span>
+            <div class="mini-modal">
+              <table class="expense-table" style="min-width: 0;">
+                <tbody>
+                  <tr><td>09/15/2026</td><td><span class="chip">Travel</span></td><td class="desc-cell">Flight to Denver for client kickoff</td><td class="logged-by-cell">Morgan Ellis</td><td class="col-amount">$412.75</td></tr>
+                </tbody>
+              </table>
+              <p class="u-text-sm u-text-muted" style="margin: var(--space-3) 0 0 0;">"Logged by" names the identity that was signed in when this expense was recorded. No column or row menu offers edit or delete — this view is read-only.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const ALL_EXPENSES = JSON.parse(document.getElementById('fixture-expenses').textContent);
+
+  function formatUSD(amount) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  }
+
+  function formatDateDisplay(iso) {
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // Always re-sorts by date descending — never trusts caller order (AC5).
+  function sortByDateDesc(list) {
+    return list.slice().sort((a, b) => b.date.localeCompare(a.date));
+  }
+
+  // ---------- Filter state ----------
+  let activeFilters = { category: '', startDate: '', endDate: '' };
+  let visibleExpenses = sortByDateDesc(ALL_EXPENSES);
+
+  function computeFiltered(filters) {
+    return ALL_EXPENSES.filter(exp => {
+      if (filters.category && exp.category !== filters.category) return false;
+      // Inclusive comparison on both ends — exact start/end matches are kept (AC6).
+      if (filters.startDate && exp.date < filters.startDate) return false;
+      if (filters.endDate && exp.date > filters.endDate) return false;
+      return true;
+    });
+  }
+
+  function describeFilters(filters) {
+    const parts = [];
+    if (filters.category) parts.push(`Category: ${filters.category}`);
+    if (filters.startDate || filters.endDate) {
+      const from = filters.startDate ? formatDateDisplay(filters.startDate) : '…';
+      const to = filters.endDate ? formatDateDisplay(filters.endDate) : '…';
+      parts.push(`Date: ${from} – ${to}`);
+    }
+    return parts;
+  }
+
+  function renderChips(filters) {
+    const wrap = document.getElementById('active-filter-chips');
+    const parts = describeFilters(filters);
+    if (parts.length === 0) {
+      wrap.hidden = true;
+      wrap.innerHTML = '';
+      return;
+    }
+    wrap.hidden = false;
+    wrap.innerHTML = parts.map(p => `<span class="chip filter-chip">${escapeHtml(p)}</span>`).join('');
+  }
+
+  function renderSummary(filters, count) {
+    const el = document.getElementById('result-summary');
+    const hasFilters = describeFilters(filters).length > 0;
+    if (!hasFilters) {
+      el.textContent = `Showing all ${count} expense${count === 1 ? '' : 's'}, sorted by date (newest first).`;
+    } else {
+      el.textContent = `Showing ${count} of ${ALL_EXPENSES.length} expenses matching the applied filters, sorted by date (newest first).`;
+    }
+  }
+
+  function renderList() {
+    const tbody = document.getElementById('expense-tbody');
+    tbody.innerHTML = '';
+
+    renderSummary(activeFilters, visibleExpenses.length);
+    renderChips(activeFilters);
+
+    if (visibleExpenses.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 5;
+      td.innerHTML = `
+        <div class="no-match-state">
+          <span class="no-match-icon" aria-hidden="true">🔍</span>
+          <p class="no-match-title">No expenses match these filters</p>
+          <p class="no-match-detail">Try a different category, widen the date range, or clear filters to see the full list.</p>
+          <button type="button" class="btn btn-secondary" id="no-match-clear-btn">Clear filters</button>
+        </div>`;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      document.getElementById('no-match-clear-btn').addEventListener('click', clearFilters);
+      return;
+    }
+
+    visibleExpenses.forEach(exp => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${formatDateDisplay(exp.date)}</td>
+        <td><span class="chip">${escapeHtml(exp.category)}</span></td>
+        <td class="desc-cell">${escapeHtml(exp.description) || '—'}</td>
+        <td class="logged-by-cell">${escapeHtml(exp.loggedBy)}</td>
+        <td class="col-amount">${formatUSD(exp.amount)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ---------- Filter bar wiring ----------
+  const categorySelect = document.getElementById('filter-category');
+  const startDateInput = document.getElementById('filter-start-date');
+  const endDateInput = document.getElementById('filter-end-date');
+  const applyBtn = document.getElementById('apply-filters-btn');
+  const clearBtn = document.getElementById('clear-filters-btn');
+  const dateRangeError = document.getElementById('error-date-range');
+
+  function setDateRangeError(message) {
+    if (message) {
+      dateRangeError.hidden = false;
+      dateRangeError.textContent = '⚠ ' + message;
+      startDateInput.classList.add('input-invalid');
+      endDateInput.classList.add('input-invalid');
+      startDateInput.setAttribute('aria-invalid', 'true');
+      endDateInput.setAttribute('aria-invalid', 'true');
+    } else {
+      dateRangeError.hidden = true;
+      startDateInput.classList.remove('input-invalid');
+      endDateInput.classList.remove('input-invalid');
+      startDateInput.setAttribute('aria-invalid', 'false');
+      endDateInput.setAttribute('aria-invalid', 'false');
+    }
+  }
+
+  let applyTimer = null;
+
+  applyBtn.addEventListener('click', () => {
+    const category = categorySelect.value;
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
+
+    if (startDate && endDate && startDate > endDate) {
+      // AC9/AC10: inline error next to the date fields; the previously shown list is
+      // left completely untouched — no fetch is even attempted.
+      setDateRangeError('The "From" date must be on or before the "To" date.');
+      return;
+    }
+    setDateRangeError('');
+
+    applyBtn.disabled = true;
+    applyBtn.textContent = 'Applying…';
+
+    clearTimeout(applyTimer);
+    applyTimer = setTimeout(() => {
+      activeFilters = { category, startDate, endDate };
+      visibleExpenses = sortByDateDesc(computeFiltered(activeFilters)); // AC2, AC5, AC6
+      renderList();
+      applyBtn.disabled = false;
+      applyBtn.textContent = 'Apply filters';
+    }, 280);
+  });
+
+  function clearFilters() {
+    categorySelect.value = '';
+    startDateInput.value = '';
+    endDateInput.value = '';
+    setDateRangeError('');
+    activeFilters = { category: '', startDate: '', endDate: '' };
+    visibleExpenses = sortByDateDesc(ALL_EXPENSES); // AC3: full unfiltered list restored
+    renderList();
+  }
+
+  clearBtn.addEventListener('click', clearFilters);
+
+  // Signed-in-as is a viewing-identity preview only — it never touches activeFilters or
+  // ALL_EXPENSES, so the table renders identically regardless of selection (AC1).
+  document.getElementById('viewer-select').addEventListener('change', () => {
+    renderList();
+  });
+
+  renderList();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
