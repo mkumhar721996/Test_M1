@@ -1,5 +1,7 @@
 const { escapeHtml } = require('./utils');
 
+const FOCUSABLE_SELECTOR = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 function initLeaveBalancesApp(doc, api) {
   let employees = [];
   let balancesById = {};
@@ -7,6 +9,8 @@ function initLeaveBalancesApp(doc, api) {
   let editingId = null;
   let lastChangedId = null;
   let toastTimer = null;
+  let triggerElement = null;
+  let triggerEmployeeId = null;
 
   const $ = (id) => doc.getElementById(id);
   const region = $('balances-region');
@@ -56,22 +60,18 @@ function initLeaveBalancesApp(doc, api) {
   }
 
   function renderError() {
-    region.innerHTML = '<div class="error-state"><div class="icon" aria-hidden="true">⚠</div><h3>Couldn\'t load employee balances</h3><p>Something went wrong reaching the balances service. Your data is safe — try again.</p><button type="button" class="btn btn-primary" id="retry-btn">Try again</button></div>';
+    region.innerHTML = '<div class="error-state" role="alert"><div class="icon" aria-hidden="true">⚠</div><h3>Couldn\'t load employee balances</h3><p>Something went wrong reaching the balances service. Your data is safe — try again.</p><button type="button" class="btn btn-primary" id="retry-btn">Try again</button></div>';
     $('retry-btn').addEventListener('click', load);
   }
 
   function load() {
     renderLoading();
-    return Promise.all([api.listTypes(), api.listEmployees()]).then(([types, list]) => {
+    return Promise.all([api.listTypes(), api.listEmployees(), api.listBalances()]).then(([types, list, balanceRecords]) => {
       leaveTypes = types;
       employees = list;
-      return Promise.all(list.map((e) => Promise.resolve(api.getBalances(e.id)).catch((err) => (
-        err && err.status === 404 ? null : Promise.reject(err)
-      )))).then((records) => {
-        balancesById = {};
-        list.forEach((e, i) => { if (records[i]) balancesById[e.id] = records[i]; });
-        renderList();
-      });
+      balancesById = {};
+      balanceRecords.forEach((record) => { balancesById[record.employeeId] = record; });
+      renderList();
     }).catch(renderError);
   }
 
@@ -80,13 +80,53 @@ function initLeaveBalancesApp(doc, api) {
     $(`field-${id}`).setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
 
+  function findTriggerButton(employeeId) {
+    const buttons = region.querySelectorAll('[data-set-balances-id], [data-adjust-balances-id]');
+    return Array.from(buttons).find((b) => (
+      b.getAttribute('data-set-balances-id') || b.getAttribute('data-adjust-balances-id')
+    ) === employeeId);
+  }
+
+  function restoreFocus() {
+    const button = triggerEmployeeId ? findTriggerButton(triggerEmployeeId) : null;
+    if (button) {
+      button.focus();
+    } else if (triggerElement && doc.contains(triggerElement)) {
+      triggerElement.focus();
+    }
+    triggerElement = null;
+    triggerEmployeeId = null;
+  }
+
+  function getFocusableElements() {
+    return Array.from(modalWrap.querySelectorAll(FOCUSABLE_SELECTOR));
+  }
+
   function onModalKeydown(e) {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') {
+      closeModal();
+      restoreFocus();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusableElements();
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && doc.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && doc.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function openModal(employeeId) {
     const emp = employees.find((e) => e.id === employeeId);
     if (!emp) return;
+    triggerElement = doc.activeElement;
+    triggerEmployeeId = employeeId;
     editingId = employeeId;
     const record = balancesById[employeeId];
     $('modal-title').textContent = `${record ? 'Adjust' : 'Set'} starting balances — ${emp.name}`;
@@ -113,23 +153,28 @@ function initLeaveBalancesApp(doc, api) {
     const btn = e.target.closest('[data-set-balances-id], [data-adjust-balances-id]');
     if (btn) openModal(btn.getAttribute('data-set-balances-id') || btn.getAttribute('data-adjust-balances-id'));
   });
-  $('modal-close-btn').addEventListener('click', closeModal);
-  $('modal-cancel-btn').addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  $('modal-close-btn').addEventListener('click', () => { closeModal(); restoreFocus(); });
+  $('modal-cancel-btn').addEventListener('click', () => { closeModal(); restoreFocus(); });
+  overlay.addEventListener('click', () => { closeModal(); restoreFocus(); });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const values = {};
     let invalid = false;
+    let firstInvalidId = null;
     leaveTypes.forEach((t) => {
       const raw = $(`field-${t.id}`).value.trim();
       const num = Number(raw);
       const bad = raw === '' || Number.isNaN(num) || num < 0;
       setFieldError(t.id, bad);
+      if (bad && !firstInvalidId) firstInvalidId = t.id;
       invalid = invalid || bad;
       values[t.id] = num;
     });
-    if (invalid) return;
+    if (invalid) {
+      $(`field-${firstInvalidId}`).focus();
+      return;
+    }
 
     const emp = employees.find((x) => x.id === editingId);
     const wasSet = Boolean(balancesById[editingId]);
@@ -140,6 +185,7 @@ function initLeaveBalancesApp(doc, api) {
       lastChangedId = emp.id;
       closeModal();
       renderList();
+      restoreFocus();
       lastChangedId = null;
       showToast(record.created === false || wasSet ? `Starting balances updated for ${emp.name}.` : `Starting balances set for ${emp.name}.`);
     }, () => {
@@ -151,11 +197,11 @@ function initLeaveBalancesApp(doc, api) {
   return load();
 }
 
-function createLeaveBalancesApi() {
+function createLeaveBalancesApi(getRole) {
   function request(url, method, body) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': getRole() },
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })
@@ -165,7 +211,7 @@ function createLeaveBalancesApi() {
   return {
     listEmployees: () => request('/employees', 'GET'),
     listTypes: () => request('/leave/types', 'GET'),
-    getBalances: (id) => request(`/leave/balances/${encodeURIComponent(id)}`, 'GET'),
+    listBalances: () => request('/leave/balances', 'GET'),
     saveBalances: (id, values) => request(`/leave/balances/${encodeURIComponent(id)}`, 'POST', values),
   };
 }
@@ -173,5 +219,8 @@ function createLeaveBalancesApi() {
 if (typeof module !== 'undefined') module.exports = { initLeaveBalancesApp, createLeaveBalancesApi };
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => initLeaveBalancesApp(document, createLeaveBalancesApi()));
+  window.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.getElementById('role-select');
+    initLeaveBalancesApp(document, createLeaveBalancesApi(() => roleSelect.value));
+  });
 }

@@ -19,6 +19,16 @@
       <a href="./leave-balances.html">Employee Balances</a>
       <a href="./leave-lookup.html" class="active" aria-current="page">Balance Lookup</a>
     </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr">HR</option>
+          <option value="manager" selected>Manager</option>
+          <option value="employee">Team member (no HR/Manager access)</option>
+        </select>
+      </div>
+    </div>
   </div>
 <div class="page">
   <div class="page-header">
@@ -31,7 +41,7 @@
     <select class="input" id="lookup-employee-select"></select>
   </div>
 
-  <div id="lookup-region"></div>
+  <div id="lookup-region" role="status" aria-live="polite"></div>
 </div>
 </body>
 </html>

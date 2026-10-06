@@ -19,6 +19,16 @@
       <a href="./leave-balances.html" class="active" aria-current="page">Employee Balances</a>
       <a href="./leave-lookup.html">Balance Lookup</a>
     </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr" selected>HR</option>
+          <option value="manager">Manager</option>
+          <option value="employee">Team member (no HR/Manager access)</option>
+        </select>
+      </div>
+    </div>
   </div>
 <div class="page">
   <div class="page-header">
@@ -31,7 +41,7 @@
     <div>
       <span class="tag">Open decision — not yet settled by the product owner</span>
       <h3>Who may set or adjust balances: HR only, or HR and Managers?</h3>
-      <p>This story can't be scheduled for build until that's decided. Until then, no role restriction is applied on this page.</p>
+      <p>This story can't be scheduled for build until that's decided. Until then, this page is restricted to HR as the narrowest safe default.</p>
     </div>
   </div>
 

@@ -45,4 +45,10 @@ function getBalances(employeeId) {
   return balancesByEmployee.get(employeeId);
 }
 
-module.exports = { LEAVE_TYPES, LeaveBalanceError, initializeBalances, getBalances };
+function getAllBalances() {
+  return Array.from(balancesByEmployee.values());
+}
+
+module.exports = {
+  LEAVE_TYPES, LeaveBalanceError, initializeBalances, getBalances, getAllBalances,
+};

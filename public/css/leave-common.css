@@ -11,6 +11,16 @@ body { margin: 0; min-height: 100dvh; }
 @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; opacity: 0.35; } }
 @keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.65; } }
 
+.topbar-actions { display: flex; gap: var(--space-3); align-items: center; margin-left: auto; flex-wrap: wrap; }
+.role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.role-switcher label {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+}
+.role-switcher select { width: auto; min-width: 240px; }
+
 .empty-state, .error-state {
   text-align: center;
   padding: var(--space-4);

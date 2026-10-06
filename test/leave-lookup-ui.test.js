@@ -39,3 +39,30 @@ test('shows an error state when the balance lookup fails', async () => {
   await initLeaveLookupApp(document, makeApi(jest.fn().mockRejectedValue({ status: 500 })));
   expect(document.querySelector('.error-state')).not.toBeNull();
 });
+
+test('accessibility: the results region announces changes to screen readers', async () => {
+  expect(document.getElementById('lookup-region').getAttribute('role')).toBe('status');
+  expect(document.getElementById('lookup-region').getAttribute('aria-live')).toBe('polite');
+  const { initLeaveLookupApp } = require('../public/js/leave-lookup');
+  await initLeaveLookupApp(document, makeApi(jest.fn().mockRejectedValue({ status: 500 })));
+  expect(document.querySelector('.error-state').getAttribute('role')).toBe('alert');
+});
+
+describe('createLeaveLookupApi', () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  test('sends the x-staff-role header from the role switcher on every request', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ([]) });
+    const { createLeaveLookupApi } = require('../public/js/leave-lookup');
+    const api = createLeaveLookupApi(() => 'manager');
+    await api.listEmployees();
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/employees',
+      expect.objectContaining({ headers: expect.objectContaining({ 'x-staff-role': 'manager' }) }),
+    );
+  });
+});

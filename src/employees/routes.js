@@ -12,7 +12,7 @@ router.post('/', (req, res) => {
   res.status(201).json(employee);
 });
 
-router.get('/', (req, res) => {
+router.get('/', enforceOnboardingRole, (req, res) => {
   res.status(200).json(listEmployees());
 });
 

@@ -1,9 +1,4 @@
-const { escapeHtml } = require('./utils');
-
-function formatDateDisplay(iso) {
-  const [y, m, d] = iso.slice(0, 10).split('-');
-  return `${m}/${d}/${y}`;
-}
+const { escapeHtml, formatDateDisplay } = require('./utils');
 
 function initLeaveLookupApp(doc, api) {
   let employees = [];
@@ -11,7 +6,7 @@ function initLeaveLookupApp(doc, api) {
   const region = doc.getElementById('lookup-region');
 
   function renderError(retry) {
-    region.innerHTML = '<div class="error-state"><div class="icon" aria-hidden="true">⚠</div><h3>Couldn\'t load this employee\'s balance</h3><p>Something went wrong reaching the balances service — try again.</p><button type="button" class="btn btn-primary" id="retry-btn">Try again</button></div>';
+    region.innerHTML = '<div class="error-state" role="alert"><div class="icon" aria-hidden="true">⚠</div><h3>Couldn\'t load this employee\'s balance</h3><p>Something went wrong reaching the balances service — try again.</p><button type="button" class="btn btn-primary" id="retry-btn">Try again</button></div>';
     doc.getElementById('retry-btn').addEventListener('click', retry);
   }
 
@@ -32,7 +27,7 @@ function initLeaveLookupApp(doc, api) {
       region.innerHTML = `<div class="card lookup-card">
         <h3 class="card-title">${escapeHtml(doc, emp.name)}</h3>
         ${types.map((t) => `<div class="lookup-item"><span class="type-name">${escapeHtml(doc, t.name)}</span><span class="type-amount">${escapeHtml(doc, record.balances[t.id])} days</span></div>`).join('')}
-        <div class="lookup-meta">Starting balance set ${formatDateDisplay(record.setAt)}. No accrual, carryover, or expiry is tracked in this story.</div>
+        <div class="lookup-meta">Starting balance set ${formatDateDisplay(record.setAt.slice(0, 10))}. No accrual, carryover, or expiry is tracked in this story.</div>
       </div>`;
     }, () => renderError(showBalance));
   }
@@ -55,9 +50,9 @@ function initLeaveLookupApp(doc, api) {
   return load();
 }
 
-function createLeaveLookupApi() {
+function createLeaveLookupApi(getRole) {
   function get(url) {
-    return fetch(url).then((res) => res.json().catch(() => ({})).then((data) => (
+    return fetch(url, { headers: { 'x-staff-role': getRole() } }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })
     )));
   }
@@ -72,5 +67,8 @@ function createLeaveLookupApi() {
 if (typeof module !== 'undefined') module.exports = { initLeaveLookupApp, createLeaveLookupApi };
 
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => initLeaveLookupApp(document, createLeaveLookupApi()));
+  window.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.getElementById('role-select');
+    initLeaveLookupApp(document, createLeaveLookupApi(() => roleSelect.value));
+  });
 }
