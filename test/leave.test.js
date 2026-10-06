@@ -64,3 +64,10 @@ test('re-adjusting upserts in place and reports created: false', async () => {
   expect(res.body.created).toBe(false);
   expect(res.body.balances.annual).toBe(18);
 });
+
+test('initializeBalances defaults every type when called with a null values argument', async () => {
+  const { initializeBalances } = require('../src/leave/store');
+  const employeeId = await newEmployee();
+  const record = initializeBalances(employeeId, null);
+  expect(record.balances).toEqual({ annual: 15, sick: 10, unpaid: 5 });
+});

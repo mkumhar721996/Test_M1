@@ -1,8 +1,4 @@
-function escapeHtml(str) {
-  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
-}
+const { escapeHtml } = require('./utils');
 
 function formatDateDisplay(iso) {
   const [y, m, d] = iso.slice(0, 10).split('-');
@@ -30,12 +26,12 @@ function initLeaveLookupApp(doc, api) {
       err && err.status === 404 ? null : Promise.reject(err)
     ))]).then(([types, record]) => {
       if (!record) {
-        region.innerHTML = `<div class="empty-state"><div class="icon" aria-hidden="true">🗒</div><h3>No starting balance yet</h3><p>${escapeHtml(emp.name)} has no starting balance recorded for any leave type.</p></div>`;
+        region.innerHTML = `<div class="empty-state"><div class="icon" aria-hidden="true">🗒</div><h3>No starting balance yet</h3><p>${escapeHtml(doc, emp.name)} has no starting balance recorded for any leave type.</p></div>`;
         return;
       }
       region.innerHTML = `<div class="card lookup-card">
-        <h3 class="card-title">${escapeHtml(emp.name)}</h3>
-        ${types.map((t) => `<div class="lookup-item"><span class="type-name">${escapeHtml(t.name)}</span><span class="type-amount">${escapeHtml(record.balances[t.id])} days</span></div>`).join('')}
+        <h3 class="card-title">${escapeHtml(doc, emp.name)}</h3>
+        ${types.map((t) => `<div class="lookup-item"><span class="type-name">${escapeHtml(doc, t.name)}</span><span class="type-amount">${escapeHtml(doc, record.balances[t.id])} days</span></div>`).join('')}
         <div class="lookup-meta">Starting balance set ${formatDateDisplay(record.setAt)}. No accrual, carryover, or expiry is tracked in this story.</div>
       </div>`;
     }, () => renderError(showBalance));
@@ -51,7 +47,7 @@ function initLeaveLookupApp(doc, api) {
         region.innerHTML = '<div class="empty-state"><div class="icon" aria-hidden="true">🗂</div><h3>No employees yet</h3><p>Once an employee completes onboarding, they\'ll appear here.</p></div>';
         return;
       }
-      select.innerHTML = list.map((e) => `<option value="${escapeHtml(e.id)}">${escapeHtml(e.name)}</option>`).join('');
+      select.innerHTML = list.map((e) => `<option value="${escapeHtml(doc, e.id)}">${escapeHtml(doc, e.name)}</option>`).join('');
       return showBalance();
     }, () => renderError(load));
   }

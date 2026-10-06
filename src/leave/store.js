@@ -19,9 +19,10 @@ function initializeBalances(employeeId, values = {}) {
   if (!getEmployee(employeeId)) {
     throw new LeaveBalanceError('employee not found or has not completed onboarding', 404);
   }
+  const safeValues = values && typeof values === 'object' ? values : {};
   const balances = {};
   for (const type of LEAVE_TYPES) {
-    const value = values[type.id];
+    const value = safeValues[type.id];
     if (value === undefined || value === null) {
       balances[type.id] = type.defaultBalance;
     } else if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {

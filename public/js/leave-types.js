@@ -1,8 +1,4 @@
-function escapeHtml(str) {
-  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
-}
+const { escapeHtml } = require('./utils');
 
 function initLeaveTypesApp(doc, api) {
   const region = doc.getElementById('leave-types-region');
@@ -12,11 +8,11 @@ function initLeaveTypesApp(doc, api) {
     region.innerHTML = `<div class="leave-type-grid">${types.map((t) => `
       <div class="card leave-type-card">
         <span class="chip fixed-chip">Fixed — not configurable</span>
-        <h3 class="card-title">${escapeHtml(t.name)}</h3>
-        <p class="card-body">${escapeHtml(t.description)}</p>
-        <div class="default-balance">Default starting balance: <strong>${escapeHtml(t.defaultBalance)} days</strong></div>
+        <h3 class="card-title">${escapeHtml(doc, t.name)}</h3>
+        <p class="card-body">${escapeHtml(doc, t.description)}</p>
+        <div class="default-balance">Default starting balance: <strong>${escapeHtml(doc, t.defaultBalance)} days</strong></div>
       </div>`).join('')}</div>`;
-    preview.innerHTML = types.map((t) => `<option value="${escapeHtml(t.id)}">${escapeHtml(t.name)}</option>`).join('');
+    preview.innerHTML = types.map((t) => `<option value="${escapeHtml(doc, t.id)}">${escapeHtml(doc, t.name)}</option>`).join('');
   }, () => {
     region.innerHTML = '<div class="error-state"><h3>Couldn\'t load leave types</h3><p>Something went wrong — reload the page to try again.</p></div>';
   });

@@ -1,18 +1,9 @@
-const LEAVE_TYPE_FIELDS = [
-  { id: 'annual', label: 'Annual', defaultBalance: 15 },
-  { id: 'sick', label: 'Sick', defaultBalance: 10 },
-  { id: 'unpaid', label: 'Unpaid', defaultBalance: 5 },
-];
-
-function escapeHtml(str) {
-  return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
-}
+const { escapeHtml } = require('./utils');
 
 function initLeaveBalancesApp(doc, api) {
   let employees = [];
   let balancesById = {};
+  let leaveTypes = [];
   let editingId = null;
   let lastChangedId = null;
   let toastTimer = null;
@@ -36,18 +27,18 @@ function initLeaveBalancesApp(doc, api) {
   function renderRow(emp) {
     const record = balancesById[emp.id];
     const chips = record
-      ? LEAVE_TYPE_FIELDS.map((t) => `<span class="bal-chip"><span class="bal-label">${t.label}</span> <span class="bal-amount">${escapeHtml(record.balances[t.id])}</span></span>`).join('')
+      ? leaveTypes.map((t) => `<span class="bal-chip"><span class="bal-label">${escapeHtml(doc, t.name)}</span> <span class="bal-amount">${escapeHtml(doc, record.balances[t.id])}</span></span>`).join('')
       : '<span class="muted-note">No starting balance yet</span>';
     const label = record ? 'Adjust balances' : 'Set starting balances';
     const btnClass = record ? 'btn-secondary' : 'btn-primary';
     const attr = record ? 'data-adjust-balances-id' : 'data-set-balances-id';
     return `<div class="emp-row${emp.id === lastChangedId ? ' flash' : ''}">
       <div class="emp-id-col">
-        <div class="emp-name">${escapeHtml(emp.name)}</div>
-        <div class="emp-dept">${escapeHtml(emp.jobTitle)}</div>
+        <div class="emp-name">${escapeHtml(doc, emp.name)}</div>
+        <div class="emp-dept">${escapeHtml(doc, emp.jobTitle)}</div>
       </div>
       <div class="balances-col">${chips}</div>
-      <div class="action-col"><button type="button" class="btn ${btnClass}" ${attr}="${escapeHtml(emp.id)}">${label}</button></div>
+      <div class="action-col"><button type="button" class="btn ${btnClass}" ${attr}="${escapeHtml(doc, emp.id)}">${label}</button></div>
     </div>`;
   }
 
@@ -71,13 +62,17 @@ function initLeaveBalancesApp(doc, api) {
 
   function load() {
     renderLoading();
-    return Promise.resolve(api.listEmployees()).then(async (list) => {
+    return Promise.all([api.listTypes(), api.listEmployees()]).then(([types, list]) => {
+      leaveTypes = types;
       employees = list;
-      const records = await Promise.all(list.map((e) => Promise.resolve(api.getBalances(e.id)).catch(() => null)));
-      balancesById = {};
-      list.forEach((e, i) => { if (records[i]) balancesById[e.id] = records[i]; });
-      renderList();
-    }, renderError);
+      return Promise.all(list.map((e) => Promise.resolve(api.getBalances(e.id)).catch((err) => (
+        err && err.status === 404 ? null : Promise.reject(err)
+      )))).then((records) => {
+        balancesById = {};
+        list.forEach((e, i) => { if (records[i]) balancesById[e.id] = records[i]; });
+        renderList();
+      });
+    }).catch(renderError);
   }
 
   function setFieldError(id, invalid) {
@@ -95,7 +90,7 @@ function initLeaveBalancesApp(doc, api) {
     editingId = employeeId;
     const record = balancesById[employeeId];
     $('modal-title').textContent = `${record ? 'Adjust' : 'Set'} starting balances — ${emp.name}`;
-    LEAVE_TYPE_FIELDS.forEach((t) => {
+    leaveTypes.forEach((t) => {
       $(`field-${t.id}`).value = record ? record.balances[t.id] : t.defaultBalance;
       setFieldError(t.id, false);
     });
@@ -126,7 +121,7 @@ function initLeaveBalancesApp(doc, api) {
     e.preventDefault();
     const values = {};
     let invalid = false;
-    LEAVE_TYPE_FIELDS.forEach((t) => {
+    leaveTypes.forEach((t) => {
       const raw = $(`field-${t.id}`).value.trim();
       const num = Number(raw);
       const bad = raw === '' || Number.isNaN(num) || num < 0;
@@ -169,6 +164,7 @@ function createLeaveBalancesApi() {
 
   return {
     listEmployees: () => request('/employees', 'GET'),
+    listTypes: () => request('/leave/types', 'GET'),
     getBalances: (id) => request(`/leave/balances/${encodeURIComponent(id)}`, 'GET'),
     saveBalances: (id, values) => request(`/leave/balances/${encodeURIComponent(id)}`, 'POST', values),
   };
