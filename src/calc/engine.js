@@ -66,16 +66,21 @@ function fromRadians(x, angleMode) {
 }
 
 function nthRoot(x, n) {
-  if (n % 2 === 0 && x < 0) {
-    throw new RootDomainError(`Even root (index ${n}) is undefined for negative numbers, got ${x}`);
+  if (n === 0) throw new RootDomainError('Root index must not be zero');
+  if (x < 0 && (!Number.isInteger(n) || n % 2 === 0)) {
+    throw new RootDomainError(`Root with index ${n} is undefined for negative numbers, got ${x}`);
   }
   return x < 0 ? -Math.pow(-x, 1 / n) : Math.pow(x, 1 / n);
 }
+
+// 171! exceeds Number.MAX_VALUE
+const MAX_FACTORIAL_INPUT = 170;
 
 function factorial(n) {
   if (!Number.isInteger(n) || n < 0) {
     throw new FactorialDomainError(`Factorial is only defined for non-negative integers, got ${n}`);
   }
+  if (n > MAX_FACTORIAL_INPUT) throw new OverflowError('Result exceeds representable range');
   let result = 1;
   for (let i = 2; i <= n; i++) result *= i;
   return result;

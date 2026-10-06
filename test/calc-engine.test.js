@@ -135,3 +135,17 @@ test('Sci-AC14: a scientific function combined with arithmetic respects order of
   expect(evaluate('2 + sqrt(16) * 3')).toBe(14);
   expect(evaluate('2 * 3! + 1')).toBe(13);
 });
+
+test('Sci-review: factorial of a huge operand fails fast with OverflowError', () => {
+  const start = Date.now();
+  expect(() => evaluate('1000000000000000!')).toThrow(OverflowError);
+  expect(() => evaluate('171!')).toThrow(OverflowError);
+  expect(evaluate('170!')).toBeGreaterThan(1e306);
+  expect(Date.now() - start).toBeLessThan(500);
+});
+
+test('Sci-review: nth root rejects a negative radicand with a non-integer index and a zero index', () => {
+  expect(() => evaluate('root(0 - 8, 1.5)')).toThrow(RootDomainError);
+  expect(() => evaluate('root(8, 0)')).toThrow(RootDomainError);
+  expect(evaluate('root(0 - 8, 3)')).toBeCloseTo(-2, 10);
+});
