@@ -12,6 +12,10 @@ function getEmployee(id) {
   return employees.get(id);
 }
 
+function listEmployees() {
+  return Array.from(employees.values());
+}
+
 function updateEmployee(id, changes) {
   const employee = employees.get(id);
   if (!employee) return undefined;
@@ -19,8 +23,28 @@ function updateEmployee(id, changes) {
   return employee;
 }
 
-function listEmployees() {
-  return Array.from(employees.values());
+function setEmploymentStatus(id, status, actor) {
+  const employee = employees.get(id);
+  if (!employee) return undefined;
+  employee.employmentStatus = status;
+  employee.history = employee.history || [];
+  employee.history.push({ status, actor, at: new Date().toISOString() });
+  return employee;
 }
 
-module.exports = { createEmployee, getEmployee, updateEmployee, listEmployees };
+function deactivateEmployee(id, actor) {
+  return setEmploymentStatus(id, 'deactivated', actor);
+}
+
+function reactivateEmployee(id, actor) {
+  return setEmploymentStatus(id, 'active', actor);
+}
+
+module.exports = {
+  createEmployee,
+  getEmployee,
+  listEmployees,
+  updateEmployee,
+  deactivateEmployee,
+  reactivateEmployee,
+};

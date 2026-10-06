@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Directory — Workforce</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/employees.css" />
+<script src="./js/employees.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Directory</a>
+      <a href="#" onclick="return false;">Org chart</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+      <div>
+        <h1>Employee directory</h1>
+        <p>Deactivate an employee when they leave or go on extended leave, and reactivate them when they return.</p>
+      </div>
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr">HR</option>
+          <option value="manager">Manager</option>
+          <option value="employee">Employee (no HR/Manager access)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="role-banner" id="role-banner" hidden>
+      <span class="hint-icon" aria-hidden="true">⛔</span>
+      <span><strong>Viewing as Employee.</strong> Only HR or Manager can change an employee's status. The buttons below are still clickable so you can see the request get rejected.</span>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-field">
+        <label class="label" for="status-filter">Filter by status</label>
+        <select class="input" id="status-filter">
+          <option value="all">All employees</option>
+          <option value="active">Active only</option>
+          <option value="deactivated">Deactivated only</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="directory-table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Department / Role</th>
+              <th scope="col">Start date</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="directory-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="no-controls-note">
+      <span class="hint-icon" aria-hidden="true">ℹ</span>
+      <span>
+        Out of scope for this screen, by design: system or access-control changes (no
+        per-employee login exists yet) and any automatic status change triggered by
+        another workflow. Status only ever changes here, by manual HR/Manager action.
+      </span>
+    </p>
+  </div>
+
+  <div class="modal-overlay" id="confirm-overlay" hidden></div>
+  <div class="modal-wrap" id="confirm-wrap" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="modal-panel" style="width:min(92vw, 440px);">
+      <div class="modal-header">
+        <div><h2 id="confirm-title">Deactivate employee</h2></div>
+        <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+      </div>
+      <p class="card-body" id="confirm-body" style="margin:0;"></p>
+      <div class="consequence-box">
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span id="confirm-consequence-text"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-action-btn">Deactivate employee</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast-icon" aria-hidden="true">✓</span>
+    <span id="toast-message"></span>
+  </div>
+</body>
+</html>
