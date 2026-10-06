@@ -36,42 +36,42 @@
       <button type="button" class="btn btn-primary" id="add-expense-btn">+ Log expense</button>
     </div>
 
-    <form role="search" aria-label="Filter expenses" class="filter-bar" onsubmit="return false;">
-      <div class="filter-field">
-        <label class="label" for="filter-category">Category</label>
-        <select class="input" id="filter-category" aria-label="Category">
-          <option value="">All categories</option>
-          <option>Travel</option>
-          <option>Meals</option>
-          <option>Software</option>
-          <option>Office Supplies</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-start-date">From</label>
-        <input class="input" type="date" id="filter-start-date" aria-label="Start date" />
-      </div>
-      <div class="filter-field">
-        <label class="label" for="filter-end-date">To</label>
-        <input class="input" type="date" id="filter-end-date" aria-label="End date" />
-      </div>
-      <div class="filter-field filter-actions-field">
-        <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
-      </div>
-    </form>
-    <p class="filter-hint" id="date-order-hint" hidden>
-      <span class="filter-hint-icon" aria-hidden="true">&#9888;</span>Start date is after end
-      date — no expenses will fall in range.
-    </p>
-    <div class="filter-result-row">
-      <p class="list-count" id="result-count" aria-live="polite"></p>
-    </div>
-
     <p class="shared-visibility-hint">
       <span class="hint-icon" aria-hidden="true">ℹ</span>
       <span>Every team member sees this same list — a new expense is visible to everyone immediately, not just the person who logged it.</span>
     </p>
+
+    <div class="card filter-card">
+      <div class="filter-row" role="search" aria-label="Filter expenses">
+        <div class="field">
+          <label class="label" for="filter-category">Category</label>
+          <select class="input" id="filter-category" aria-label="Category">
+            <option value="">All categories</option>
+            <option>Travel</option>
+            <option>Meals</option>
+            <option>Software</option>
+            <option>Office Supplies</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field date-field">
+          <label class="label" for="filter-start-date">From</label>
+          <input class="input" type="date" id="filter-start-date" aria-label="Start date" aria-describedby="error-date-range" />
+        </div>
+        <div class="field date-field">
+          <label class="label" for="filter-end-date">To</label>
+          <input class="input" type="date" id="filter-end-date" aria-label="End date" aria-describedby="error-date-range" />
+        </div>
+        <div class="filter-actions">
+          <button type="button" class="btn btn-secondary" id="clear-filters-btn">Clear filters</button>
+          <button type="button" class="btn btn-primary" id="apply-filters-btn">Apply filters</button>
+        </div>
+      </div>
+      <p class="field-error" id="error-date-range" role="alert" hidden>⚠ The "From" date must be on or before the "To" date.</p>
+      <div class="active-filter-chips" id="active-filter-chips" hidden></div>
+    </div>
+
+    <p class="result-summary" id="result-summary" role="status" aria-live="polite"></p>
 
     <div class="card table-card">
       <div class="table-scroll">
