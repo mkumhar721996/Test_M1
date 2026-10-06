@@ -18,6 +18,16 @@
       <a href="runs.html" class="active" aria-current="page">Runs</a>
       <a href="#" onclick="return false;">Settings</a>
     </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr">HR</option>
+          <option value="manager">Manager</option>
+          <option value="employee">New hire (no HR/Manager access)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div class="page">
@@ -36,10 +46,18 @@
       </div>
     </div>
 
+    <div class="card" id="run-denied-panel" hidden>
+      <div class="access-denied" role="alert">
+        <span class="icon" aria-hidden="true">⛔</span>
+        <h2>Access denied</h2>
+        <p>Onboarding runs are visible to HR and Manager accounts only. Your account doesn't have access to view or act on this run.</p>
+      </div>
+    </div>
+
     <fieldset class="run-fieldset" id="run-fieldset">
       <div class="run-layout">
         <div class="card">
-          <h2 class="card-title" style="margin:0 0 var(--space-1) 0;">Task graph</h2>
+          <h2 class="card-title" style="margin:0 0 var(--space-1) 0;">Steps</h2>
           <p class="progress-label" id="progress-label"></p>
           <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
           <ol class="stepper" id="stepper"><!-- rendered by JS --></ol>
@@ -51,17 +69,14 @@
             <div id="action-panel"><!-- rendered by JS --></div>
           </div>
 
-          <div class="card hire-record-card" style="margin-bottom: var(--space-4);">
-            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Hire record</h2>
-            <div id="hire-record-body"><!-- rendered by JS --></div>
+          <div class="card" style="margin-bottom: var(--space-4);">
+            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Run summary</h2>
+            <div id="run-summary-body"><!-- rendered by JS --></div>
           </div>
 
           <div class="card">
-            <h2 class="card-title" style="margin:0;">Audit log</h2>
-            <button class="audit-toggle" id="audit-toggle-btn" type="button" aria-expanded="false">
-              Show entries (<span id="audit-count">0</span>) ▾
-            </button>
-            <ul class="audit-list" id="audit-list" hidden></ul>
+            <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Run activity</h2>
+            <ul class="activity-list" id="activity-list"></ul>
           </div>
         </div>
       </div>

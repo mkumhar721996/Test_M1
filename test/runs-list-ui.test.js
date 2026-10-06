@@ -54,4 +54,24 @@ describe('Runs list UI', () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'hire-profile.html'), 'utf8');
     expect(html).toContain('<a href="runs.html">Runs</a>');
   });
+
+  test('AC6: selecting the non-permitted role replaces the runs table with the access-denied panel', () => {
+    const { initRunsListApp } = require('../public/js/runs');
+    initRunsListApp(document, [summary()], jest.fn());
+    const select = document.getElementById('role-select');
+
+    select.value = 'employee';
+    select.dispatchEvent(new Event('change'));
+    expect(document.querySelector('.access-denied')).not.toBeNull();
+    expect(document.getElementById('runs-tbody')).toBeNull();
+
+    select.value = 'hr';
+    select.dispatchEvent(new Event('change'));
+    expect(document.querySelector('.access-denied')).toBeNull();
+    expect(document.getElementById('runs-tbody')).not.toBeNull();
+  });
+
+  test('the header offers a Start onboarding run button', () => {
+    expect(document.getElementById('start-run-btn').textContent).toBe('Start onboarding run');
+  });
 });

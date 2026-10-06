@@ -35,7 +35,7 @@ test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', 
     .post(`/workflows/${workflowId}/versions`)
     .send({ taskGraph: { tasks: [{ id: 't1', next: ['t2'] }, { id: 't2', next: [] }] } });
 
-  const getRes = await request(app).get(`/runs/${runRes.body.id}`);
+  const getRes = await request(app).get(`/runs/${runRes.body.id}`).set('x-staff-role', 'manager');
   expect(getRes.body.definitionVersion).toBe(1);
   expect(getRes.body.taskGraph).toEqual({ tasks: [{ id: 't1', next: [] }] });
 });

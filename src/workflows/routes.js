@@ -1,14 +1,24 @@
 const express = require('express');
-const { createWorkflow, updateWorkflow } = require('./store');
-const { startRun } = require('../runs/store');
+const { createWorkflow, updateWorkflow, listWorkflows } = require('./store');
+const { startRun, buildSteps } = require('../runs/store');
 const { getHire } = require('../hires/store');
 const { enforceOnboardingRole } = require('../runs/auth');
 
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  const definition = createWorkflow(req.body.taskGraph);
-  res.status(201).json({ id: definition.workflowId, version: definition.version, taskGraph: definition.taskGraph });
+  const definition = createWorkflow(req.body.taskGraph, req.body.name);
+  res.status(201).json({ id: definition.workflowId, name: definition.name, version: definition.version, taskGraph: definition.taskGraph });
+});
+
+router.get('/', enforceOnboardingRole, (req, res) => {
+  const summaries = listWorkflows().map((wf) => ({
+    id: wf.workflowId,
+    name: wf.name || wf.workflowId,
+    version: wf.version,
+    steps: buildSteps(wf.taskGraph).map((s) => ({ name: s.name, owner: s.owner, requirementLabel: s.requirementLabel })),
+  }));
+  res.status(200).json(summaries);
 });
 
 router.post('/:id/versions', (req, res) => {

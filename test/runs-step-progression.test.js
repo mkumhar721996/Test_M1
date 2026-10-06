@@ -172,7 +172,7 @@ describe('HTTP', () => {
     const run = startRun(wf.workflowId, hire.id);
     advanceStep(run.id);
 
-    const res = await request(app).get(`/runs/${run.id}`);
+    const res = await request(app).get(`/runs/${run.id}`).set('x-staff-role', 'manager');
 
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('active');
@@ -187,7 +187,7 @@ describe('HTTP', () => {
 
     const advanceRes = await request(app).post(`/runs/${run.id}/advance`).set('x-staff-role', 'manager').send({});
     expect(advanceRes.status).toBe(200);
-    const res = await request(app).get(`/runs/${run.id}`);
+    const res = await request(app).get(`/runs/${run.id}`).set('x-staff-role', 'manager');
 
     expect(res.body.status).toBe('blocked');
     expect(res.body.steps[0].status).toBe('blocked');
@@ -216,7 +216,7 @@ describe('HTTP', () => {
     const wf = twoStepWorkflow();
     const unlinked = startRun(wf.workflowId);
 
-    const res = await request(app).get('/runs');
+    const res = await request(app).get('/runs').set('x-staff-role', 'manager');
 
     expect(res.status).toBe(200);
     expect(res.body.some((r) => r.id === unlinked.id)).toBe(false);

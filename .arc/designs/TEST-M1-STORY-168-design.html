@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-168 — Onboarding Workflow Run Progression</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* Design-system gap note: tokens.json has no dedicated success/danger/warning
+     color (only color-fg, color-fg-muted, color-primary/-fg, color-surface,
+     color-bg, color-border). Every run/step status below is distinguished by
+     icon + label + border style (solid/dashed), never by hue alone, matching
+     the convention already established in this product's Run Progression
+     screen (TEST-M1-STORY-137). */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .page { max-width: 1040px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+
+  /* ---------- Status chips (run + step) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--active .dot { color: var(--color-primary); }
+  .status-chip--blocked { border: 1px dashed var(--color-primary); color: var(--color-fg); }
+  .status-chip--completed { border: 1px solid var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Runs list ---------- */
+  .runs-table-wrap { overflow-x: auto; }
+  .runs-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .runs-table th {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .runs-table td {
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .runs-table .muted { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 0; }
+  .runs-table tr:last-child td { border-bottom: none; }
+  .runs-table .row-highlight td { background: var(--color-surface); }
+  .runs-table .row-new td { background: var(--color-surface); }
+
+  /* ---------- Demo-only controls (not part of the real product UI) ---------- */
+  .demo-controls {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    flex-wrap: wrap;
+  }
+  .demo-controls label { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; }
+  .demo-controls select.input { width: auto; min-width: 160px; }
+
+  /* ---------- Access denied ---------- */
+  .access-denied {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    text-align: center;
+    font-family: var(--font-family-base);
+  }
+  .access-denied .icon { font-size: var(--font-size-lg); }
+  .access-denied h2 { margin: 0; font-size: var(--font-size-lg); color: var(--color-fg); }
+  .access-denied p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-md); max-width: 46ch; }
+
+  /* ---------- Empty state ---------- */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    text-align: center;
+    font-family: var(--font-family-base);
+  }
+  .empty-state p { margin: 0; color: var(--color-fg-muted); font-size: var(--font-size-md); }
+
+  /* ---------- Layout grid for run detail ---------- */
+  .run-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  @media (min-width: 860px) {
+    .run-layout { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  }
+
+  .progress-track {
+    height: 8px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    margin: var(--space-2) 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    transition: width 0.2s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
+  .progress-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Stepper ---------- */
+  .stepper { list-style: none; margin: var(--space-3) 0 0 0; padding: 0; }
+  .step-item { position: relative; padding: 0 0 var(--space-4) var(--space-4); border-left: 2px solid var(--color-border); margin-left: var(--space-2); }
+  .step-item:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .step-marker {
+    position: absolute; left: -11px; top: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-bg); border: 2px solid var(--color-border);
+    font-size: 11px; color: var(--color-fg-muted);
+  }
+  .step-item--complete .step-marker { border-color: var(--color-primary); color: var(--color-primary); }
+  .step-item--active .step-marker { border-color: var(--color-primary); color: var(--color-fg); background: var(--color-surface); }
+  .step-item--blocked .step-marker { border-style: dashed; border-color: var(--color-primary); color: var(--color-fg); }
+  .step-name { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .step-item--upcoming .step-name { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .step-owner { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+  .step-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+  }
+  .step-item--blocked .step-tag { color: var(--color-fg); }
+
+  .requirement-row {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+  }
+  .requirement-row .label { color: var(--color-fg); font-weight: var(--font-weight-bold); margin: 0; }
+  .requirement-row .state--missing { color: var(--color-fg-muted); }
+  .requirement-row .state--met { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+  .action-panel { margin-top: var(--space-3); }
+  p.hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  /* Inline validation error shown directly under the Advance action — AC4 */
+  .field-error {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    margin: var(--space-2) 0 0 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  fieldset.run-fieldset { border: none; margin: 0; padding: 0; }
+  fieldset.run-fieldset[disabled] .btn { opacity: 0.6; cursor: not-allowed; }
+
+  .pending-note {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    margin-top: var(--space-3);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  .success-panel {
+    padding: var(--space-3);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+  }
+  .success-panel h3 { margin: 0 0 var(--space-1) 0; font-size: var(--font-size-md); color: var(--color-fg); }
+  .success-panel p { margin: 0; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Run activity (records resolutions and transitions — AC5) ---------- */
+  .activity-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; border-top: 1px solid var(--color-border); }
+  .activity-item { padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item .meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .activity-item .msg { font-size: var(--font-size-sm); color: var(--color-fg); margin: 0; }
+
+  .run-meta-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); }
+  .run-meta-row:last-child { border-bottom: none; }
+  .run-meta-row .k { color: var(--color-fg-muted); }
+  .run-meta-row .v { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Start run form ---------- */
+  .workflow-preview-list { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; }
+  .workflow-preview-list li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); }
+  .workflow-preview-list li:last-child { border-bottom: none; }
+  .workflow-preview-list .req { display: block; color: var(--color-fg-muted); margin-top: var(--space-1); }
+  .form-actions { display: flex; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+
+  .ac-tag { display: inline-block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-bottom: var(--space-3); }
+  .reference-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 760px) { .reference-grid { grid-template-columns: 1fr 1fr; } }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — Profiles · Runs · Settings, matching the "Onboarding" top bar
+     already established by the hire-profile and run-progression screens in this
+     product. This story's "Runs" area now also covers starting a run. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-168</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Fixture data -->
+  <script id="fixture-data" type="application/json">
+  {
+    "workflows": [
+      {
+        "id": "wf_eng_se2",
+        "name": "Engineering — Software Engineer Onboarding",
+        "department": "Engineering",
+        "steps": [
+          { "name": "Collect signed offer letter", "owner": "HR", "description": "Confirm the hire has returned a signed copy of the offer letter." },
+          { "name": "Verify I-9 employment eligibility", "owner": "HR", "description": "Confirm the required I-9 supporting document has been uploaded and reviewed.", "requirementLabel": "I-9 supporting document uploaded" },
+          { "name": "Provision IT accounts & equipment", "owner": "IT", "description": "Assign a laptop and create system accounts.", "requirementLabel": "Laptop assigned in asset system" },
+          { "name": "Assign onboarding buddy & complete orientation", "owner": "Manager", "description": "Pair the hire with a buddy and confirm orientation attendance." },
+          { "name": "Manager check-in & 30-day goals sign-off", "owner": "Manager", "description": "Document 30-day goals and confirm manager sign-off." }
+        ]
+      },
+      {
+        "id": "wf_sales_ae",
+        "name": "Sales — Account Executive Onboarding",
+        "department": "Sales",
+        "steps": [
+          { "name": "Collect signed offer letter", "owner": "HR", "description": "Confirm the hire has returned a signed copy of the offer letter." },
+          { "name": "Complete background check", "owner": "HR", "description": "Confirm the background check vendor has returned a cleared result.", "requirementLabel": "Background check cleared" },
+          { "name": "Provision CRM & territory access", "owner": "Sales Ops", "description": "Grant CRM access and confirm the assigned sales territory.", "requirementLabel": "Territory assignment confirmed" },
+          { "name": "Manager check-in & quota plan sign-off", "owner": "Manager", "description": "Review the first-quarter quota plan with the hire." }
+        ]
+      },
+      {
+        "id": "wf_standard",
+        "name": "Standard Corporate Onboarding",
+        "department": "All departments",
+        "steps": [
+          { "name": "Collect signed offer letter", "owner": "HR", "description": "Confirm the hire has returned a signed copy of the offer letter." },
+          { "name": "Complete compliance training", "owner": "HR", "description": "Confirm required compliance training is marked complete in the LMS.", "requirementLabel": "Compliance training marked complete in LMS" },
+          { "name": "Manager welcome meeting", "owner": "Manager", "description": "Hold a welcome meeting and review team norms." }
+        ]
+      }
+    ],
+    "hiresAwaitingRun": [
+      { "id": "hire_3390", "name": "Morgan Ellis", "role": "Account Executive", "department": "Sales" },
+      { "id": "hire_3402", "name": "Priya Anand", "role": "UX Designer", "department": "Design" }
+    ],
+    "runsList": [
+      { "id": "run_7201", "hire": "Jordan Reyes", "role": "Software Engineer II", "department": "Engineering", "status": "blocked", "currentStepLabel": "Step 2 of 5 — Verify I-9 employment eligibility", "started": "2026-09-29" },
+      { "id": "run_7188", "hire": "Alicia Brooks", "role": "Product Manager", "department": "Product", "status": "active", "currentStepLabel": "Step 2 of 3 — Complete compliance training", "started": "2026-09-22" },
+      { "id": "run_7175", "hire": "Sam Okafor", "role": "Account Executive", "department": "Sales", "status": "completed", "currentStepLabel": "Step 4 of 4 — Manager check-in & quota plan sign-off", "started": "2026-09-10" }
+    ],
+    "jordanRun": {
+      "id": "run_7201",
+      "status": "blocked",
+      "workflowName": "Engineering — Software Engineer Onboarding",
+      "hire": { "name": "Jordan Reyes", "role": "Software Engineer II", "department": "Engineering" },
+      "started": "2026-09-29",
+      "currentIndex": 1,
+      "steps": [
+        { "name": "Collect signed offer letter", "description": "Confirm Jordan has returned a signed copy of the offer letter.", "owner": "HR — Priya Shah", "status": "complete" },
+        { "name": "Verify I-9 employment eligibility", "description": "Confirm the required I-9 supporting document has been uploaded and reviewed.", "owner": "HR — Priya Shah", "status": "blocked", "requirementLabel": "I-9 supporting document uploaded", "requirementMet": false },
+        { "name": "Provision IT accounts & equipment", "description": "Assign a laptop and create system accounts.", "owner": "IT — Devon Ruiz", "status": "upcoming", "requirementLabel": "Laptop assigned in asset system", "requirementMet": false },
+        { "name": "Assign onboarding buddy & complete orientation", "description": "Pair Jordan with a buddy and confirm orientation attendance.", "owner": "Manager — Morgan Ellis", "status": "upcoming" },
+        { "name": "Manager check-in & 30-day goals sign-off", "description": "Document 30-day goals and confirm manager sign-off.", "owner": "Manager — Morgan Ellis", "status": "upcoming" }
+      ],
+      "activity": [
+        { "timestamp": "2026-09-29 09:02", "actor": "System", "message": "Run started from workflow \"Engineering — Software Engineer Onboarding\". Step 1 of 5 is active." },
+        { "timestamp": "2026-09-29 09:15", "actor": "Priya Shah (HR)", "message": "Advanced step 1 of 5 (Collect signed offer letter) to complete — step 2 of 5 (Verify I-9 employment eligibility) is now active." },
+        { "timestamp": "2026-09-29 14:40", "actor": "Priya Shah (HR)", "message": "Attempted to advance step 2 of 5 — blocked: \"I-9 supporting document uploaded\" has not been met yet." }
+      ]
+    }
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Runs
+         Notes:
+           - Entry point for the "Runs" area. Lists every onboarding run with its
+             overall status and current step visible at a glance (AC2).
+           - "Start onboarding run" opens the manual workflow-selection flow (AC1).
+           - Jordan Reyes's row is wired to the interactive Run Detail screen — click
+             "View run" to open it and try advancing a blocked step (AC2–AC5). The
+             other rows are static context showing an active and a completed run
+             sitting alongside it.
+           - The "Viewing as" control simulates the access rule in AC6: switch it to
+             "New hire" to see the whole runs area deny access instead of listing runs.
+    -->
+    <div class="screen" data-name="Runs">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="demo-controls">
+          <label for="role-select-1">
+            Demo control (not part of the real product) — viewing as
+          </label>
+          <select class="input" id="role-select-1">
+            <option value="hr">HR</option>
+            <option value="manager">Manager</option>
+            <option value="new_hire">New hire</option>
+          </select>
+        </div>
+
+        <div id="runs-screen-body"><!-- rendered by JS: either the runs list or an access-denied panel --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Start Run
+         Notes:
+           - HR or Manager manually picks a hire and an existing workflow — nothing is
+             auto-assigned. Selecting a workflow previews its steps and any inline
+             blocking requirements before committing (AC1).
+           - "Start run" is disabled until both a hire and a workflow are chosen. On
+             submit, a new run is created and the reviewer is taken straight to Run
+             Detail with step 1 already active (AC1) — try it with Morgan Ellis.
+           - The same "Viewing as" demo control is present here too: a new hire can't
+             reach this form either (AC6).
+    -->
+    <div class="screen" data-name="Start Run">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="demo-controls">
+          <label for="role-select-2">
+            Demo control (not part of the real product) — viewing as
+          </label>
+          <select class="input" id="role-select-2">
+            <option value="hr">HR</option>
+            <option value="manager">Manager</option>
+            <option value="new_hire">New hire</option>
+          </select>
+        </div>
+
+        <div id="start-run-screen-body"><!-- rendered by JS: either the form or an access-denied panel --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Run Detail — Task Progression (interactive)
+         Notes:
+           - The stepper on the left always shows which steps are complete, which one
+             is active, and which are blocked or still upcoming (AC2).
+           - Step 2 (Verify I-9 employment eligibility) starts blocked — Jordan hasn't
+             uploaded the I-9 document yet. Click "Advance step" as-is: after a brief
+             check, an inline error explains exactly which requirement is unmet. The
+             step stays blocked and does not silently move forward (AC4).
+           - Click "Mark requirement met" to resolve it. The resolution is recorded in
+             "Run activity" below with who resolved it and when, the requirement row
+             flips to "Met ✓", and the step becomes eligible for advancement (AC5).
+           - Click "Advance step" again — this time it succeeds: step 2 is marked
+             complete and step 3 becomes active (AC3). The progress bar and run
+             activity update to match.
+           - While any action is pending, every other control on this screen is
+             disabled (see the dashed "Saving…" note), so the run is only ever read as
+             its old state or its new one, never half-updated.
+           - The same "Viewing as" demo control applies here: switch to "New hire" to
+             see this run become inaccessible (AC6).
+    -->
+    <div class="screen" data-name="Run Detail">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="demo-controls">
+          <label for="role-select-3">
+            Demo control (not part of the real product) — viewing as
+          </label>
+          <select class="input" id="role-select-3">
+            <option value="hr">HR</option>
+            <option value="manager">Manager</option>
+            <option value="new_hire">New hire</option>
+          </select>
+        </div>
+
+        <div id="run-detail-screen-body"><!-- rendered by JS: either the run detail or an access-denied panel --></div>
+      </div>
+    </div>
+
+    <!-- Screen: Reference States
+         Notes:
+           - Static side-by-side snapshots of the key states named in the acceptance
+             criteria, for reviewers who want a quick look without driving screens 2–3.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Onboarding</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Profiles</a>
+          <a href="#" class="active" aria-current="page">Runs</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Reference states</h1>
+          <p>Non-interactive snapshots. Use "Start Run" and "Run Detail" to try the real flow.</p>
+        </div>
+
+        <div class="reference-grid">
+          <!-- State: run-created-first-step-active -->
+          <div>
+            <h3>Run created — first step active</h3>
+            <span class="ac-tag">Satisfies AC1: new run shows its steps, first step active</span>
+            <div class="card">
+              <span class="status-chip status-chip--active"><span class="dot" aria-hidden="true">●</span> Active</span>
+              <p class="progress-label" style="margin-top:var(--space-2);">0 of 4 steps complete</p>
+              <div class="progress-track"><div class="progress-fill" style="width:0%;"></div></div>
+              <ol class="stepper">
+                <li class="step-item step-item--active"><span class="step-marker">●</span><p class="step-name">Collect signed offer letter</p><p class="step-owner">HR · Active</p></li>
+                <li class="step-item step-item--upcoming"><span class="step-marker">○</span><p class="step-name">Complete background check</p><p class="step-owner">HR · Upcoming</p></li>
+                <li class="step-item step-item--upcoming"><span class="step-marker">○</span><p class="step-name">Provision CRM &amp; territory access</p><p class="step-owner">Sales Ops · Upcoming</p></li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- State: blocked-inline-error -->
+          <div>
+            <h3>Blocked — advance attempted</h3>
+            <span class="ac-tag">Satisfies AC2, AC4: blocked status visible, inline error instead of silent advance</span>
+            <div class="card">
+              <span class="status-chip status-chip--blocked"><span aria-hidden="true">⚠</span> Blocked</span>
+              <ol class="stepper" style="margin-top:var(--space-3);">
+                <li class="step-item step-item--complete"><span class="step-marker">✓</span><p class="step-name">Collect signed offer letter</p><p class="step-owner">Complete</p></li>
+                <li class="step-item step-item--blocked"><span class="step-marker">⚠</span><p class="step-name">Verify I-9 employment eligibility</p><p class="step-tag">Blocked</p></li>
+                <li class="step-item step-item--upcoming"><span class="step-marker">○</span><p class="step-name">Provision IT accounts &amp; equipment</p><p class="step-owner">Still upcoming — not skipped</p></li>
+              </ol>
+              <div class="requirement-row">
+                <span class="label">I-9 supporting document uploaded</span>
+                <button class="btn btn-secondary btn-sm" type="button" disabled>Mark requirement met</button>
+              </div>
+              <button class="btn btn-primary" disabled style="margin-top:var(--space-3);">Advance step</button>
+              <div class="field-error">
+                <span aria-hidden="true">⚠</span>
+                <span>Can't advance — "I-9 supporting document uploaded" has not been met yet. Mark it met to continue.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: requirement-resolved-eligible -->
+          <div>
+            <h3>Requirement resolved — eligible to advance</h3>
+            <span class="ac-tag">Satisfies AC5: resolution recorded, step eligible for advancement</span>
+            <div class="card">
+              <span class="status-chip status-chip--active"><span class="dot" aria-hidden="true">●</span> Active</span>
+              <div class="requirement-row" style="margin-top:var(--space-3);">
+                <span class="label">I-9 supporting document uploaded</span>
+                <span class="state--met">Met ✓</span>
+              </div>
+              <button class="btn btn-primary" disabled style="margin-top:var(--space-3);">Advance step</button>
+              <p class="hint">Resolved by Priya Shah (HR) · 2026-09-29 15:02 — ready to advance.</p>
+            </div>
+          </div>
+
+          <!-- State: completed -->
+          <div>
+            <h3>Run completed</h3>
+            <span class="ac-tag">Satisfies AC3: final step marked complete, no further step active</span>
+            <div class="card">
+              <span class="status-chip status-chip--completed"><span aria-hidden="true">✓</span> Completed</span>
+              <div class="success-panel" style="margin-top:var(--space-3);">
+                <h3>All steps complete</h3>
+                <p>Onboarding finished for Sam Okafor. No further action needed.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: access-denied -->
+          <div>
+            <h3>Access denied — new hire</h3>
+            <span class="ac-tag">Satisfies AC6: non-HR/Manager viewer can't view or act on a run</span>
+            <div class="card">
+              <div class="access-denied">
+                <span class="icon" aria-hidden="true">⛔</span>
+                <h2>Access denied</h2>
+                <p>Onboarding runs are visible to HR and Manager accounts only. Your account doesn't have access to view or act on this run.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- State: no-hires-awaiting-run -->
+          <div>
+            <h3>Empty — no eligible hires</h3>
+            <span class="ac-tag">Edge case: nothing to start a run against yet</span>
+            <div class="card">
+              <div class="empty-state">
+                <p>Every current hire already has an onboarding run.</p>
+                <p class="u-text-sm u-text-muted" style="margin:0;">New hires appear here as soon as their profile is created.</p>
+                <button class="btn btn-secondary" type="button" disabled>Go to Profiles</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="error-toast" role="status" aria-live="assertive" hidden>
+    <span aria-hidden="true">⚠</span>
+    <span id="error-toast-message"></span>
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const fixture = JSON.parse(document.getElementById('fixture-data').textContent);
+  let viewerRole = 'hr'; // 'hr' | 'manager' | 'new_hire' — shared across screens (AC6)
+  let pending = false;
+  let pendingKind = null; // 'advance' | 'resolve' — which action is in flight, for button labels
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function canView() { return viewerRole === 'hr' || viewerRole === 'manager'; }
+
+  function accessDeniedMarkup() {
+    return `
+      <div class="card">
+        <div class="access-denied">
+          <span class="icon" aria-hidden="true">⛔</span>
+          <h2>Access denied</h2>
+          <p>Onboarding runs are visible to HR and Manager accounts only. Your account doesn't have access to view or act on this run.</p>
+        </div>
+      </div>`;
+  }
+
+  // ---------- Run model ----------
+  let jordanRun = JSON.parse(JSON.stringify(fixture.jordanRun));
+  let extraRuns = []; // runs created via Start Run, newest first
+  let activeRun = jordanRun; // the run shown on the Run Detail screen
+  let fieldErrorVisible = false;
+
+  function totalSteps(run) { return run.steps.length; }
+
+  function statusChipMarkup(status) {
+    if (status === 'blocked') return '<span aria-hidden="true">⚠</span> Blocked';
+    if (status === 'completed') return '<span aria-hidden="true">✓</span> Completed';
+    return '<span class="dot" aria-hidden="true">●</span> Active';
+  }
+
+  // ---------- Screen: Runs ----------
+  function renderRunsScreen() {
+    const el = document.getElementById('runs-screen-body');
+    if (!canView()) { el.innerHTML = accessDeniedMarkup(); return; }
+
+    const rows = extraRuns.concat(fixture.runsList);
+    el.innerHTML = `
+      <div class="page-header">
+        <div>
+          <h1>Onboarding runs</h1>
+          <p>Every active, blocked, and completed onboarding run across the task graph.</p>
+        </div>
+        <button class="btn btn-primary" type="button" id="start-run-nav-btn">Start onboarding run</button>
+      </div>
+      <div class="card">
+        <div class="runs-table-wrap">
+          <table class="runs-table">
+            <thead>
+              <tr>
+                <th scope="col">New hire</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Current step</th>
+                <th scope="col">Started</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr${r.isNew ? ' class="row-new"' : (r.id === 'run_7201' ? ' class="row-highlight"' : '')}>
+                  <td>${escapeHtml(r.hire)}</td>
+                  <td class="muted">${escapeHtml(r.role)} · ${escapeHtml(r.department)}</td>
+                  <td><span class="status-chip status-chip--${r.status}">${statusChipMarkup(r.status)}</span></td>
+                  <td>${escapeHtml(r.currentStepLabel)}</td>
+                  <td class="muted">${escapeHtml(r.started)}</td>
+                  <td>${(r.id === 'run_7201' || r.isNew)
+                    ? `<button class="btn btn-secondary btn-sm" type="button" data-view-run="${r.id}">View run</button>`
+                    : '<span class="muted">Illustrative only</span>'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+
+    document.getElementById('start-run-nav-btn').addEventListener('click', () => window.__showScreen(1));
+    el.querySelectorAll('[data-view-run]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-view-run');
+        if (id === 'run_7201') activeRun = jordanRun;
+        else activeRun = extraRuns.find(r => r.id === id).fullRun;
+        window.__showScreen(2);
+      });
+    });
+  }
+
+  // ---------- Screen: Start Run ----------
+  function renderStartRunScreen() {
+    const el = document.getElementById('start-run-screen-body');
+    if (!canView()) { el.innerHTML = accessDeniedMarkup(); return; }
+
+    if (fixture.hiresAwaitingRun.length === 0) {
+      el.innerHTML = `
+        <div class="page-header"><div><h1>Start onboarding run</h1></div></div>
+        <div class="card">
+          <div class="empty-state">
+            <p>Every current hire already has an onboarding run.</p>
+            <p class="u-text-sm u-text-muted" style="margin:0;">New hires appear here as soon as their profile is created.</p>
+          </div>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="page-header">
+        <div>
+          <h1>Start onboarding run</h1>
+          <p>Select a hire and an existing workflow to begin tracking their onboarding.</p>
+        </div>
+      </div>
+      <div class="card">
+        <fieldset class="run-fieldset" id="start-run-fieldset">
+          <div class="field">
+            <label class="label" for="hire-select">Hire</label>
+            <select class="input" id="hire-select">
+              <option value="">Select a hire…</option>
+              ${fixture.hiresAwaitingRun.map(h => `<option value="${h.id}">${escapeHtml(h.name)} — ${escapeHtml(h.role)}, ${escapeHtml(h.department)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="workflow-select">Workflow</label>
+            <select class="input" id="workflow-select">
+              <option value="">Select a workflow…</option>
+              ${fixture.workflows.map(w => `<option value="${w.id}">${escapeHtml(w.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <p class="label" style="margin-bottom: var(--space-2);">Workflow preview</p>
+            <div id="workflow-preview"><p class="u-text-sm u-text-muted">Select a hire and a workflow to preview its steps.</p></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="button" id="start-run-submit-btn" disabled>Start run</button>
+            <button class="btn btn-secondary" type="button" id="start-run-cancel-btn">Cancel</button>
+          </div>
+        </fieldset>
+      </div>`;
+
+    const hireSelect = document.getElementById('hire-select');
+    const workflowSelect = document.getElementById('workflow-select');
+    const submitBtn = document.getElementById('start-run-submit-btn');
+
+    function updatePreview() {
+      const wf = fixture.workflows.find(w => w.id === workflowSelect.value);
+      const preview = document.getElementById('workflow-preview');
+      if (!wf) {
+        preview.innerHTML = '<p class="u-text-sm u-text-muted">Select a hire and a workflow to preview its steps.</p>';
+      } else {
+        preview.innerHTML = `
+          <p class="u-text-sm u-text-muted" style="margin:0;">${escapeHtml(wf.department)} · ${wf.steps.length} steps</p>
+          <ol class="workflow-preview-list">
+            ${wf.steps.map((s, i) => `
+              <li>${i + 1}. ${escapeHtml(s.name)} <span class="u-text-muted">(${escapeHtml(s.owner)})</span>
+              ${s.requirementLabel ? `<span class="req">Blocking requirement: ${escapeHtml(s.requirementLabel)}</span>` : ''}
+              </li>`).join('')}
+          </ol>`;
+      }
+      submitBtn.disabled = !(hireSelect.value && workflowSelect.value);
+    }
+    hireSelect.addEventListener('change', updatePreview);
+    workflowSelect.addEventListener('change', updatePreview);
+    document.getElementById('start-run-cancel-btn').addEventListener('click', () => window.__showScreen(0));
+    submitBtn.addEventListener('click', () => handleStartRun(hireSelect.value, workflowSelect.value));
+  }
+
+  function handleStartRun(hireId, workflowId) {
+    if (pending) return;
+    const hire = fixture.hiresAwaitingRun.find(h => h.id === hireId);
+    const wf = fixture.workflows.find(w => w.id === workflowId);
+    if (!hire || !wf) return;
+
+    pending = true;
+    const fieldset = document.getElementById('start-run-fieldset');
+    const submitBtn = document.getElementById('start-run-submit-btn');
+    fieldset.disabled = true;
+    submitBtn.innerHTML = '<span class="spin" aria-hidden="true">⏳</span> Starting run…';
+
+    setTimeout(() => {
+      pending = false;
+      const runId = 'run_' + Math.floor(7300 + Math.random() * 90);
+      const steps = wf.steps.map((s, i) => ({
+        name: s.name,
+        description: s.description,
+        owner: s.owner,
+        requirementLabel: s.requirementLabel,
+        requirementMet: s.requirementLabel ? false : undefined,
+        status: i === 0 ? 'active' : 'upcoming',
+      }));
+      const fullRun = {
+        id: runId,
+        status: 'active',
+        workflowName: wf.name,
+        hire: { name: hire.name, role: hire.role, department: hire.department },
+        started: '2026-10-05',
+        currentIndex: 0,
+        steps,
+        activity: [
+          { timestamp: '2026-10-05 09:00', actor: 'System', message: `Run started from workflow "${wf.name}". Step 1 of ${steps.length} is active.` }
+        ],
+      };
+      extraRuns.unshift({
+        id: runId, hire: hire.name, role: hire.role, department: hire.department,
+        status: 'active', currentStepLabel: `Step 1 of ${steps.length} — ${steps[0].name}`,
+        started: '2026-10-05', isNew: true, fullRun,
+      });
+      activeRun = fullRun;
+      showToast(`Run started for ${hire.name} — step 1 of ${steps.length} is active.`);
+      window.__showScreen(2);
+    }, 300);
+  }
+
+  // ---------- Screen: Run Detail ----------
+  function stepMarkerIcon(step) {
+    if (step.status === 'complete') return '✓';
+    if (step.status === 'active') return '●';
+    if (step.status === 'blocked') return '⚠';
+    return '○';
+  }
+  function stepStatusLabel(step) {
+    if (step.status === 'complete') return 'Complete';
+    if (step.status === 'active') return 'Active';
+    if (step.status === 'blocked') return 'Blocked';
+    return 'Upcoming';
+  }
+
+  function renderRunDetailScreen() {
+    const el = document.getElementById('run-detail-screen-body');
+    if (!canView()) { el.innerHTML = accessDeniedMarkup(); return; }
+
+    const run = activeRun;
+    const total = totalSteps(run);
+    const done = run.steps.filter(s => s.status === 'complete').length;
+
+    el.innerHTML = `
+      <div class="page-header">
+        <div>
+          <h1>Run — ${escapeHtml(run.hire.name)}</h1>
+          <p>${escapeHtml(run.hire.department)} — ${escapeHtml(run.hire.role)} · Run ${escapeHtml(run.id)}</p>
+        </div>
+        <span class="status-chip status-chip--${run.status}">${statusChipMarkup(run.status)}</span>
+      </div>
+
+      <fieldset class="run-fieldset" id="run-fieldset">
+        <div class="run-layout">
+          <div class="card">
+            <h2 class="card-title" style="margin:0 0 var(--space-1) 0;">Steps</h2>
+            <p class="progress-label" id="progress-label">${done} of ${total} steps complete</p>
+            <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:${Math.round((done / total) * 100)}%;"></div></div>
+            <ol class="stepper" id="stepper"></ol>
+          </div>
+
+          <div>
+            <div class="card" id="action-card" style="margin-bottom: var(--space-4);">
+              <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Current step</h2>
+              <div id="action-panel"></div>
+            </div>
+
+            <div class="card" style="margin-bottom: var(--space-4);">
+              <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Run summary</h2>
+              <div class="run-meta-row"><span class="k">Workflow</span><span class="v">${escapeHtml(run.workflowName)}</span></div>
+              <div class="run-meta-row"><span class="k">Started</span><span class="v">${escapeHtml(run.started)}</span></div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title" style="margin:0 0 var(--space-2) 0;">Run activity</h2>
+              <ul class="activity-list" id="activity-list"></ul>
+            </div>
+          </div>
+        </div>
+      </fieldset>`;
+
+    renderStepper();
+    renderActionPanel();
+    renderActivity();
+  }
+
+  function renderStepper() {
+    const run = activeRun;
+    document.getElementById('stepper').innerHTML = run.steps.map(step => `
+      <li class="step-item step-item--${step.status}">
+        <span class="step-marker" aria-hidden="true">${stepMarkerIcon(step)}</span>
+        <p class="step-name">${escapeHtml(step.name)}</p>
+        <p class="step-owner">${escapeHtml(step.owner || '')}${step.owner ? ' · ' : ''}${stepStatusLabel(step)}</p>
+        ${step.status === 'blocked' ? '<p class="step-tag"><span aria-hidden="true">⚠</span> Blocked — not skipped, waiting on resolution</p>' : ''}
+      </li>
+    `).join('');
+  }
+
+  function currentStep(run) { return run.steps[run.currentIndex]; }
+
+  function renderActionPanel() {
+    const run = activeRun;
+    const panel = document.getElementById('action-panel');
+    const total = totalSteps(run);
+
+    if (run.status === 'completed') {
+      panel.innerHTML = `
+        <div class="success-panel">
+          <h3>All ${total} steps complete</h3>
+          <p>Onboarding finished for ${escapeHtml(run.hire.name)}. No further action needed.</p>
+        </div>`;
+      return;
+    }
+
+    const idx = run.currentIndex;
+    const step = currentStep(run);
+    const hasRequirement = !!step.requirementLabel;
+    const met = step.requirementMet;
+
+    panel.innerHTML = `
+      <p class="u-text-md" style="margin:0 0 var(--space-1) 0; color: var(--color-fg);">${escapeHtml(step.name)}</p>
+      <p class="u-text-sm u-text-muted" style="margin:0;">${escapeHtml(step.description)}</p>
+      ${hasRequirement ? `
+        <div class="requirement-row">
+          <span class="label">${escapeHtml(step.requirementLabel)}</span>
+          ${met
+            ? '<span class="state--met">Met ✓</span>'
+            : `<button class="btn btn-secondary btn-sm" type="button" id="resolve-btn" ${pending ? 'disabled' : ''}>
+                 ${pending && pendingKind === 'resolve' ? '<span class="spin" aria-hidden="true">⏳</span> Resolving…' : 'Mark requirement met'}
+               </button>`}
+        </div>` : ''}
+      <div class="action-panel">
+        <button class="btn btn-primary" type="button" id="advance-btn" ${pending ? 'disabled' : ''}>
+          ${pending && pendingKind === 'advance' ? '<span class="spin" aria-hidden="true">⏳</span> Advancing…' : 'Advance step'}
+        </button>
+        <div class="field-error" id="field-error" ${fieldErrorVisible ? '' : 'hidden'} role="alert">
+          <span aria-hidden="true">⚠</span>
+          <span>Can't advance — "${escapeHtml(step.requirementLabel || '')}" has not been met yet. Mark it met to continue.</span>
+        </div>
+      </div>`;
+
+    const resolveBtn = document.getElementById('resolve-btn');
+    if (resolveBtn) resolveBtn.addEventListener('click', handleResolveRequirement);
+    document.getElementById('advance-btn').addEventListener('click', handleAdvanceStep);
+  }
+
+  function renderActivity() {
+    const run = activeRun;
+    document.getElementById('activity-list').innerHTML = run.activity.slice().reverse().map(e => `
+      <li class="activity-item">
+        <p class="meta">${escapeHtml(e.timestamp)} · ${escapeHtml(e.actor)}</p>
+        <p class="msg">${escapeHtml(e.message)}</p>
+      </li>`).join('');
+  }
+
+  function setPending(isPending) {
+    pending = isPending;
+    const fieldset = document.getElementById('run-fieldset');
+    if (!fieldset) return;
+    fieldset.disabled = isPending;
+    renderActionPanel();
+    let note = document.getElementById('pending-note');
+    if (isPending) {
+      if (!note) {
+        note = document.createElement('div');
+        note.id = 'pending-note';
+        note.className = 'pending-note';
+        note.innerHTML = '<span class="spin" aria-hidden="true">⏳</span> Saving — no other action can be started until this finishes.';
+        fieldset.appendChild(note);
+      }
+    } else if (note) {
+      note.remove();
+    }
+  }
+
+  function appendActivity(message, actor) {
+    activeRun.activity.push({
+      timestamp: activeRun.started + ' ' + new Date().toTimeString().slice(0, 5),
+      actor: actor || 'Priya Shah (HR)',
+      message,
+    });
+  }
+
+  function handleResolveRequirement() {
+    if (pending) return;
+    pendingKind = 'resolve';
+    setPending(true);
+    setTimeout(() => {
+      const run = activeRun;
+      const step = currentStep(run);
+      step.requirementMet = true;
+      if (step.status === 'blocked') {
+        step.status = 'active';
+        run.status = 'active';
+      }
+      fieldErrorVisible = false;
+      appendActivity(`Marked requirement met: ${step.requirementLabel}.`);
+      pending = false;
+      pendingKind = null;
+      renderRunDetailScreen();
+    }, 250);
+  }
+
+  function handleAdvanceStep() {
+    if (pending) return;
+    pendingKind = 'advance';
+    setPending(true);
+
+    setTimeout(() => {
+      const run = activeRun;
+      const idx = run.currentIndex;
+      const step = run.steps[idx];
+      const total = totalSteps(run);
+
+      if (step.requirementLabel && !step.requirementMet) {
+        // AC4: inline error, nothing silently advances or changes.
+        step.status = 'blocked';
+        run.status = 'blocked';
+        fieldErrorVisible = true;
+        appendActivity(`Attempted to advance step ${idx + 1} of ${total} — blocked: "${step.requirementLabel}" has not been met yet.`);
+        pending = false;
+        pendingKind = null;
+        renderRunDetailScreen();
+        return;
+      }
+
+      // AC3: advance and record the stage transition.
+      fieldErrorVisible = false;
+      step.status = 'complete';
+      const isLast = idx === run.steps.length - 1;
+      if (isLast) {
+        run.status = 'completed';
+        appendActivity(`Advanced step ${idx + 1} of ${total} (${step.name}) to complete — all steps finished. Run marked completed.`);
+      } else {
+        run.currentIndex = idx + 1;
+        run.steps[run.currentIndex].status = 'active';
+        run.status = 'active';
+        const nextStep = run.steps[run.currentIndex];
+        appendActivity(`Advanced step ${idx + 1} of ${total} (${step.name}) to complete — step ${idx + 2} of ${total} (${nextStep.name}) is now active.`);
+      }
+
+      pending = false;
+      pendingKind = null;
+      renderRunDetailScreen();
+    }, 300);
+  }
+
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('error-toast');
+    document.getElementById('error-toast-message').textContent = message;
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
+  // ---------- Role switcher (shared across screens — AC6) ----------
+  function onRoleChange(value) {
+    viewerRole = value;
+    [document.getElementById('role-select-1'), document.getElementById('role-select-2'), document.getElementById('role-select-3')]
+      .forEach(sel => { if (sel) sel.value = value; });
+    renderRunsScreen();
+    renderStartRunScreen();
+    renderRunDetailScreen();
+  }
+  document.getElementById('role-select-1').addEventListener('change', e => onRoleChange(e.target.value));
+  document.getElementById('role-select-2').addEventListener('change', e => onRoleChange(e.target.value));
+  document.getElementById('role-select-3').addEventListener('change', e => onRoleChange(e.target.value));
+
+  renderRunsScreen();
+  renderStartRunScreen();
+  renderRunDetailScreen();
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    if (cur === 0) renderRunsScreen();
+    if (cur === 1) renderStartRunScreen();
+    if (cur === 2) renderRunDetailScreen();
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  window.__showScreen = show;
+  show(0);
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->

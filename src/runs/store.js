@@ -153,7 +153,7 @@ function seedExampleRun() {
       { id: 'step_orientation', name: 'Assign onboarding buddy & complete orientation', description: 'Pair Jordan with a buddy and confirm orientation attendance.', owner: 'Manager — Morgan Ellis', next: ['step_checkin'] },
       { id: 'step_checkin', name: 'Manager check-in & 30-day goals sign-off', description: 'Document 30-day goals and confirm manager sign-off.', owner: 'Manager — Morgan Ellis', next: [] },
     ],
-  });
+  }, 'Engineering — Software Engineer Onboarding');
   const run = startRun(workflow.workflowId, 'hire_2031');
   advanceStep(run.id);
 }
