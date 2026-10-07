@@ -1,5 +1,5 @@
 const express = require('express');
-const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire } = require('./store');
+const { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, markHireOutcome } = require('./store');
 
 const { enforceOnboardingRole } = require('../runs/auth');
 const { pickFields } = require('../lib/pickFields');
@@ -63,6 +63,7 @@ router.post('/:id/deactivate', enforceOnboardingRole, async (req, res, next) => 
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
     next(err);
   }
 });
@@ -75,6 +76,29 @@ router.post('/:id/reactivate', enforceOnboardingRole, async (req, res, next) => 
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    next(err);
+  }
+});
+
+router.post('/:id/reject', enforceOnboardingRole, async (req, res, next) => {
+  try {
+    const hire = await markHireOutcome(req.params.id, 'rejected', req.body && req.body.reason);
+    if (!hire) return res.status(404).json({ error: 'hire not found' });
+    res.status(200).json(hire);
+  } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
+    next(err);
+  }
+});
+
+router.post('/:id/withdraw', enforceOnboardingRole, async (req, res, next) => {
+  try {
+    const hire = await markHireOutcome(req.params.id, 'withdrawn', req.body && req.body.reason);
+    if (!hire) return res.status(404).json({ error: 'hire not found' });
+    res.status(200).json(hire);
+  } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
     next(err);
   }
 });

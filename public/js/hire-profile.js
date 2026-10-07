@@ -12,6 +12,11 @@ const STAGE_LABELS = {
   offer_accepted: 'Offer accepted',
 };
 
+function isPreOfferStage(stage) {
+  const idx = CANDIDATE_STAGES.indexOf(stage);
+  return idx !== -1 && idx < CANDIDATE_STAGES.indexOf('offer_extended');
+}
+
 function stageSelectOptions(currentStage) {
   const idx = CANDIDATE_STAGES.indexOf(currentStage);
   if (idx === -1) return [currentStage, ...CANDIDATE_STAGES];
@@ -35,6 +40,18 @@ function statusChipMarkup(status) {
   if (status === 'cancelled') return '<span aria-hidden="true">✕</span> Cancelled';
   if (status === 'completed') return '<span aria-hidden="true">✓</span> Completed';
   return '<span aria-hidden="true">○</span> No Run';
+}
+
+const OUTCOME_CHIP = {
+  active: { icon: '✓', label: 'Active' },
+  deactivated: { icon: '⏸', label: 'Deactivated' },
+  rejected: { icon: '✕', label: 'Rejected' },
+  withdrawn: { icon: '↩', label: 'Withdrawn' },
+};
+
+function outcomeChipMarkup(status) {
+  const m = OUTCOME_CHIP[status] || OUTCOME_CHIP.active;
+  return `<span class="status-chip status-chip--${status}"><span aria-hidden="true">${m.icon}</span> ${m.label}</span>`;
 }
 
 function initHireProfileApp(doc, initialHire, api) {
@@ -96,6 +113,7 @@ function initHireProfileApp(doc, initialHire, api) {
     renderProfile();
     renderTopActions();
     renderRunCard();
+    renderOutcomeCard();
   }
 
   function renderProfile() {
@@ -183,11 +201,59 @@ function initHireProfileApp(doc, initialHire, api) {
       topActions.innerHTML = `<button class="btn btn-secondary" type="button" id="deactivate-btn" ${locked ? 'disabled' : ''}>Deactivate profile</button>`;
       const btn = doc.getElementById('deactivate-btn');
       if (btn) btn.addEventListener('click', openDeactivateModal);
-    } else {
+    } else if (hire.profileStatus === 'deactivated') {
       topActions.innerHTML = `<button class="btn btn-primary" type="button" id="reactivate-btn" ${locked ? 'disabled' : ''}>Reactivate profile</button>`;
       const btn = doc.getElementById('reactivate-btn');
       if (btn) btn.addEventListener('click', openReactivateModal);
+    } else {
+      topActions.innerHTML = '';
     }
+  }
+
+  function renderOutcomeCard() {
+    const status = hire.profileStatus;
+    const closed = status === 'rejected' || status === 'withdrawn';
+    doc.getElementById('outcome-status-chip').innerHTML = outcomeChipMarkup(status);
+    const actions = doc.getElementById('outcome-actions');
+    const note = doc.getElementById('outcome-note');
+    if (closed) {
+      actions.innerHTML = '<button class="btn btn-secondary btn-sm" type="button" id="reactivate-outcome-btn">Reactivate</button>';
+      doc.getElementById('reactivate-outcome-btn').addEventListener('click', onOutcomeReactivateClick);
+      note.textContent = `Closed out as ${OUTCOME_CHIP[status].label}. This is a final outcome.`;
+      note.hidden = false;
+    } else {
+      actions.innerHTML = '<button class="btn btn-secondary btn-sm" type="button" id="reject-outcome-btn">Mark as rejected</button>'
+        + '<button class="btn btn-secondary btn-sm" type="button" id="withdraw-outcome-btn">Mark as withdrawn</button>';
+      doc.getElementById('reject-outcome-btn').addEventListener('click', () => openOutcomeModal('rejected'));
+      doc.getElementById('withdraw-outcome-btn').addEventListener('click', () => openOutcomeModal('withdrawn'));
+      if (status === 'deactivated') {
+        note.textContent = 'Reactivate this candidate before marking an outcome.';
+        note.hidden = false;
+      } else if (!isPreOfferStage(hire.hireStage)) {
+        note.textContent = 'Rejected and Withdrawn are only available before the Offer stage.';
+        note.hidden = false;
+      } else {
+        note.hidden = true;
+      }
+    }
+  }
+
+  function showOutcomeError(message) {
+    const el = doc.getElementById('outcome-error');
+    el.textContent = message || '';
+    el.hidden = !message;
+  }
+
+  function onOutcomeReactivateClick() {
+    showOutcomeError('');
+    api.reactivate().then((updated) => {
+      hire = updated;
+      renderAll();
+      showToast('Profile reactivated — new onboarding Run started');
+    }).catch((err) => {
+      if (isAccessDenied(err)) showToast('Request rejected — HR or Manager role required. Profile is unchanged.');
+      else showOutcomeError((err && err.fields && err.fields.profileStatus) || 'Reactivation could not be completed — please try again');
+    });
   }
 
   function renderRunCard() {
@@ -401,6 +467,45 @@ function initHireProfileApp(doc, initialHire, api) {
     });
   });
 
+  // ---------- Reject / Withdraw outcome modal (AC1) ----------
+  const outcomeOverlay = doc.getElementById('outcome-overlay');
+  const outcomeModal = doc.getElementById('outcome-modal');
+  const outcomeReason = doc.getElementById('outcome-reason');
+  let pendingOutcome = null;
+
+  function openOutcomeModal(outcome) {
+    pendingOutcome = outcome;
+    const word = OUTCOME_CHIP[outcome].label.toLowerCase();
+    doc.getElementById('outcome-modal-title').textContent = `Mark candidate as ${word}`;
+    doc.getElementById('outcome-confirm-btn').textContent = `Mark as ${word}`;
+    outcomeOverlay.hidden = false;
+    outcomeModal.hidden = false;
+  }
+  function closeOutcomeModal() {
+    outcomeOverlay.hidden = true;
+    outcomeModal.hidden = true;
+    outcomeReason.value = '';
+  }
+  doc.getElementById('outcome-close-btn').addEventListener('click', closeOutcomeModal);
+  doc.getElementById('outcome-cancel-btn').addEventListener('click', closeOutcomeModal);
+  outcomeOverlay.addEventListener('click', closeOutcomeModal);
+
+  doc.getElementById('outcome-confirm-btn').addEventListener('click', () => {
+    const outcome = pendingOutcome;
+    const reason = outcomeReason.value.trim();
+    closeOutcomeModal();
+    showOutcomeError('');
+    const call = outcome === 'rejected' ? api.reject(reason) : api.withdraw(reason);
+    call.then((updated) => {
+      hire = updated;
+      renderAll();
+      showToast(`Candidate marked as ${OUTCOME_CHIP[outcome].label.toLowerCase()}`);
+    }).catch((err) => {
+      if (isAccessDenied(err)) showToast('Request rejected — HR or Manager role required. Profile is unchanged.');
+      else showOutcomeError((err && err.fields && err.fields.profileStatus) || 'Outcome could not be saved — please try again');
+    });
+  });
+
   // ---------- Hire stage save (AC1, AC9) ----------
   function handleSaveStage() {
     const newStage = doc.getElementById('field-hire-stage').value;
@@ -444,6 +549,8 @@ function createDefaultApi(hireId, getRole = () => 'manager') {
     updateContact: (changes) => patch(changes),
     deactivate: () => request(`/hires/${hireId}/deactivate`, 'POST'),
     reactivate: () => request(`/hires/${hireId}/reactivate`, 'POST'),
+    reject: (reason) => request(`/hires/${hireId}/reject`, 'POST', { reason }),
+    withdraw: (reason) => request(`/hires/${hireId}/withdraw`, 'POST', { reason }),
   };
 }
 

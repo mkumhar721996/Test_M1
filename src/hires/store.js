@@ -60,6 +60,9 @@ function assertValidStageTransition(hire, changes) {
   if (hire.profileStatus === 'deactivated') {
     throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage on a deactivated hire.' });
   }
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage — candidate is marked ' + (hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn') + '. This is a final outcome.' });
+  }
 
   const fromIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
   const toIdx = CANDIDATE_STAGES.indexOf(changes.hireStage);
@@ -152,6 +155,9 @@ async function updateHire(id, changes) {
 async function deactivateHire(id) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { profileStatus: 'Cannot deactivate — status is ' + (hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn') + '. This is a final outcome.' });
+  }
 
   if (hire.run && hire.run.status === 'active') {
     await engineClient.cancelRun(hire.run.id);
@@ -165,6 +171,9 @@ async function deactivateHire(id) {
 async function reactivateHire(id) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { profileStatus: 'Cannot reactivate — status is ' + (hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn') + '. Rejected and Withdrawn are final outcomes and are not eligible for reactivation.' });
+  }
   if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
 
   const run = await engineClient.triggerRun({
@@ -177,6 +186,35 @@ async function reactivateHire(id) {
   return hire;
 }
 
+function assertValidOutcome(hire) {
+  if (hire.profileStatus === 'deactivated') {
+    throw new HireValidationError('validation_error', {
+      profileStatus: 'Cannot mark as Rejected or Withdrawn — candidate is deactivated. Reactivate the candidate first.',
+    });
+  }
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', {
+      profileStatus: `Candidate is already marked ${hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn'} — this is a final outcome.`,
+    });
+  }
+  const stageIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
+  const offerIdx = CANDIDATE_STAGES.indexOf('offer_extended');
+  if (stageIdx === -1 || stageIdx >= offerIdx) {
+    throw new HireValidationError('validation_error', {
+      profileStatus: 'Cannot mark as Rejected or Withdrawn — candidate is at or past the Offer stage.',
+    });
+  }
+}
+
+async function markHireOutcome(id, outcome, reason) {
+  const hire = hires.get(id);
+  if (!hire) return undefined;
+  assertValidOutcome(hire);
+  hire.profileStatus = outcome;
+  hire.outcomeReason = reason ? String(reason).trim() : '';
+  return hire;
+}
+
 function appendOnboardingAuditEntry(hireId, actor, action, { completed = false } = {}) {
   const hire = hires.get(hireId);
   if (!hire) return undefined;
@@ -186,4 +224,4 @@ function appendOnboardingAuditEntry(hireId, actor, action, { completed = false }
   return hire;
 }
 
-module.exports = { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, appendOnboardingAuditEntry };
+module.exports = { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, markHireOutcome, appendOnboardingAuditEntry };
