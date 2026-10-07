@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-195 — View Defect List &amp; Detail</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has a single brand hue (color-primary, purple) and no
+    semantic success/warning/danger colors. As in prior defect-tracker screens, status is never
+    color-coded alone — every status chip pairs a distinct icon with its label, and "New" is the
+    only filled chip. Project membership is shown as a plain neutral chip (reusing .chip) since
+    it carries no status meaning. No literal colors are introduced; every rule below composes
+    existing tokens only. A couple of structural (non-token) pixel values are used purely for the
+    standard "visually hidden but screen-reader-readable" clip technique, which is a layout
+    mechanism, not a design value.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Status chip (shape + icon + label, never color alone) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+  }
+  .status-chip.status-new { background: var(--color-primary); color: var(--color-primary-fg); }
+  .status-chip.status-in-progress { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-resolved, .status-chip.status-closed {
+    background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+
+  /* ---------- App shell extras ---------- */
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .session-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .link-btn {
+    background: none; border: none; padding: var(--space-1) var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* ---------- Defect list ---------- */
+  .defect-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .defect-row:last-child { border-bottom: none; }
+  .defect-row.just-updated { animation: row-flash 1.6s ease-out; }
+  @keyframes row-flash {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  .defect-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; flex: 1 1 260px; }
+  .defect-row-title {
+    font-family: var(--font-family-base); font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+    background: none; border: none; text-align: left; padding: 0; cursor: pointer;
+  }
+  .defect-row-title:hover, .defect-row-title:focus-visible { color: var(--color-primary); }
+  .defect-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .defect-row-right { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .defect-row-updated { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+
+  /* ---------- Empty state ---------- */
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Error banner ---------- */
+  .state-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner-actions { margin-top: var(--space-2); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .skeleton-row:last-child { border-bottom: none; }
+  .skeleton-block {
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 37%, var(--color-surface) 63%);
+    background-size: 400% 100%;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+  }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Pagination ---------- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .pagination button {
+    min-width: 44px; min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .pagination button:disabled { color: var(--color-fg-muted); cursor: not-allowed; opacity: 0.6; }
+  .pagination button:not(:disabled):hover { border-color: var(--color-primary); }
+  .pagination-status { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Defect detail ---------- */
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-3); }
+  .detail-id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .detail-title { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 640px) { .detail-grid.two-col { grid-template-columns: 1fr 1fr; } }
+  .detail-field dt {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .detail-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+  .detail-field dd.not-provided { color: var(--color-fg-muted); font-style: italic; }
+  .detail-field { margin: 0 0 var(--space-4) 0; }
+  .detail-meta-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+
+  .not-found-state {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+  .not-found-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .not-found-state h2 { color: var(--color-fg); font-size: var(--font-size-lg); margin: 0 0 var(--space-2) 0; }
+  .not-found-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Signed-out screen ---------- */
+  .signed-out-wrap { min-height: calc(100dvh - 46px - 56px); display: flex; align-items: center; justify-content: center; padding: var(--space-4); }
+  .signed-out-card { max-width: 380px; width: 100%; text-align: center; }
+  .signed-out-card .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+  .demo-note-actions button[aria-pressed="true"] { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .defect-row-title:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .pagination button:focus-visible, .link-btn:focus-visible, .demo-note-actions button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<!-- App nav: top bar — single-page "Defects" view (Defect Tracker; this story only covers
+     viewing the defect list and defect detail, so there is exactly one nav destination).
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - Authentication (AC4) and project membership (AC9) are both enforced before any defect
+         data touches the DOM, not just visually hidden: the Signed Out screen renders no
+         fixture data at all, and the list/detail screens only ever read from
+         `visibleDefectsForCurrentUser()`, which filters out every defect belonging to a project
+         the signed-in user isn't a member of. Open a non-member defect's id directly (see the
+         "Mobile App" ids noted in the Defect Detail reviewer tooling) and it reads exactly like
+         a nonexistent id — "Defect not found" — so the UI never confirms or denies that a
+         defect exists in a project you can't see.
+       - List ordering (AC5) is "most recently updated or created first": every fixture defect
+         carries an updatedAt, and the list always sorts by it, across both of the signed-in
+         user's projects together (not grouped by project).
+       - Live updates (AC3): use the "Simulate: defect updated elsewhere" control (on both the
+         List and Detail screens) to flip DEF-1038 to Closed with a fresh timestamp. Watch it
+         jump to the top of the list and, if you have its Detail screen open, update in place —
+         no reload, no manual refresh button anywhere in this design.
+       - Status is never shown by color alone: each status chip pairs a distinct icon with its
+         label ("New" is the only filled chip), matching the existing Log a Defect / Defect
+         Details screens so list and detail read consistently.
+       - Every "Preview:" and "Simulate:" control inside a "Reviewer tooling" note is scaffolding
+         for this review only and ships with nothing in the real app. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-195</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Signed Out
+         Notes:
+           - Satisfies AC4: an unauthenticated visitor sees only a sign-in prompt. No defect
+             fixture data is rendered into this screen's DOM at all — not hidden with CSS, just
+             never written — so there is nothing to find even by inspecting the page.
+           - "Sign in" is reviewer scaffolding that jumps to the List screen as Dana Osei; in the
+             real app this would be the product's actual sign-in flow.
+    -->
+    <div class="screen" data-name="Signed Out">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+      </div>
+      <div class="signed-out-wrap">
+        <div class="card signed-out-card">
+          <span class="icon" aria-hidden="true">🔒</span>
+          <h1 class="card-title">Sign in to view defects</h1>
+          <p class="card-body" style="margin-bottom: var(--space-4);">
+            The defect list and defect details are only shown to signed-in members of a project.
+          </p>
+          <button type="button" class="btn btn-primary" id="simulate-sign-in">Sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Defects List
+         Notes:
+           - Default state on load is a brief loading skeleton, then the populated list — AC1
+             (id, title, status on every row), AC5 (sorted newest-updated-first across every
+             project Dana belongs to), AC6 (pagination, 5 per page).
+           - Only defects from Dana's two member projects (Checkout Experience, Search &
+             Discovery) ever appear; a third project, Mobile App, has its own defects that never
+             reach this list — AC9.
+           - Use the reviewer tooling panel to preview Loading / Empty (AC7) / Error, or to
+             trigger the live-update simulation (AC3) or sign out (AC4).
+    -->
+    <div class="screen" data-name="Defects List">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Defects</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line"></span>
+          <button type="button" class="link-btn" id="signout-from-list">Sign out</button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Defects</h1>
+          <p id="list-subtitle">Across your projects, newest activity first.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All defects</h3>
+          <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+          <!-- State: loading -->
+          <div id="list-loading">
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:220px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:180px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:260px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+          </div>
+
+          <!-- State: error -->
+          <div class="state-banner" id="list-error" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <p style="margin:0;">Couldn't load defects right now. Check your connection and try again.</p>
+              <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+            </div>
+          </div>
+
+          <!-- State: empty -->
+          <div class="empty-state" id="defect-list-empty" hidden>
+            <span class="icon" aria-hidden="true">🗒️</span>
+            <p>No defects logged for your projects yet. Once one is reported, it'll show up here.</p>
+          </div>
+
+          <!-- State: success -->
+          <div id="defect-list"></div>
+          <div class="pagination" id="list-pagination" hidden></div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Preview every list state, or simulate a background change.</p>
+          <div class="demo-note-actions">
+            <button type="button" data-list-state="loading">Preview: loading</button>
+            <button type="button" data-list-state="success">Preview: populated</button>
+            <button type="button" data-list-state="empty">Preview: empty state</button>
+            <button type="button" data-list-state="error">Preview: error</button>
+            <button type="button" id="simulate-update-list">Simulate: defect updated elsewhere</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Defect Detail
+         Notes:
+           - Opened by clicking a defect title in the list (or by editing the URL hash, e.g.
+             #/defects/DEF-1041). Shows every logged field plus current status — AC2.
+           - An id that doesn't exist, or that belongs to a project Dana isn't a member of (try
+             DEF-2051, DEF-2048 or DEF-2033 — all real "Mobile App" defects hidden from her),
+             renders the same "Defect not found" message inside this screen's layout — AC8 + AC9
+             together, without revealing that the Mobile App defect exists at all.
+           - "Simulate: defect updated elsewhere" works here too: open DEF-1038, trigger it, and
+             watch the status chip and "Last updated" line change in place.
+    -->
+    <div class="screen" data-name="Defect Detail">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" id="back-link">← Back to Defects</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line-detail"></span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="card">
+
+          <!-- State: loading -->
+          <div id="detail-loading">
+            <div class="skeleton-block" style="width:100px;height:14px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:22px;margin-bottom:var(--space-4);"></div>
+            <div class="skeleton-block" style="width:100%;height:60px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:60px;"></div>
+          </div>
+
+          <!-- State: error -->
+          <div class="state-banner" id="detail-error" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <p style="margin:0;">Couldn't load this defect right now. Check your connection and try again.</p>
+              <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="detail-retry">Retry</button></div>
+            </div>
+          </div>
+
+          <!-- State: not found -->
+          <div class="not-found-state" id="detail-not-found" hidden>
+            <span class="icon" aria-hidden="true">❓</span>
+            <h2>Defect not found</h2>
+            <p id="not-found-message">That defect doesn't exist, or it isn't in a project you belong to.</p>
+            <button type="button" class="btn btn-primary" id="not-found-back">Back to Defects</button>
+          </div>
+
+          <!-- State: success -->
+          <div id="detail-success" hidden>
+            <div class="detail-header">
+              <div>
+                <p class="detail-id" id="detail-id"></p>
+                <h1 class="detail-title" id="detail-title"></h1>
+              </div>
+              <span class="status-chip" id="detail-status-chip"></span>
+            </div>
+            <div aria-live="polite">
+              <p class="detail-meta-line" id="detail-reported-meta"></p>
+              <p class="detail-meta-line" id="detail-updated-meta"></p>
+            </div>
+
+            <dl class="detail-grid two-col" style="margin-top: var(--space-4);">
+              <div class="detail-field">
+                <dt>Project</dt>
+                <dd id="detail-project"></dd>
+              </div>
+              <div class="detail-field">
+                <dt>Severity</dt>
+                <dd id="detail-severity"></dd>
+              </div>
+              <div class="detail-field">
+                <dt>Environment</dt>
+                <dd id="detail-environment"></dd>
+              </div>
+              <div class="detail-field">
+                <dt>Description</dt>
+                <dd id="detail-description"></dd>
+              </div>
+              <div class="detail-field">
+                <dt>Steps to reproduce</dt>
+                <dd id="detail-steps"></dd>
+              </div>
+            </dl>
+
+            <button type="button" class="btn btn-secondary" id="detail-back-to-list">Back to Defects</button>
+          </div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Preview every detail state for whichever defect is currently open.</p>
+          <div class="demo-note-actions">
+            <button type="button" data-detail-state="loading">Preview: loading</button>
+            <button type="button" data-detail-state="not-found">Preview: not found</button>
+            <button type="button" data-detail-state="error">Preview: error</button>
+            <button type="button" id="open-def-1038">Open DEF-1038</button>
+            <button type="button" id="simulate-update-detail">Simulate: defect updated elsewhere</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const PROJECTS = {
+    'proj-checkout': 'Checkout Experience',
+    'proj-search': 'Search & Discovery',
+    'proj-mobile': 'Mobile App'
+  };
+
+  const CURRENT_USER = {
+    name: 'Dana Osei',
+    memberProjectIds: ['proj-checkout', 'proj-search']
+  };
+
+  const FIXTURE_DEFECTS = [
+    { id: 'DEF-1046', projectId: 'proj-checkout', title: 'Payment retry loop charges card twice',
+      status: 'In Progress', severity: 'High', environment: 'Chrome 129 on Windows 11',
+      description: 'After a declined card is retried, the charge succeeds but the original failed authorization also settles, billing the customer twice.',
+      steps: '1. Use a card that declines on first attempt\n2. Retry the same order with a valid card\n3. Check the payment gateway log for two settled charges',
+      reportedBy: 'Marcus Webb', reportedAt: '2026-10-05T09:00:00',
+      updatedBy: 'Priya Nair', updatedAt: '2026-10-07T09:12:00' },
+
+    { id: 'DEF-1045', projectId: 'proj-checkout', title: 'Guest checkout drops cart items on back button',
+      status: 'New', severity: 'Medium', environment: 'Safari 17 on iOS 17',
+      description: 'Pressing the browser back button from the shipping step empties the cart silently, with no warning.',
+      steps: '1. Add 2 items to the cart as a guest\n2. Proceed to the shipping step\n3. Tap the browser back button\n4. Return to the cart',
+      reportedBy: 'Jordan Lee', reportedAt: '2026-10-06T16:40:00',
+      updatedBy: 'Jordan Lee', updatedAt: '2026-10-06T16:40:00' },
+
+    { id: 'DEF-1044', projectId: 'proj-search', title: 'Autocomplete suggests out-of-stock items',
+      status: 'New', severity: 'Low', environment: 'Chrome 129 on macOS 14',
+      description: 'Search suggestions include items with zero inventory, with no "out of stock" indicator until the product page loads.',
+      steps: '1. Type "running shoes" in the search box\n2. Review the autocomplete dropdown',
+      reportedBy: 'Priya Nair', reportedAt: '2026-10-06T10:05:00',
+      updatedBy: 'Priya Nair', updatedAt: '2026-10-06T10:05:00' },
+
+    { id: 'DEF-1041', projectId: 'proj-checkout', title: 'Checkout button unresponsive on Safari',
+      status: 'In Progress', severity: 'High', environment: 'Safari 17 on macOS 14',
+      description: 'Clicking "Place order" does nothing — no error, no spinner, no network request.',
+      steps: '1. Add an item to the cart\n2. Go to checkout\n3. Click "Place order"',
+      reportedBy: 'Priya Nair', reportedAt: '2026-09-28T08:30:00',
+      updatedBy: 'Marcus Webb', updatedAt: '2026-10-04T11:05:00' },
+
+    { id: 'DEF-1040', projectId: 'proj-search', title: 'Search results pagination skips page 2',
+      status: 'In Progress', severity: 'Medium', environment: 'Chrome 128 on Windows 11',
+      description: 'Clicking "Next" from page 1 of results jumps straight to page 3.',
+      steps: '1. Search for "shoes"\n2. Scroll to the bottom of page 1\n3. Click "Next"',
+      reportedBy: 'Priya Nair', reportedAt: '2026-09-29T13:00:00',
+      updatedBy: 'Dana Osei', updatedAt: '2026-10-03T15:30:00' },
+
+    { id: 'DEF-1038', projectId: 'proj-checkout', title: 'Order confirmation email missing order number',
+      status: 'Resolved', severity: '', environment: '',
+      description: '', steps: '',
+      reportedBy: 'Marcus Webb', reportedAt: '2026-10-02T09:00:00',
+      updatedBy: 'Dana Osei', updatedAt: '2026-10-03T14:20:00' },
+
+    { id: 'DEF-1036', projectId: 'proj-search', title: 'Filter panel resets on browser refresh',
+      status: 'New', severity: 'Low', environment: 'Firefox 130 on Ubuntu 24.04',
+      description: 'Applied filters (brand, size, price range) are lost after a page refresh instead of staying in the URL.',
+      steps: '1. Apply a brand and size filter\n2. Refresh the page',
+      reportedBy: 'Jordan Lee', reportedAt: '2026-10-01T09:50:00',
+      updatedBy: 'Jordan Lee', updatedAt: '2026-10-01T09:50:00' },
+
+    { id: 'DEF-1030', projectId: 'proj-checkout', title: 'Discount code field accepts expired codes',
+      status: 'Closed', severity: 'Medium', environment: 'Chrome 129 on Windows 11',
+      description: 'An expired discount code is accepted at checkout and the discount is applied anyway.',
+      steps: '1. Enter an expired discount code at checkout\n2. Click "Apply"',
+      reportedBy: 'Marcus Webb', reportedAt: '2026-09-20T11:00:00',
+      updatedBy: 'Priya Nair', updatedAt: '2026-09-29T13:10:00' },
+
+    { id: 'DEF-1027', projectId: 'proj-search', title: 'Typo-tolerant search ignores hyphenated terms',
+      status: 'Resolved', severity: 'Low', environment: 'Chrome 129 on macOS 14',
+      description: 'Searching for "wi-fi router" returns zero results even though "wifi router" works.',
+      steps: '1. Search for "wi-fi router"\n2. Compare with searching "wifi router"',
+      reportedBy: 'Dana Osei', reportedAt: '2026-09-18T10:00:00',
+      updatedBy: 'Priya Nair', updatedAt: '2026-09-26T17:00:00' },
+
+    { id: 'DEF-1019', projectId: 'proj-checkout', title: 'Shipping cost recalculates to $0 on address edit',
+      status: 'Resolved', severity: 'High', environment: 'Chrome 129 on Windows 11',
+      description: 'Editing the shipping address after shipping cost is calculated resets the shown cost to $0 until the order is placed, where the correct cost is then charged.',
+      steps: '1. Add items and reach the shipping step\n2. Let shipping cost calculate\n3. Edit the address (e.g. change the zip code)\n4. Observe the displayed shipping cost',
+      reportedBy: 'Jordan Lee', reportedAt: '2026-09-12T09:00:00',
+      updatedBy: 'Marcus Webb', updatedAt: '2026-09-20T08:45:00' },
+
+    { id: 'DEF-1015', projectId: 'proj-search', title: "Category filter count doesn't match results shown",
+      status: 'Closed', severity: 'Low', environment: 'Safari 17 on macOS 14',
+      description: 'The "(42)" count shown next to a category filter doesn\'t match the number of results actually returned after applying it.',
+      steps: '1. Open any search results page\n2. Compare a category filter\'s count with the results after selecting it',
+      reportedBy: 'Priya Nair', reportedAt: '2026-09-10T09:00:00',
+      updatedBy: 'Dana Osei', updatedAt: '2026-09-18T12:00:00' },
+
+    { id: 'DEF-0997', projectId: 'proj-search', title: 'Recently viewed items list duplicates entries',
+      status: 'Closed', severity: '', environment: '',
+      description: '', steps: '',
+      reportedBy: 'Dana Osei', reportedAt: '2026-08-28T09:00:00',
+      updatedBy: 'Jordan Lee', updatedAt: '2026-09-10T09:00:00' },
+
+    // Mobile App defects — Dana is not a member of this project. These must never appear in the
+    // list and must read as "not found" (not "forbidden") in the detail view — AC9.
+    { id: 'DEF-2051', projectId: 'proj-mobile', title: 'App crashes on push notification tap',
+      status: 'In Progress', severity: 'Critical', environment: 'Android 14, Pixel 8',
+      description: 'Tapping a push notification while the app is backgrounded force-closes it before the target screen loads.',
+      steps: '1. Background the app\n2. Send a push notification\n3. Tap the notification',
+      reportedBy: 'Theo Marsh', reportedAt: '2026-10-05T09:00:00',
+      updatedBy: 'Theo Marsh', updatedAt: '2026-10-06T09:00:00' },
+    { id: 'DEF-2048', projectId: 'proj-mobile', title: "Dark mode toggle doesn't persist after restart",
+      status: 'New', severity: 'Low', environment: 'iOS 17, iPhone 14',
+      description: 'Enabling dark mode in settings reverts to light mode the next time the app is opened.',
+      steps: '1. Enable dark mode in Settings\n2. Force-quit the app\n3. Reopen the app',
+      reportedBy: 'Theo Marsh', reportedAt: '2026-10-02T09:00:00',
+      updatedBy: 'Theo Marsh', updatedAt: '2026-10-02T09:00:00' },
+    { id: 'DEF-2033', projectId: 'proj-mobile', title: 'Biometric login fails after OS update',
+      status: 'Resolved', severity: 'Medium', environment: 'Android 14, Pixel 7',
+      description: 'Face unlock no longer logs users in after updating the OS; a password is required instead.',
+      steps: '1. Update the OS\n2. Attempt to sign in with face unlock',
+      reportedBy: 'Theo Marsh', reportedAt: '2026-09-20T09:00:00',
+      updatedBy: 'Theo Marsh', updatedAt: '2026-09-25T09:00:00' }
+  ];
+
+  const STATUS_META = {
+    'New': { icon: '●', className: 'status-new' },
+    'In Progress': { icon: '◐', className: 'status-in-progress' },
+    'Resolved': { icon: '✓', className: 'status-resolved' },
+    'Closed': { icon: '✕', className: 'status-closed' }
+  };
+
+  const PAGE_SIZE = 5;
+
+  // ---------- Helpers ----------
+  function statusChipHTML(status) {
+    const meta = STATUS_META[status];
+    return '<span class="icon" aria-hidden="true">' + meta.icon + '</span>' + status;
+  }
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) +
+      ' at ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function visibleDefectsForCurrentUser() {
+    return FIXTURE_DEFECTS
+      .filter((d) => CURRENT_USER.memberProjectIds.includes(d.projectId))
+      .slice()
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  }
+
+  let isAuthenticated = false;
+
+  // ---------- Session line ----------
+  const memberProjectNames = CURRENT_USER.memberProjectIds.map((id) => PROJECTS[id]).join(', ');
+  document.getElementById('session-line').textContent = 'Signed in as ' + CURRENT_USER.name + ' · ' + memberProjectNames;
+  document.getElementById('session-line-detail').textContent = 'Signed in as ' + CURRENT_USER.name;
+  document.getElementById('list-subtitle').textContent = 'Across ' + memberProjectNames + ', newest activity first.';
+
+  // ---------- Defects List ----------
+  const listLoadingEl = document.getElementById('list-loading');
+  const listErrorEl = document.getElementById('list-error');
+  const listEmptyEl = document.getElementById('defect-list-empty');
+  const listSuccessEl = document.getElementById('defect-list');
+  const listPaginationEl = document.getElementById('list-pagination');
+  const listLiveRegion = document.getElementById('list-live-region');
+
+  let listState = 'loading';
+  let listPage = 1;
+  let justUpdatedId = null;
+
+  function setListState(next) {
+    listState = next;
+    [listLoadingEl, listErrorEl, listEmptyEl, listSuccessEl, listPaginationEl].forEach((el) => { el.hidden = true; });
+    if (next === 'loading') { listLoadingEl.hidden = false; return; }
+    if (next === 'error') { listErrorEl.hidden = false; return; }
+    const items = visibleDefectsForCurrentUser();
+    if (next === 'empty' || items.length === 0) {
+      listEmptyEl.hidden = false;
+      return;
+    }
+    listSuccessEl.hidden = false;
+    renderDefectList(items);
+  }
+
+  function renderDefectList(items) {
+    const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+    listPage = Math.min(listPage, totalPages);
+    const start = (listPage - 1) * PAGE_SIZE;
+    const pageItems = items.slice(start, start + PAGE_SIZE);
+
+    listSuccessEl.innerHTML = pageItems.map((d) => {
+      const meta = STATUS_META[d.status];
+      const rowClass = d.id === justUpdatedId ? 'defect-row just-updated' : 'defect-row';
+      return (
+        '<div class="' + rowClass + '" data-id="' + d.id + '">' +
+          '<div class="defect-row-main">' +
+            '<button type="button" class="defect-row-title" data-id="' + d.id + '">' + escapeHTML(d.title) + '</button>' +
+            '<span class="defect-row-meta">' + d.id + ' · ' + escapeHTML(PROJECTS[d.projectId]) + '</span>' +
+          '</div>' +
+          '<div class="defect-row-right">' +
+            '<span class="defect-row-updated">Updated ' + formatDateTime(d.updatedAt) + '</span>' +
+            '<span class="status-chip ' + meta.className + '">' + statusChipHTML(d.status) + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    listSuccessEl.querySelectorAll('.defect-row-title').forEach((btn) => {
+      btn.addEventListener('click', () => openDetail(btn.dataset.id));
+    });
+
+    renderPagination(listPaginationEl, listPage, totalPages, (p) => {
+      listPage = p;
+      renderDefectList(visibleDefectsForCurrentUser());
+    });
+
+    if (justUpdatedId) {
+      setTimeout(() => { justUpdatedId = null; }, 1700);
+    }
+  }
+
+  function renderPagination(container, page, totalPages, onChange) {
+    if (totalPages <= 1) { container.hidden = true; return; }
+    container.hidden = false;
+    container.innerHTML =
+      '<button type="button" id="pg-prev" ' + (page <= 1 ? 'disabled' : '') + ' aria-label="Previous page">← Prev</button>' +
+      '<span class="pagination-status">Page ' + page + ' of ' + totalPages + '</span>' +
+      '<button type="button" id="pg-next" ' + (page >= totalPages ? 'disabled' : '') + ' aria-label="Next page">Next →</button>';
+    const prevBtn = container.querySelector('#pg-prev');
+    const nextBtn = container.querySelector('#pg-next');
+    if (prevBtn) prevBtn.addEventListener('click', () => onChange(page - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => onChange(page + 1));
+  }
+
+  document.querySelectorAll('[data-list-state]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      listPage = 1;
+      setListState(btn.dataset.listState);
+    });
+  });
+  document.getElementById('list-retry').addEventListener('click', () => {
+    setListState('loading');
+    setTimeout(() => setListState('success'), 350);
+  });
+
+  // ---------- Live update simulation (AC3) ----------
+  const LIVE_UPDATE_TARGET = 'DEF-1038';
+
+  function triggerLiveUpdate() {
+    const defect = FIXTURE_DEFECTS.find((d) => d.id === LIVE_UPDATE_TARGET);
+    if (!defect) return;
+    defect.status = 'Closed';
+    defect.updatedAt = new Date().toISOString();
+    defect.updatedBy = CURRENT_USER.name;
+    justUpdatedId = defect.id;
+    listLiveRegion.textContent = defect.id + ' (' + defect.title + ') was just updated to Closed.';
+
+    if (listState !== 'loading' && listState !== 'error') {
+      listPage = 1;
+      setListState('success');
+    }
+    if (currentOpenDetailId === defect.id) {
+      renderDetailSuccess(defect);
+    }
+  }
+
+  document.getElementById('simulate-update-list').addEventListener('click', triggerLiveUpdate);
+  document.getElementById('simulate-update-detail').addEventListener('click', triggerLiveUpdate);
+
+  let listLoaded = false;
+
+  function signOut() {
+    isAuthenticated = false;
+    currentOpenDetailId = null;
+    window.location.hash = '';
+    show(0);
+  }
+  function signIn() {
+    isAuthenticated = true;
+    listLoaded = true;
+    listPage = 1;
+    setListState('loading');
+    window.location.hash = '#/defects';
+    show(1);
+    setTimeout(() => setListState('success'), 350);
+  }
+  document.getElementById('signout-from-list').addEventListener('click', signOut);
+  document.getElementById('simulate-sign-in').addEventListener('click', signIn);
+
+  // ---------- Defect Detail ----------
+  const detailLoadingEl = document.getElementById('detail-loading');
+  const detailErrorEl = document.getElementById('detail-error');
+  const detailNotFoundEl = document.getElementById('detail-not-found');
+  const detailSuccessEl = document.getElementById('detail-success');
+  let currentOpenDetailId = null;
+
+  function setDetailState(next) {
+    [detailLoadingEl, detailErrorEl, detailNotFoundEl, detailSuccessEl].forEach((el) => { el.hidden = true; });
+    if (next === 'loading') { detailLoadingEl.hidden = false; return; }
+    if (next === 'error') { detailErrorEl.hidden = false; return; }
+    if (next === 'not-found') { detailNotFoundEl.hidden = false; return; }
+    detailSuccessEl.hidden = false;
+  }
+
+  function fieldValueHTML(value) {
+    return value ? escapeHTML(value) : '<em>Not provided</em>';
+  }
+
+  function renderDetailSuccess(defect) {
+    document.getElementById('detail-id').textContent = defect.id;
+    document.getElementById('detail-title').textContent = defect.title;
+    const chip = document.getElementById('detail-status-chip');
+    const meta = STATUS_META[defect.status];
+    chip.className = 'status-chip ' + meta.className;
+    chip.innerHTML = statusChipHTML(defect.status);
+    document.getElementById('detail-reported-meta').textContent =
+      'Reported by ' + defect.reportedBy + ' on ' + formatDateTime(defect.reportedAt);
+    document.getElementById('detail-updated-meta').textContent =
+      'Last updated by ' + defect.updatedBy + ' on ' + formatDateTime(defect.updatedAt);
+    document.getElementById('detail-project').textContent = PROJECTS[defect.projectId];
+
+    const descEl = document.getElementById('detail-description');
+    descEl.innerHTML = fieldValueHTML(defect.description);
+    descEl.className = defect.description ? '' : 'not-provided';
+
+    const stepsEl = document.getElementById('detail-steps');
+    stepsEl.innerHTML = fieldValueHTML(defect.steps);
+    stepsEl.className = defect.steps ? '' : 'not-provided';
+
+    const envEl = document.getElementById('detail-environment');
+    envEl.innerHTML = fieldValueHTML(defect.environment);
+    envEl.className = defect.environment ? '' : 'not-provided';
+
+    const sevEl = document.getElementById('detail-severity');
+    sevEl.innerHTML = fieldValueHTML(defect.severity);
+    sevEl.className = defect.severity ? '' : 'not-provided';
+
+    setDetailState('success');
+  }
+
+  function openDetail(id) {
+    currentOpenDetailId = id;
+    window.location.hash = '#/defects/' + id;
+    show(2);
+    setDetailState('loading');
+    setTimeout(() => {
+      // Only ever resolves against defects the signed-in user's projects include — a bogus id
+      // and a real id from a non-member project (e.g. DEF-2051) are indistinguishable here.
+      const defect = visibleDefectsForCurrentUser().find((d) => d.id === id);
+      if (!defect) {
+        document.getElementById('not-found-message').textContent =
+          id + ' doesn’t exist, or it isn’t in a project you belong to.';
+        setDetailState('not-found');
+        return;
+      }
+      renderDetailSuccess(defect);
+    }, 300);
+  }
+
+  document.querySelectorAll('[data-detail-state]').forEach((btn) => {
+    btn.addEventListener('click', () => setDetailState(btn.dataset.detailState));
+  });
+  document.getElementById('detail-retry').addEventListener('click', () => {
+    setDetailState('loading');
+    setTimeout(() => {
+      if (currentOpenDetailId) openDetail(currentOpenDetailId);
+    }, 300);
+  });
+  document.getElementById('open-def-1038').addEventListener('click', () => openDetail('DEF-1038'));
+
+  function goToList() {
+    currentOpenDetailId = null;
+    window.location.hash = '#/defects';
+    show(1);
+  }
+  document.getElementById('back-link').addEventListener('click', (e) => { e.preventDefault(); goToList(); });
+  document.getElementById('detail-back-to-list').addEventListener('click', goToList);
+  document.getElementById('not-found-back').addEventListener('click', goToList);
+
+  // ---------- Hash routing ----------
+  // Lets a reviewer deep-link straight to a defect (e.g. #/defects/DEF-1041) instead of only
+  // clicking through the list. Gated on isAuthenticated so editing the hash while signed out
+  // (or pasting a link to someone who isn't) never reveals defect data — it just stays on the
+  // Signed Out screen.
+  function handleHashChange() {
+    if (!isAuthenticated) return;
+    const match = window.location.hash.match(/^#\/defects\/(.+)$/);
+    if (match) {
+      const id = decodeURIComponent(match[1]);
+      if (id !== currentOpenDetailId) openDetail(id);
+    } else if (window.location.hash === '#/defects' || window.location.hash === '') {
+      show(1);
+    }
+  }
+  window.addEventListener('hashchange', handleHashChange);
+
+  // ---------- Reviewer bar ----------
+  // Reaching the List or Detail screen by any path (Sign in, a defect link, or just stepping
+  // through with Next/Prev) implies an authenticated session — there's no route to either screen
+  // in the real app without one. This only lazily loads data the first time; it never overrides
+  // an explicit "Sign out".
+  const DEFAULT_DETAIL_ID = 'DEF-1046';
+  function ensureSessionActive(i) {
+    if (i !== 1 && i !== 2) return;
+    isAuthenticated = true;
+    if (!listLoaded) {
+      listLoaded = true;
+      listPage = 1;
+      setListState('loading');
+      setTimeout(() => setListState('success'), 350);
+    }
+    if (i === 2 && !currentOpenDetailId) {
+      openDetail(DEFAULT_DETAIL_ID);
+    }
+  }
+
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    ensureSessionActive(cur);
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !(document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !(document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))) show(cur - 1);
+  });
+
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
