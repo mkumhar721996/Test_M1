@@ -173,9 +173,10 @@ function initOrdersApp(doc, initialOrders, api) {
       } else {
         showFailure(o);
       }
-    }).catch(() => {
+    }).catch((err) => {
+      console.error('Order cancellation request failed', err);
       finish();
-      showFailure(o);
+      showError();
     });
   }
 
@@ -184,6 +185,12 @@ function initOrdersApp(doc, initialOrders, api) {
     $('outcome-banner-danger').hidden = false;
     $('toast-danger').hidden = false;
     $('outcome-banner-danger').scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showError() {
+    $('outcome-fail-copy').textContent = "We couldn't reach the server, so your cancellation request wasn't sent. Please try again.";
+    $('outcome-banner-danger').hidden = false;
+    $('toast-danger').hidden = false;
   }
 
   $('orders-list').addEventListener('click', (e) => {
@@ -211,7 +218,10 @@ function initOrdersApp(doc, initialOrders, api) {
 function createDefaultApi() {
   return {
     list: () => fetch('/orders').then((r) => r.json()),
-    cancel: (id) => fetch(`/orders/${id}/cancel`, { method: 'POST' }).then((r) => r.json()),
+    cancel: (id) => fetch(`/orders/${id}/cancel`, { method: 'POST' }).then((r) => {
+      if (!r.ok) throw new Error(`Cancel request failed with status ${r.status}`);
+      return r.json();
+    }),
   };
 }
 

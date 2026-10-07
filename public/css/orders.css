@@ -17,6 +17,7 @@
     margin-bottom: var(--space-3);
   }
   .back-link:hover, .back-link:focus-visible { color: var(--color-fg); }
+  .back-link:focus-visible, .toast-close:focus-visible, .icon-btn.dismiss:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
@@ -162,8 +163,6 @@
   .toast-danger { border-left-color: var(--color-danger); }
   .toast .icon-badge { flex: none; font-weight: var(--font-weight-bold); }
   .toast .toast-close { margin-left: auto; background: none; border: none; color: var(--color-fg-muted); cursor: pointer; font-size: var(--font-size-md); padding: 0 var(--space-1); }
-
-
 
   @media (max-width: 480px) {
     .order-row { flex-direction: column; align-items: stretch; }

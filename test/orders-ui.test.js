@@ -77,6 +77,21 @@ describe('Order tracking cancellation UI', () => {
     expect(document.getElementById('tracking-cancel-btn')).not.toBeNull();
   });
 
+  test('a failed request shows an accurate error, not the "already started" copy', async () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const api = { cancel: jest.fn().mockRejectedValue(new Error('network')) };
+    const { initOrdersApp } = require('../public/js/orders');
+    initOrdersApp(document, [fixtureOrder()], api);
+    document.querySelector('[data-track="ORD-48213"]').click();
+    document.getElementById('tracking-cancel-btn').click();
+    document.getElementById('cancel-confirm-btn').click();
+    await flush();
+    expect(spy).toHaveBeenCalled();
+    expect(document.getElementById('outcome-banner-danger').hidden).toBe(false);
+    expect(document.getElementById('outcome-fail-copy').textContent).toContain("couldn't reach the server");
+    spy.mockRestore();
+  });
+
   test('Escape closes the modal without cancelling', () => {
     const api = { cancel: jest.fn() };
     const { initOrdersApp } = require('../public/js/orders');
