@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-191 — Order Cancellation Request</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+/* ---------------------------------------------------------------------------
+   Greenfield token proposal — NOT yet in design-system/tokens.json.
+   This story needs a positive/negative semantic pair so an approved
+   cancellation reads differently from a rejected one (today only
+   --color-primary exists, which can't carry both meanings). Values below are
+   chosen to clear WCAG AA against --color-bg (#181021, ~9.6:1 / ~11:1) and
+   --color-surface (#291c3d, ~8.2:1 / ~9.4:1). Flagging for
+   sdlc.design-system-bootstrap to formalize as --color-success /
+   --color-danger rather than hardcoding elsewhere in this file.
+--------------------------------------------------------------------------- */
+:root {
+  --color-success: #34d399;
+  --color-danger: #f87171;
+}
+</style>
+<style>
+  body { margin: 0; }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    margin-bottom: var(--space-3);
+  }
+  .back-link:hover, .back-link:focus-visible { color: var(--color-fg); }
+  .back-link:focus-visible, .replay-link:focus-visible, .toast-close:focus-visible, .icon-btn.dismiss:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Order list (My Orders) */
+  .order-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .order-row .order-main { flex: 1 1 220px; min-width: 0; }
+  .order-row .order-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .order-row .order-restaurant { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .order-row .order-total { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); white-space: nowrap; }
+  .order-row .order-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+  /* Status chip — icon + label, never colour alone */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    white-space: nowrap;
+  }
+  .status-chip .dot { font-size: 0.7em; line-height: 1; }
+  .status-chip.is-active { border-color: var(--color-primary); color: var(--color-fg); }
+  .status-chip.is-active .dot { color: var(--color-primary); }
+  .status-chip.is-done { color: var(--color-fg-muted); }
+  .status-chip.is-cancelled { border-color: var(--color-danger); color: var(--color-danger); }
+
+  /* Timeline / stepper */
+  .timeline { list-style: none; margin: var(--space-4) 0; padding: 0; }
+  .timeline li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    position: relative;
+    padding-bottom: var(--space-4);
+  }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 26px;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+  }
+  .timeline li:last-child::before { display: none; }
+  .step-icon {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    border: 2px solid var(--color-border);
+    color: var(--color-fg-muted);
+    background: var(--color-bg);
+  }
+  .timeline li.is-done .step-icon { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-bg); }
+  .timeline li.is-current .step-icon { border-color: var(--color-primary); background: var(--color-primary); color: var(--color-primary-fg); }
+  .timeline .step-label { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); padding-top: var(--space-1); }
+  .timeline li.is-done .step-label, .timeline li.is-current .step-label { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .timeline .step-sub { display: block; font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); color: var(--color-fg-muted); margin-top: 2px; }
+
+  /* Cancelled state card, replaces the timeline */
+  .cancelled-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid var(--color-danger);
+    border-radius: var(--radius-md);
+    margin: var(--space-4) 0;
+  }
+  .cancelled-card .icon-badge {
+    flex: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--color-danger);
+    color: var(--color-danger);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: var(--font-weight-bold);
+  }
+  .cancelled-card h3 { margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .cancelled-card p { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* Items list */
+  .items-list { list-style: none; margin: 0; padding: 0; }
+  .items-list li { display: flex; justify-content: space-between; gap: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); padding: var(--space-1) 0; }
+  .items-list li span.qty { color: var(--color-fg-muted); }
+  .order-total-row { display: flex; justify-content: space-between; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); padding-top: var(--space-2); border-top: 1px solid var(--color-border); margin-top: var(--space-2); }
+
+  .divider { border: none; border-top: 1px solid var(--color-border); margin: var(--space-4) 0; }
+
+  /* Inline outcome banner (persistent; distinct icon + wording, not colour alone) */
+  .banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--space-4);
+  }
+  .banner[hidden] { display: none; }
+  .banner .icon-badge {
+    flex: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: var(--font-weight-bold);
+  }
+  .banner h3 { margin: 0 0 var(--space-1) 0; font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .banner p { margin: 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .banner-success { border-color: var(--color-success); }
+  .banner-success .icon-badge { border: 2px solid var(--color-success); color: var(--color-success); }
+  .banner-danger { border-color: var(--color-danger); }
+  .banner-danger .icon-badge { border: 2px solid var(--color-danger); color: var(--color-danger); }
+  .banner .dismiss { margin-left: auto; }
+
+  .cancel-note {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  .toast-success { border-left-color: var(--color-success); }
+  .toast-danger { border-left-color: var(--color-danger); }
+  .toast .icon-badge { flex: none; font-weight: var(--font-weight-bold); }
+  .toast .toast-close { margin-left: auto; background: none; border: none; color: var(--color-fg-muted); cursor: pointer; font-size: var(--font-size-md); padding: 0 var(--space-1); }
+
+  .completed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+
+  .replay-link {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg-muted); text-decoration: underline;
+    padding: var(--space-2) 0; margin-top: var(--space-2);
+  }
+  .replay-link:hover, .replay-link:focus-visible { color: var(--color-fg); }
+
+  @media (max-width: 480px) {
+    .order-row { flex-direction: column; align-items: stretch; }
+    .order-row .order-actions { justify-content: space-between; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body class="u-surface">
+
+<!-- App nav: top bar — My orders · Help -->
+
+<!-- Fixture data: six orders spanning every status named in the acceptance
+     criteria. Statuses are mutated at runtime (in-memory only) when a
+     cancellation is approved; the JSON below is never written back to. -->
+<script type="application/json" id="fixture-orders">
+[
+  { "id": "ORD-48213", "restaurant": "Green Bowl Kitchen", "items": [ { "name": "Harvest grain bowl", "qty": 1 }, { "name": "Iced hibiscus tea", "qty": 2 } ], "total": "$24.50", "placedAt": "6:42 PM", "eta": "7:10 PM", "status": "preparing" },
+  { "id": "ORD-48198", "restaurant": "Taco Corner", "items": [ { "name": "Carne asada tacos", "qty": 3 }, { "name": "Horchata", "qty": 1 } ], "total": "$18.20", "placedAt": "6:51 PM", "eta": "7:20 PM", "status": "accepted" },
+  { "id": "ORD-48221", "restaurant": "Noodle & Co.", "items": [ { "name": "Spicy miso ramen", "qty": 1 } ], "total": "$14.75", "placedAt": "7:02 PM", "eta": "7:35 PM", "status": "placed" },
+  { "id": "ORD-48219", "restaurant": "Corner Bakery", "items": [ { "name": "Breakfast sandwich", "qty": 2 } ], "total": "$12.00", "placedAt": "7:05 PM", "eta": "7:30 PM", "status": "pending" },
+  { "id": "ORD-48176", "restaurant": "Sushi Express", "items": [ { "name": "Rainbow roll", "qty": 2 } ], "total": "$32.00", "placedAt": "5:50 PM", "eta": "Picked up 6:12 PM", "status": "picked_up" },
+  { "id": "ORD-48154", "restaurant": "Pasta House", "items": [ { "name": "Fettuccine alfredo", "qty": 1 } ], "total": "$21.75", "placedAt": "5:10 PM", "eta": "Delivered 5:41 PM", "status": "delivered" }
+]
+</script>
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+  <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-191</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<style>
+  #review-bar button { background: none; border: none; color: var(--color-primary); cursor: pointer; font-family: var(--font-family-base); font-size: 13px; font-weight: var(--font-weight-bold); padding: var(--space-1) var(--space-2); }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+</style>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: list / entry point -->
+<!-- Screen: My Orders
+     Notes:
+       - Entry point for order tracking; shows every status named in the ACs.
+       - Status chip pairs an icon with the label so meaning never rests on
+         colour alone (AC1/AC2 visibility rule applied to the list level too).
+       - "Track order" jumps straight to that order's tracking screen.
+-->
+<div class="screen" data-name="My Orders">
+  <div class="app-topbar">
+    <span class="brand">FreshCart</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">My orders</a>
+      <a href="#" onclick="return false;">Help</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header">
+      <h1>My orders</h1>
+      <p>Track an order, or request a cancellation before it's picked up.</p>
+    </div>
+    <div class="u-stack" id="orders-list"></div>
+  </div>
+</div>
+
+<!-- State: cancellable, approval happy path (AC1, AC3, AC4) -->
+<!-- Screen: Order Tracking — Cancellation Approved
+     Notes:
+       - Default order ORD-48213 is "preparing"; "Request cancellation" is
+         visible and actionable (AC1). Two other cancellable orders — ORD-48221
+         (placed) and ORD-48219 (pending) — can be loaded here from the My
+         Orders list to confirm the same control appears for those statuses.
+       - Confirm modal → pending state (button disabled + relabelled) →
+         approval: inline banner + toast confirm success (AC3) and the status
+         chip / timeline switch to "Cancelled" (AC4).
+       - Esc or the × closes the confirmation modal without acting.
+-->
+<div class="screen" data-name="Order Tracking — Cancellation Approved">
+  <div class="app-topbar">
+    <span class="brand">FreshCart</span>
+    <nav class="app-nav">
+      <a href="#" onclick="show(0); return false;">My orders</a>
+      <a href="#" onclick="return false;">Help</a>
+    </nav>
+  </div>
+  <div class="page">
+    <a class="back-link" href="#" onclick="show(0); return false;">← Back to orders</a>
+
+    <div class="banner banner-success" id="appr-banner-success" hidden role="status">
+      <span class="icon-badge">✓</span>
+      <div>
+        <h3>Cancellation successful</h3>
+        <p id="appr-success-copy"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="order-row" style="margin-bottom: var(--space-2);">
+        <div class="order-main">
+          <p class="order-id" id="appr-order-id"></p>
+          <h2 class="card-title" id="appr-restaurant" style="margin:0;"></h2>
+        </div>
+        <span class="status-chip" id="appr-status-chip"></span>
+      </div>
+      <p class="card-body u-text-sm" id="appr-meta"></p>
+
+      <div id="appr-timeline-container"></div>
+
+      <hr class="divider" />
+      <ul class="items-list" id="appr-items"></ul>
+      <div class="order-total-row"><span>Total</span><span id="appr-total"></span></div>
+
+      <hr class="divider" />
+      <div id="appr-cancel-section"></div>
+    </div>
+
+    <button class="replay-link" onclick="loadApprovalOrder(currentApprOrderId, true)">↺ Replay this scenario</button>
+  </div>
+
+  <!-- Confirm modal -->
+  <div class="modal-overlay" id="appr-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="appr-modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="appr-modal-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="appr-modal-title">Cancel this order?</h2>
+          <p id="appr-modal-sub"></p>
+        </div>
+        <button class="icon-btn" aria-label="Close" onclick="closeApprModal()">✕</button>
+      </div>
+      <p class="u-text-sm u-text-muted">If the restaurant approves, you won't be charged — or you'll be refunded to your original payment method within 3–5 business days. This can't be undone once sent.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="appr-keep-btn" onclick="closeApprModal()">Keep my order</button>
+        <button class="btn btn-primary" id="appr-confirm-btn" onclick="submitCancellation('approve')">Request cancellation</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast toast-success" id="appr-toast" hidden role="status">
+    <span class="icon-badge" style="color: var(--color-success);">✓</span>
+    <span>Cancellation request approved.</span>
+    <button class="toast-close" aria-label="Dismiss" onclick="document.getElementById('appr-toast').hidden = true;">✕</button>
+  </div>
+</div>
+
+<!-- State: cancellable, rejection path (AC1, AC5) -->
+<!-- Screen: Order Tracking — Cancellation Declined
+     Notes:
+       - ORD-48198 is "accepted"; cancellation option is visible per AC1.
+       - Confirm modal → pending state → rejection: inline banner + toast
+         clearly state the cancellation was not successful (AC5); status stays
+         "Accepted" and the "Request cancellation" control remains available,
+         since the order's status hasn't changed and the conditions in AC1
+         still hold.
+-->
+<div class="screen" data-name="Order Tracking — Cancellation Declined">
+  <div class="app-topbar">
+    <span class="brand">FreshCart</span>
+    <nav class="app-nav">
+      <a href="#" onclick="show(0); return false;">My orders</a>
+      <a href="#" onclick="return false;">Help</a>
+    </nav>
+  </div>
+  <div class="page">
+    <a class="back-link" href="#" onclick="show(0); return false;">← Back to orders</a>
+
+    <div class="banner banner-danger" id="rej-banner-danger" hidden role="alert">
+      <span class="icon-badge">✕</span>
+      <div>
+        <h3>Cancellation not successful</h3>
+        <p id="rej-fail-copy"></p>
+      </div>
+      <button class="icon-btn dismiss" aria-label="Dismiss" onclick="document.getElementById('rej-banner-danger').hidden = true;">✕</button>
+    </div>
+
+    <div class="card">
+      <div class="order-row" style="margin-bottom: var(--space-2);">
+        <div class="order-main">
+          <p class="order-id" id="rej-order-id"></p>
+          <h2 class="card-title" id="rej-restaurant" style="margin:0;"></h2>
+        </div>
+        <span class="status-chip" id="rej-status-chip"></span>
+      </div>
+      <p class="card-body u-text-sm" id="rej-meta"></p>
+
+      <div id="rej-timeline-container"></div>
+
+      <hr class="divider" />
+      <ul class="items-list" id="rej-items"></ul>
+      <div class="order-total-row"><span>Total</span><span id="rej-total"></span></div>
+
+      <hr class="divider" />
+      <div id="rej-cancel-section"></div>
+    </div>
+
+    <button class="replay-link" onclick="loadRejectionOrder(true)">↺ Replay this scenario</button>
+  </div>
+
+  <!-- Confirm modal -->
+  <div class="modal-overlay" id="rej-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="rej-modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="rej-modal-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="rej-modal-title">Cancel this order?</h2>
+          <p id="rej-modal-sub"></p>
+        </div>
+        <button class="icon-btn" aria-label="Close" onclick="closeRejModal()">✕</button>
+      </div>
+      <p class="u-text-sm u-text-muted">If the restaurant approves, you won't be charged — or you'll be refunded to your original payment method within 3–5 business days. This can't be undone once sent.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="rej-keep-btn" onclick="closeRejModal()">Keep my order</button>
+        <button class="btn btn-primary" id="rej-confirm-btn" onclick="submitCancellation('reject')">Request cancellation</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast toast-danger" id="rej-toast" hidden role="alert">
+    <span class="icon-badge" style="color: var(--color-danger);">✕</span>
+    <span>Cancellation request declined.</span>
+    <button class="toast-close" aria-label="Dismiss" onclick="document.getElementById('rej-toast').hidden = true;">✕</button>
+  </div>
+</div>
+
+<!-- State: not cancellable (AC2) -->
+<!-- Screen: Order Tracking — No Cancellation Available
+     Notes:
+       - ORD-48176 (picked up) and ORD-48154 (delivered) each show the
+         completed timeline and an explanatory note instead of a cancel
+         control — the option is fully absent, not just disabled, so it isn't
+         discoverable via keyboard or screen reader either (AC2).
+-->
+<div class="screen" data-name="Order Tracking — No Cancellation Available">
+  <div class="app-topbar">
+    <span class="brand">FreshCart</span>
+    <nav class="app-nav">
+      <a href="#" onclick="show(0); return false;">My orders</a>
+      <a href="#" onclick="return false;">Help</a>
+    </nav>
+  </div>
+  <div class="page">
+    <a class="back-link" href="#" onclick="show(0); return false;">← Back to orders</a>
+    <div class="page-header">
+      <h1>No cancellation available</h1>
+      <p>Once an order has been picked up, the restaurant and courier are already acting on it, so it can no longer be cancelled.</p>
+    </div>
+    <div class="completed-grid" id="completed-grid"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const ORDERS = JSON.parse(document.getElementById('fixture-orders').textContent);
+const ORDERS_BY_ID = Object.fromEntries(ORDERS.map(o => [o.id, { ...o }]));
+
+const CANCELLABLE_STATUSES = ['placed', 'pending', 'accepted', 'preparing'];
+
+const STATUS_LABELS = {
+  placed: 'Placed',
+  pending: 'Pending',
+  accepted: 'Accepted',
+  preparing: 'Preparing',
+  picked_up: 'Picked up',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled'
+};
+
+const TIMELINE_STEPS = [
+  { key: 'placed', label: 'Order placed' },
+  { key: 'accepted', label: 'Accepted by restaurant' },
+  { key: 'preparing', label: 'Preparing your food' },
+  { key: 'picked_up', label: 'Picked up — on the way' },
+  { key: 'delivered', label: 'Delivered' }
+];
+
+function stepIndex(status) {
+  if (status === 'pending') return 0; // same stage as "placed" for the stepper
+  return TIMELINE_STEPS.findIndex(s => s.key === status);
+}
+
+function statusChipParts(status) {
+  if (status === 'cancelled') return { cls: 'is-cancelled', dot: '✕' };
+  if (status === 'picked_up' || status === 'delivered') return { cls: 'is-done', dot: '✓' };
+  return { cls: 'is-active', dot: '●' };
+}
+
+function statusChipHtml(status) {
+  const { cls, dot } = statusChipParts(status);
+  return `<span class="status-chip ${cls}"><span class="dot">${dot}</span> ${STATUS_LABELS[status]}</span>`;
+}
+
+function setStatusChip(elId, status) {
+  const el = document.getElementById(elId);
+  const { cls, dot } = statusChipParts(status);
+  el.className = `status-chip ${cls}`;
+  el.innerHTML = `<span class="dot">${dot}</span> ${STATUS_LABELS[status]}`;
+}
+
+function timelineHtml(status, cancelledAt) {
+  if (status === 'cancelled') {
+    return `
+      <div class="cancelled-card">
+        <span class="icon-badge">✕</span>
+        <div>
+          <h3>This order was cancelled</h3>
+          <p>Cancelled at ${cancelledAt}. Any payment will be refunded to your original payment method within 3–5 business days.</p>
+        </div>
+      </div>`;
+  }
+  const current = stepIndex(status);
+  const items = TIMELINE_STEPS.map((step, i) => {
+    let cls = '';
+    let icon = i + 1;
+    if (i < current) { cls = 'is-done'; icon = '✓'; }
+    if (i === current) { cls = 'is-current'; icon = '●'; }
+    const sub = (step.key === 'placed' && status === 'pending' && i === current)
+      ? '<span class="step-sub">Waiting on payment confirmation</span>' : '';
+    return `<li class="${cls}"><span class="step-icon">${icon}</span><span class="step-label">${step.label}${sub}</span></li>`;
+  }).join('');
+  return `<ul class="timeline">${items}</ul>`;
+}
+
+function cancelSectionHtml(status, scope) {
+  if (status === 'cancelled') {
+    return '';
+  }
+  if (CANCELLABLE_STATUSES.includes(status)) {
+    return `<button class="btn btn-secondary" onclick="open${scope}Modal()">Request cancellation</button>
+      <p class="cancel-note" style="margin-top: var(--space-2);">Cancellation is available while your order is placed, pending, accepted, or preparing.</p>`;
+  }
+  const verb = status === 'picked_up' ? 'picked up' : 'delivered';
+  return `<p class="cancel-note">This order has already been ${verb}, so it can no longer be cancelled.</p>`;
+}
+
+function itemsHtml(items) {
+  return items.map(it => `<li><span>${it.name}</span><span class="qty">×${it.qty}</span></li>`).join('');
+}
+
+/* ---------------- My Orders list ---------------- */
+function renderOrdersList() {
+  const el = document.getElementById('orders-list');
+  el.innerHTML = ORDERS.map(o => {
+    let action;
+    if (o.id === 'ORD-48176' || o.id === 'ORD-48154') {
+      action = `<button class="btn btn-secondary" onclick="show(3)">Track order</button>`;
+    } else if (o.id === 'ORD-48198') {
+      action = `<button class="btn btn-secondary" onclick="loadRejectionOrder(); show(2)">Track order</button>`;
+    } else {
+      action = `<button class="btn btn-secondary" onclick="loadApprovalOrder('${o.id}'); show(1)">Track order</button>`;
+    }
+    return `
+      <div class="card order-row">
+        <div class="order-main">
+          <p class="order-id">${o.id} · ${o.placedAt}</p>
+          <p class="order-restaurant">${o.restaurant}</p>
+        </div>
+        ${statusChipHtml(o.status)}
+        <div class="order-actions">
+          <span class="order-total">${o.total}</span>
+          ${action}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ---------------- Approval (happy path) screen ---------------- */
+let currentApprOrderId = 'ORD-48213';
+
+function loadApprovalOrder(id, reset) {
+  if (reset) ORDERS_BY_ID[id] = { ...ORDERS.find(o => o.id === id) };
+  currentApprOrderId = id;
+  const o = ORDERS_BY_ID[id];
+  document.getElementById('appr-order-id').textContent = o.id;
+  document.getElementById('appr-restaurant').textContent = o.restaurant;
+  document.getElementById('appr-meta').textContent = `Placed ${o.placedAt} · Estimated ${o.eta}`;
+  setStatusChip('appr-status-chip', o.status);
+  document.getElementById('appr-timeline-container').innerHTML = timelineHtml(o.status, o.cancelledAt);
+  document.getElementById('appr-items').innerHTML = itemsHtml(o.items);
+  document.getElementById('appr-total').textContent = o.total;
+  document.getElementById('appr-cancel-section').innerHTML = cancelSectionHtml(o.status, 'Appr');
+  document.getElementById('appr-modal-sub').textContent = `${o.id} · ${o.restaurant}`;
+  document.getElementById('appr-banner-success').hidden = true;
+  document.getElementById('appr-toast').hidden = true;
+}
+
+function openApprModal() {
+  document.getElementById('appr-modal-overlay').hidden = false;
+  document.getElementById('appr-modal-wrap').hidden = false;
+  document.getElementById('appr-keep-btn').focus();
+}
+function closeApprModal() {
+  document.getElementById('appr-modal-overlay').hidden = true;
+  document.getElementById('appr-modal-wrap').hidden = true;
+}
+
+/* ---------------- Rejection screen ---------------- */
+function loadRejectionOrder(reset) {
+  if (reset) ORDERS_BY_ID['ORD-48198'] = { ...ORDERS.find(o => o.id === 'ORD-48198') };
+  const o = ORDERS_BY_ID['ORD-48198'];
+  document.getElementById('rej-order-id').textContent = o.id;
+  document.getElementById('rej-restaurant').textContent = o.restaurant;
+  document.getElementById('rej-meta').textContent = `Placed ${o.placedAt} · Estimated ${o.eta}`;
+  setStatusChip('rej-status-chip', o.status);
+  document.getElementById('rej-timeline-container').innerHTML = timelineHtml(o.status);
+  document.getElementById('rej-items').innerHTML = itemsHtml(o.items);
+  document.getElementById('rej-total').textContent = o.total;
+  document.getElementById('rej-cancel-section').innerHTML = cancelSectionHtml(o.status, 'Rej');
+  document.getElementById('rej-modal-sub').textContent = `${o.id} · ${o.restaurant}`;
+  document.getElementById('rej-banner-danger').hidden = true;
+  document.getElementById('rej-toast').hidden = true;
+}
+
+function openRejModal() {
+  document.getElementById('rej-modal-overlay').hidden = false;
+  document.getElementById('rej-modal-wrap').hidden = false;
+  document.getElementById('rej-keep-btn').focus();
+}
+function closeRejModal() {
+  document.getElementById('rej-modal-overlay').hidden = true;
+  document.getElementById('rej-modal-wrap').hidden = true;
+}
+
+/* ---------------- Shared submit handler ---------------- */
+function submitCancellation(outcome) {
+  const prefix = outcome === 'approve' ? 'appr' : 'rej';
+  const confirmBtn = document.getElementById(`${prefix}-confirm-btn`);
+  const keepBtn = document.getElementById(`${prefix}-keep-btn`);
+  confirmBtn.disabled = true;
+  keepBtn.disabled = true;
+  confirmBtn.textContent = 'Sending request…';
+
+  new Promise(resolve => setTimeout(resolve, 350)).then(() => {
+    confirmBtn.disabled = false;
+    keepBtn.disabled = false;
+    confirmBtn.textContent = 'Request cancellation';
+
+    if (outcome === 'approve') {
+      closeApprModal();
+      const o = ORDERS_BY_ID[currentApprOrderId];
+      o.status = 'cancelled';
+      o.cancelledAt = 'just now';
+      setStatusChip('appr-status-chip', o.status);
+      document.getElementById('appr-timeline-container').innerHTML = timelineHtml(o.status, o.cancelledAt);
+      document.getElementById('appr-cancel-section').innerHTML = cancelSectionHtml(o.status, 'Appr');
+      document.getElementById('appr-success-copy').textContent = `${o.id} has been cancelled. You won't be charged, or you'll see a refund within 3–5 business days.`;
+      document.getElementById('appr-banner-success').hidden = false;
+      document.getElementById('appr-toast').hidden = false;
+      document.getElementById('appr-banner-success').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      closeRejModal();
+      const o = ORDERS_BY_ID['ORD-48198'];
+      document.getElementById('rej-fail-copy').textContent = `We couldn't cancel ${o.id}. ${o.restaurant} had already started on it, so the cancellation request wasn't successful — your order is still on its way. No charge changes were made.`;
+      document.getElementById('rej-banner-danger').hidden = false;
+      document.getElementById('rej-toast').hidden = false;
+      document.getElementById('rej-banner-danger').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+/* ---------------- Completed (no cancellation) screen ---------------- */
+function renderCompletedGrid() {
+  const ids = ['ORD-48176', 'ORD-48154'];
+  document.getElementById('completed-grid').innerHTML = ids.map(id => {
+    const o = ORDERS_BY_ID[id];
+    return `
+      <div class="card">
+        <div class="order-row" style="margin-bottom: var(--space-2);">
+          <div class="order-main">
+            <p class="order-id">${o.id}</p>
+            <h2 class="card-title" style="margin:0;">${o.restaurant}</h2>
+          </div>
+          ${statusChipHtml(o.status)}
+        </div>
+        <p class="card-body u-text-sm">Placed ${o.placedAt} · ${o.eta}</p>
+        ${timelineHtml(o.status)}
+        <hr class="divider" />
+        <ul class="items-list">${itemsHtml(o.items)}</ul>
+        <div class="order-total-row"><span>Total</span><span>${o.total}</span></div>
+        <hr class="divider" />
+        ${cancelSectionHtml(o.status, '')}
+      </div>`;
+  }).join('');
+}
+
+/* ---------------- Reviewer bar wiring ---------------- */
+const screens = Array.from(document.querySelectorAll('.screen'));
+let cur = 0;
+function show(i) {
+  cur = Math.max(0, Math.min(screens.length - 1, i));
+  screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+  document.getElementById('screen-label').textContent =
+    `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+}
+document.getElementById('prev-btn').onclick = () => show(cur - 1);
+document.getElementById('next-btn').onclick = () => show(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') show(cur + 1);
+  if (e.key === 'ArrowLeft') show(cur - 1);
+  if (e.key === 'Escape') {
+    closeApprModal();
+    closeRejModal();
+  }
+});
+
+renderOrdersList();
+loadApprovalOrder(currentApprOrderId, true);
+loadRejectionOrder(true);
+renderCompletedGrid();
+show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
