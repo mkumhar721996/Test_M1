@@ -1,0 +1,139 @@
+/* Defects page — app shell lives in design-system/prototype-utils.css */
+  /*
+    Design-system gap note: tokens.json has a single brand hue (color-primary, purple) and no
+    semantic "success/warning/danger" colors. Defect status is therefore never color-coded —
+    each status chip pairs a distinct icon + label, and "New" is the only filled chip (the
+    others are outline/muted), so status reads from shape and text, not hue (WCAG 1.4.1).
+    No literal colors are introduced; every rule below composes existing tokens only.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- Status chip ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+  }
+  .status-chip.status-new { background: var(--color-primary); color: var(--color-primary-fg); }
+  .status-chip.status-in-progress { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-resolved, .status-chip.status-closed {
+    background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+
+  /* ---------- Defects list ---------- */
+  .defect-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .defect-row:last-child { border-bottom: none; }
+  .defect-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+  .defect-row-title {
+    font-family: var(--font-family-base); font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+    background: none; border: none; text-align: left; padding: 0; cursor: pointer;
+  }
+  .defect-row-title:hover, .defect-row-title:focus-visible { color: var(--color-primary); }
+  .defect-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .defect-row-right { display: flex; align-items: center; gap: var(--space-3); }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Form feedback ---------- */
+  .form-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .form-banner[hidden] { display: none; }
+  .form-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .field-error .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .field-error[hidden] { display: none; }
+  .input.has-error { border-color: var(--color-primary); border-width: 2px; }
+  .field-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+
+  /* ---------- Pending-decision callout ---------- */
+  .pending-callout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: var(--space-1) solid var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .pending-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-fg-muted);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Defect detail ---------- */
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .detail-id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 640px) { .detail-grid.two-col { grid-template-columns: 1fr 1fr; } }
+  .detail-field dt {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .detail-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+  .detail-field dd.not-provided { color: var(--color-fg-muted); font-style: italic; }
+  .detail-field { margin: 0 0 var(--space-4) 0; }
+
+
+
+  .app-nav a:focus-visible, .btn:focus-visible, .defect-row-title:focus-visible, .input:focus-visible, select.input:focus-visible, textarea.input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
