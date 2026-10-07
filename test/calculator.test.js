@@ -199,9 +199,11 @@ describe('calculator UI', () => {
     expect(result().textContent).toBe('1');
   });
 
-  test('AC10 exactly the 17 approved keys', () => {
-    const keys = Array.from(document.querySelectorAll('#calculator-modal .calc-keypad .calc-key')).map((b) => b.dataset.key);
-    expect(keys).toEqual(['clear', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', 'equals']);
+  test('AC10 exactly the 18 approved Basic keys', () => {
+    const keys = Array.from(
+      document.querySelectorAll('#calculator-modal .calc-keypad:not(.scientific-rows) .calc-key'),
+    ).map((b) => b.dataset.key);
+    expect(keys).toEqual(['clear', 'backspace', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', 'equals']);
   });
 
   test('AC13 live region announcements', () => {
@@ -266,11 +268,224 @@ describe('calculator UI', () => {
     document.getElementById('open-calculator').click();
     expect(expr()).toBe('');
 
+    // Escape clears the expression instead of closing the dialog.
+    tap(['4']);
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-    expect(document.getElementById('calculator-modal-wrap').hidden).toBe(true);
+    expect(expr()).toBe('');
+    expect(document.getElementById('calculator-modal-wrap').hidden).toBe(false);
 
-    document.getElementById('open-calculator').click();
     document.getElementById('calculator-overlay').click();
     expect(document.getElementById('calculator-modal-wrap').hidden).toBe(true);
+  });
+
+  describe('keyboard entry', () => {
+    const type = (k, extra = {}) =>
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...extra }));
+    const typeAll = (keys) => keys.forEach((k) => type(k));
+    const sci = () => document.getElementById('tab-scientific').click();
+
+    test('AC1 digit in Basic and Scientific', () => {
+      type('7');
+      expect(expr()).toBe('7');
+      tap(['clear']);
+      sci();
+      type('7');
+      expect(expr()).toBe('7');
+    });
+
+    test('AC2 operator appends after a number in both layouts', () => {
+      tap(['1', '2']);
+      type('+');
+      expect(expr()).toBe('12+');
+      sci();
+      tap(['3']);
+      type('*');
+      expect(expr()).toBe('12+3×');
+    });
+
+    test('maps / to ÷ and - to subtract', () => {
+      tap(['8']);
+      type('/');
+      type('-');
+      expect(expr()).toBe('8-');
+      type('/');
+      expect(expr()).toBe('8÷');
+    });
+
+    test('AC3 Enter evaluates', () => {
+      tap(['1', '2', '+', '8']);
+      type('Enter');
+      expect(result().textContent).toBe('20');
+      expect(result().classList.contains('is-preview')).toBe(false);
+    });
+
+    test('AC4 Escape clears and modal stays open', () => {
+      tap(['1', '2', '3']);
+      type('Escape');
+      expect(expr()).toBe('');
+      expect(document.getElementById('calculator-modal-wrap').hidden).toBe(false);
+      document.getElementById('calc-close').click();
+      expect(document.getElementById('calculator-modal-wrap').hidden).toBe(true);
+    });
+
+    test('AC5 Backspace removes last character', () => {
+      tap(['1', '2', '3']);
+      type('Backspace');
+      expect(expr()).toBe('12');
+    });
+
+    test('on-screen backspace key matches keyboard', () => {
+      tap(['1', '2', 'backspace']);
+      expect(expr()).toBe('1');
+    });
+
+    test('AC6 click then type is one expression', () => {
+      key('1');
+      key('+');
+      type('2');
+      type('Enter');
+      expect(expr()).toBe('1+2');
+      expect(result().textContent).toBe('3');
+    });
+
+    test('AC7 Backspace on empty is a no-op', () => {
+      type('Backspace');
+      expect(expr()).toBe('');
+    });
+
+    test('AC8/AC9 unmapped letter key changes nothing', () => {
+      tap(['4', '2']);
+      const before = live();
+      type('q');
+      expect(expr()).toBe('42');
+      expect(live()).toBe(before);
+    });
+
+    test('AC10 typed letters never insert a function name', () => {
+      sci();
+      tap(['0', '.', '5', '+']);
+      typeAll(['s', 'i', 'n']);
+      expect(expr()).toBe('0.5+');
+    });
+
+    test('( ) ^ are mapped only in Scientific', () => {
+      type('(');
+      expect(expr()).toBe('');
+      sci();
+      type('(');
+      expect(expr()).toBe('(');
+    });
+
+    test(') and ^ are Scientific-only too', () => {
+      tap(['2']);
+      typeAll([')', '^']);
+      expect(expr()).toBe('2');
+      sci();
+      typeAll(['^', ')']);
+      expect(expr()).toBe('2^)');
+    });
+
+    test('Scientific tab reveals keypad and preserves expression', () => {
+      tap(['1', '2']);
+      sci();
+      expect(document.getElementById('scientific-keys').hidden).toBe(false);
+      expect(document.getElementById('tab-scientific').getAttribute('aria-selected')).toBe('true');
+      expect(expr()).toBe('12');
+      document.getElementById('tab-basic').click();
+      expect(document.getElementById('scientific-keys').hidden).toBe(true);
+      expect(expr()).toBe('12');
+    });
+
+    test('leading operator ignored; second operator replaces', () => {
+      type('+');
+      expect(expr()).toBe('');
+      tap(['1', '2']);
+      typeAll(['+', '-']);
+      expect(expr()).toBe('12-');
+    });
+
+    test('Backspace removes a trailing operator', () => {
+      tap(['1', '2', '+']);
+      type('Backspace');
+      expect(expr()).toBe('12');
+    });
+
+    test('Backspace after a negative result edits the finalized value', () => {
+      tap(['2', '-', '5']);
+      type('Enter');
+      expect(result().textContent).toBe('-3');
+      type('Backspace');
+      expect(expr()).toBe('-');
+      expect(result().classList.contains('is-preview')).toBe(true);
+    });
+
+    test('Enter on a dangling operator shows Syntax Error', () => {
+      tap(['1', '2', '+']);
+      type('Enter');
+      expect(document.querySelector('.calc-error').textContent).toMatch(/Syntax Error/);
+    });
+
+    test('digit after a result starts fresh; operator continues', () => {
+      tap(['1', '2', '+', '8']);
+      type('Enter');
+      type('5');
+      expect(expr()).toBe('5');
+      tap(['clear', '1', '2', '+', '8']);
+      type('Enter');
+      type('+');
+      expect(expr()).toBe('20+');
+    });
+
+    test('keydown is inert when the modal is closed', () => {
+      document.getElementById('calc-cancel').click();
+      type('5');
+      document.getElementById('open-calculator').click();
+      expect(expr()).toBe('');
+    });
+
+    test('second . in a segment is ignored', () => {
+      tap(['3', '.', '1', '4']);
+      type('.');
+      expect(expr()).toBe('3.14');
+    });
+
+    test('Escape on empty stays empty and announces', () => {
+      type('Escape');
+      expect(expr()).toBe('');
+      expect(live()).toBe('Display cleared');
+    });
+
+    test('keyboard digit recovers from an error', () => {
+      tap(['5', '÷', '0']);
+      expect(document.querySelector('.calc-error')).not.toBeNull();
+      type('5');
+      expect(expr()).toBe('5÷05');
+      expect(document.querySelector('.calc-error')).toBeNull();
+    });
+
+    test('Ctrl/Cmd/Alt-held keys are unmapped', () => {
+      tap(['1', '2', '3']);
+      type('Backspace', { ctrlKey: true });
+      type('Enter', { metaKey: true });
+      type('Escape', { altKey: true });
+      type('1', { ctrlKey: true });
+      expect(expr()).toBe('123');
+    });
+
+    test('click a function button then continue on the keyboard', () => {
+      sci();
+      document.querySelector('.calc-key[data-key="sin("]').click();
+      typeAll(['0', '.', '5']);
+      expect(expr()).toBe('sin(0.5');
+    });
+
+    test('Layout resets to Basic on reopen', () => {
+      sci();
+      document.getElementById('calc-cancel').click();
+      document.getElementById('open-calculator').click();
+      expect(document.getElementById('scientific-keys').hidden).toBe(true);
+      type('(');
+      expect(expr()).toBe('');
+    });
   });
 });
