@@ -38,7 +38,7 @@
     flex-wrap: wrap;
   }
   .defect-row:last-child { border-bottom: none; }
-  .defect-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+  .defect-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; flex: 1 1 260px; }
   .defect-row-title {
     font-family: var(--font-family-base); font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold); color: var(--color-fg);
@@ -46,7 +46,7 @@
   }
   .defect-row-title:hover, .defect-row-title:focus-visible { color: var(--color-primary); }
   .defect-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
-  .defect-row-right { display: flex; align-items: center; gap: var(--space-3); }
+  .defect-row-right { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 
   .empty-state {
     text-align: center;
@@ -132,8 +132,80 @@
   .detail-field { margin: 0 0 var(--space-4) 0; }
 
 
+  /* ---------- Story 195: list/detail states ---------- */
+  .defect-row.just-updated { animation: row-flash 1.6s ease-out; }
+  @keyframes row-flash {
+    0% { background: var(--color-surface); }
+    100% { background: transparent; }
+  }
+  .defect-row-updated { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
 
-  .app-nav a:focus-visible, .btn:focus-visible, .defect-row-title:focus-visible, .input:focus-visible, select.input:focus-visible, textarea.input:focus-visible {
+  /* ---------- Error banner ---------- */
+  .state-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner-actions { margin-top: var(--space-2); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .skeleton-row:last-child { border-bottom: none; }
+  .skeleton-block {
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 37%, var(--color-surface) 63%);
+    background-size: 400% 100%;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+  }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Pagination ---------- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .pagination button {
+    min-width: 44px; min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .pagination button:disabled { color: var(--color-fg-muted); cursor: not-allowed; opacity: 0.6; }
+  .pagination button:not(:disabled):hover { border-color: var(--color-primary); }
+  .pagination-status { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .detail-meta-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .not-found-state {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+  .not-found-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .not-found-state h2 { color: var(--color-fg); font-size: var(--font-size-lg); margin: 0 0 var(--space-2) 0; }
+  .not-found-state p { margin: 0 0 var(--space-3) 0; }
+
+
+
+  .app-nav a:focus-visible, .pagination button:focus-visible, .btn:focus-visible, .defect-row-title:focus-visible, .input:focus-visible, select.input:focus-visible, textarea.input:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }

@@ -41,6 +41,9 @@ function createDefect(data = {}) {
     status: 'New',
     reportedBy: data.reportedBy || '',
     reportedAt: new Date().toISOString().slice(0, 10),
+    projectId: typeof data.projectId === 'string' ? data.projectId : '',
+    updatedAt: new Date().toISOString(),
+    updatedBy: data.reportedBy || '',
   };
   defects.set(defect.id, defect);
   return defect;
@@ -50,8 +53,19 @@ function getDefect(id) {
   return defects.get(id) || null;
 }
 
-function listDefects() {
-  return Array.from(defects.values()).reverse();
+function updateDefect(id, changes = {}) {
+  const defect = defects.get(id);
+  if (!defect) return null;
+  Object.assign(defect, changes);
+  if (!changes.updatedAt) defect.updatedAt = new Date().toISOString();
+  return defect;
 }
 
-module.exports = { DefectValidationError, createDefect, getDefect, listDefects };
+function listDefects() {
+  // Array.sort is stable, so reversing first keeps newest-created first on timestamp ties.
+  return Array.from(defects.values()).reverse().sort((a, b) => (
+    a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : 0
+  ));
+}
+
+module.exports = { DefectValidationError, createDefect, getDefect, listDefects, updateDefect };

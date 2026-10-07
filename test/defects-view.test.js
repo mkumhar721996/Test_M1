@@ -77,16 +77,17 @@ test('AC6: pagination splits results across pages of 5', async () => {
 });
 
 test('AC7: a member of a project with no defects gets an empty items array', async () => {
-  // A user with no unassigned-defect visibility issue: isolated by a fresh module state
+  // Isolated module registry so no defects from other tests (including unassigned ones) exist.
+  let isolatedApp;
+  let projects;
   jest.isolateModules(() => {
-    const isolatedApp = require('../src/server');
-    const projects = require('../src/projects/store');
-    const p = projects.createProject('Empty Project');
-    projects.addMember(p.id, 'casey');
-    return request(isolatedApp).get('/defects').set('x-user-id', 'casey').then((res) => {
-      expect(res.body).toEqual({ items: [], page: 1, pageSize: 5, totalItems: 0, totalPages: 1 });
-    });
+    isolatedApp = require('../src/server');
+    projects = require('../src/projects/store');
   });
+  const p = projects.createProject('Empty Project');
+  projects.addMember(p.id, 'casey');
+  const res = await request(isolatedApp).get('/defects').set('x-user-id', 'casey');
+  expect(res.body).toEqual({ items: [], page: 1, pageSize: 5, totalItems: 0, totalPages: 1 });
 });
 
 test('AC8: an id that does not correspond to any defect returns 404', async () => {

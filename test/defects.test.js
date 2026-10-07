@@ -20,7 +20,7 @@ test('the persisted defect contains exactly what was entered', async () => {
   expect(spoofed.body.status).toBe('New');
   expect(spoofed.body.id).not.toBe('DEF-9999');
 
-  const fetched = await request(app).get(`/defects/${res.body.id}`);
+  const fetched = await request(app).get(`/defects/${res.body.id}`).set('x-user-id', 'test-user');
   expect(fetched.body).toEqual(res.body);
 });
 
