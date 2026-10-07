@@ -145,7 +145,7 @@ function getRun(runId) {
 function completeRun(runId, payload = {}) {
   const run = runs.get(runId);
   if (!run) return undefined;
-  if (run.employeeId || run.status === 'cancelled' || run.status === 'failed') return run;
+  if (run.employeeId || run.status === 'cancelled' || run.status === 'failed' || run.status === 'paused') return run;
 
   const missingFields = REQUIRED_STAFF_FIELDS.filter((field) => !payload[field]);
   if (missingFields.length > 0) {
