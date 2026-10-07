@@ -133,3 +133,16 @@ test('POST /defects with a projectId the caller belongs to is accepted', async (
   expect(res.status).toBe(201);
   expect(res.body).toMatchObject({ projectId: mine.id, projectName: 'Checkout Experience' });
 });
+
+test('the unverified x-user-id header is not accepted as identity in production', async () => {
+  const original = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  try {
+    const list = await get('/defects', 'dana-prod');
+    const post = await request(app).post('/defects').set('x-user-id', 'dana-prod').send({ title: 'Prod bug' });
+    expect(list.status).toBe(401);
+    expect(post.status).toBe(401);
+  } finally {
+    process.env.NODE_ENV = original;
+  }
+});
