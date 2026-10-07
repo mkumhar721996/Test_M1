@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-194 — Log a Defect</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has a single brand hue (color-primary, purple) and no
+    semantic "success/warning/danger" colors. Defect status is therefore never color-coded —
+    each status chip pairs a distinct icon + label, and "New" is the only filled chip (the
+    others are outline/muted), so status reads from shape and text, not hue (WCAG 1.4.1).
+    No literal colors are introduced; every rule below composes existing tokens only.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  /* ---------- Status chip ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+  }
+  .status-chip.status-new { background: var(--color-primary); color: var(--color-primary-fg); }
+  .status-chip.status-in-progress { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-resolved, .status-chip.status-closed {
+    background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-muted);
+  }
+
+  /* ---------- Defects list ---------- */
+  .defect-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .defect-row:last-child { border-bottom: none; }
+  .defect-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+  .defect-row-title {
+    font-family: var(--font-family-base); font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+    background: none; border: none; text-align: left; padding: 0; cursor: pointer;
+  }
+  .defect-row-title:hover, .defect-row-title:focus-visible { color: var(--color-primary); }
+  .defect-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .defect-row-right { display: flex; align-items: center; gap: var(--space-3); }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+  }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Form feedback ---------- */
+  .form-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .form-banner[hidden] { display: none; }
+  .form-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .field-error .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .field-error[hidden] { display: none; }
+  .input.has-error { border-color: var(--color-primary); border-width: 2px; }
+  .field-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+
+  /* ---------- Pending-decision callout ---------- */
+  .pending-callout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: var(--space-1) solid var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .pending-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-fg-muted);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Defect detail ---------- */
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .detail-id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  @media (min-width: 640px) { .detail-grid.two-col { grid-template-columns: 1fr 1fr; } }
+  .detail-field dt {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .detail-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+  .detail-field dd.not-provided { color: var(--color-fg-muted); font-style: italic; }
+  .detail-field { margin: 0 0 var(--space-4) 0; }
+
+  .demo-note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .defect-row-title:focus-visible, .input:focus-visible, select.input:focus-visible, textarea.input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<!-- App nav: top bar — single-page "Defects" view (Defect Tracker MVP; this story only covers
+     logging and viewing defects, so there is exactly one nav destination today).
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - Only "Title" is required to submit. The work item's scope note leaves exact
+         required/optional fields (and whether severity is captured at all) pending the
+         product owner, so Description, Steps to reproduce, Environment and Severity are all
+         optional here — see the "Pending product decision" callout on the form screen.
+         Submitting with every field blank (AC3) is rejected because Title is blank; a
+         Reporter who fills in anything (even just Title) can submit (AC1).
+       - The persisted record (Defect Details screen) only ever shows what the Reporter typed.
+         Fields left blank render as "Not provided", never a guessed or default value, which is
+         how this design satisfies AC2.
+       - Status is never shown by color alone: each status chip pairs a distinct icon with its
+         label ("New" is also the only filled chip), since this design system has a single
+         brand hue and no semantic success/warning color. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-194</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Defects List
+         Notes:
+           - Entry point for this story — "Log a defect" is the primary action in the page
+             header. Seeded with a few existing defects across statuses so "New" (filled chip)
+             reads clearly next to In Progress / Resolved / Closed (outline/muted chips).
+           - DEF-1038 is seeded with every optional field left blank, so even before this story's
+             form exists in this prototype, the list→detail path already demonstrates "blank
+             optional fields never get an invented value" (AC2) on an existing record, not only
+             on ones you create here.
+           - Clicking a defect title opens its Defect Details screen, in the same record shape a
+             newly-created defect will use.
+           - The "Preview: empty list" control is reviewer tooling (not shipped UI) so you can see
+             the empty state without needing a fresh account with zero defects.
+    -->
+    <div class="screen" data-name="Defects List">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;">
+          <div>
+            <h1>Defects</h1>
+            <p>Everything reported so far, newest first.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="go-to-form">Log a defect</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All defects</h3>
+          <div id="defect-list"></div>
+          <div class="empty-state" id="defect-list-empty" hidden>
+            <span class="icon" aria-hidden="true">🗒️</span>
+            <p>No defects logged yet. The first one you log will show up here.</p>
+            <button type="button" class="btn btn-primary" id="go-to-form-from-empty">Log a defect</button>
+          </div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Toggle the list's empty state without clearing real data.</p>
+          <div class="demo-note-actions">
+            <button type="button" id="preview-empty-list">Preview: empty list</button>
+            <button type="button" id="preview-full-list">Preview: with defects</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Log a Defect
+         Notes:
+           - "Title" is the only required field (label says "Required"; every other label says
+             "Optional"). Submitting completely blank — AC3 — shows a form-level banner plus an
+             inline error under Title, moves focus to Title, and creates nothing: compare the
+             defect count on the List screen before/after trying this.
+           - Submitting with any amount of detail filled in — AC1 — disables and relabels the
+             button to "Logging defect…" for ~300ms (simulated save), then opens the new
+             defect's Details screen with status "New".
+           - Whatever the Reporter actually typed is exactly what gets persisted (AC2) — leaving
+             Description, Steps to reproduce, Environment or Severity blank is preserved as
+             blank, never replaced with a placeholder value, all the way to the Details screen.
+           - Severity carries a "Pending product decision" callout per the work item's open scope
+             question; it is included as optional today so the flow isn't blocked on that call.
+    -->
+    <div class="screen" data-name="Log a Defect">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Log a defect</h1>
+          <p>Reporting as Jordan Lee. Add whatever details you have — only a title is required to submit.</p>
+        </div>
+
+        <div class="card">
+          <!-- State: pristine / validation error / submitting (all handled in this one form) -->
+          <div class="form-banner" id="form-error-banner" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <span>Can't create this defect — add a title so others know what it's about.</span>
+          </div>
+
+          <form id="defect-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-title">Title <span class="u-text-muted">— Required</span></label>
+              <input class="input" id="field-title" name="title" type="text" placeholder="e.g. Checkout button unresponsive on Safari" aria-describedby="title-error" />
+              <p class="field-error" id="title-error" hidden><span class="icon" aria-hidden="true">⚠</span><span>Add a title before submitting.</span></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-description">Description <span class="u-text-muted">— Optional</span></label>
+              <textarea class="input" id="field-description" name="description" rows="3" placeholder="What happened? What did you expect instead?"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-steps">Steps to reproduce <span class="u-text-muted">— Optional</span></label>
+              <textarea class="input" id="field-steps" name="steps" rows="3" placeholder="1. Go to...&#10;2. Click...&#10;3. See..."></textarea>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-environment">Environment <span class="u-text-muted">— Optional</span></label>
+              <input class="input" id="field-environment" name="environment" type="text" placeholder="e.g. Safari 17 on macOS 14" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-severity">Severity <span class="u-text-muted">— Optional</span></label>
+              <select class="input" id="field-severity" name="severity">
+                <option value="">Not set</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+              <p class="field-hint">Captured here in case it's useful, but the product owner hasn't confirmed this field yet — see the note below.</p>
+            </div>
+
+            <div class="pending-callout" style="margin-bottom: var(--space-4);">
+              <div><span class="pending-badge">Pending product decision</span></div>
+              <p style="margin:0;">
+                The work item leaves open exactly which fields are required vs. optional, and
+                whether severity is captured when a defect is first logged at all. This design's
+                default: only Title is required, and Severity is included as optional (defaulting
+                to "Not set") so Reporters aren't blocked while that's decided. If the product
+                owner removes Severity from this form, nothing else here changes.
+              </p>
+            </div>
+
+            <div class="field" style="margin-bottom: 0; display:flex; gap: var(--space-3); flex-wrap: wrap;">
+              <button type="submit" class="btn btn-primary" id="submit-defect">Log defect</button>
+              <button type="button" class="btn btn-secondary" id="cancel-defect">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Defect Details
+         Notes:
+           - Read-only record view. Shows the status chip (New for a just-created defect), who
+             reported it and when, then every field exactly as entered.
+           - Any field the Reporter left blank renders as italic "Not provided" — never a
+             fabricated value — which is how this screen demonstrates AC2 for both a
+             freshly-created defect and the pre-seeded DEF-1038 example.
+           - "Back to Defects" returns to the List screen, where the new defect now appears at
+             the top with a "New" chip (AC1).
+    -->
+    <div class="screen" data-name="Defect Details">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="card">
+          <div class="detail-header">
+            <div>
+              <p class="detail-id" id="detail-id"></p>
+              <h1 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0;" id="detail-title"></h1>
+            </div>
+            <span class="status-chip" id="detail-status-chip"></span>
+          </div>
+
+          <p class="u-text-sm u-text-muted" id="detail-meta" style="margin-bottom:var(--space-4);"></p>
+
+          <dl class="detail-grid two-col">
+            <div class="detail-field">
+              <dt>Description</dt>
+              <dd id="detail-description"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Steps to reproduce</dt>
+              <dd id="detail-steps"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Environment</dt>
+              <dd id="detail-environment"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Severity</dt>
+              <dd id="detail-severity"></dd>
+            </div>
+          </dl>
+
+          <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" id="back-to-list">Back to Defects</button>
+            <button type="button" class="btn btn-primary" id="log-another">Log another defect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  let nextDefectNumber = 1043;
+  const FIXTURE_DEFECTS = [
+    {
+      id: 'DEF-1042', title: 'Checkout button unresponsive on Safari',
+      description: 'Clicking "Place order" does nothing — no error, no spinner, no network request.',
+      steps: '1. Add an item to the cart\n2. Go to checkout\n3. Click "Place order"',
+      environment: 'Safari 17 on macOS 14', severity: 'High',
+      status: 'In Progress', reportedBy: 'Priya Nair', reportedAt: '2026-09-28'
+    },
+    {
+      id: 'DEF-1038', title: 'Order confirmation email missing order number',
+      description: '', steps: '', environment: '', severity: '',
+      status: 'New', reportedBy: 'Marcus Webb', reportedAt: '2026-10-02'
+    },
+    {
+      id: 'DEF-1021', title: 'Search results pagination skips page 2',
+      description: 'Clicking "Next" from page 1 jumps straight to page 3 of results.',
+      steps: '1. Search for "shoes"\n2. Scroll to the bottom of page 1\n3. Click "Next"',
+      environment: 'Chrome 128 on Windows 11', severity: 'Medium',
+      status: 'Resolved', reportedBy: 'Priya Nair', reportedAt: '2026-09-15'
+    },
+    {
+      id: 'DEF-0997', title: 'Profile photo upload crashes on large files',
+      description: '', steps: '', environment: '', severity: 'Low',
+      status: 'Closed', reportedBy: 'Jordan Lee', reportedAt: '2026-08-30'
+    }
+  ];
+
+  const STATUS_META = {
+    'New': { icon: '●', className: 'status-new' },
+    'In Progress': { icon: '◐', className: 'status-in-progress' },
+    'Resolved': { icon: '✓', className: 'status-resolved' },
+    'Closed': { icon: '✕', className: 'status-closed' }
+  };
+
+  function statusChipHTML(status) {
+    const meta = STATUS_META[status];
+    return '<span class="icon" aria-hidden="true">' + meta.icon + '</span>' + status;
+  }
+
+  function escapeHTML(s) {
+    return s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  // ---------- Defects List ----------
+  const defectListEl = document.getElementById('defect-list');
+  const defectListEmptyEl = document.getElementById('defect-list-empty');
+  let listShowingEmpty = false;
+
+  function renderDefectList() {
+    if (listShowingEmpty || FIXTURE_DEFECTS.length === 0) {
+      defectListEl.style.display = 'none';
+      defectListEmptyEl.hidden = false;
+      return;
+    }
+    defectListEmptyEl.hidden = true;
+    defectListEl.style.display = '';
+    defectListEl.innerHTML = FIXTURE_DEFECTS.map((d, idx) => {
+      const meta = STATUS_META[d.status];
+      return (
+        '<div class="defect-row">' +
+          '<div class="defect-row-main">' +
+            '<button type="button" class="defect-row-title" data-idx="' + idx + '">' + escapeHTML(d.title) + '</button>' +
+            '<span class="defect-row-meta">' + d.id + ' · Reported by ' + escapeHTML(d.reportedBy) + ' on ' + d.reportedAt + '</span>' +
+          '</div>' +
+          '<div class="defect-row-right">' +
+            '<span class="status-chip ' + meta.className + '">' + statusChipHTML(d.status) + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+    defectListEl.querySelectorAll('.defect-row-title').forEach((btn) => {
+      btn.addEventListener('click', () => showDetail(FIXTURE_DEFECTS[Number(btn.dataset.idx)]));
+    });
+  }
+
+  document.getElementById('preview-empty-list').addEventListener('click', () => {
+    listShowingEmpty = true;
+    renderDefectList();
+  });
+  document.getElementById('preview-full-list').addEventListener('click', () => {
+    listShowingEmpty = false;
+    renderDefectList();
+  });
+
+  // ---------- Log a Defect form ----------
+  const defectForm = document.getElementById('defect-form');
+  const titleInput = document.getElementById('field-title');
+  const descriptionInput = document.getElementById('field-description');
+  const stepsInput = document.getElementById('field-steps');
+  const environmentInput = document.getElementById('field-environment');
+  const severitySelect = document.getElementById('field-severity');
+  const titleError = document.getElementById('title-error');
+  const formBanner = document.getElementById('form-error-banner');
+  const submitBtn = document.getElementById('submit-defect');
+
+  function resetForm() {
+    defectForm.reset();
+    titleInput.classList.remove('has-error');
+    titleError.hidden = true;
+    formBanner.hidden = true;
+  }
+
+  defectForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const title = titleInput.value.trim();
+    if (!title) {
+      // State: validation error — AC3, nothing is created, every entered value is kept as-is
+      titleInput.classList.add('has-error');
+      titleError.hidden = false;
+      formBanner.hidden = false;
+      titleInput.focus();
+      return;
+    }
+
+    titleInput.classList.remove('has-error');
+    titleError.hidden = true;
+    formBanner.hidden = true;
+
+    // State: submitting
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging defect…';
+
+    setTimeout(() => {
+      const id = 'DEF-' + nextDefectNumber;
+      nextDefectNumber += 1;
+      const newDefect = {
+        id,
+        title,
+        description: descriptionInput.value.trim(),
+        steps: stepsInput.value.trim(),
+        environment: environmentInput.value.trim(),
+        severity: severitySelect.value,
+        status: 'New',
+        reportedBy: 'Jordan Lee',
+        reportedAt: new Date().toISOString().slice(0, 10)
+      };
+      FIXTURE_DEFECTS.unshift(newDefect);
+      listShowingEmpty = false;
+      renderDefectList();
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log defect';
+      resetForm();
+
+      // State: success
+      showDetail(newDefect);
+    }, 300);
+  });
+
+  document.getElementById('cancel-defect').addEventListener('click', () => {
+    resetForm();
+    show(0);
+  });
+  document.getElementById('go-to-form').addEventListener('click', () => show(1));
+  document.getElementById('go-to-form-from-empty').addEventListener('click', () => show(1));
+
+  // ---------- Defect Details ----------
+  function fieldValueHTML(value) {
+    return value ? escapeHTML(value) : '<em>Not provided</em>';
+  }
+
+  function showDetail(defect) {
+    document.getElementById('detail-id').textContent = defect.id;
+    document.getElementById('detail-title').textContent = defect.title;
+    const chip = document.getElementById('detail-status-chip');
+    const meta = STATUS_META[defect.status];
+    chip.className = 'status-chip ' + meta.className;
+    chip.innerHTML = statusChipHTML(defect.status);
+    document.getElementById('detail-meta').textContent = 'Reported by ' + defect.reportedBy + ' on ' + defect.reportedAt;
+
+    const descEl = document.getElementById('detail-description');
+    descEl.innerHTML = fieldValueHTML(defect.description);
+    descEl.className = defect.description ? '' : 'not-provided';
+
+    const stepsEl = document.getElementById('detail-steps');
+    stepsEl.innerHTML = fieldValueHTML(defect.steps);
+    stepsEl.className = defect.steps ? '' : 'not-provided';
+
+    const envEl = document.getElementById('detail-environment');
+    envEl.innerHTML = fieldValueHTML(defect.environment);
+    envEl.className = defect.environment ? '' : 'not-provided';
+
+    const sevEl = document.getElementById('detail-severity');
+    sevEl.innerHTML = fieldValueHTML(defect.severity);
+    sevEl.className = defect.severity ? '' : 'not-provided';
+
+    show(2);
+  }
+
+  document.getElementById('back-to-list').addEventListener('click', () => show(0));
+  document.getElementById('log-another').addEventListener('click', () => { resetForm(); show(1); });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !(document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !(document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))) show(cur - 1);
+  });
+
+  renderDefectList();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
