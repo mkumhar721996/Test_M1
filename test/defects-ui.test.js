@@ -11,13 +11,15 @@ beforeEach(() => {
   ({ initDefectsApp } = require('../public/js/defects'));
 });
 
-const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
+const flush = async () => { for (let i = 0; i < 6; i += 1) await Promise.resolve(); };
+const page = (items) => ({ items, page: 1, pageSize: 5, totalItems: items.length, totalPages: 1 });
 const submit = () => document.getElementById('defect-form').dispatchEvent(new Event('submit', { cancelable: true }));
 
 test('submitting the form with any details creates a defect with status New', async () => {
   const created = { id: 'DEF-1043', title: 'Checkout button unresponsive', description: '', steps: '', environment: '', severity: '', status: 'New', reportedBy: 'Jordan Lee', reportedAt: '2026-10-07' };
-  const api = { create: jest.fn().mockResolvedValue(created) };
-  initDefectsApp(document, [], api);
+  const api = { create: jest.fn().mockResolvedValue(created), list: jest.fn().mockResolvedValue(page([created])) };
+  initDefectsApp(document, api);
+  await flush();
   document.getElementById('go-to-form').click();
   document.getElementById('field-title').value = 'Checkout button unresponsive';
   submit();
@@ -29,8 +31,9 @@ test('submitting the form with any details creates a defect with status New', as
 
 test('Details screen shows exactly what was entered; blank optional fields read Not provided', async () => {
   const created = { id: 'DEF-1044', title: 'Bug', description: 'Desc here', steps: '', environment: '', severity: '', status: 'New', reportedBy: 'Jordan Lee', reportedAt: '2026-10-07' };
-  const api = { create: jest.fn().mockResolvedValue(created) };
-  initDefectsApp(document, [], api);
+  const api = { create: jest.fn().mockResolvedValue(created), list: jest.fn().mockResolvedValue(page([created])) };
+  initDefectsApp(document, api);
+  await flush();
   document.getElementById('go-to-form').click();
   document.getElementById('field-title').value = 'Bug';
   document.getElementById('field-description').value = 'Desc here';
@@ -41,9 +44,10 @@ test('Details screen shows exactly what was entered; blank optional fields read 
   expect(document.getElementById('detail-steps').textContent).toBe('Not provided');
 });
 
-test('submitting a completely blank form is rejected client-side and creates nothing', () => {
-  const api = { create: jest.fn() };
-  initDefectsApp(document, [], api);
+test('submitting a completely blank form is rejected client-side and creates nothing', async () => {
+  const api = { create: jest.fn(), list: jest.fn().mockResolvedValue(page([])) };
+  initDefectsApp(document, api);
+  await flush();
   document.getElementById('go-to-form').click();
   submit();
   expect(api.create).not.toHaveBeenCalled();

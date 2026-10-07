@@ -24,19 +24,42 @@
         <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;">
           <div>
             <h1>Defects</h1>
-            <p>Everything reported so far, newest first.</p>
+            <p>Across your projects, newest activity first.</p>
           </div>
           <button type="button" class="btn btn-primary" id="go-to-form">Log a defect</button>
         </div>
 
         <div class="card">
           <h3 class="card-title">All defects</h3>
-          <div id="defect-list"></div>
+          <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+          <div id="list-loading">
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:220px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:180px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+            <div class="skeleton-row"><div class="skeleton-block" style="width:90px;height:16px;"></div><div class="skeleton-block" style="width:260px;height:16px;"></div><div class="skeleton-block" style="width:90px;height:24px;margin-left:auto;"></div></div>
+          </div>
+
+          <div class="state-banner" id="list-error" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <p style="margin:0;">Couldn't load defects right now. Check your connection and try again.</p>
+              <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+            </div>
+          </div>
+
+          <div class="empty-state" id="list-signed-out" hidden>
+            <span class="icon" aria-hidden="true">🔒</span>
+            <p>Sign in to view defects.</p>
+          </div>
+
           <div class="empty-state" id="defect-list-empty" hidden>
             <span class="icon" aria-hidden="true">🗒️</span>
-            <p>No defects logged yet. The first one you log will show up here.</p>
+            <p>No defects logged for your projects yet. Once one is reported, it'll show up here.</p>
             <button type="button" class="btn btn-primary" id="go-to-form-from-empty">Log a defect</button>
           </div>
+
+          <div id="defect-list"></div>
+          <div class="pagination" id="list-pagination" hidden></div>
         </div>
       </div>
     </div>
@@ -124,38 +147,58 @@
       </div>
       <div class="page">
         <div class="card">
-          <div class="detail-header">
-            <div>
-              <p class="detail-id" id="detail-id"></p>
-              <h1 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0;" id="detail-title"></h1>
-            </div>
-            <span class="status-chip" id="detail-status-chip"></span>
+          <div id="detail-loading">
+            <div class="skeleton-block" style="width:100px;height:14px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:22px;margin-bottom:var(--space-4);"></div>
+            <div class="skeleton-block" style="width:100%;height:60px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:60px;"></div>
           </div>
 
-          <p class="u-text-sm u-text-muted" id="detail-meta" style="margin-bottom:var(--space-4);"></p>
+          <div class="state-banner" id="detail-error" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <p style="margin:0;">Couldn't load this defect right now. Check your connection and try again.</p>
+              <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="detail-retry">Retry</button></div>
+            </div>
+          </div>
 
-          <dl class="detail-grid two-col">
-            <div class="detail-field">
-              <dt>Description</dt>
-              <dd id="detail-description"></dd>
-            </div>
-            <div class="detail-field">
-              <dt>Steps to reproduce</dt>
-              <dd id="detail-steps"></dd>
-            </div>
-            <div class="detail-field">
-              <dt>Environment</dt>
-              <dd id="detail-environment"></dd>
-            </div>
-            <div class="detail-field">
-              <dt>Severity</dt>
-              <dd id="detail-severity"></dd>
-            </div>
-          </dl>
+          <div class="empty-state" id="detail-signed-out" hidden>
+            <span class="icon" aria-hidden="true">🔒</span>
+            <p>Sign in to view this defect.</p>
+          </div>
 
-          <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
-            <button type="button" class="btn btn-secondary" id="back-to-list">Back to Defects</button>
-            <button type="button" class="btn btn-primary" id="log-another">Log another defect</button>
+          <div class="not-found-state" id="detail-not-found" hidden>
+            <span class="icon" aria-hidden="true">❓</span>
+            <h2>Defect not found</h2>
+            <p id="not-found-message">That defect doesn't exist, or it isn't in a project you belong to.</p>
+            <button type="button" class="btn btn-primary" id="not-found-back">Back to Defects</button>
+          </div>
+
+          <div id="detail-success" hidden>
+            <div class="detail-header">
+              <div>
+                <p class="detail-id" id="detail-id"></p>
+                <h1 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0;" id="detail-title"></h1>
+              </div>
+              <span class="status-chip" id="detail-status-chip"></span>
+            </div>
+            <div aria-live="polite">
+              <p class="detail-meta-line" id="detail-reported-meta"></p>
+              <p class="detail-meta-line" id="detail-updated-meta"></p>
+            </div>
+
+            <dl class="detail-grid two-col" style="margin-top: var(--space-4);">
+              <div class="detail-field"><dt>Project</dt><dd id="detail-project"></dd></div>
+              <div class="detail-field"><dt>Severity</dt><dd id="detail-severity"></dd></div>
+              <div class="detail-field"><dt>Environment</dt><dd id="detail-environment"></dd></div>
+              <div class="detail-field"><dt>Description</dt><dd id="detail-description"></dd></div>
+              <div class="detail-field"><dt>Steps to reproduce</dt><dd id="detail-steps"></dd></div>
+            </dl>
+
+            <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary" id="back-to-list">Back to Defects</button>
+              <button type="button" class="btn btn-primary" id="log-another">Log another defect</button>
+            </div>
           </div>
         </div>
       </div>
