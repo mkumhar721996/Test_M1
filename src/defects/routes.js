@@ -30,8 +30,12 @@ router.get('/', requireAuthenticatedUser, (req, res, next) => {
   }
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', requireAuthenticatedUser, (req, res, next) => {
   try {
+    const { projectId } = req.body || {};
+    if (projectId && !projectsStore.listProjectIdsForUser(req.userId).includes(projectId)) {
+      return res.status(403).json({ error: 'forbidden' });
+    }
     res.status(201).json(present(createDefect(req.body)));
   } catch (err) {
     if (err instanceof DefectValidationError) {

@@ -110,3 +110,26 @@ test('AC9: a non-member-project defect is excluded from the list and indistingui
   expect(detailRes.body).toEqual({ error: 'defect not found' });
   expect(detailRes.text).toBe(missing.text);
 });
+
+test('POST /defects without x-user-id is rejected with 401 and creates nothing', async () => {
+  const before = defectsStore.listDefects().length;
+  const res = await request(app).post('/defects').send({ title: 'Anon bug' });
+  expect(res.status).toBe(401);
+  expect(res.body).toEqual({ error: 'unauthorized' });
+  expect(defectsStore.listDefects().length).toBe(before);
+});
+
+test('POST /defects with a projectId the caller is not a member of is rejected', async () => {
+  const other = projectsStore.createProject('Mobile App');
+  const before = defectsStore.listDefects().length;
+  const res = await request(app).post('/defects').set('x-user-id', 'outsider').send({ title: 'Injected', projectId: other.id });
+  expect(res.status).toBe(403);
+  expect(defectsStore.listDefects().length).toBe(before);
+});
+
+test('POST /defects with a projectId the caller belongs to is accepted', async () => {
+  const mine = memberProject('Checkout Experience', 'member-poster');
+  const res = await request(app).post('/defects').set('x-user-id', 'member-poster').send({ title: 'Mine', projectId: mine.id });
+  expect(res.status).toBe(201);
+  expect(res.body).toMatchObject({ projectId: mine.id, projectName: 'Checkout Experience' });
+});
