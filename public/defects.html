@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Defect Tracker — Defects</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/defects.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/defects.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div id="screens">
+    <div class="screen" data-name="Defects List">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;">
+          <div>
+            <h1>Defects</h1>
+            <p>Everything reported so far, newest first.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="go-to-form">Log a defect</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All defects</h3>
+          <div id="defect-list"></div>
+          <div class="empty-state" id="defect-list-empty" hidden>
+            <span class="icon" aria-hidden="true">🗒️</span>
+            <p>No defects logged yet. The first one you log will show up here.</p>
+            <button type="button" class="btn btn-primary" id="go-to-form-from-empty">Log a defect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" data-name="Log a Defect">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Log a defect</h1>
+          <p>Reporting as Jordan Lee. Add whatever details you have — only a title is required to submit.</p>
+        </div>
+
+        <div class="card">
+          <!-- State: pristine / validation error / submitting (all handled in this one form) -->
+          <div class="form-banner" id="form-error-banner" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <span>Can't create this defect — add a title so others know what it's about.</span>
+          </div>
+
+          <form id="defect-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-title">Title <span class="u-text-muted">— Required</span></label>
+              <input class="input" id="field-title" name="title" type="text" placeholder="e.g. Checkout button unresponsive on Safari" aria-describedby="title-error" />
+              <p class="field-error" id="title-error" hidden><span class="icon" aria-hidden="true">⚠</span><span>Add a title before submitting.</span></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-description">Description <span class="u-text-muted">— Optional</span></label>
+              <textarea class="input" id="field-description" name="description" rows="3" placeholder="What happened? What did you expect instead?"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-steps">Steps to reproduce <span class="u-text-muted">— Optional</span></label>
+              <textarea class="input" id="field-steps" name="steps" rows="3" placeholder="1. Go to...&#10;2. Click...&#10;3. See..."></textarea>
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-environment">Environment <span class="u-text-muted">— Optional</span></label>
+              <input class="input" id="field-environment" name="environment" type="text" placeholder="e.g. Safari 17 on macOS 14" />
+            </div>
+
+            <div class="field">
+              <label class="label" for="field-severity">Severity <span class="u-text-muted">— Optional</span></label>
+              <select class="input" id="field-severity" name="severity">
+                <option value="">Not set</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+              <p class="field-hint">Captured here in case it's useful, but the product owner hasn't confirmed this field yet — see the note below.</p>
+            </div>
+
+            <div class="pending-callout" style="margin-bottom: var(--space-4);">
+              <div><span class="pending-badge">Pending product decision</span></div>
+              <p style="margin:0;">
+                The work item leaves open exactly which fields are required vs. optional, and
+                whether severity is captured when a defect is first logged at all. This design's
+                default: only Title is required, and Severity is included as optional (defaulting
+                to "Not set") so Reporters aren't blocked while that's decided. If the product
+                owner removes Severity from this form, nothing else here changes.
+              </p>
+            </div>
+
+            <div class="field" style="margin-bottom: 0; display:flex; gap: var(--space-3); flex-wrap: wrap;">
+              <button type="submit" class="btn btn-primary" id="submit-defect">Log defect</button>
+              <button type="button" class="btn btn-secondary" id="cancel-defect">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" data-name="Defect Details">
+      <div class="app-topbar">
+        <span class="brand">Defect Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Defects</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="card">
+          <div class="detail-header">
+            <div>
+              <p class="detail-id" id="detail-id"></p>
+              <h1 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0;" id="detail-title"></h1>
+            </div>
+            <span class="status-chip" id="detail-status-chip"></span>
+          </div>
+
+          <p class="u-text-sm u-text-muted" id="detail-meta" style="margin-bottom:var(--space-4);"></p>
+
+          <dl class="detail-grid two-col">
+            <div class="detail-field">
+              <dt>Description</dt>
+              <dd id="detail-description"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Steps to reproduce</dt>
+              <dd id="detail-steps"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Environment</dt>
+              <dd id="detail-environment"></dd>
+            </div>
+            <div class="detail-field">
+              <dt>Severity</dt>
+              <dd id="detail-severity"></dd>
+            </div>
+          </dl>
+
+          <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" id="back-to-list">Back to Defects</button>
+            <button type="button" class="btn btn-primary" id="log-another">Log another defect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+</html>
