@@ -1,5 +1,5 @@
 const express = require('express');
-const { createEmployee, getEmployee, updateEmployee } = require('./store');
+const { createEmployee, getEmployee, updateEmployee, listEmployees } = require('./store');
 const { enforceOnboardingRole } = require('../runs/auth');
 const { pickFields } = require('../lib/pickFields');
 
@@ -10,6 +10,10 @@ const PATCHABLE_FIELDS = ['name', 'email', 'department', 'role', 'startDate', 'e
 router.post('/', (req, res) => {
   const employee = createEmployee(req.body);
   res.status(201).json(employee);
+});
+
+router.get('/', enforceOnboardingRole, (req, res) => {
+  res.status(200).json(listEmployees());
 });
 
 router.get('/:id', enforceOnboardingRole, (req, res) => {

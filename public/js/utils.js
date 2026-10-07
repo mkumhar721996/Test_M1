@@ -1,6 +1,6 @@
 function escapeHtml(doc, str) {
   const div = doc.createElement('div');
-  div.textContent = str || '';
+  div.textContent = str === null || str === undefined ? '' : str;
   return div.innerHTML;
 }
 

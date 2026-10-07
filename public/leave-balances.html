@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee balances — Leave Admin</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/leave-common.css" />
+<link rel="stylesheet" href="./css/leave-balances.css" />
+<script src="./js/leave-balances.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Leave Admin</span>
+    <nav class="app-nav">
+      <a href="./leave-types.html">Leave Types</a>
+      <a href="./leave-balances.html" class="active" aria-current="page">Employee Balances</a>
+      <a href="./leave-lookup.html">Balance Lookup</a>
+    </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr" selected>HR</option>
+          <option value="manager">Manager</option>
+          <option value="employee">Team member (no HR/Manager access)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+<div class="page">
+  <div class="page-header">
+    <h1>Employee balances</h1>
+    <p>Starting balances per leave type, set once onboarding is complete.</p>
+  </div>
+
+  <div class="decision-banner">
+    <span class="icon" aria-hidden="true">⚠</span>
+    <div>
+      <span class="tag">Open decision — not yet settled by the product owner</span>
+      <h3>Who may set or adjust balances: HR only, or HR and Managers?</h3>
+      <p>This story can't be scheduled for build until that's decided. Until then, this page is restricted to HR as the narrowest safe default.</p>
+    </div>
+  </div>
+
+  <div id="balances-region"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" hidden></div>
+<div class="modal-wrap" id="modal-wrap" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-title">Set starting balances</h2>
+        <p id="modal-subtitle">These are recorded once and used as the running balance — there's no accrual, carryover, or expiry in this story.</p>
+      </div>
+      <button class="icon-btn" id="modal-close-btn" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div id="modal-error-banner" role="alert"></div>
+
+    <form id="balances-form" novalidate>
+      <div class="field">
+        <label class="label" for="field-annual">Annual leave (days)</label>
+        <input class="input" id="field-annual" type="number" step="0.5" min="0" aria-describedby="error-annual" />
+        <p class="field-error" id="error-annual" role="alert" hidden>Enter a starting balance of 0 or more.</p>
+      </div>
+      <div class="field">
+        <label class="label" for="field-sick">Sick leave (days)</label>
+        <input class="input" id="field-sick" type="number" step="0.5" min="0" aria-describedby="error-sick" />
+        <p class="field-error" id="error-sick" role="alert" hidden>Enter a starting balance of 0 or more.</p>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label class="label" for="field-unpaid">Unpaid leave (days)</label>
+        <input class="input" id="field-unpaid" type="number" step="0.5" min="0" aria-describedby="error-unpaid" />
+        <p class="field-error" id="error-unpaid" role="alert" hidden>Enter a starting balance of 0 or more.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="save-balances-btn">Save starting balances</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
