@@ -261,7 +261,8 @@ function initCalculatorApp(doc = document) {
     render('Calculator opened');
     overlay.hidden = false;
     modalWrap.hidden = false;
-    $('calc-close').focus();
+    // Focus the non-activating panel so Enter means "=" rather than clicking Close.
+    modalPanel.focus();
   }
 
   function close() {
@@ -284,6 +285,7 @@ function initCalculatorApp(doc = document) {
   // Physical keys that map to on-screen button keys in every layout.
   const KEYBOARD_KEYS = { '+': '+', '-': '-', '*': '×', '/': '÷', '.': '.', Enter: 'equals', Backspace: 'backspace' };
   // No on-screen equivalent in Basic, so only mapped in Scientific.
+  const NATIVE_ENTER_CONTROLS = '#calc-close, #calc-cancel, #calc-use, .layout-tab';
   const SCIENTIFIC_KEYBOARD_KEYS = ['(', ')', '^'];
 
   function keyboardKeyFor(e) {
@@ -300,11 +302,15 @@ function initCalculatorApp(doc = document) {
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
+    const atStart = doc.activeElement === modalPanel;
     if (e.shiftKey) {
-      if (doc.activeElement === first || !modalPanel.contains(doc.activeElement)) {
+      if (atStart || doc.activeElement === first || !modalPanel.contains(doc.activeElement)) {
         e.preventDefault();
         last.focus();
       }
+    } else if (atStart) {
+      e.preventDefault();
+      first.focus();
     } else if (doc.activeElement === last || !modalPanel.contains(doc.activeElement)) {
       e.preventDefault();
       first.focus();
@@ -334,8 +340,9 @@ function initCalculatorApp(doc = document) {
       } else {
         const mapped = keyboardKeyFor(e);
         if (mapped === null) return;
-        // Enter on a focused button must still activate that button (close, cancel, tabs...).
-        if (mapped === 'equals' && e.target.closest && e.target.closest('button')) return;
+        // Enter on a focused Close/Cancel/Use/tab control must still activate it. Keypad keys
+        // are not exempt: Enter there means "=" (preventDefault stops the native click).
+        if (mapped === 'equals' && e.target.closest && e.target.closest(NATIVE_ENTER_CONTROLS)) return;
         e.stopImmediatePropagation();
         e.preventDefault();
         state = pressKey(state, mapped);

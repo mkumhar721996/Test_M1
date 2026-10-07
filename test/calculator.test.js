@@ -479,14 +479,40 @@ describe('calculator UI', () => {
       expect(expr()).toBe('sin(0.5');
     });
 
-    test('Enter on a focused button is left to that button, not mapped to equals', () => {
-      tap(['1', '+', '2']);
-      const cancel = document.getElementById('calc-cancel');
+    const enterOn = (el) => {
       const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
-      cancel.dispatchEvent(ev);
-      expect(ev.defaultPrevented).toBe(false);
-      expect(result().classList.contains('is-preview')).toBe(true);
+      el.dispatchEvent(ev);
+      return ev;
+    };
+
+    test('Enter on a focused Cancel/Close/Use/tab button is left to that button', () => {
+      tap(['1', '+', '2']);
+      ['calc-cancel', 'calc-close', 'calc-use', 'tab-scientific'].forEach((id) => {
+        expect(enterOn(document.getElementById(id)).defaultPrevented).toBe(false);
+      });
       expect(expr()).toBe('1+2');
+      expect(result().classList.contains('is-preview')).toBe(true);
+    });
+
+    test('opening focuses the dialog panel, so Enter evaluates', () => {
+      expect(document.activeElement).toBe(document.getElementById('calculator-modal'));
+      typeAll(['1', '+', '2']);
+      enterOn(document.activeElement);
+      expect(result().textContent).toBe('3');
+      expect(document.getElementById('calculator-modal-wrap').hidden).toBe(false);
+    });
+
+    test('click then type then Enter on the focused keypad key evaluates', () => {
+      key('1');
+      const plus = document.querySelector('.calc-key[data-key="+"]');
+      plus.click();
+      plus.focus();
+      type('2');
+      const ev = enterOn(plus);
+      expect(ev.defaultPrevented).toBe(true);
+      expect(expr()).toBe('1+2');
+      expect(result().textContent).toBe('3');
+      expect(result().classList.contains('is-preview')).toBe(false);
     });
 
     test('Layout resets to Basic on reopen', () => {
