@@ -21,13 +21,6 @@ router.post('/', (req, res) => {
   res.status(201).json(employee);
 });
 
-// TODO(rebase): uncertain merge — STORY-170 (already merged to main) added enforceOnboardingRole
-// to GET / and GET /:id so only HR/Manager can list/view employees, while STORY-171's own UI
-// (public/js/employee.js, public/js/employees.js) and tests (AC6 and "GET /employees lists
-// employees ungated" in test/employees-status.test.js) assume both endpoints stay open so a
-// deactivated employee's status remains visible without a role header. Kept main's already-merged
-// access control as the conservative choice; please confirm the intended behavior and reconcile
-// the employee.js/employees.js loaders and the affected tests accordingly.
 router.get('/', enforceOnboardingRole, (req, res) => {
   res.status(200).json(listEmployees());
 });
