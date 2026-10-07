@@ -119,10 +119,11 @@ function initHireProfileApp(doc, initialHire, api) {
   function renderProfile() {
     if (headingEl) headingEl.textContent = hire.name;
 
-    profileStatusChip.className = 'profile-status-chip' + (hire.profileStatus === 'active' ? ' profile-status-chip--active' : '');
-    profileStatusChip.innerHTML = hire.profileStatus === 'active'
-      ? '<span aria-hidden="true">●</span> Active profile'
-      : '<span aria-hidden="true">○</span> Deactivated';
+    const headerChip = hire.profileStatus === 'active'
+      ? { icon: '●', label: 'Active profile' }
+      : { icon: hire.profileStatus === 'deactivated' ? '○' : OUTCOME_CHIP[hire.profileStatus].icon, label: OUTCOME_CHIP[hire.profileStatus].label };
+    profileStatusChip.className = 'profile-status-chip profile-status-chip--' + hire.profileStatus;
+    profileStatusChip.innerHTML = `<span aria-hidden="true">${headerChip.icon}</span> ${headerChip.label}`;
 
     const stageLabel = STAGE_LABELS[hire.hireStage] || hire.hireStage;
     const canEditStage = hire.hireStage !== 'offer_accepted' && hire.profileStatus === 'active';

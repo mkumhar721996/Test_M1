@@ -83,6 +83,8 @@ body { margin: 0; min-height: 100dvh; }
   color: var(--color-fg-muted);
 }
 .profile-status-chip--active { border-color: var(--color-primary); color: var(--color-fg); }
+.profile-status-chip--rejected { border: 2px solid var(--color-fg-muted); color: var(--color-fg); }
+.profile-status-chip--withdrawn { border: 2px dashed var(--color-fg); color: var(--color-fg); }
 
 /* ---------- Pending lock banner (AC9) ---------- */
 .pending-banner {

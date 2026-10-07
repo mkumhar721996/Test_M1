@@ -210,6 +210,11 @@ async function markHireOutcome(id, outcome, reason) {
   const hire = hires.get(id);
   if (!hire) return undefined;
   assertValidOutcome(hire);
+  if (hire.run && hire.run.status === 'active') {
+    await engineClient.cancelRun(hire.run.id);
+    hire.runHistory.push({ ...hire.run, status: 'cancelled', reason: `profile_${outcome}` });
+    hire.run = null;
+  }
   hire.profileStatus = outcome;
   hire.outcomeReason = reason ? String(reason).trim() : '';
   return hire;

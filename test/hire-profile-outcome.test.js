@@ -40,6 +40,14 @@ describe('Hire Profile — Outcome card', () => {
     expect(chip.textContent).toContain(label);
   });
 
+  test.each([['rejected', 'Rejected'], ['withdrawn', 'Withdrawn']])('AC6: header chip for a %s hire is not labelled Deactivated', (status, label) => {
+    init({ ...fixtureHire(), profileStatus: status });
+    const chip = document.getElementById('profile-status-chip');
+    expect(chip.textContent).toContain(label);
+    expect(chip.textContent).not.toContain('Deactivated');
+    expect(chip.className).toContain(`profile-status-chip--${status}`);
+  });
+
   test('AC1: confirming the reject dialog sends the reason and renders the Rejected chip', async () => {
     const api = { reject: jest.fn((reason) => Promise.resolve({ ...fixtureHire(), profileStatus: 'rejected', outcomeReason: reason })) };
     init(fixtureHire(), api);

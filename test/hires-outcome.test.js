@@ -77,3 +77,12 @@ test.each(['reject', 'withdraw'])('AC5: a non-HR/Manager role calling %s gets 40
   expect(res.status).toBe(403);
   expect(getHire(hire.id).profileStatus).toBe('active');
 });
+
+test('marking an outcome cancels any in-flight onboarding run', async () => {
+  const hire = await mk({ hireStage: 'interview', hiringManager: 'mgr_1' });
+  const stored = getHire(hire.id);
+  stored.run = { id: 'run_legacy', status: 'active' };
+  const updated = await markHireOutcome(hire.id, 'withdrawn', '');
+  expect(updated.run).toBeNull();
+  expect(updated.runHistory[updated.runHistory.length - 1]).toMatchObject({ id: 'run_legacy', status: 'cancelled' });
+});
