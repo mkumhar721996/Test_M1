@@ -1,0 +1,30 @@
+/* Read-only record screen; shared chip/denied-panel styles live in employee-directory.css. */
+  /* ---------- Profile screen ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none;
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px;
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .profile-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; word-break: break-word; overflow-wrap: anywhere; }
+  .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .kv-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); word-break: break-word; overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  .profile-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-top: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .profile-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }

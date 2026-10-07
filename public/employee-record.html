@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Record — Workforce</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/employee-directory.css" />
+<link rel="stylesheet" href="./css/employee-record.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/employee-record.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Directory</a>
+      <a href="#" onclick="return false;">Org chart</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+    <div class="role-switcher">
+      <label for="role-select">Signed in as</label>
+      <select class="input" id="role-select">
+        <option value="hr">HR</option>
+        <option value="manager">Manager</option>
+        <option value="employee">Employee (no directory access)</option>
+        <option value="signedout">Signed out (not authenticated)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="page">
+    <div id="profile-denied" hidden style="padding: calc(var(--space-4) * 2) var(--space-3);">
+      <div class="access-denied-panel">
+        <span class="notice-icon" aria-hidden="true">⛔</span>
+        <h2>Access denied</h2>
+        <p>You need the HR or Manager role to view employee records.</p>
+        <p>Switch "Signed in as" above to <code>HR</code> or <code>Manager</code> to continue.</p>
+      </div>
+    </div>
+
+    <div id="profile-notfound" hidden style="padding: calc(var(--space-4) * 2) var(--space-3);">
+      <div class="access-denied-panel">
+        <span class="notice-icon" aria-hidden="true">🔍</span>
+        <h2>Employee not found</h2>
+        <p>No employee record exists for this ID.</p>
+        <a class="btn btn-secondary" href="employee-directory.html">Back to directory</a>
+      </div>
+    </div>
+
+    <div id="profile-authorized" hidden>
+      <button type="button" class="back-link" id="profile-back-btn">
+        <span aria-hidden="true">←</span> Back to directory
+      </button>
+
+      <div class="profile-header">
+        <div>
+          <h1 id="profile-name">—</h1>
+          <p class="sub" id="profile-role-line">—</p>
+        </div>
+        <span id="profile-status-chip"></span>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Employee details</h3>
+        <div class="kv-list">
+          <div class="kv-row"><span class="kv-label">Employee ID</span><span class="kv-value" id="profile-id">—</span></div>
+          <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value" id="profile-email">—</span></div>
+          <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value" id="profile-department">—</span></div>
+          <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value" id="profile-role">—</span></div>
+          <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value" id="profile-start-date">—</span></div>
+        </div>
+      </div>
+
+      <p class="profile-note">
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span>Deactivating or reactivating an employee is managed from Employee Status Management, not from this directory — this screen is read-only.</span>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
