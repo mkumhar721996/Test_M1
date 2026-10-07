@@ -1,6 +1,7 @@
 const express = require('express');
 const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
 const { getHire } = require('../hires/store');
+const { listAuditEntries, DEFAULT_TENANT_ID } = require('./auditLog');
 const { enforceOnboardingRole } = require('./auth');
 
 const router = express.Router();
@@ -39,6 +40,13 @@ router.get('/:id', (req, res) => {
     return res.status(404).json({ error: 'run not found' });
   }
   res.status(200).json(withHire(run));
+});
+
+router.get('/:id/audit-log', enforceOnboardingRole, (req, res) => {
+  const run = getRun(req.params.id);
+  const tenantId = req.headers['x-tenant-id'] || DEFAULT_TENANT_ID;
+  if (!run || tenantId !== run.tenantId) return res.status(404).json({ error: 'run not found' });
+  res.status(200).json(listAuditEntries({ tenantId: run.tenantId, runId: run.id }));
 });
 
 router.post('/:id/complete', (req, res) => {

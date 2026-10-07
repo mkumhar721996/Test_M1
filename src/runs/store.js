@@ -2,8 +2,10 @@ const crypto = require('crypto');
 const { getLatestVersion, createWorkflow } = require('../workflows/store');
 const { createEmployee } = require('../employees/store');
 const { appendOnboardingAuditEntry } = require('../hires/store');
+const { recordRunEvent, recordTaskEvent, DEFAULT_TENANT_ID } = require('./auditLog');
 
 const runs = new Map();
+const TERMINAL_STATUSES = ['completed', 'failed', 'cancelled'];
 
 const REQUIRED_STAFF_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
 
@@ -35,7 +37,15 @@ function buildSteps(taskGraph) {
   }));
 }
 
-function startRun(workflowId, hireId = null) {
+function runEvent(run, eventType, actor, priorState, newState) {
+  return recordRunEvent({ runId: run.id, tenantId: run.tenantId, projectId: run.projectId, eventType, actor, priorState, newState });
+}
+
+function taskEvent(run, taskId, eventType) {
+  return recordTaskEvent({ runId: run.id, tenantId: run.tenantId, projectId: run.projectId, taskId, eventType });
+}
+
+function startRun(workflowId, hireId = null, { tenantId = DEFAULT_TENANT_ID, projectId = null } = {}) {
   const definition = getLatestVersion(workflowId);
   if (!definition) return undefined;
   const steps = buildSteps(definition.taskGraph);
@@ -48,12 +58,16 @@ function startRun(workflowId, hireId = null) {
     status: 'active',
     employeeId: null,
     hireId,
+    tenantId,
+    projectId,
     currentIndex: 0,
     steps,
     auditLog: [{ ts: startedAt, actor: 'System', action: `Run started. Step 1 of ${steps.length} is current.` }],
     startedAt,
   };
   runs.set(run.id, run);
+  runEvent(run, 'started', 'System', null, 'active');
+  if (steps[0]) taskEvent(run, steps[0].id, 'dispatched');
   if (hireId) appendOnboardingAuditEntry(hireId, 'System', run.auditLog[0].action);
   return run;
 }
@@ -65,7 +79,7 @@ function listRuns() {
 function advanceStep(runId, actor = 'Manager') {
   const run = runs.get(runId);
   if (!run) return undefined;
-  if (run.status === 'completed') return run;
+  if (TERMINAL_STATUSES.includes(run.status) || run.status === 'paused') return run;
 
   const idx = run.currentIndex;
   const step = run.steps[idx];
@@ -73,8 +87,11 @@ function advanceStep(runId, actor = 'Manager') {
   const wasBlocked = step.status === 'blocked';
 
   if (step.requirementLabel && !step.requirementMet) {
+    const priorState = run.status;
     step.status = 'blocked';
     run.status = 'blocked';
+    taskEvent(run, step.id, 'blocked');
+    if (priorState !== 'blocked') runEvent(run, 'blocked', 'System', priorState, 'blocked');
     run.auditLog.push({
       ts: new Date().toISOString(),
       actor: 'System',
@@ -83,9 +100,13 @@ function advanceStep(runId, actor = 'Manager') {
     return run;
   }
 
+  const priorState = run.status;
   step.status = 'done';
+  if (wasBlocked) taskEvent(run, step.id, 'retried');
+  taskEvent(run, step.id, 'completed');
   if (idx === run.steps.length - 1) {
     run.status = 'completed';
+    runEvent(run, 'completed', actor, priorState, 'completed');
     const action = `Stage transition: step ${idx + 1} of ${run.steps.length} (${step.name}) completed — all steps finished. Run marked completed.`;
     run.auditLog.push({ ts: new Date().toISOString(), actor, action });
     if (run.hireId) appendOnboardingAuditEntry(run.hireId, actor, action, { completed: true });
@@ -94,6 +115,8 @@ function advanceStep(runId, actor = 'Manager') {
     const nextStep = run.steps[run.currentIndex];
     nextStep.status = 'current';
     run.status = 'active';
+    taskEvent(run, nextStep.id, 'dispatched');
+    if (priorState === 'blocked') runEvent(run, 'resumed', actor, 'blocked', 'active');
     const action = `Stage transition: step ${idx + 1} of ${run.steps.length} (${step.name}) completed${wasBlocked ? ' after blocking condition resolved' : ''} — advanced to step ${idx + 2} of ${run.steps.length} (${nextStep.name}).`;
     run.auditLog.push({ ts: new Date().toISOString(), actor, action });
     if (run.hireId) appendOnboardingAuditEntry(run.hireId, actor, action);
@@ -122,20 +145,36 @@ function getRun(runId) {
 function completeRun(runId, payload = {}) {
   const run = runs.get(runId);
   if (!run) return undefined;
-  if (run.employeeId) return run;
+  if (run.employeeId || run.status === 'cancelled' || run.status === 'failed' || run.status === 'paused') return run;
 
   const missingFields = REQUIRED_STAFF_FIELDS.filter((field) => !payload[field]);
   if (missingFields.length > 0) {
     console.error(`[runs] run ${runId} completion missing required staff fields: ${missingFields.join(', ')}`);
+    if (run.status !== 'completed') runEvent(run, 'completed', 'System', run.status, 'completed');
     run.status = 'completed';
     return run;
   }
 
   const employee = createEmployee({ ...payload, employmentStatus: 'active' });
+  if (run.status !== 'completed') runEvent(run, 'completed', 'System', run.status, 'completed');
   run.status = 'completed';
   run.employeeId = employee.id;
   return run;
 }
+
+function transitionRun(runId, actor, eventType, newState, canTransition) {
+  const run = runs.get(runId);
+  if (!run) return undefined;
+  if (TERMINAL_STATUSES.includes(run.status) || !canTransition(run)) return run;
+  runEvent(run, eventType, actor, run.status, newState);
+  run.status = newState;
+  return run;
+}
+
+const pauseRun = (runId, actor = 'System') => transitionRun(runId, actor, 'paused', 'paused', (r) => r.status !== 'paused');
+const resumeRun = (runId, actor = 'System') => transitionRun(runId, actor, 'resumed', 'active', (r) => r.status === 'paused');
+const cancelRun = (runId, actor = 'System') => transitionRun(runId, actor, 'cancelled', 'cancelled', () => true);
+const failRun = (runId, actor = 'System') => transitionRun(runId, actor, 'failed', 'failed', () => true);
 
 function seedExampleRun() {
   const workflow = createWorkflow({
@@ -160,4 +199,4 @@ function seedExampleRun() {
 
 seedExampleRun();
 
-module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };
+module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, pauseRun, resumeRun, cancelRun, failRun, DEFAULT_TENANT_ID, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };
