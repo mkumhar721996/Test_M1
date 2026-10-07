@@ -334,6 +334,8 @@ function initCalculatorApp(doc = document) {
       } else {
         const mapped = keyboardKeyFor(e);
         if (mapped === null) return;
+        // Enter on a focused button must still activate that button (close, cancel, tabs...).
+        if (mapped === 'equals' && e.target.closest && e.target.closest('button')) return;
         e.stopImmediatePropagation();
         e.preventDefault();
         state = pressKey(state, mapped);

@@ -479,6 +479,16 @@ describe('calculator UI', () => {
       expect(expr()).toBe('sin(0.5');
     });
 
+    test('Enter on a focused button is left to that button, not mapped to equals', () => {
+      tap(['1', '+', '2']);
+      const cancel = document.getElementById('calc-cancel');
+      const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      cancel.dispatchEvent(ev);
+      expect(ev.defaultPrevented).toBe(false);
+      expect(result().classList.contains('is-preview')).toBe(true);
+      expect(expr()).toBe('1+2');
+    });
+
     test('Layout resets to Basic on reopen', () => {
       sci();
       document.getElementById('calc-cancel').click();
