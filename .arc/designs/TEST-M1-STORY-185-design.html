@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-185 — Keyboard Entry</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note (carried over from TEST-M1-STORY-183, same component): tokens.json's
+    type scale tops out at --font-size-lg (1.25rem) and has no "hero" size for a prominent
+    numeric display. These three variables are a proposal for design-system-bootstrap to
+    evaluate — they are the only literal size values in this file. The expression line's
+    minimum shrink step reuses the real --font-size-md token rather than a new literal.
+  */
+  :root {
+    --calc-display-result-size: 2.25rem;    /* proposed: hero/result size, no existing token covers this */
+    --calc-display-expr-size-max: 1.75rem;  /* proposed: roomiest expression size, above --font-size-lg */
+    --calc-display-expr-size-mid: 1.375rem; /* proposed: mid shrink step, between lg and md */
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ---------- Amount field with $ prefix + calculator launcher ---------- */
+  .amount-input-wrap { position: relative; display: flex; gap: var(--space-2); align-items: stretch; }
+  .amount-input-inner { position: relative; flex: 1; }
+  .amount-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+  }
+  .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
+  .calc-launch-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border: 1px solid var(--button-secondary-border);
+    border-radius: var(--button-primary-radius);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .calc-launch-btn:hover { background: var(--color-surface); }
+  .field-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+
+  /* ---------- Calculator display ---------- */
+  .calc-display {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .calc-expression {
+    width: 100%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-align: right;
+    direction: ltr;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg-muted);
+    font-size: var(--calc-display-expr-size-max);
+    min-height: 1.4em;
+    transition: font-size 180ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .calc-expression { transition: none; }
+  }
+  .calc-result-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    min-height: 1.3em;
+  }
+  .calc-result {
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--calc-display-result-size);
+    color: var(--color-fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-result.is-preview { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .calc-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    justify-content: flex-end;
+    width: 100%;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    color: var(--color-fg);
+  }
+  .calc-error-icon { color: var(--color-primary); }
+
+  /* ---------- Layout toggle (Basic / Scientific) ---------- */
+  .layout-tabs {
+    display: flex;
+    gap: var(--space-1);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-1);
+    margin-bottom: var(--space-3);
+  }
+  .layout-tab {
+    flex: 1;
+    min-height: 40px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .layout-tab[aria-selected="true"] {
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+  }
+  .layout-tab:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  /* ---------- Keyboard hint banner ---------- */
+  .kbd-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .kbd-hint .icon { flex: 0 0 auto; }
+  kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.8em;
+    color: var(--color-fg);
+  }
+
+  /* ---------- Keypad ---------- */
+  .calc-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+  }
+  .calc-keypad.scientific-rows { margin-bottom: var(--space-2); }
+  .calc-key {
+    min-height: 44px; /* WCAG 2.5.5-aligned touch target floor, not a design-system spacing token */
+    min-width: 44px;
+    height: 54px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .calc-key:hover { background: var(--color-border); }
+  .calc-key:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .calc-key.op {
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border-color: var(--button-secondary-border);
+  }
+  .calc-key.op:hover { background: var(--color-surface); }
+  .calc-key.clear, .calc-key.backspace {
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border-color: var(--button-secondary-border);
+  }
+  .calc-key.equals {
+    background: var(--button-primary-background);
+    color: var(--button-primary-foreground);
+    border-color: var(--button-primary-background);
+  }
+  .calc-key.equals:hover { filter: brightness(1.08); }
+  .calc-key.fn { font-size: var(--font-size-md); }
+  .calc-key.span-2 { grid-column: span 2; }
+
+  /* ---------- Keyboard activity log (reviewer tooling, not shipped UI) ---------- */
+  .keylog-panel {
+    margin-top: var(--space-3);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+  .keylog-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-2);
+  }
+  .keylog-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); flex: 0 0 auto; }
+  .keylog-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: var(--font-size-sm);
+    max-height: 132px;
+    overflow-y: auto;
+  }
+  .keylog-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-1) 0;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-fg);
+  }
+  .keylog-list li:last-child { border-bottom: none; }
+  .keylog-list li.ignored { color: var(--color-fg-muted); }
+  .keylog-empty { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Demo-only preset affordances ---------- */
+  .demo-note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* ---------- Reference screen ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  .matrix-table th { color: var(--color-fg-muted); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-display-card {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .mini-display-card p.caption {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-2) 0 0 0;
+  }
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .pending-callout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: var(--space-1) solid var(--color-fg-muted);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .pending-callout-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .pending-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-fg-muted);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. Matches the "Expense Tracker" nav already
+     established for this product's earlier calculator prototype (TEST-M1-STORY-183): the
+     on-screen keypad launcher next to Amount on "Log a new expense" is the same entry point,
+     now with physical-keyboard entry layered on top as an alternative input method.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decision worth flagging: Escape is mapped to "clear expression" (AC4), matching
+     physical-calculator convention (Esc = C). This intentionally overrides the generic
+     "Escape closes the dialog" modal convention used elsewhere in this product — closing the
+     calculator now requires the explicit × button, "Cancel", or a backdrop click. This keeps
+     Escape consistent with every other on-screen clear action once the calculator is focused. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-185</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Log a New Expense — Keyboard Entry (interactive)
+         Notes:
+           - Click "Open calculator" to launch the modal, same entry point as the existing
+             on-screen keypad story. Once open, every key you tap AND every key you type on
+             your physical keyboard writes into the same expression — try clicking "1", then
+             typing "+2", then pressing Enter (AC6).
+           - Basic / Scientific tabs switch the on-screen keypad; keyboard mapping works
+             identically in both (AC1, AC2). The current expression carries over between tabs.
+           - Digits 0–9 and "." append to the expression (AC1). Operator keys + − * / append an
+             operator, matching the on-screen op buttons ("*" shows as ×, "/" shows as ÷) (AC2).
+             In the Scientific tab only, "(" ")" and "^" are also mapped, since those are the
+             keys with an on-screen equivalent there.
+           - Enter evaluates, exactly like tapping "=" (AC3). Escape clears the expression,
+             exactly like tapping "C" (AC4) — see the nav comment above for why Escape clears
+             instead of closing this dialog. Backspace removes exactly one character from the
+             end of the expression, exactly like tapping the new "⌫" key (AC5); with an empty
+             expression, Backspace is a no-op (AC7).
+           - Letter keys (a–z) have no on-screen equivalent in either layout, so they're never
+             mapped: pressing one leaves the expression untouched and changes nothing on
+             screen — no flash, no shake, no sound (AC8, AC9). This also covers AC10: typing
+             "s", "i", "n" to attempt a function name does nothing, even in the Scientific tab —
+             only the dedicated "sin(" button inserts that token (see the pending-decision note
+             on screen 2).
+           - The dashed "Keyboard activity log" panel is reviewer tooling only — it is not part
+             of the shipped calculator — added so you can confirm exactly which keys were
+             mapped vs. silently ignored while you type, without having to guess.
+           - "Preset" buttons seed a starting expression so you can jump straight to testing
+             Enter / Escape / Backspace without re-typing a full expression by hand.
+    -->
+    <div class="screen" data-name="Log a New Expense">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Log a new expense</h1>
+          <p>Need to add up a few receipts first? Use the calculator next to Amount — type on your keyboard or tap the keys.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Expense details</h3>
+          <form id="expense-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-category">Category</label>
+              <select class="input" id="field-category">
+                <option value="">Select a category</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Supplies</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="field-date">Date</label>
+              <input class="input" id="field-date" type="date" value="2026-10-06" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <div class="amount-input-inner">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="amount-hint" />
+                </div>
+                <button type="button" class="calc-launch-btn" id="open-calculator" aria-haspopup="dialog" aria-controls="calculator-modal">
+                  <span aria-hidden="true">🧮</span> Open calculator
+                </button>
+              </div>
+              <p class="field-hint" id="amount-hint">Opens the calculator — type on your keyboard or tap the on-screen keys, in Basic or Scientific mode.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-description">Description</label>
+              <textarea class="input" id="field-description" rows="2" placeholder="e.g. Flight to Denver for client kickoff"></textarea>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <button type="submit" class="btn btn-primary">Save expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Calculator modal -->
+      <div class="modal-overlay" id="calculator-overlay" hidden></div>
+      <div class="modal-wrap" id="calculator-modal-wrap" hidden>
+        <div class="modal-panel" id="calculator-modal" role="dialog" aria-modal="true" aria-labelledby="calculator-title">
+          <div class="modal-header">
+            <div>
+              <h2 id="calculator-title">Calculator</h2>
+              <p>Tap keys or type on your keyboard — both build the same expression.</p>
+            </div>
+            <button type="button" class="icon-btn" id="calc-close" aria-label="Close calculator">&times;</button>
+          </div>
+
+          <div class="layout-tabs" role="tablist" aria-label="Calculator layout">
+            <button type="button" class="layout-tab" id="tab-basic" role="tab" aria-selected="true" aria-controls="scientific-keys">Basic</button>
+            <button type="button" class="layout-tab" id="tab-scientific" role="tab" aria-selected="false" aria-controls="scientific-keys">Scientific</button>
+          </div>
+
+          <div class="kbd-hint">
+            <span class="icon" aria-hidden="true">⌨️</span>
+            <span>Keyboard works too: digits &amp; <kbd>+</kbd> <kbd>−</kbd> <kbd>*</kbd> <kbd>/</kbd>, <kbd>Enter</kbd> for =, <kbd>Esc</kbd> to clear, <kbd>⌫</kbd> to delete the last character.</span>
+          </div>
+
+          <!-- State: calculator display (live) -->
+          <div class="calc-display" role="group" aria-label="Calculator display">
+            <div class="calc-expression" id="calc-expression" aria-hidden="true"></div>
+            <div class="calc-result-row" id="calc-result-row">
+              <span class="calc-result is-preview" id="calc-result"></span>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" id="calc-live-region"></div>
+
+          <!-- State: scientific function rows (only visible in Scientific tab) -->
+          <div class="calc-keypad scientific-rows" id="scientific-keys" role="group" aria-label="Scientific function keys" hidden>
+            <button type="button" class="calc-key fn" data-key="sin(">sin(</button>
+            <button type="button" class="calc-key fn" data-key="cos(">cos(</button>
+            <button type="button" class="calc-key fn" data-key="tan(">tan(</button>
+            <button type="button" class="calc-key op" data-key="(" aria-label="Open parenthesis">(</button>
+
+            <button type="button" class="calc-key fn" data-key="log(">log(</button>
+            <button type="button" class="calc-key fn" data-key="ln(">ln(</button>
+            <button type="button" class="calc-key fn" data-key="√(" aria-label="Square root">√(</button>
+            <button type="button" class="calc-key op" data-key=")" aria-label="Close parenthesis">)</button>
+
+            <button type="button" class="calc-key fn" data-key="^2" aria-label="Square">x²</button>
+            <button type="button" class="calc-key fn op" data-key="^" aria-label="Power">^</button>
+            <button type="button" class="calc-key fn" data-key="π" aria-label="Pi">π</button>
+            <button type="button" class="calc-key fn" data-key="e" aria-label="Euler's number">e</button>
+          </div>
+
+          <div class="calc-keypad" role="group" aria-label="Calculator keys">
+            <button type="button" class="calc-key clear span-2" data-key="clear">C</button>
+            <button type="button" class="calc-key backspace" data-key="backspace" aria-label="Delete last character">⌫</button>
+            <button type="button" class="calc-key op" data-key="÷" aria-label="Divide">÷</button>
+
+            <button type="button" class="calc-key" data-key="7">7</button>
+            <button type="button" class="calc-key" data-key="8">8</button>
+            <button type="button" class="calc-key" data-key="9">9</button>
+            <button type="button" class="calc-key op" data-key="×" aria-label="Multiply">×</button>
+
+            <button type="button" class="calc-key" data-key="4">4</button>
+            <button type="button" class="calc-key" data-key="5">5</button>
+            <button type="button" class="calc-key" data-key="6">6</button>
+            <button type="button" class="calc-key op" data-key="-" aria-label="Subtract">−</button>
+
+            <button type="button" class="calc-key" data-key="1">1</button>
+            <button type="button" class="calc-key" data-key="2">2</button>
+            <button type="button" class="calc-key" data-key="3">3</button>
+            <button type="button" class="calc-key op" data-key="+" aria-label="Add">+</button>
+
+            <button type="button" class="calc-key span-2" data-key="0">0</button>
+            <button type="button" class="calc-key" data-key="." aria-label="Decimal point">.</button>
+            <button type="button" class="calc-key equals" data-key="equals" aria-label="Equals">=</button>
+          </div>
+
+          <div class="keylog-panel">
+            <div class="keylog-title"><span class="dot" aria-hidden="true"></span> Keyboard activity log (reviewer tooling — not part of the shipped calculator)</div>
+            <p class="keylog-empty" id="keylog-empty">Click into this modal and press some keys — mapped keys show what they did; everything else shows "ignored".</p>
+            <ul class="keylog-list" id="keylog-list"></ul>
+          </div>
+
+          <div class="demo-note">
+            <div class="demo-note-title"><span class="demo-note-icon" aria-hidden="true">&#9888;</span> Presets (demo only)</div>
+            <p style="margin:0;">Not real keypad actions — seed an expression so you can jump straight to testing Enter, Escape, and Backspace.</p>
+            <div class="demo-note-actions">
+              <button type="button" id="preset-basic">Preset: 12+8</button>
+              <button type="button" id="preset-scientific">Preset: sin(0.5 (Scientific)</button>
+              <button type="button" id="preset-clear-check">Preset: clear (empty, try Backspace)</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="calc-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary" id="calc-use" disabled>Use this amount</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="save-toast" hidden></div>
+    </div>
+
+    <!-- Screen: Reference — Keyboard Mapping & Edge Cases (non-interactive)
+         Notes:
+           - A static keymap for sign-off without needing to type through screen 1.
+           - Includes the still-open team decision called out in the work item scope: whether
+             typing full scientific function names (e.g. "sin(") should work as a shortcut.
+             This design's default is "no" — letters stay unmapped in both layouts — annotated
+             with a Pending badge so it's clearly flagged rather than silently decided.
+    -->
+    <div class="screen" data-name="Reference — Keyboard Mapping">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Calculator — keyboard mapping reference</h1>
+          <p>Non-interactive. Use screen 1 to try these keys on the real calculator.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Key → action map</h3>
+          <table class="matrix-table">
+            <thead>
+              <tr><th>Key</th><th>Action</th><th>On-screen equivalent</th><th>Layout</th><th>AC</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><kbd>0</kbd>–<kbd>9</kbd></td><td>Append digit</td><td>Digit buttons</td><td>Basic &amp; Scientific</td><td>AC1</td></tr>
+              <tr><td><kbd>.</kbd></td><td>Append decimal point</td><td>"." button</td><td>Basic &amp; Scientific</td><td>AC1</td></tr>
+              <tr><td><kbd>+</kbd> <kbd>-</kbd> <kbd>*</kbd> <kbd>/</kbd></td><td>Append operator (* → ×, / → ÷)</td><td>+ − × ÷ buttons</td><td>Basic &amp; Scientific</td><td>AC2</td></tr>
+              <tr><td><kbd>(</kbd> <kbd>)</kbd></td><td>Append parenthesis</td><td>"(" ")" buttons</td><td>Scientific only — no on-screen equivalent in Basic, so unmapped there</td><td>AC2</td></tr>
+              <tr><td><kbd>^</kbd></td><td>Append power operator</td><td>"^" button</td><td>Scientific only</td><td>AC2</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Evaluate expression</td><td>"=" button</td><td>Basic &amp; Scientific</td><td>AC3</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Clear the expression</td><td>"C" button</td><td>Basic &amp; Scientific</td><td>AC4</td></tr>
+              <tr><td><kbd>⌫ Backspace</kbd></td><td>Remove the last character</td><td>"⌫" button</td><td>Basic &amp; Scientific</td><td>AC5, AC7</td></tr>
+              <tr><td>Letters (<kbd>a</kbd>–<kbd>z</kbd>)</td><td>No action — expression unchanged, no feedback</td><td>None — no letter-producing button exists</td><td>Basic &amp; Scientific</td><td>AC8, AC9, AC10</td></tr>
+              <tr><td>Everything else (Tab, Shift, F-keys, punctuation, …)</td><td>No action; browser/OS default behaviour (e.g. Tab still moves focus) is left alone</td><td>n/a</td><td>Basic &amp; Scientific</td><td>AC8, AC9</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Continuous entry: click + type combine</h3>
+            <span class="ac-tag">AC6</span>
+            <div class="mini-display-card">
+              <p class="caption" style="margin:0 0 var(--space-2) 0;">Click "1" → click "+" → type "2" on the keyboard → press Enter.</p>
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression">1+2</div>
+                <div class="calc-result-row"><span class="calc-result">3</span></div>
+              </div>
+              <p class="caption">One continuous expression regardless of which input method added each character.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Backspace on an empty expression</h3>
+            <span class="ac-tag">AC7</span>
+            <div class="mini-display-card">
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression"></div>
+                <div class="calc-result-row"><span class="calc-result is-preview"></span></div>
+              </div>
+              <p class="caption">Pressing Backspace here does nothing — the display stays exactly as it was.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Unmapped letter key — Basic layout</h3>
+            <span class="ac-tag">AC8, AC9</span>
+            <div class="mini-display-card">
+              <p class="caption" style="margin:0 0 var(--space-2) 0;">Expression before pressing "q":</p>
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression">42</div>
+                <div class="calc-result-row"><span class="calc-result is-preview">42</span></div>
+              </div>
+              <p class="caption">After pressing "q": identical — no change, no flash, no sound.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Attempted function name — Scientific layout</h3>
+            <span class="ac-tag">AC10</span>
+            <div class="mini-display-card">
+              <p class="caption" style="margin:0 0 var(--space-2) 0;">Expression before typing "s", "i", "n":</p>
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression">0.5+</div>
+                <div class="calc-result-row"><span class="calc-result is-preview"></span></div>
+              </div>
+              <p class="caption">After typing "s", "i", "n": still "0.5+" — unchanged. Only tapping the on-screen "sin(" button inserts that token.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pending-callout" style="margin-top: var(--space-4);">
+          <div class="pending-callout-title"><span class="pending-badge">Pending team confirmation</span></div>
+          <p style="margin:0;">
+            The work item leaves open whether typing a full scientific function name on the
+            keyboard (e.g. literally typing "s", "i", "n", "(") should act as a shortcut for
+            the on-screen "sin(" button. This design's default is <strong>no</strong>: letter
+            keys are never mapped in either layout (AC8–AC10), so typing "sin(" has no effect
+            and the function must be inserted by tapping its button.
+          </p>
+          <p style="margin:0;">
+            If the team confirms typed function names should work, the only change needed here
+            is adding a small keyword-matching layer in the Scientific layout's keydown handler
+            (watching for "sin(", "cos(", "log(", etc. as they're typed) — the key map, display,
+            and error states in this design would not need to change.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Calculator evaluation (simulated Calculation Engine, extended for scientific) ----------
+  const SIMPLE_OPS = ['+', '-', '×', '÷'];
+  const FUNCS = { sin: Math.sin, cos: Math.cos, tan: Math.tan, log: Math.log10, ln: Math.log, sqrt: Math.sqrt };
+  const OVERFLOW_LIMIT = 1e15;
+
+  function tokenize(expr) {
+    const tokens = [];
+    const pattern = /\s*(?:(\d+\.?\d*|\.\d+)|(π)|([A-Za-z]+)|([+\-×÷^()]))/y;
+    let pos = 0;
+    while (pos < expr.length) {
+      if (/^\s*$/.test(expr.slice(pos))) break;
+      pattern.lastIndex = pos;
+      const m = pattern.exec(expr);
+      if (!m) throw { type: 'syntax' };
+      if (m[1] !== undefined) tokens.push({ type: 'NUMBER', value: parseFloat(m[1]) });
+      else if (m[2] !== undefined) tokens.push({ type: 'NUMBER', value: Math.PI });
+      else if (m[3] !== undefined) {
+        const name = m[3].toLowerCase();
+        if (FUNCS[name]) tokens.push({ type: 'FUNC', value: name });
+        else if (name === 'e') tokens.push({ type: 'NUMBER', value: Math.E });
+        else throw { type: 'syntax' };
+      } else tokens.push({ type: 'OP', value: m[4] });
+      pos = pattern.lastIndex;
+    }
+    return tokens;
+  }
+
+  function peekOp(state, ops) {
+    const t = state.tokens[state.pos];
+    return t && t.type === 'OP' && ops.includes(t.value) ? t.value : null;
+  }
+
+  function parseExpression(state) {
+    let left = parseTerm(state);
+    let op;
+    while ((op = peekOp(state, ['+', '-']))) {
+      state.pos++;
+      const right = parseTerm(state);
+      left = op === '+' ? left + right : left - right;
+    }
+    return left;
+  }
+
+  function parseTerm(state) {
+    let left = parsePower(state);
+    let op;
+    while ((op = peekOp(state, ['×', '÷']))) {
+      state.pos++;
+      const right = parsePower(state);
+      if (op === '÷') {
+        if (right === 0) throw { type: 'divide-zero' };
+        left /= right;
+      } else {
+        left *= right;
+      }
+      if (!Number.isFinite(left)) throw { type: 'overflow' };
+    }
+    return left;
+  }
+
+  function parsePower(state) {
+    const base = parsePrimary(state);
+    if (peekOp(state, ['^'])) {
+      state.pos++;
+      const exp = parsePower(state);
+      const val = Math.pow(base, exp);
+      if (!Number.isFinite(val)) throw { type: 'overflow' };
+      return val;
+    }
+    return base;
+  }
+
+  function parsePrimary(state) {
+    const t = state.tokens[state.pos];
+    if (!t) throw { type: 'incomplete' };
+    state.pos++;
+    if (t.type === 'NUMBER') return t.value;
+    if (t.type === 'FUNC') {
+      if (!peekOp(state, ['('])) throw { type: 'syntax' };
+      state.pos++;
+      const arg = parseExpression(state);
+      if (peekOp(state, [')'])) {
+        state.pos++;
+      } else if (!state.tokens[state.pos]) {
+        throw { type: 'incomplete' };
+      } else {
+        throw { type: 'syntax' };
+      }
+      const result = FUNCS[t.value](arg);
+      if (Number.isNaN(result) || !Number.isFinite(result)) throw { type: 'domain' };
+      return result;
+    }
+    if (t.type === 'OP' && t.value === '(') {
+      const value = parseExpression(state);
+      if (peekOp(state, [')'])) {
+        state.pos++;
+      } else if (!state.tokens[state.pos]) {
+        throw { type: 'incomplete' };
+      } else {
+        throw { type: 'syntax' };
+      }
+      return value;
+    }
+    throw { type: 'syntax' };
+  }
+
+  function evaluate(expr) {
+    const tokens = tokenize(expr);
+    if (tokens.length === 0) throw { type: 'incomplete' };
+    const state = { tokens, pos: 0 };
+    const result = parseExpression(state);
+    if (state.pos < tokens.length) throw { type: 'syntax' };
+    if (!Number.isFinite(result) || Math.abs(result) >= OVERFLOW_LIMIT) throw { type: 'overflow' };
+    return result;
+  }
+
+  // Lenient wrapper for the live preview: an expression that's merely incomplete
+  // (trailing operator, open function call, unmatched "(") shows blank, not an error.
+  function previewEvaluate(expr) {
+    if (!expr) return null;
+    try {
+      return evaluate(expr);
+    } catch (e) {
+      if (e.type === 'incomplete') return null;
+      throw e;
+    }
+  }
+
+  function formatNumber(n) {
+    const rounded = Math.round(n * 1e9) / 1e9;
+    return rounded.toString();
+  }
+
+  const ERROR_MESSAGES = {
+    'divide-zero': 'Divide by Zero',
+    'overflow': 'Overflow',
+    'syntax': 'Syntax Error',
+    'incomplete': 'Syntax Error',
+    'domain': 'Domain Error'
+  };
+
+  // ---------- Calculator UI wiring ----------
+  const expressionEl = document.getElementById('calc-expression');
+  const resultRowEl = document.getElementById('calc-result-row');
+  const liveRegionEl = document.getElementById('calc-live-region');
+  const scientificKeysEl = document.getElementById('scientific-keys');
+  const tabBasic = document.getElementById('tab-basic');
+  const tabScientific = document.getElementById('tab-scientific');
+
+  let calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+  let currentLayout = 'basic';
+
+  const EXPR_SIZES = ['var(--calc-display-expr-size-max)', 'var(--calc-display-expr-size-mid)', 'var(--font-size-md)'];
+
+  function fitExpressionText() {
+    let i = 0;
+    expressionEl.style.fontSize = EXPR_SIZES[0];
+    while (expressionEl.scrollWidth > expressionEl.clientWidth && i < EXPR_SIZES.length - 1) {
+      i += 1;
+      expressionEl.style.fontSize = EXPR_SIZES[i];
+    }
+  }
+
+  function renderCalculator(announcement) {
+    expressionEl.textContent = calcState.expression;
+    fitExpressionText();
+
+    let errorType = null;
+    let displayValue = null;
+
+    if (calcState.forcedSyntaxError) {
+      errorType = 'syntax';
+    } else if (calcState.finalized) {
+      displayValue = calcState.finalizedValue;
+    } else {
+      try {
+        displayValue = previewEvaluate(calcState.expression);
+      } catch (e) {
+        errorType = e.type;
+      }
+    }
+
+    if (errorType) {
+      resultRowEl.innerHTML = '<span class="calc-error"><span class="calc-error-icon" aria-hidden="true">⚠</span>' + ERROR_MESSAGES[errorType] + '</span>';
+      useBtnEl.disabled = true;
+    } else if (displayValue === null) {
+      resultRowEl.innerHTML = '<span class="calc-result is-preview"></span>';
+      useBtnEl.disabled = true;
+    } else {
+      const text = formatNumber(displayValue);
+      const cls = calcState.finalized ? 'calc-result' : 'calc-result is-preview';
+      resultRowEl.innerHTML = '<span class="' + cls + '">' + text + '</span>';
+      useBtnEl.disabled = false;
+    }
+
+    if (announcement) {
+      liveRegionEl.textContent = announcement;
+    } else if (errorType) {
+      liveRegionEl.textContent = 'Error: ' + ERROR_MESSAGES[errorType];
+    } else if (calcState.expression === '') {
+      liveRegionEl.textContent = 'Display cleared';
+    } else if (calcState.finalized) {
+      liveRegionEl.textContent = 'Result ' + formatNumber(calcState.finalizedValue) + ', finalized';
+    } else {
+      liveRegionEl.textContent = 'Expression ' + calcState.expression + (displayValue !== null ? ', result ' + formatNumber(displayValue) : '');
+    }
+  }
+
+  function pressKey(key) {
+    if (key === 'clear') {
+      calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+      renderCalculator('Display cleared');
+      return;
+    }
+
+    if (key === 'backspace') {
+      calcState.forcedSyntaxError = false;
+      if (calcState.finalized) {
+        calcState.expression = formatNumber(calcState.finalizedValue);
+        calcState.finalized = false;
+      }
+      if (calcState.expression.length > 0) {
+        calcState.expression = calcState.expression.slice(0, -1);
+      }
+      renderCalculator();
+      return;
+    }
+
+    if (key === 'equals') {
+      calcState.forcedSyntaxError = false;
+      try {
+        const value = evaluate(calcState.expression);
+        calcState.finalized = true;
+        calcState.finalizedValue = value;
+        renderCalculator();
+      } catch (e) {
+        calcState.finalized = false;
+        renderCalculator('Error: ' + ERROR_MESSAGES[e.type]);
+      }
+      return;
+    }
+
+    calcState.forcedSyntaxError = false;
+
+    if (SIMPLE_OPS.includes(key) || key === '^') {
+      if (calcState.finalized) {
+        calcState.expression = formatNumber(calcState.finalizedValue) + key;
+        calcState.finalized = false;
+      } else if (!calcState.expression) {
+        return; // no sign-toggle key, so a leading operator has no left operand yet
+      } else if (SIMPLE_OPS.includes(calcState.expression[calcState.expression.length - 1])) {
+        calcState.expression = calcState.expression.slice(0, -1) + key; // replace, don't stack operators
+      } else {
+        calcState.expression += key;
+      }
+    } else if (key === '.') {
+      if (calcState.finalized) {
+        calcState.expression = '0.';
+        calcState.finalized = false;
+      } else {
+        const boundary = Math.max(
+          calcState.expression.lastIndexOf('+'), calcState.expression.lastIndexOf('-'),
+          calcState.expression.lastIndexOf('×'), calcState.expression.lastIndexOf('÷'),
+          calcState.expression.lastIndexOf('^'), calcState.expression.lastIndexOf('(')
+        );
+        const segment = calcState.expression.slice(boundary + 1);
+        if (segment.includes('.')) return; // one decimal point per number segment
+        calcState.expression += (segment === '' ? '0.' : '.');
+      }
+    } else {
+      // digit, function token ("sin(", "√("), constant (π, e), parenthesis, or "^2"
+      if (calcState.finalized) {
+        calcState.expression = /^[0-9]$/.test(key) ? key : formatNumber(calcState.finalizedValue) + key;
+        calcState.finalized = false;
+      } else {
+        calcState.expression += key;
+      }
+    }
+
+    renderCalculator();
+  }
+
+  document.querySelectorAll('#calculator-modal .calc-key').forEach((btn) => {
+    btn.addEventListener('click', () => pressKey(btn.dataset.key));
+  });
+
+  // ---------- Layout toggle ----------
+  function setLayout(layout) {
+    currentLayout = layout;
+    const isScientific = layout === 'scientific';
+    scientificKeysEl.hidden = !isScientific;
+    tabBasic.setAttribute('aria-selected', String(!isScientific));
+    tabScientific.setAttribute('aria-selected', String(isScientific));
+  }
+  tabBasic.addEventListener('click', () => setLayout('basic'));
+  tabScientific.addEventListener('click', () => setLayout('scientific'));
+
+  // ---------- Keyboard entry (this story) ----------
+  const keylogListEl = document.getElementById('keylog-list');
+  const keylogEmptyEl = document.getElementById('keylog-empty');
+  const MAX_LOG_ENTRIES = 8;
+
+  function logKeyActivity(key, mapped, description) {
+    keylogEmptyEl.style.display = 'none';
+    const li = document.createElement('li');
+    if (!mapped) li.className = 'ignored';
+    const label = key === ' ' ? 'Space' : key;
+    li.innerHTML = '<span><kbd>' + label.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</kbd></span><span>' + description + '</span>';
+    keylogListEl.prepend(li);
+    while (keylogListEl.children.length > MAX_LOG_ENTRIES) {
+      keylogListEl.removeChild(keylogListEl.lastChild);
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (modalWrap.hidden) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return; // never hijack browser/OS shortcuts
+
+    const key = e.key;
+    let mapped = true;
+    let description = '';
+
+    if (/^[0-9]$/.test(key)) {
+      pressKey(key);
+      description = 'Appended digit (AC1)';
+    } else if (key === '.') {
+      pressKey('.');
+      description = 'Appended decimal point (AC1)';
+    } else if (key === '+') {
+      pressKey('+');
+      description = 'Appended "+" (AC2)';
+    } else if (key === '-') {
+      pressKey('-');
+      description = 'Appended "−" (AC2)';
+    } else if (key === '*') {
+      pressKey('×');
+      description = 'Appended "×" (AC2)';
+    } else if (key === '/') {
+      pressKey('÷');
+      description = 'Appended "÷" (AC2)';
+    } else if (key === 'Enter' || key === '=') {
+      pressKey('equals');
+      description = 'Evaluated expression (AC3)';
+    } else if (key === 'Escape') {
+      pressKey('clear');
+      description = 'Cleared expression (AC4)';
+    } else if (key === 'Backspace') {
+      pressKey('backspace');
+      description = 'Removed last character (AC5/AC7)';
+    } else if (currentLayout === 'scientific' && key === '(') {
+      pressKey('(');
+      description = 'Appended "(" (Scientific only, AC2)';
+    } else if (currentLayout === 'scientific' && key === ')') {
+      pressKey(')');
+      description = 'Appended ")" (Scientific only, AC2)';
+    } else if (currentLayout === 'scientific' && key === '^') {
+      pressKey('^');
+      description = 'Appended "^" (Scientific only, AC2)';
+    } else {
+      mapped = false;
+      const isLetter = /^[a-zA-Z]$/.test(key);
+      description = isLetter
+        ? 'Ignored — no on-screen letter action (AC8/AC9/AC10)'
+        : 'Ignored — not mapped (AC8/AC9)';
+    }
+
+    if (mapped) e.preventDefault();
+    logKeyActivity(key, mapped, description);
+  });
+
+  // ---------- Demo-only presets ----------
+  document.getElementById('preset-basic').addEventListener('click', () => {
+    setLayout('basic');
+    calcState = { expression: '12+8', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    renderCalculator();
+  });
+  document.getElementById('preset-scientific').addEventListener('click', () => {
+    setLayout('scientific');
+    calcState = { expression: 'sin(0.5', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    renderCalculator();
+  });
+  document.getElementById('preset-clear-check').addEventListener('click', () => {
+    calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    renderCalculator('Display cleared');
+  });
+
+  // ---------- Modal open/close ----------
+  const overlay = document.getElementById('calculator-overlay');
+  const modalWrap = document.getElementById('calculator-modal-wrap');
+  const openBtn = document.getElementById('open-calculator');
+  const closeBtn = document.getElementById('calc-close');
+  const cancelBtn = document.getElementById('calc-cancel');
+  const useBtnEl = document.getElementById('calc-use');
+  const amountField = document.getElementById('field-amount');
+
+  function openCalculator() {
+    calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    setLayout('basic');
+    keylogListEl.innerHTML = '';
+    keylogEmptyEl.style.display = '';
+    renderCalculator('Calculator opened');
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    closeBtn.focus();
+  }
+  function closeCalculator() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', openCalculator);
+  closeBtn.addEventListener('click', closeCalculator);
+  cancelBtn.addEventListener('click', closeCalculator);
+  overlay.addEventListener('click', closeCalculator);
+
+  useBtnEl.addEventListener('click', () => {
+    if (useBtnEl.disabled) return;
+    const original = useBtnEl.textContent;
+    useBtnEl.disabled = true;
+    useBtnEl.textContent = 'Applying…';
+    setTimeout(() => {
+      const value = calcState.finalized ? calcState.finalizedValue : previewEvaluate(calcState.expression);
+      amountField.value = formatNumber(value);
+      useBtnEl.textContent = original;
+      closeCalculator();
+    }, 260);
+  });
+
+  // ---------- Expense form (lightweight; the calculator is the focus of this story) ----------
+  const expenseForm = document.getElementById('expense-form');
+  const saveToast = document.getElementById('save-toast');
+  expenseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveToast.textContent = amountField.value ? '✓ Expense saved.' : '⚠ Enter an amount before saving.';
+    saveToast.hidden = false;
+    setTimeout(() => { saveToast.hidden = true; }, 2200);
+  });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (!modalWrap.hidden) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
