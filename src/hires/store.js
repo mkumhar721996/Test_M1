@@ -155,6 +155,9 @@ async function updateHire(id, changes) {
 async function deactivateHire(id) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { profileStatus: `Cannot deactivate — status is ${hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn'}. Rejected and Withdrawn are final outcomes.` });
+  }
 
   if (hire.run && hire.run.status === 'active') {
     await engineClient.cancelRun(hire.run.id);

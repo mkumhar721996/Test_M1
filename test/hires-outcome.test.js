@@ -52,3 +52,14 @@ test.each(['reject', 'withdraw'])('AC5: a non-HR/Manager role calling %s gets 40
   expect(res.status).toBe(403);
   expect(getHire(hire.id).profileStatus).toBe('active');
 });
+
+test.each(['rejected', 'withdrawn'])('%s hire cannot be laundered to active via deactivate then reactivate', async (outcome) => {
+  const hire = await mk({ hireStage: 'applied' });
+  await (outcome === 'rejected' ? rejectHire(hire.id) : withdrawHire(hire.id));
+  const res = await request(app).post(`/hires/${hire.id}/deactivate`).set('x-staff-role', 'hr').send({});
+  expect(res.status).toBe(400);
+  expect(res.body).toMatchObject({ error: 'validation_error', fields: { profileStatus: expect.stringContaining('Cannot deactivate') } });
+  const re = await request(app).post(`/hires/${hire.id}/reactivate`).set('x-staff-role', 'hr').send({});
+  expect(re.status).toBe(400);
+  expect(getHire(hire.id).profileStatus).toBe(outcome);
+});

@@ -63,6 +63,7 @@ router.post('/:id/deactivate', enforceOnboardingRole, async (req, res, next) => 
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
     next(err);
   }
 });
@@ -75,6 +76,7 @@ router.post('/:id/reactivate', enforceOnboardingRole, async (req, res, next) => 
     }
     res.status(200).json(hire);
   } catch (err) {
+    if (err instanceof HireValidationError) return res.status(400).json({ error: 'validation_error', fields: err.fields });
     next(err);
   }
 });
