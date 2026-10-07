@@ -92,6 +92,18 @@ describe('Order tracking cancellation UI', () => {
     spy.mockRestore();
   });
 
+  test('createDefaultApi sends the customer id header on every request', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({}) });
+    const { createDefaultApi } = require('../public/js/orders');
+    const api = createDefaultApi();
+    await api.list();
+    await api.cancel('ORD-1');
+    global.fetch.mock.calls.forEach(([, opts]) => {
+      expect(opts.headers['x-customer-id']).toBeTruthy();
+    });
+    delete global.fetch;
+  });
+
   test('createDefaultApi().cancel rejects on a non-OK response', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) });
     const { createDefaultApi } = require('../public/js/orders');

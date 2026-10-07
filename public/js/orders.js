@@ -218,10 +218,18 @@ function initOrdersApp(doc, initialOrders, api) {
   renderList();
 }
 
+// No sign-in exists yet; the demo customer identity is sent the same way the
+// other pages send x-staff-role.
+const DEMO_CUSTOMER_ID = 'cust-demo';
+
 function createDefaultApi() {
+  const headers = { 'x-customer-id': DEMO_CUSTOMER_ID };
   return {
-    list: () => fetch('/orders').then((r) => r.json()),
-    cancel: (id) => fetch(`/orders/${id}/cancel`, { method: 'POST' }).then((r) => {
+    list: () => fetch('/orders', { headers }).then((r) => {
+      if (!r.ok) throw new Error(`List request failed with status ${r.status}`);
+      return r.json();
+    }),
+    cancel: (id) => fetch(`/orders/${id}/cancel`, { method: 'POST', headers }).then((r) => {
       if (!r.ok) throw new Error(`Cancel request failed with status ${r.status}`);
       return r.json();
     }),

@@ -23,4 +23,14 @@ describe('orders store cancellation', () => {
   test('returns undefined for an unknown order', () => {
     expect(requestCancellation('nope')).toBeUndefined();
   });
+
+  test('scopes lookup and cancellation to the owning customer', () => {
+    const { getOrder, listOrders } = require('../src/orders/store');
+    const order = createOrder({ customerId: 'cust-a', restaurant: 'R', items: [], total: '$1.00', status: 'placed' });
+    expect(getOrder(order.id, 'cust-b')).toBeUndefined();
+    expect(getOrder(order.id, 'cust-a').id).toBe(order.id);
+    expect(listOrders('cust-b').some((o) => o.id === order.id)).toBe(false);
+    expect(requestCancellation(order.id, 'cust-b')).toBeUndefined();
+    expect(getOrder(order.id, 'cust-a').status).toBe('placed');
+  });
 });
