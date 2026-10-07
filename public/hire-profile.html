@@ -192,6 +192,29 @@
     </div>
   </div>
 
+  <!-- Reject / Withdraw outcome modal (AC1, AC6) -->
+  <div class="modal-overlay" id="outcome-overlay" hidden></div>
+  <div class="modal-wrap" id="outcome-modal" role="dialog" aria-modal="true" aria-labelledby="outcome-modal-title" hidden>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div><h2 id="outcome-modal-title">Mark candidate as rejected</h2></div>
+        <button class="icon-btn" id="outcome-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label class="label" for="outcome-reason">Reason (optional, visible to the hiring team)</label>
+        <textarea class="input" id="outcome-reason" rows="3" placeholder="e.g. Not enough backend experience for this role"></textarea>
+      </div>
+      <div class="consequence-note">
+        <span aria-hidden="true">ℹ</span>
+        <span>This closes the candidate's hire record. Rejected and Withdrawn are final outcomes — the record won't be eligible to advance to another stage or be reactivated into the live pipeline.</span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="outcome-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="outcome-confirm-btn">Mark as rejected</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden>
     <span aria-hidden="true">✓</span>
     <span id="toast-message"></span>

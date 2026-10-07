@@ -60,6 +60,9 @@ function assertValidStageTransition(hire, changes) {
   if (hire.profileStatus === 'deactivated') {
     throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage on a deactivated hire.' });
   }
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { hireStage: `Cannot change stage — status is ${hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn'}. This record is closed and cannot advance to another stage.` });
+  }
 
   const fromIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
   const toIdx = CANDIDATE_STAGES.indexOf(changes.hireStage);
@@ -165,6 +168,9 @@ async function deactivateHire(id) {
 async function reactivateHire(id) {
   const hire = hires.get(id);
   if (!hire) return undefined;
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { profileStatus: `Cannot reactivate — status is ${hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn'}. Rejected and Withdrawn are final outcomes and aren't eligible for reactivation.` });
+  }
   if (hire.profileStatus !== 'deactivated' || (hire.run && hire.run.status === 'active')) return hire;
 
   const run = await engineClient.triggerRun({
@@ -177,6 +183,32 @@ async function reactivateHire(id) {
   return hire;
 }
 
+function assertEligibleForOutcome(hire) {
+  if (hire.profileStatus === 'deactivated') {
+    throw new HireValidationError('validation_error', { profileStatus: 'Cannot mark as Rejected or Withdrawn — candidate is deactivated. Reactivate the candidate first.' });
+  }
+  if (hire.profileStatus === 'rejected' || hire.profileStatus === 'withdrawn') {
+    throw new HireValidationError('validation_error', { profileStatus: `Already closed — status is ${hire.profileStatus === 'rejected' ? 'Rejected' : 'Withdrawn'}.` });
+  }
+  const stageIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
+  const offerIdx = CANDIDATE_STAGES.indexOf('offer_extended');
+  if (stageIdx === -1 || stageIdx >= offerIdx) {
+    throw new HireValidationError('validation_error', { profileStatus: 'Cannot mark as Rejected or Withdrawn — candidate is at or past the Offer stage.' });
+  }
+}
+
+async function markOutcome(id, outcome, reason) {
+  const hire = hires.get(id);
+  if (!hire) return undefined;
+  assertEligibleForOutcome(hire);
+  hire.profileStatus = outcome;
+  hire.outcomeReason = reason ? String(reason).trim() : '';
+  return hire;
+}
+
+async function rejectHire(id, reason) { return markOutcome(id, 'rejected', reason); }
+async function withdrawHire(id, reason) { return markOutcome(id, 'withdrawn', reason); }
+
 function appendOnboardingAuditEntry(hireId, actor, action, { completed = false } = {}) {
   const hire = hires.get(hireId);
   if (!hire) return undefined;
@@ -186,4 +218,4 @@ function appendOnboardingAuditEntry(hireId, actor, action, { completed = false }
   return hire;
 }
 
-module.exports = { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, appendOnboardingAuditEntry };
+module.exports = { HireValidationError, createHire, getHire, listHires, updateHire, deactivateHire, reactivateHire, rejectHire, withdrawHire, appendOnboardingAuditEntry };

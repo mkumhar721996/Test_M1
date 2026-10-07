@@ -146,3 +146,62 @@ describe('createDefaultApi', () => {
     }));
   });
 });
+
+describe('Hire Profile — reject / withdraw outcome', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    document.documentElement.innerHTML = fs.readFileSync(HTML_PATH, 'utf8');
+  });
+  const flush = async () => { for (let i = 0; i < 4; i += 1) await Promise.resolve(); };
+  const preOffer = () => ({ ...fixtureHire(), hireStage: 'interview', run: null });
+
+  test('AC1: mark-as-rejected dialog updates the chip and removes reject/withdraw buttons', async () => {
+    const api = { reject: jest.fn((reason) => Promise.resolve({ ...preOffer(), profileStatus: 'rejected', outcomeReason: reason })) };
+    const { initHireProfileApp } = require('../public/js/hire-profile');
+    initHireProfileApp(document, preOffer(), api);
+
+    document.getElementById('reject-btn').click();
+    document.getElementById('outcome-reason').value = ' Not a fit ';
+    document.getElementById('outcome-confirm-btn').click();
+    await flush();
+
+    expect(api.reject).toHaveBeenCalledWith('Not a fit');
+    expect(document.getElementById('profile-status-chip').className).toContain('profile-status-chip--rejected');
+    expect(document.getElementById('reject-btn')).toBeNull();
+    expect(document.getElementById('withdraw-btn')).toBeNull();
+  });
+
+  test.each(['rejected', 'withdrawn'])('AC2: reactivating a %s hire surfaces the server message', async (status) => {
+    const message = 'Cannot reactivate — final outcome.';
+    const api = { reactivate: jest.fn(() => Promise.reject({ status: 400, fields: { profileStatus: message } })) };
+    const { initHireProfileApp } = require('../public/js/hire-profile');
+    initHireProfileApp(document, { ...preOffer(), profileStatus: status }, api);
+
+    document.getElementById('reactivate-btn').click();
+    await flush();
+
+    expect(document.getElementById('toast-message').textContent).toBe(message);
+    expect(document.getElementById('profile-status-chip').className).toContain(`--${status}`);
+  });
+
+  test.each([
+    ['active', 'Active profile'],
+    ['deactivated', 'Deactivated'],
+    ['rejected', 'Rejected'],
+    ['withdrawn', 'Withdrawn'],
+  ])('AC6: %s status renders its own distinguishable chip', (status, label) => {
+    const hire = { ...fixtureHire(), profileStatus: status, run: null };
+    const { initHireProfileApp } = require('../public/js/hire-profile');
+    initHireProfileApp(document, hire, {});
+    const chip = document.getElementById('profile-status-chip');
+    expect(chip.className).toContain(`profile-status-chip--${status}`);
+    expect(chip.textContent).toContain(label);
+  });
+
+  test('reject/withdraw are not offered once past the offer stage', () => {
+    const { initHireProfileApp } = require('../public/js/hire-profile');
+    initHireProfileApp(document, fixtureHire(), {});
+    expect(document.getElementById('reject-btn')).toBeNull();
+    expect(document.getElementById('withdraw-btn')).toBeNull();
+  });
+});

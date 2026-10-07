@@ -12,6 +12,18 @@ const STAGE_LABELS = {
   offer_accepted: 'Offer accepted',
 };
 
+const STATUS_CHIP = {
+  active: { icon: '●', label: 'Active profile' },
+  deactivated: { icon: '○', label: 'Deactivated' },
+  rejected: { icon: '✕', label: 'Rejected' },
+  withdrawn: { icon: '↩', label: 'Withdrawn' },
+};
+
+function isPreOfferStage(stage) {
+  const idx = CANDIDATE_STAGES.indexOf(stage);
+  return idx !== -1 && idx < CANDIDATE_STAGES.indexOf('offer_extended');
+}
+
 function stageSelectOptions(currentStage) {
   const idx = CANDIDATE_STAGES.indexOf(currentStage);
   if (idx === -1) return [currentStage, ...CANDIDATE_STAGES];
@@ -101,10 +113,9 @@ function initHireProfileApp(doc, initialHire, api) {
   function renderProfile() {
     if (headingEl) headingEl.textContent = hire.name;
 
-    profileStatusChip.className = 'profile-status-chip' + (hire.profileStatus === 'active' ? ' profile-status-chip--active' : '');
-    profileStatusChip.innerHTML = hire.profileStatus === 'active'
-      ? '<span aria-hidden="true">●</span> Active profile'
-      : '<span aria-hidden="true">○</span> Deactivated';
+    const chip = STATUS_CHIP[hire.profileStatus] || STATUS_CHIP.deactivated;
+    profileStatusChip.className = 'profile-status-chip profile-status-chip--' + hire.profileStatus;
+    profileStatusChip.innerHTML = `<span aria-hidden="true">${chip.icon}</span> ${chip.label}`;
 
     const stageLabel = STAGE_LABELS[hire.hireStage] || hire.hireStage;
     const canEditStage = hire.hireStage !== 'offer_accepted' && hire.profileStatus === 'active';
@@ -179,14 +190,29 @@ function initHireProfileApp(doc, initialHire, api) {
 
   function renderTopActions() {
     const locked = pendingBanner.hidden === false;
-    if (hire.profileStatus === 'active') {
-      topActions.innerHTML = `<button class="btn btn-secondary" type="button" id="deactivate-btn" ${locked ? 'disabled' : ''}>Deactivate profile</button>`;
+    const dis = locked ? 'disabled' : '';
+    const status = hire.profileStatus;
+    if (status === 'active') {
+      let html = `<button class="btn btn-secondary" type="button" id="deactivate-btn" ${dis}>Deactivate profile</button>`;
+      if (isPreOfferStage(hire.hireStage)) {
+        html += `<button class="btn btn-secondary" type="button" id="reject-btn" ${dis}>Mark as rejected</button>`;
+        html += `<button class="btn btn-secondary" type="button" id="withdraw-btn" ${dis}>Mark as withdrawn</button>`;
+      }
+      topActions.innerHTML = html;
       const btn = doc.getElementById('deactivate-btn');
       if (btn) btn.addEventListener('click', openDeactivateModal);
-    } else {
-      topActions.innerHTML = `<button class="btn btn-primary" type="button" id="reactivate-btn" ${locked ? 'disabled' : ''}>Reactivate profile</button>`;
+      const rejectBtn = doc.getElementById('reject-btn');
+      if (rejectBtn) rejectBtn.addEventListener('click', () => openOutcomeModal('rejected'));
+      const withdrawBtn = doc.getElementById('withdraw-btn');
+      if (withdrawBtn) withdrawBtn.addEventListener('click', () => openOutcomeModal('withdrawn'));
+    } else if (status === 'deactivated') {
+      topActions.innerHTML = `<button class="btn btn-primary" type="button" id="reactivate-btn" ${dis}>Reactivate profile</button>`;
       const btn = doc.getElementById('reactivate-btn');
       if (btn) btn.addEventListener('click', openReactivateModal);
+    } else {
+      topActions.innerHTML = `<button class="btn btn-secondary" type="button" id="reactivate-btn" ${dis}>Reactivate</button>`;
+      const btn = doc.getElementById('reactivate-btn');
+      if (btn) btn.addEventListener('click', handleDirectReactivate);
     }
   }
 
@@ -401,6 +427,58 @@ function initHireProfileApp(doc, initialHire, api) {
     });
   });
 
+  // Rejected/Withdrawn are final: skip the confirm dialog and surface the server's block.
+  function handleDirectReactivate() {
+    api.reactivate().then((updated) => {
+      hire = updated;
+      renderAll();
+      showToast('Profile reactivated — new onboarding Run started');
+    }).catch((err) => {
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : (err && err.fields && err.fields.profileStatus) || 'Reactivation could not be completed — please try again');
+    });
+  }
+
+  // ---------- Reject / Withdraw outcome modal (AC1, AC6) ----------
+  const outcomeOverlay = doc.getElementById('outcome-overlay');
+  const outcomeModal = doc.getElementById('outcome-modal');
+  const outcomeReason = doc.getElementById('outcome-reason');
+  let pendingOutcome = null;
+
+  function openOutcomeModal(outcome) {
+    pendingOutcome = outcome;
+    const word = outcome === 'rejected' ? 'rejected' : 'withdrawn';
+    doc.getElementById('outcome-modal-title').textContent = `Mark candidate as ${word}`;
+    doc.getElementById('outcome-confirm-btn').textContent = `Mark as ${word}`;
+    outcomeReason.value = '';
+    outcomeOverlay.hidden = false;
+    outcomeModal.hidden = false;
+  }
+  function closeOutcomeModal() {
+    outcomeOverlay.hidden = true;
+    outcomeModal.hidden = true;
+  }
+  doc.getElementById('outcome-close-btn').addEventListener('click', closeOutcomeModal);
+  doc.getElementById('outcome-cancel-btn').addEventListener('click', closeOutcomeModal);
+  outcomeOverlay.addEventListener('click', closeOutcomeModal);
+
+  doc.getElementById('outcome-confirm-btn').addEventListener('click', () => {
+    const outcome = pendingOutcome;
+    const reason = outcomeReason.value.trim();
+    closeOutcomeModal();
+    const call = outcome === 'rejected' ? api.reject(reason) : api.withdraw(reason);
+    call.then((updated) => {
+      hire = updated;
+      renderAll();
+      showToast(`Candidate marked as ${outcome}`);
+    }).catch((err) => {
+      showToast(isAccessDenied(err)
+        ? 'Request rejected — HR or Manager role required. Profile is unchanged.'
+        : (err && err.fields && err.fields.profileStatus) || 'Outcome could not be saved — please try again');
+    });
+  });
+
   // ---------- Hire stage save (AC1, AC9) ----------
   function handleSaveStage() {
     const newStage = doc.getElementById('field-hire-stage').value;
@@ -444,6 +522,8 @@ function createDefaultApi(hireId, getRole = () => 'manager') {
     updateContact: (changes) => patch(changes),
     deactivate: () => request(`/hires/${hireId}/deactivate`, 'POST'),
     reactivate: () => request(`/hires/${hireId}/reactivate`, 'POST'),
+    reject: (reason) => request(`/hires/${hireId}/reject`, 'POST', { reason }),
+    withdraw: (reason) => request(`/hires/${hireId}/withdraw`, 'POST', { reason }),
   };
 }
 
