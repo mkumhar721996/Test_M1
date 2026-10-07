@@ -12,6 +12,7 @@ hires.set('hire_2031', {
   department: 'Engineering',
   role: 'Software Engineer II',
   hireStage: 'draft',
+  hiringManager: null,
   profileStatus: 'active',
   run: null,
   runHistory: [],
@@ -37,6 +38,45 @@ function assertValidHire(name, email, phone, department, role, startDate) {
   if (!startDate) fields.startDate = 'Start date is required.';
   if (Object.keys(fields).length > 0) {
     throw new HireValidationError('validation_error', fields);
+  }
+}
+
+const CANDIDATE_STAGES = ['applied', 'screening', 'interview', 'offer_extended', 'offer_accepted'];
+
+function assertValidStageTransition(hire, changes) {
+  const stageChanging = 'hireStage' in changes && changes.hireStage !== hire.hireStage;
+  const hiringManagerError = { hiringManager: 'Hiring manager is required from Screening onward.' };
+  const nextHiringManager = 'hiringManager' in changes ? changes.hiringManager : hire.hiringManager;
+  const hasHiringManager = Boolean(nextHiringManager && String(nextHiringManager).trim());
+
+  if (!stageChanging) {
+    // Clearing the manager while already at Screening or later is not allowed.
+    if ('hiringManager' in changes && CANDIDATE_STAGES.indexOf(hire.hireStage) >= 1 && !hasHiringManager) {
+      throw new HireValidationError('validation_error', hiringManagerError);
+    }
+    return;
+  }
+
+  if (hire.profileStatus === 'deactivated') {
+    throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage on a deactivated hire.' });
+  }
+
+  const fromIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
+  const toIdx = CANDIDATE_STAGES.indexOf(changes.hireStage);
+  // Legacy stages (e.g. draft) may enter the pipeline unvalidated.
+  if (fromIdx === -1) return;
+
+  if (toIdx === -1) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage must be a valid pipeline stage.' });
+  }
+  if (toIdx < fromIdx) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage cannot move backward.' });
+  }
+  if (toIdx > fromIdx + 1) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage cannot skip ahead.' });
+  }
+  if (toIdx >= 1 && !hasHiringManager) {
+    throw new HireValidationError('validation_error', hiringManagerError);
   }
 }
 
@@ -89,6 +129,7 @@ async function updateHire(id, changes) {
   const nextStartDate = 'startDate' in changes ? changes.startDate : hire.startDate;
 
   assertValidHire(nextName, nextEmail, nextPhone, nextDepartment, nextRole, nextStartDate);
+  assertValidStageTransition(hire, changes);
 
   if (changingToOfferAccepted && !hasActiveRun) {
     const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
