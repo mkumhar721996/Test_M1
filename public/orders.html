@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My orders — FreshCart</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/orders.css" />
+<script src="./js/orders.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">FreshCart</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page" id="nav-orders">My orders</a>
+      <a href="#" onclick="return false;">Help</a>
+    </nav>
+  </div>
+
+  <section id="orders-section">
+    <div class="page">
+      <div class="page-header">
+        <h1>My orders</h1>
+        <p>Track an order, or request a cancellation before it's picked up.</p>
+      </div>
+      <div class="u-stack" id="orders-list"></div>
+    </div>
+  </section>
+
+  <section id="tracking-section" hidden>
+    <div class="page">
+      <a class="back-link" href="#" id="back-link">← Back to orders</a>
+
+      <div class="banner banner-success" id="outcome-banner-success" hidden role="status">
+        <span class="icon-badge">✓</span>
+        <div>
+          <h3>Cancellation successful</h3>
+          <p id="outcome-success-copy"></p>
+        </div>
+      </div>
+
+      <div class="banner banner-danger" id="outcome-banner-danger" hidden role="alert">
+        <span class="icon-badge">✕</span>
+        <div>
+          <h3>Cancellation not successful</h3>
+          <p id="outcome-fail-copy"></p>
+        </div>
+        <button class="icon-btn dismiss" id="outcome-banner-dismiss" aria-label="Dismiss">✕</button>
+      </div>
+
+      <div class="card">
+        <div class="order-row" style="margin-bottom: var(--space-2);">
+          <div class="order-main">
+            <p class="order-id" id="tracking-order-id"></p>
+            <h2 class="card-title" id="tracking-restaurant" style="margin:0;"></h2>
+          </div>
+          <span class="status-chip" id="tracking-status-chip"></span>
+        </div>
+        <p class="card-body u-text-sm" id="tracking-meta"></p>
+
+        <div id="tracking-timeline-container"></div>
+
+        <hr class="divider" />
+        <ul class="items-list" id="tracking-items"></ul>
+        <div class="order-total-row"><span>Total</span><span id="tracking-total"></span></div>
+
+        <hr class="divider" />
+        <div id="tracking-cancel-section"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="cancel-modal-overlay" hidden></div>
+    <div class="modal-wrap" id="cancel-modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="cancel-modal-title">Cancel this order?</h2>
+            <p id="cancel-modal-sub"></p>
+          </div>
+          <button class="icon-btn" id="cancel-modal-close" aria-label="Close">✕</button>
+        </div>
+        <p class="u-text-sm u-text-muted">If the restaurant approves, you won't be charged — or you'll be refunded to your original payment method within 3–5 business days. This can't be undone once sent.</p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="cancel-keep-btn">Keep my order</button>
+          <button class="btn btn-primary" id="cancel-confirm-btn">Request cancellation</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast toast-success" id="toast-success" hidden role="status">
+      <span class="icon-badge" style="color: var(--color-success);">✓</span>
+      <span>Cancellation request approved.</span>
+      <button class="toast-close" id="toast-success-close" aria-label="Dismiss">✕</button>
+    </div>
+    <div class="toast toast-danger" id="toast-danger" hidden role="alert">
+      <span class="icon-badge" style="color: var(--color-danger);">✕</span>
+      <span>Cancellation request declined.</span>
+      <button class="toast-close" id="toast-danger-close" aria-label="Dismiss">✕</button>
+    </div>
+  </section>
+
+</body>
+</html>

@@ -7,6 +7,7 @@ const hiresRouter = require('./hires/routes');
 const guestsRouter = require('./guests/routes');
 const roomsRouter = require('./rooms/routes');
 const leaveRouter = require('./leave/routes');
+const ordersRouter = require('./orders/routes');
 const { requestMetrics } = require('./observability/metrics');
 const { errorHandler } = require('./observability/errorHandler');
 
@@ -21,6 +22,7 @@ app.use('/hires', hiresRouter);
 app.use('/guests', guestsRouter);
 app.use('/rooms', roomsRouter);
 app.use('/leave', requestMetrics, leaveRouter);
+app.use('/orders', ordersRouter);
 
 app.use(errorHandler);
 
