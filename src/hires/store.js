@@ -44,7 +44,18 @@ function assertValidHire(name, email, phone, department, role, startDate) {
 const CANDIDATE_STAGES = ['applied', 'screening', 'interview', 'offer_extended', 'offer_accepted'];
 
 function assertValidStageTransition(hire, changes) {
-  if (!('hireStage' in changes) || changes.hireStage === hire.hireStage) return;
+  const stageChanging = 'hireStage' in changes && changes.hireStage !== hire.hireStage;
+  const hiringManagerError = { hiringManager: 'Hiring manager is required from Screening onward.' };
+  const nextHiringManager = 'hiringManager' in changes ? changes.hiringManager : hire.hiringManager;
+  const hasHiringManager = Boolean(nextHiringManager && String(nextHiringManager).trim());
+
+  if (!stageChanging) {
+    // Clearing the manager while already at Screening or later is not allowed.
+    if ('hiringManager' in changes && CANDIDATE_STAGES.indexOf(hire.hireStage) >= 1 && !hasHiringManager) {
+      throw new HireValidationError('validation_error', hiringManagerError);
+    }
+    return;
+  }
 
   if (hire.profileStatus === 'deactivated') {
     throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage on a deactivated hire.' });
@@ -52,18 +63,20 @@ function assertValidStageTransition(hire, changes) {
 
   const fromIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
   const toIdx = CANDIDATE_STAGES.indexOf(changes.hireStage);
-  if (fromIdx === -1 || toIdx === -1) return;
+  // Legacy stages (e.g. draft) may enter the pipeline unvalidated.
+  if (fromIdx === -1) return;
 
+  if (toIdx === -1) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage must be a valid pipeline stage.' });
+  }
   if (toIdx < fromIdx) {
     throw new HireValidationError('validation_error', { hireStage: 'Stage cannot move backward.' });
   }
   if (toIdx > fromIdx + 1) {
     throw new HireValidationError('validation_error', { hireStage: 'Stage cannot skip ahead.' });
   }
-
-  const nextHiringManager = 'hiringManager' in changes ? changes.hiringManager : hire.hiringManager;
-  if (toIdx >= 1 && (!nextHiringManager || !String(nextHiringManager).trim())) {
-    throw new HireValidationError('validation_error', { hiringManager: 'Hiring manager is required from Screening onward.' });
+  if (toIdx >= 1 && !hasHiringManager) {
+    throw new HireValidationError('validation_error', hiringManagerError);
   }
 }
 

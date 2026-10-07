@@ -65,3 +65,23 @@ test('AC7: deactivated hire cannot advance', async () => {
   await expect(updateHire(hire.id, { hireStage: 'screening', hiringManager: 'mgr_1' }))
     .rejects.toMatchObject({ statusCode: 400, fields: { hireStage: 'Cannot change stage on a deactivated hire.' } });
 });
+
+test.each(['draft', 'banana'])('pipeline stage cannot move to non-pipeline value %s', async (value) => {
+  const hire = await mk({ hireStage: 'interview', hiringManager: 'mgr_1' });
+  await expect(updateHire(hire.id, { hireStage: value }))
+    .rejects.toMatchObject({ statusCode: 400, fields: { hireStage: 'Stage must be a valid pipeline stage.' } });
+  expect(getHire(hire.id).hireStage).toBe('interview');
+});
+
+test.each([null, '', '   '])('hiringManager cannot be cleared (%j) at screening or later', async (value) => {
+  const hire = await mk({ hireStage: 'screening', hiringManager: 'mgr_1' });
+  await expect(updateHire(hire.id, { hiringManager: value }))
+    .rejects.toMatchObject({ statusCode: 400, fields: { hiringManager: 'Hiring manager is required from Screening onward.' } });
+  expect(getHire(hire.id).hiringManager).toBe('mgr_1');
+});
+
+test('blank hiringManager is rejected when advancing to screening', async () => {
+  const hire = await mk();
+  await expect(updateHire(hire.id, { hireStage: 'screening', hiringManager: '  ' }))
+    .rejects.toMatchObject({ fields: { hiringManager: 'Hiring manager is required from Screening onward.' } });
+});
