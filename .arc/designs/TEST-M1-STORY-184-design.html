@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-184 — Scientific Layout Toggle</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap notes (literal values below are the only ones in this file):
+    - tokens.json's type scale tops out at --font-size-lg (1.25rem) and has no "hero" size for
+      a prominent numeric display. The calculator needs a large result size and a shrinking
+      expression line that goes slightly above --font-size-lg at its roomiest. These three
+      variables mirror the proposal already made in TEST-M1-STORY-183's design (same calculator
+      display), carried forward here for visual consistency — still a proposal for
+      design-system-bootstrap to formalize, not yet a real token.
+    - 44px is the WCAG 2.5.5-aligned minimum touch target floor (AC6), not a design-system
+      spacing token.
+  */
+  :root {
+    --calc-display-result-size: 2.25rem;
+    --calc-display-expr-size-max: 1.75rem;
+    --calc-display-expr-size-mid: 1.375rem;
+    --touch-target-min: 44px;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .page-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  .amount-input-wrap { position: relative; display: flex; gap: var(--space-2); align-items: stretch; }
+  .amount-input-inner { position: relative; flex: 1; }
+  .amount-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+  }
+  .amount-input { padding-left: calc(var(--space-4) + var(--space-3)); }
+  .calc-launch-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-target-min);
+    padding: 0 var(--space-3);
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border: 1px solid var(--button-secondary-border);
+    border-radius: var(--button-primary-radius);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .calc-launch-btn:hover { background: var(--color-surface); }
+  .field-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-1) 0 0 0; }
+
+  /* ---------- Layout toggle (AC1, AC5, AC7) ---------- */
+  .layout-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+  }
+  .layout-toggle-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+  }
+  .layout-toggle {
+    display: inline-flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .layout-toggle-btn {
+    min-height: var(--touch-target-min);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: none;
+    cursor: pointer;
+  }
+  .layout-toggle-btn + .layout-toggle-btn { border-left: 1px solid var(--color-border); }
+  .layout-toggle-btn[aria-pressed="true"] {
+    background: var(--button-primary-background);
+    color: var(--button-primary-foreground);
+  }
+  .layout-toggle-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  /* ---------- Calculator display ---------- */
+  .calc-display {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .calc-expression {
+    width: 100%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-align: right;
+    direction: ltr;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg-muted);
+    font-size: var(--calc-display-expr-size-max);
+    min-height: 1.4em;
+    transition: font-size 180ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .calc-expression { transition: none; }
+  }
+  .calc-result-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    min-height: 1.3em;
+  }
+  .calc-result {
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--calc-display-result-size);
+    color: var(--color-fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .calc-result.is-preview { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+  .calc-result.is-engine { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); font-style: italic; }
+
+  /* ---------- Keypad ---------- */
+  .calc-section-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: var(--space-3) 0 var(--space-2) 0;
+  }
+  .calc-section-label:first-of-type { margin-top: 0; }
+  .calc-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+  }
+  .calc-key {
+    min-height: var(--touch-target-min); /* AC6 */
+    min-width: var(--touch-target-min);
+    height: 58px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .calc-key:hover { background: var(--color-border); }
+  .calc-key:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .calc-key.op {
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border-color: var(--button-secondary-border);
+  }
+  .calc-key.op:hover { background: var(--color-surface); }
+  .calc-key.clear {
+    background: var(--button-secondary-background);
+    color: var(--button-secondary-foreground);
+    border-color: var(--button-secondary-border);
+  }
+  .calc-key.equals {
+    background: var(--button-primary-background);
+    color: var(--button-primary-foreground);
+    border-color: var(--button-primary-background);
+  }
+  .calc-key.equals:hover { filter: brightness(1.08); }
+  .calc-key.span-2 { grid-column: span 2; }
+  .calc-key.span-3 { grid-column: span 3; }
+  .calc-key.sci {
+    height: 48px;
+    font-size: var(--font-size-md);
+  }
+  .calc-keypad.scientific { margin-bottom: var(--space-3); }
+
+  /* ---------- Demo-only affordances (not part of the shipped product) ---------- */
+  .demo-note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* ---------- Reference states screen ---------- */
+  .reference-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  @media (min-width: 720px) {
+    .reference-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .reference-grid h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .ac-tag {
+    display: inline-block;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-3);
+  }
+  .mini-display-card {
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+  }
+  .mini-display-card p.caption {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: var(--space-2) 0 0 0;
+  }
+  .keypad-callout-wrap { max-width: 340px; margin: 0 auto; }
+  .touch-target-demo {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .touch-target-demo .calc-key { position: relative; }
+  .touch-target-demo .dim-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .live-region-example {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+  }
+  .live-region-example div + div { margin-top: var(--space-2); color: var(--color-fg-muted); }
+
+  .tab-order-list {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin: 0;
+    padding-left: var(--space-4);
+  }
+  .tab-order-list li { margin-bottom: var(--space-1); }
+  .tab-order-list code {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-1);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    cursor: pointer;
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Expenses (active) · Employees. Matches the "Expense Tracker" shell
+     established by this product's earlier calculator prototype (TEST-M1-STORY-183), since this
+     story extends that same on-screen calculator with a layout toggle — it is not a new
+     product surface.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-184</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Log a New Expense — Calculator with Layout Toggle (interactive)
+         Notes:
+           - Opens the same "Open calculator" modal from TEST-M1-STORY-183. A "Keypad layout"
+             segmented control (Basic / Scientific) sits above the display (AC1).
+           - Basic is the default. Tap "Scientific" to reveal a "Scientific functions" section
+             above the existing basic grid: sin, cos, tan, sin⁻¹ (asin), cos⁻¹ (acos),
+             tan⁻¹ (atan), log, ln, x², √, xʸ, π, e, n! — all 14 required buttons (AC3).
+           - Tap "Basic" again and the scientific section disappears entirely (removed from the
+             DOM's visible/focusable set via the `hidden` attribute, not just dimmed) — only
+             digits 0–9, ".", + − × ÷, "=", "C" and "CE" remain (AC4).
+           - Whichever layout is active, the expression line is untouched by the toggle: use the
+             demo shortcut below to drop "sin(" into the display while in Scientific, then tap
+             "Basic" — "sin(" is still shown exactly as typed (AC2).
+           - Tab through the dialog: close button → layout toggle (Basic, then Scientific) →
+             every visible key in reading order → Cancel/Use buttons. Enter or Space activates
+             whichever control has focus, in both layouts (AC5).
+           - Every scientific key renders at 48px tall (≥44×44px); every basic key renders at
+             58px tall — both comfortably clear the touch-target minimum (AC6).
+           - A visually-hidden live region announces the layout change by name every time the
+             toggle is activated, so a screen-reader user hears "Scientific layout active…" or
+             "Basic layout active…" even though the only visible change is which buttons are
+             drawn (AC7). The toggle buttons' own `aria-pressed` state is a second, redundant
+             way the same change reaches assistive tech.
+           - Function keys insert their opening text (e.g. "sin(", "√(") rather than a
+             computed value — turning that into a real result is the Calculation Engine's job,
+             out of scope for this story, so the result line shows "Evaluated by Calculation
+             Engine" instead of a number whenever the expression contains a scientific token.
+           - Exact scientific button set is per this story's listed acceptance criteria; whether
+             additional functions get dedicated buttons vs. keyboard-only access is still
+             pending team confirmation, per the work item's stated scope.
+    -->
+    <div class="screen" data-name="Log a New Expense">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Log a new expense</h1>
+          <p>Need to work out a trig or log calculation first? Use the on-screen calculator next to Amount.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Expense details</h3>
+          <form id="expense-form" novalidate>
+            <div class="field">
+              <label class="label" for="field-category">Category</label>
+              <select class="input" id="field-category">
+                <option value="">Select a category</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Supplies</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="field-date">Date</label>
+              <input class="input" id="field-date" type="date" value="2026-10-06" />
+            </div>
+            <div class="field">
+              <label class="label" for="field-amount">Amount</label>
+              <div class="amount-input-wrap">
+                <div class="amount-input-inner">
+                  <span class="amount-prefix" aria-hidden="true">$</span>
+                  <input class="input amount-input" id="field-amount" name="amount" type="text" inputmode="decimal" placeholder="0.00" aria-describedby="amount-hint" />
+                </div>
+                <button type="button" class="calc-launch-btn" id="open-calculator" aria-haspopup="dialog" aria-controls="calculator-modal">
+                  <span aria-hidden="true">🧮</span> Open calculator
+                </button>
+              </div>
+              <p class="field-hint" id="amount-hint">Opens a keypad with a Basic / Scientific layout toggle.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="field-description">Description</label>
+              <textarea class="input" id="field-description" rows="2" placeholder="e.g. Reimbursed mileage, log-scaled per diem calc"></textarea>
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <button type="submit" class="btn btn-primary">Save expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Calculator modal -->
+      <div class="modal-overlay" id="calculator-overlay" hidden></div>
+      <div class="modal-wrap" id="calculator-modal-wrap" hidden>
+        <div class="modal-panel" id="calculator-modal" role="dialog" aria-modal="true" aria-labelledby="calculator-title">
+          <div class="modal-header">
+            <div>
+              <h2 id="calculator-title">Calculator</h2>
+              <p id="calc-subtitle">Basic layout — digits, decimal, + − × ÷, equals, clear.</p>
+            </div>
+            <button type="button" class="icon-btn" id="calc-close" aria-label="Close calculator">&times;</button>
+          </div>
+
+          <!-- State: layout toggle, Basic active -->
+          <div class="layout-toggle-row">
+            <span class="layout-toggle-label" id="layout-toggle-label">Keypad layout</span>
+            <div class="layout-toggle" role="group" aria-labelledby="layout-toggle-label">
+              <button type="button" class="layout-toggle-btn" id="toggle-basic" aria-pressed="true">Basic</button>
+              <button type="button" class="layout-toggle-btn" id="toggle-scientific" aria-pressed="false">Scientific</button>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" id="layout-live-region"></div>
+
+          <!-- State: calculator display (live) -->
+          <div class="calc-display" role="group" aria-label="Calculator display">
+            <div class="calc-expression" id="calc-expression" aria-hidden="true"></div>
+            <div class="calc-result-row" id="calc-result-row">
+              <span class="calc-result is-preview" id="calc-result"></span>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" id="calc-live-region"></div>
+
+          <!-- Scientific section only present (in the DOM's visible/focusable set) when
+               Scientific layout is active -->
+          <div id="scientific-section" hidden>
+            <p class="calc-section-label">Scientific functions</p>
+            <div class="calc-keypad scientific" role="group" aria-label="Scientific function keys" id="scientific-keys">
+              <button type="button" class="calc-key sci" data-token="sin(" aria-label="Sine">sin</button>
+              <button type="button" class="calc-key sci" data-token="cos(" aria-label="Cosine">cos</button>
+              <button type="button" class="calc-key sci" data-token="tan(" aria-label="Tangent">tan</button>
+              <button type="button" class="calc-key sci" data-token="log(" aria-label="Logarithm base 10">log</button>
+
+              <button type="button" class="calc-key sci" data-token="asin(" aria-label="Inverse sine">sin⁻¹</button>
+              <button type="button" class="calc-key sci" data-token="acos(" aria-label="Inverse cosine">cos⁻¹</button>
+              <button type="button" class="calc-key sci" data-token="atan(" aria-label="Inverse tangent">tan⁻¹</button>
+              <button type="button" class="calc-key sci" data-token="ln(" aria-label="Natural logarithm">ln</button>
+
+              <button type="button" class="calc-key sci" data-token="^2" aria-label="Square">x²</button>
+              <button type="button" class="calc-key sci" data-token="√(" aria-label="Square root">√</button>
+              <button type="button" class="calc-key sci" data-token="^" aria-label="Exponent, x to the y">xʸ</button>
+              <button type="button" class="calc-key sci" data-token="!" aria-label="Factorial">n!</button>
+
+              <button type="button" class="calc-key sci" data-token="π" aria-label="Pi constant">π</button>
+              <button type="button" class="calc-key sci" data-token="e" aria-label="Euler's number constant">e</button>
+            </div>
+          </div>
+
+          <p class="calc-section-label" id="basic-section-label">Basic operations</p>
+          <div class="calc-keypad" role="group" aria-label="Basic calculator keys">
+            <button type="button" class="calc-key clear" data-key="clear-entry" aria-label="Clear entry">CE</button>
+            <button type="button" class="calc-key clear span-2" data-key="clear">C</button>
+            <button type="button" class="calc-key op" data-key="÷" aria-label="Divide">÷</button>
+
+            <button type="button" class="calc-key" data-key="7">7</button>
+            <button type="button" class="calc-key" data-key="8">8</button>
+            <button type="button" class="calc-key" data-key="9">9</button>
+            <button type="button" class="calc-key op" data-key="×" aria-label="Multiply">×</button>
+
+            <button type="button" class="calc-key" data-key="4">4</button>
+            <button type="button" class="calc-key" data-key="5">5</button>
+            <button type="button" class="calc-key" data-key="6">6</button>
+            <button type="button" class="calc-key op" data-key="-" aria-label="Subtract">−</button>
+
+            <button type="button" class="calc-key" data-key="1">1</button>
+            <button type="button" class="calc-key" data-key="2">2</button>
+            <button type="button" class="calc-key" data-key="3">3</button>
+            <button type="button" class="calc-key op" data-key="+" aria-label="Add">+</button>
+
+            <button type="button" class="calc-key span-2" data-key="0">0</button>
+            <button type="button" class="calc-key" data-key="." aria-label="Decimal point">.</button>
+            <button type="button" class="calc-key equals" data-key="equals" aria-label="Equals">=</button>
+          </div>
+
+          <div class="demo-note">
+            <div class="demo-note-title"><span class="demo-note-icon" aria-hidden="true">&#9888;</span> Demo shortcuts (not real keypad actions)</div>
+            <p style="margin:0;">Jump straight to the scenario in AC2 without tapping dozens of keys.</p>
+            <div class="demo-note-actions">
+              <button type="button" id="demo-sin">Type "sin(" in Scientific</button>
+              <button type="button" id="demo-clear-all">Reset display</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="calc-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary" id="calc-use" disabled>Use this amount</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="save-toast" hidden></div>
+    </div>
+
+    <!-- Screen: Reference States (non-interactive)
+         Notes:
+           - Static snapshots of every state named in this story's acceptance criteria, for
+             quick visual sign-off without tapping through screen 1.
+           - Each tile is annotated with the AC(s) it satisfies.
+    -->
+    <div class="screen" data-name="Reference States">
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="#" onclick="return false;">Expenses</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Layout toggle — reference states</h1>
+          <p>Non-interactive. Use screen 1 to try the toggle and keys for real.</p>
+        </div>
+
+        <div class="reference-grid">
+          <div>
+            <h3>Toggle: Basic active</h3>
+            <span class="ac-tag">AC1 — visible control, default state</span>
+            <div class="mini-display-card">
+              <div class="layout-toggle-row" style="margin-bottom:0;">
+                <span class="layout-toggle-label">Keypad layout</span>
+                <div class="layout-toggle" aria-hidden="true">
+                  <button type="button" class="layout-toggle-btn" aria-pressed="true" tabindex="-1">Basic</button>
+                  <button type="button" class="layout-toggle-btn" aria-pressed="false" tabindex="-1">Scientific</button>
+                </div>
+              </div>
+              <p class="caption">A segmented control is always visible above the display, in both layouts.</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Toggle: Scientific active</h3>
+            <span class="ac-tag">AC1, AC7 — accessible name/state update</span>
+            <div class="mini-display-card">
+              <div class="layout-toggle-row" style="margin-bottom:0;">
+                <span class="layout-toggle-label">Keypad layout</span>
+                <div class="layout-toggle" aria-hidden="true">
+                  <button type="button" class="layout-toggle-btn" aria-pressed="false" tabindex="-1">Basic</button>
+                  <button type="button" class="layout-toggle-btn" aria-pressed="true" tabindex="-1">Scientific</button>
+                </div>
+              </div>
+              <p class="caption">"aria-pressed" flips on the selected segment, and a live region announces the change by name — not just a visual swap.</p>
+            </div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <h3>Scientific layout — full button inventory</h3>
+            <span class="ac-tag">Satisfies AC3</span>
+            <div class="keypad-callout-wrap">
+              <div class="calc-keypad scientific" aria-hidden="true">
+                <button type="button" class="calc-key sci" tabindex="-1">sin</button>
+                <button type="button" class="calc-key sci" tabindex="-1">cos</button>
+                <button type="button" class="calc-key sci" tabindex="-1">tan</button>
+                <button type="button" class="calc-key sci" tabindex="-1">log</button>
+                <button type="button" class="calc-key sci" tabindex="-1">sin⁻¹</button>
+                <button type="button" class="calc-key sci" tabindex="-1">cos⁻¹</button>
+                <button type="button" class="calc-key sci" tabindex="-1">tan⁻¹</button>
+                <button type="button" class="calc-key sci" tabindex="-1">ln</button>
+                <button type="button" class="calc-key sci" tabindex="-1">x²</button>
+                <button type="button" class="calc-key sci" tabindex="-1">√</button>
+                <button type="button" class="calc-key sci" tabindex="-1">xʸ</button>
+                <button type="button" class="calc-key sci" tabindex="-1">n!</button>
+                <button type="button" class="calc-key sci" tabindex="-1">π</button>
+                <button type="button" class="calc-key sci" tabindex="-1">e</button>
+              </div>
+            </div>
+            <p class="caption" style="text-align:center;">
+              All 14 required functions are present: sin, cos, tan, asin (sin⁻¹), acos (cos⁻¹),
+              atan (tan⁻¹), log, ln, exponent (xʸ), square (x²), square root (√), π, e, and
+              factorial (n!). These render above the basic grid, which stays visible underneath.
+            </p>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <h3>Basic layout — full button inventory</h3>
+            <span class="ac-tag">Satisfies AC4</span>
+            <div class="keypad-callout-wrap">
+              <div class="calc-keypad" aria-hidden="true">
+                <button type="button" class="calc-key clear" tabindex="-1">CE</button>
+                <button type="button" class="calc-key clear span-2" tabindex="-1">C</button>
+                <button type="button" class="calc-key op" tabindex="-1">÷</button>
+                <button type="button" class="calc-key" tabindex="-1">7</button>
+                <button type="button" class="calc-key" tabindex="-1">8</button>
+                <button type="button" class="calc-key" tabindex="-1">9</button>
+                <button type="button" class="calc-key op" tabindex="-1">×</button>
+                <button type="button" class="calc-key" tabindex="-1">4</button>
+                <button type="button" class="calc-key" tabindex="-1">5</button>
+                <button type="button" class="calc-key" tabindex="-1">6</button>
+                <button type="button" class="calc-key op" tabindex="-1">−</button>
+                <button type="button" class="calc-key" tabindex="-1">1</button>
+                <button type="button" class="calc-key" tabindex="-1">2</button>
+                <button type="button" class="calc-key" tabindex="-1">3</button>
+                <button type="button" class="calc-key op" tabindex="-1">+</button>
+                <button type="button" class="calc-key span-2" tabindex="-1">0</button>
+                <button type="button" class="calc-key" tabindex="-1">.</button>
+                <button type="button" class="calc-key equals" tabindex="-1">=</button>
+              </div>
+            </div>
+            <p class="caption" style="text-align:center;">
+              Only digits 0–9, decimal point, + − × ÷, "=", "C" (clear) and "CE" (clear entry) —
+              no scientific function button is present or reachable while Basic is active.
+            </p>
+          </div>
+
+          <div>
+            <h3>Display persists: Scientific → "sin("</h3>
+            <span class="ac-tag">AC2 — before toggling</span>
+            <div class="mini-display-card">
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression">sin(</div>
+                <div class="calc-result-row"><span class="calc-result is-engine">Evaluated by Calculation Engine</span></div>
+              </div>
+              <p class="caption">User tapped "sin" while viewing the Scientific layout; expression reads "sin(".</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>Display persists: toggled to Basic</h3>
+            <span class="ac-tag">AC2 — after toggling</span>
+            <div class="mini-display-card">
+              <div class="calc-display" style="margin-bottom:0;">
+                <div class="calc-expression">sin(</div>
+                <div class="calc-result-row"><span class="calc-result is-engine">Evaluated by Calculation Engine</span></div>
+              </div>
+              <p class="caption">Same expression, unchanged, even though the scientific buttons that produced it are now gone from view.</p>
+            </div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <h3>Keyboard focus order</h3>
+            <span class="ac-tag">Satisfies AC5</span>
+            <ol class="tab-order-list">
+              <li><code>Tab</code> from the dialog's close button reaches the layout toggle: <code>Basic</code>, then <code>Scientific</code> — each activates on <code>Enter</code> or <code>Space</code>.</li>
+              <li>Continuing <code>Tab</code> in Scientific layout reaches every scientific key in reading order (sin → cos → tan → log → sin⁻¹ → … → e), then every basic key (CE → C → ÷ → 7 → … → "=").</li>
+              <li>Continuing <code>Tab</code> in Basic layout skips straight from the toggle to the basic keys — the scientific keys are not focus stops at all, since the <code>hidden</code> attribute removes them from the page's focus order and the accessibility tree.</li>
+              <li><code>Shift+Tab</code> reverses the same order in both layouts.</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3>Touch target sizing</h3>
+            <span class="ac-tag">Satisfies AC6</span>
+            <div style="display:flex; align-items:center; gap: var(--space-4); flex-wrap: wrap;">
+              <div class="touch-target-demo">
+                <button type="button" class="calc-key sci" tabindex="-1" style="width:48px;">sin</button>
+                <span class="dim-label">48 × 48px — scientific key</span>
+              </div>
+              <div class="touch-target-demo">
+                <button type="button" class="calc-key" tabindex="-1" style="width:58px;">7</button>
+                <span class="dim-label">58 × 58px — basic key</span>
+              </div>
+            </div>
+            <p class="caption">Both comfortably clear the 44 × 44px minimum.</p>
+          </div>
+
+          <div>
+            <h3>Assistive-tech announcement</h3>
+            <span class="ac-tag">Satisfies AC7</span>
+            <div class="live-region-example">
+              <div>"Scientific layout active. 14 additional function buttons are now available: sine, cosine, tangent, inverse sine, inverse cosine, inverse tangent, log, ln, exponent, square, square root, pi, e, and factorial."</div>
+              <div>"Basic layout active. Only digits, decimal point, the four arithmetic operators, equals, and clear are shown."</div>
+            </div>
+            <p class="caption" style="margin-top:var(--space-2);">A visually-hidden <code>aria-live="polite"</code> region speaks this every time the toggle is activated, independent of the visible button set changing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const SCIENTIFIC_FUNCTIONS = JSON.parse(`[
+    {"token":"sin(","label":"sin","name":"sine"},
+    {"token":"cos(","label":"cos","name":"cosine"},
+    {"token":"tan(","label":"tan","name":"tangent"},
+    {"token":"log(","label":"log","name":"log"},
+    {"token":"asin(","label":"sin⁻¹","name":"inverse sine"},
+    {"token":"acos(","label":"cos⁻¹","name":"inverse cosine"},
+    {"token":"atan(","label":"tan⁻¹","name":"inverse tangent"},
+    {"token":"ln(","label":"ln","name":"ln"},
+    {"token":"^2","label":"x²","name":"square"},
+    {"token":"√(","label":"√","name":"square root"},
+    {"token":"^","label":"xʸ","name":"exponent"},
+    {"token":"!","label":"n!","name":"factorial"},
+    {"token":"π","label":"π","name":"pi"},
+    {"token":"e","label":"e","name":"e"}
+  ]`);
+
+  // ---------- Calculator state & display (basic arithmetic only; scientific tokens are
+  // inserted as literal text — evaluating them is the Calculation Engine's job, out of
+  // scope for this story) ----------
+  const OPERATORS = ['+', '-', '×', '÷'];
+  const isOperator = (ch) => OPERATORS.includes(ch);
+  const OVERFLOW_LIMIT = 1e15;
+  const SCI_TOKEN_PATTERN = /[^0-9+\-×÷.]/;
+
+  function currentSegment(expr) {
+    let idx = -1;
+    for (const op of OPERATORS) {
+      const i = expr.lastIndexOf(op);
+      if (i > idx) idx = i;
+    }
+    return idx === -1 ? expr : expr.slice(idx + 1);
+  }
+
+  function evaluate(expr) {
+    const tokens = expr.match(/\d+\.?\d*|\.\d+|[+\-×÷]/g);
+    if (!tokens || tokens.join('') !== expr || tokens.length === 0) throw { type: 'syntax' };
+    if (isOperator(tokens[0]) || isOperator(tokens[tokens.length - 1])) throw { type: 'syntax' };
+
+    const reduced = [tokens[0]];
+    for (let i = 1; i < tokens.length; i += 2) {
+      const op = tokens[i];
+      const num = tokens[i + 1];
+      if (num === undefined) throw { type: 'syntax' };
+      if (op === '×' || op === '÷') {
+        const left = parseFloat(reduced[reduced.length - 1]);
+        const right = parseFloat(num);
+        if (op === '÷' && right === 0) throw { type: 'divide-zero' };
+        const val = op === '×' ? left * right : left / right;
+        if (!Number.isFinite(val)) throw { type: 'overflow' };
+        reduced[reduced.length - 1] = String(val);
+      } else {
+        reduced.push(op, num);
+      }
+    }
+
+    let total = parseFloat(reduced[0]);
+    for (let i = 1; i < reduced.length; i += 2) {
+      const op = reduced[i];
+      const num = parseFloat(reduced[i + 1]);
+      total = op === '+' ? total + num : total - num;
+    }
+    if (!Number.isFinite(total) || Math.abs(total) >= OVERFLOW_LIMIT) throw { type: 'overflow' };
+    return total;
+  }
+
+  function previewEvaluate(expr) {
+    let trimmed = expr;
+    while (trimmed && isOperator(trimmed[trimmed.length - 1])) trimmed = trimmed.slice(0, -1);
+    if (!trimmed) return null;
+    return evaluate(trimmed);
+  }
+
+  function formatNumber(n) {
+    const rounded = Math.round(n * 1e9) / 1e9;
+    return rounded.toString();
+  }
+
+  const ERROR_MESSAGES = {
+    'divide-zero': 'Divide by Zero',
+    'overflow': 'Overflow',
+    'syntax': 'Syntax Error'
+  };
+
+  const expressionEl = document.getElementById('calc-expression');
+  const resultRowEl = document.getElementById('calc-result-row');
+  const liveRegionEl = document.getElementById('calc-live-region');
+  const useBtnEl = document.getElementById('calc-use');
+
+  let calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+
+  const EXPR_SIZES = ['var(--calc-display-expr-size-max)', 'var(--calc-display-expr-size-mid)', 'var(--font-size-md)'];
+
+  function fitExpressionText() {
+    let i = 0;
+    expressionEl.style.fontSize = EXPR_SIZES[0];
+    while (expressionEl.scrollWidth > expressionEl.clientWidth && i < EXPR_SIZES.length - 1) {
+      i += 1;
+      expressionEl.style.fontSize = EXPR_SIZES[i];
+    }
+  }
+
+  function renderCalculator(announcement) {
+    expressionEl.textContent = calcState.expression;
+    fitExpressionText();
+
+    if (SCI_TOKEN_PATTERN.test(calcState.expression)) {
+      resultRowEl.innerHTML = '<span class="calc-result is-engine">Evaluated by Calculation Engine</span>';
+      useBtnEl.disabled = true;
+      if (announcement) liveRegionEl.textContent = announcement;
+      return;
+    }
+
+    let errorType = null;
+    let displayValue = null;
+
+    if (calcState.forcedSyntaxError) {
+      errorType = 'syntax';
+    } else if (calcState.finalized) {
+      displayValue = calcState.finalizedValue;
+    } else {
+      try {
+        displayValue = previewEvaluate(calcState.expression);
+      } catch (e) {
+        errorType = e.type;
+      }
+    }
+
+    if (errorType) {
+      resultRowEl.innerHTML = '<span class="calc-error"><span class="calc-error-icon" aria-hidden="true">⚠</span>' + ERROR_MESSAGES[errorType] + '</span>';
+      useBtnEl.disabled = true;
+    } else if (displayValue === null) {
+      resultRowEl.innerHTML = '<span class="calc-result is-preview"></span>';
+      useBtnEl.disabled = true;
+    } else {
+      const text = formatNumber(displayValue);
+      const cls = calcState.finalized ? 'calc-result' : 'calc-result is-preview';
+      resultRowEl.innerHTML = '<span class="' + cls + '">' + text + '</span>';
+      useBtnEl.disabled = false;
+    }
+
+    if (announcement) {
+      liveRegionEl.textContent = announcement;
+    } else if (errorType) {
+      liveRegionEl.textContent = 'Error: ' + ERROR_MESSAGES[errorType];
+    } else if (calcState.expression === '') {
+      liveRegionEl.textContent = 'Display cleared';
+    } else if (calcState.finalized) {
+      liveRegionEl.textContent = 'Result ' + formatNumber(calcState.finalizedValue) + ', finalized';
+    } else {
+      liveRegionEl.textContent = 'Expression ' + calcState.expression + (displayValue !== null ? ', result ' + formatNumber(displayValue) : '');
+    }
+  }
+
+  function pressKey(key) {
+    if (key === 'clear') {
+      calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+      renderCalculator('Display cleared');
+      return;
+    }
+
+    if (key === 'clear-entry') {
+      if (calcState.finalized || !calcState.expression) {
+        calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+        renderCalculator('Display cleared');
+        return;
+      }
+      calcState.expression = calcState.expression.slice(0, -1);
+      calcState.forcedSyntaxError = false;
+      renderCalculator();
+      return;
+    }
+
+    if (key === 'equals') {
+      if (SCI_TOKEN_PATTERN.test(calcState.expression)) {
+        renderCalculator('Evaluated by the Calculation Engine');
+        return;
+      }
+      if (!calcState.expression || isOperator(calcState.expression[calcState.expression.length - 1])) {
+        calcState.forcedSyntaxError = true;
+        calcState.finalized = false;
+        renderCalculator();
+        return;
+      }
+      calcState.forcedSyntaxError = false;
+      try {
+        const value = evaluate(calcState.expression);
+        calcState.finalized = true;
+        calcState.finalizedValue = value;
+        renderCalculator();
+      } catch (e) {
+        calcState.finalized = false;
+        renderCalculator('Error: ' + ERROR_MESSAGES[e.type]);
+      }
+      return;
+    }
+
+    calcState.forcedSyntaxError = false;
+
+    if (isOperator(key)) {
+      if (calcState.finalized) {
+        calcState.expression = formatNumber(calcState.finalizedValue) + key;
+        calcState.finalized = false;
+      } else if (!calcState.expression) {
+        return;
+      } else if (isOperator(calcState.expression[calcState.expression.length - 1])) {
+        calcState.expression = calcState.expression.slice(0, -1) + key;
+      } else {
+        calcState.expression += key;
+      }
+    } else if (key === '.') {
+      if (calcState.finalized) {
+        calcState.expression = '0.';
+        calcState.finalized = false;
+      } else {
+        const segment = currentSegment(calcState.expression);
+        if (segment.includes('.')) return;
+        calcState.expression += (segment === '' ? '0.' : '.');
+      }
+    } else {
+      if (calcState.finalized) {
+        calcState.expression = key;
+        calcState.finalized = false;
+      } else {
+        calcState.expression += key;
+      }
+    }
+
+    renderCalculator();
+  }
+
+  function appendToken(token) {
+    calcState.finalized = false;
+    calcState.forcedSyntaxError = false;
+    calcState.expression += token;
+    renderCalculator();
+  }
+
+  document.querySelectorAll('#calculator-modal .calc-keypad:not(.scientific) .calc-key').forEach((btn) => {
+    btn.addEventListener('click', () => pressKey(btn.dataset.key));
+  });
+  document.querySelectorAll('#scientific-keys .calc-key').forEach((btn) => {
+    btn.addEventListener('click', () => appendToken(btn.dataset.token));
+  });
+
+  // ---------- Demo-only shortcuts ----------
+  document.getElementById('demo-sin').addEventListener('click', () => {
+    setLayout('scientific');
+    calcState = { expression: 'sin(', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    renderCalculator('Expression sin open paren');
+  });
+  document.getElementById('demo-clear-all').addEventListener('click', () => {
+    calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    renderCalculator('Display cleared');
+  });
+
+  // ---------- Layout toggle (AC1, AC2, AC3, AC4, AC5, AC7) ----------
+  const toggleBasicBtn = document.getElementById('toggle-basic');
+  const toggleSciBtn = document.getElementById('toggle-scientific');
+  const scientificSection = document.getElementById('scientific-section');
+  const basicSectionLabel = document.getElementById('basic-section-label');
+  const layoutLiveRegionEl = document.getElementById('layout-live-region');
+  const calcSubtitleEl = document.getElementById('calc-subtitle');
+  let currentLayout = 'basic';
+
+  function setLayout(layout, opts) {
+    opts = opts || {};
+    currentLayout = layout;
+    toggleBasicBtn.setAttribute('aria-pressed', String(layout === 'basic'));
+    toggleSciBtn.setAttribute('aria-pressed', String(layout === 'scientific'));
+    scientificSection.hidden = layout !== 'scientific';
+    basicSectionLabel.hidden = layout !== 'scientific'; // only show section labels once there are two sections to distinguish
+
+    if (layout === 'scientific') {
+      calcSubtitleEl.textContent = 'Scientific layout — trig, log, exponent, constants and factorial, plus basic operations.';
+    } else {
+      calcSubtitleEl.textContent = 'Basic layout — digits, decimal, + − × ÷, equals, clear.';
+    }
+
+    if (opts.announce !== false) {
+      layoutLiveRegionEl.textContent = layout === 'scientific'
+        ? `Scientific layout active. ${SCIENTIFIC_FUNCTIONS.length} additional function buttons are now available: ${SCIENTIFIC_FUNCTIONS.map(f => f.name).join(', ')}.`
+        : 'Basic layout active. Only digits, decimal point, the four arithmetic operators, equals, and clear are shown.';
+    }
+  }
+
+  toggleBasicBtn.addEventListener('click', () => setLayout('basic'));
+  toggleSciBtn.addEventListener('click', () => setLayout('scientific'));
+
+  // ---------- Modal open/close ----------
+  const overlay = document.getElementById('calculator-overlay');
+  const modalWrap = document.getElementById('calculator-modal-wrap');
+  const openBtn = document.getElementById('open-calculator');
+  const closeBtn = document.getElementById('calc-close');
+  const cancelBtn = document.getElementById('calc-cancel');
+  const amountField = document.getElementById('field-amount');
+
+  function openCalculator() {
+    calcState = { expression: '', finalized: false, finalizedValue: null, forcedSyntaxError: false };
+    setLayout('basic', { announce: false });
+    renderCalculator('Calculator opened');
+    overlay.hidden = false;
+    modalWrap.hidden = false;
+    closeBtn.focus();
+  }
+  function closeCalculator() {
+    overlay.hidden = true;
+    modalWrap.hidden = true;
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', openCalculator);
+  closeBtn.addEventListener('click', closeCalculator);
+  cancelBtn.addEventListener('click', closeCalculator);
+  overlay.addEventListener('click', closeCalculator);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modalWrap.hidden) closeCalculator();
+  });
+
+  useBtnEl.addEventListener('click', () => {
+    if (useBtnEl.disabled) return;
+    const original = useBtnEl.textContent;
+    useBtnEl.disabled = true;
+    useBtnEl.textContent = 'Applying…';
+    setTimeout(() => {
+      const value = calcState.finalized ? calcState.finalizedValue : previewEvaluate(calcState.expression);
+      amountField.value = formatNumber(value);
+      useBtnEl.textContent = original;
+      closeCalculator();
+    }, 260);
+  });
+
+  // ---------- Expense form (lightweight; the layout toggle is the focus of this story) ----------
+  const expenseForm = document.getElementById('expense-form');
+  const saveToast = document.getElementById('save-toast');
+  expenseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveToast.textContent = amountField.value ? '✓ Expense saved.' : '⚠ Enter an amount before saving.';
+    saveToast.hidden = false;
+    setTimeout(() => { saveToast.hidden = true; }, 2200);
+  });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && modalWrap.hidden) show(cur + 1);
+    if (e.key === 'ArrowLeft' && modalWrap.hidden) show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
