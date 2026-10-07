@@ -42,7 +42,7 @@ router.get('/:id', (req, res) => {
   res.status(200).json(withHire(run));
 });
 
-router.get('/:id/audit-log', (req, res) => {
+router.get('/:id/audit-log', enforceOnboardingRole, (req, res) => {
   const run = getRun(req.params.id);
   const tenantId = req.headers['x-tenant-id'] || DEFAULT_TENANT_ID;
   if (!run || tenantId !== run.tenantId) return res.status(404).json({ error: 'run not found' });

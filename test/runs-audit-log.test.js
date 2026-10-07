@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../src/server');
 const { createWorkflow } = require('../src/workflows/store');
-const { startRun, getRun, advanceStep, resolveStepRequirement, pauseRun, resumeRun, cancelRun, failRun } = require('../src/runs/store');
+const { startRun, getRun, advanceStep, resolveStepRequirement, pauseRun, resumeRun, cancelRun, failRun, completeRun } = require('../src/runs/store');
 const auditLog = require('../src/runs/auditLog');
 const { listAuditEntries, recordRunEvent, recordTaskEvent, TASK_EVENT_TYPES } = auditLog;
 
@@ -50,11 +50,25 @@ describe('run audit log', () => {
     expect(trail(run).map((e) => e.eventType).filter((t) => t !== 'dispatched')).toEqual(['started', 'paused', 'resumed']);
     cancelRun(run.id);
     expect(getRun(run.id).status).toBe('cancelled');
+    const runTypes = () => trail(run).filter((e) => e.kind === 'run').map((e) => e.eventType);
+    expect(runTypes()).toEqual(['started', 'paused', 'resumed', 'cancelled']);
     pauseRun(run.id);
     expect(getRun(run.id).status).toBe('cancelled');
+    expect(runTypes()).toEqual(['started', 'paused', 'resumed', 'cancelled']);
     const failed = startRun(twoStep().workflowId);
     failRun(failed.id);
     expect(trail(failed).some((e) => e.eventType === 'failed' && e.newState === 'failed')).toBe(true);
+  });
+
+  test.each(['cancelRun', 'failRun', 'pauseRun'])('advance/complete cannot resurrect a run after %s', (fn) => {
+    const run = startRun(twoStep().workflowId);
+    ({ cancelRun, failRun, pauseRun })[fn](run.id);
+    const status = getRun(run.id).status;
+    const before = trail(run).length;
+    advanceStep(run.id);
+    completeRun(run.id, {});
+    expect(getRun(run.id).status).toBe(status);
+    expect(trail(run).length).toBe(before);
   });
 
   test('AC2 dispatched/completed task entries', () => {
@@ -116,10 +130,17 @@ describe('run audit log', () => {
 
   test('AC5 tenant scoping over HTTP', async () => {
     const run = startRun(twoStep().workflowId, null, { tenantId: 'tenant-a' });
-    const same = await request(app).get(`/runs/${run.id}/audit-log`).set('x-tenant-id', 'tenant-a');
+    const noRole = await request(app).get(`/runs/${run.id}/audit-log`).set('x-tenant-id', 'tenant-a');
+    expect(noRole.status).toBe(401);
+    const same = await request(app).get(`/runs/${run.id}/audit-log`).set('x-tenant-id', 'tenant-a').set('x-staff-role', 'hr');
     expect(same.status).toBe(200);
     expect(same.body.length).toBeGreaterThan(0);
-    const other = await request(app).get(`/runs/${run.id}/audit-log`).set('x-tenant-id', 'tenant-b');
+    const other = await request(app).get(`/runs/${run.id}/audit-log`).set('x-tenant-id', 'tenant-b').set('x-staff-role', 'hr');
     expect(other.status).toBe(404);
+  });
+
+  test.each([{ tenantId: 5 }, { tenantId: '  ' }, { projectId: {} }])('POST /workflows/:id/runs rejects invalid scope %j', async (scope) => {
+    const res = await request(app).post(`/workflows/${twoStep().workflowId}/runs`).set('x-staff-role', 'hr').send(scope);
+    expect(res.status).toBe(400);
   });
 });
