@@ -160,12 +160,22 @@ function fitExpressionFontSize(el, sizes) {
   return sizes[i];
 }
 
+// An element can be `hidden` itself, or sit inside a `hidden` ancestor (e.g. the Scientific
+// keypad is hidden as a whole group while the Basic layout is active) — either way it must be
+// excluded from focus/Tab order.
+function isVisible(el) {
+  for (let node = el; node; node = node.parentElement) {
+    if (node.hidden) return false;
+  }
+  return true;
+}
+
 function getFocusableElements(container) {
   return Array.from(
     container.querySelectorAll(
       'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
     ),
-  ).filter((el) => !el.hidden);
+  ).filter(isVisible);
 }
 
 function initCalculatorApp(doc = document) {
@@ -248,16 +258,22 @@ function initCalculatorApp(doc = document) {
     }
   }
 
-  function setLayout(layout) {
+  function setLayout(layout, { announce = true } = {}) {
     currentLayout = layout;
     $('scientific-keys').hidden = layout !== 'scientific';
     $('tab-basic').setAttribute('aria-selected', String(layout === 'basic'));
     $('tab-scientific').setAttribute('aria-selected', String(layout === 'scientific'));
+    // The visible button set changing isn't enough on its own (AC7): announce the switch
+    // through the same live region used for every other calculator state change.
+    if (announce) {
+      liveRegionEl.textContent =
+        layout === 'scientific' ? 'Scientific layout active' : 'Basic layout active';
+    }
   }
 
   function open() {
     state = createInitialState();
-    setLayout('basic');
+    setLayout('basic', { announce: false });
     render('Calculator opened');
     overlay.hidden = false;
     modalWrap.hidden = false;
@@ -321,36 +337,41 @@ function initCalculatorApp(doc = document) {
   $('calc-close').addEventListener('click', close);
   $('calc-cancel').addEventListener('click', close);
   overlay.addEventListener('click', close);
+  // `doc` (unlike the modal's own markup) isn't replaced between re-initializations — e.g. in
+  // tests that reset the DOM and call initCalculatorApp again — so a prior capture-phase
+  // listener left attached here would keep firing against its own stale closure and could
+  // stopImmediatePropagation() before this instance's listener ever runs. Remove it first.
+  if (doc.__calcKeydownHandler) {
+    doc.removeEventListener('keydown', doc.__calcKeydownHandler, true);
+  }
   // Capture phase so the create modal's own Escape/Tab handling doesn't act while the
   // calculator is on top of it.
-  doc.addEventListener(
-    'keydown',
-    (e) => {
-      if (modalWrap.hidden) return;
-      if (e.key === 'Escape') {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        // Deliberate: Escape clears the display (like "C") rather than closing the dialog.
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        state = pressKey(state, 'clear');
-        render('Display cleared');
-      } else if (e.key === 'Tab') {
-        e.stopImmediatePropagation();
-        trapModalTab(e);
-      } else {
-        const mapped = keyboardKeyFor(e);
-        if (mapped === null) return;
-        // Enter on a focused Close/Cancel/Use/tab control must still activate it. Keypad keys
-        // are not exempt: Enter there means "=" (preventDefault stops the native click).
-        if (mapped === 'equals' && e.target.closest && e.target.closest(NATIVE_ENTER_CONTROLS)) return;
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        state = pressKey(state, mapped);
-        render();
-      }
-    },
-    true,
-  );
+  const handleKeydown = (e) => {
+    if (modalWrap.hidden) return;
+    if (e.key === 'Escape') {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      // Deliberate: Escape clears the display (like "C") rather than closing the dialog.
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      state = pressKey(state, 'clear');
+      render('Display cleared');
+    } else if (e.key === 'Tab') {
+      e.stopImmediatePropagation();
+      trapModalTab(e);
+    } else {
+      const mapped = keyboardKeyFor(e);
+      if (mapped === null) return;
+      // Enter on a focused Close/Cancel/Use/tab control must still activate it. Keypad keys
+      // are not exempt: Enter there means "=" (preventDefault stops the native click).
+      if (mapped === 'equals' && e.target.closest && e.target.closest(NATIVE_ENTER_CONTROLS)) return;
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      state = pressKey(state, mapped);
+      render();
+    }
+  };
+  doc.__calcKeydownHandler = handleKeydown;
+  doc.addEventListener('keydown', handleKeydown, true);
 
   useBtn.addEventListener('click', () => {
     if (useBtn.disabled) return;
@@ -372,6 +393,7 @@ module.exports = {
   createInitialState,
   pressKey,
   fitExpressionFontSize,
+  getFocusableElements,
   initCalculatorApp,
 };
 
