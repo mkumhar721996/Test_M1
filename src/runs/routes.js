@@ -1,7 +1,7 @@
 const express = require('express');
 const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, applyCheckSignal } = require('./store');
 const { getHire } = require('../hires/store');
-const { enforceOnboardingRole } = require('./auth');
+const { enforceOnboardingRole, enforceServiceCredential } = require('./auth');
 
 const router = express.Router();
 
@@ -65,7 +65,7 @@ router.post('/:id/resolve-requirement', enforceOnboardingRole, (req, res) => {
   res.status(200).json(withHire(run));
 });
 
-router.post('/:id/tasks/:taskId/signal', (req, res) => {
+router.post('/:id/tasks/:taskId/signal', enforceServiceCredential, (req, res) => {
   const { outcome } = req.body;
   if (outcome !== 'pass' && outcome !== 'not-pass') {
     return res.status(400).json({ error: 'outcome must be "pass" or "not-pass"' });

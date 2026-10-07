@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 const ROLE_ACTORS = { manager: 'Manager', hr: 'HR' };
 
 function enforceOnboardingRole(req, res, next) {
@@ -12,4 +14,16 @@ function enforceOnboardingRole(req, res, next) {
   next();
 }
 
-module.exports = { enforceOnboardingRole };
+function enforceServiceCredential(req, res, next) {
+  const expected = process.env.CHECK_SIGNAL_SECRET;
+  const provided = req.headers['x-service-key'];
+  if (!provided) return res.status(401).json({ error: 'unauthorized' });
+  const a = Buffer.from(String(provided));
+  const b = Buffer.from(expected || '');
+  if (!expected || a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+    return res.status(403).json({ error: 'forbidden' });
+  }
+  next();
+}
+
+module.exports = { enforceOnboardingRole, enforceServiceCredential };

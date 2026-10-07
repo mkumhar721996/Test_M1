@@ -68,6 +68,7 @@ function applyCheckSignal(runId, taskId, outcome, actor = 'System') {
   if (idx === -1) return run;
   const step = run.steps[idx];
   if (!step.checkType) return run;
+  if (idx !== run.currentIndex || step.status === 'done') return run;
 
   if (outcome === 'pass') {
     step.status = 'done';
@@ -76,14 +77,15 @@ function applyCheckSignal(runId, taskId, outcome, actor = 'System') {
     if (idx === run.steps.length - 1) {
       run.status = 'completed';
       if (run.hireId) appendOnboardingAuditEntry(run.hireId, actor, action, { completed: true });
-    } else if (idx === run.currentIndex) {
+    } else {
       run.currentIndex = idx + 1;
       run.steps[run.currentIndex].status = 'current';
       run.status = 'active';
     }
   } else if (outcome === 'not-pass') {
+    if (step.status === 'blocked') return run;
     step.status = 'blocked';
-    if (idx === run.currentIndex) run.status = 'blocked';
+    run.status = 'blocked';
     run.auditLog.push({
       ts: new Date().toISOString(),
       actor,
