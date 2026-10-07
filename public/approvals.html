@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Approval Queue — Expense Tracker</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/approvals.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/approvals.js" defer></script>
+</head>
+<body class="u-surface">
+
+      <div class="app-topbar">
+        <span class="brand">Expense Tracker</span>
+        <nav class="app-nav">
+          <a href="./index.html">Expenses</a>
+          <a href="#" class="active" aria-current="page">Approvals</a>
+          <a href="#" onclick="return false;">Employees</a>
+        </nav>
+        <div class="viewer-switcher">
+          <label for="viewer-select">Signed in as</label>
+          <select class="input" id="viewer-select">
+            <option>Morgan Ellis</option>
+            <option>Priya Shah</option>
+            <option>Devon Ruiz</option>
+            <option>Jordan Lee</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="page" style="max-width: 1080px;">
+        <div class="page-header">
+          <h1>Approval queue</h1>
+          <p>Review expenses submitted by anyone on the team and approve or reject each one before it's paid.</p>
+        </div>
+
+        <p class="shared-visibility-hint">
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span>This queue is shared — every approver sees the same rows. You can't decide on expenses you submitted yourself; those show "Submitted by you" instead of action buttons.</span>
+        </p>
+
+        <div class="card filter-card">
+          <div class="filter-row">
+            <div class="field">
+              <label class="label" for="filter-employee">Employee</label>
+              <select class="input" id="filter-employee">
+                <option value="">All employees</option>
+                <option>Morgan Ellis</option>
+                <option>Priya Shah</option>
+                <option>Devon Ruiz</option>
+                <option>Jordan Lee</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="filter-category">Category</label>
+              <select class="input" id="filter-category">
+                <option value="">All categories</option>
+                <option>Travel</option>
+                <option>Meals</option>
+                <option>Software</option>
+                <option>Office Supplies</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="filter-status">Status</label>
+              <select class="input" id="filter-status">
+                <option value="">All statuses</option>
+                <option value="submitted">Needs review</option>
+                <option value="decided">Decided, not yet reimbursed</option>
+                <option value="reimbursed">Reimbursed</option>
+              </select>
+            </div>
+            <div class="field sort-field">
+              <label class="label" for="sort-field">Sort by</label>
+              <div class="sort-control">
+                <select class="input" id="sort-field">
+                  <option value="date">Date</option>
+                  <option value="amount">Amount</option>
+                  <option value="employeeName">Employee</option>
+                  <option value="category">Category</option>
+                </select>
+                <button type="button" class="btn btn-secondary" id="sort-direction-btn" aria-label="Toggle sort direction">▼</button>
+              </div>
+            </div>
+            <div class="field demo-field">
+              <label class="label" for="demo-state-select">Demo view</label>
+              <select class="input" id="demo-state-select">
+                <option value="normal">Normal (fixture data)</option>
+                <option value="empty">Preview: empty queue</option>
+                <option value="error">Preview: load error</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <p class="result-summary" id="result-summary" role="status" aria-live="polite"></p>
+
+        <div class="card table-card" id="queue-card">
+          <div class="table-scroll">
+            <table class="queue-table" aria-label="Approval queue">
+              <thead>
+                <tr>
+                  <th scope="col">Employee</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Category</th>
+                  <th scope="col" class="col-amount">Amount</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="queue-tbody">
+                <!-- rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+  <div class="modal-overlay" id="modal-overlay" hidden></div>
+  <div class="modal-wrap" id="modal-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-title">Approve expense</h2>
+          <p id="modal-subtitle"></p>
+        </div>
+        <button class="icon-btn" id="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div id="modal-body"><!-- rendered by JS --></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-confirm-btn">Approve expense</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+</body>
+</html>
