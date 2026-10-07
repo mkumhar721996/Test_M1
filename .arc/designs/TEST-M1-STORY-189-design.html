@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-189 — Reject and Withdraw Candidates</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color —
+    only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border. Every state below (status chips, blocked-action field errors, toasts)
+    is signalled with an icon + label + distinct border weight/style using only the
+    existing tokens, never by hue alone (UX baseline: never encode meaning in colour
+    alone). If sdlc.design-system-bootstrap later adds e.g. `color-danger`/`color-success`,
+    the `.status-chip--*`, `.field-error`, `.input-invalid` and `.toast` rules below are
+    the only places to swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none; border: none; color: var(--color-fg-muted);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; text-decoration: underline; padding: var(--space-2);
+  }
+
+  /* ---------- Role switcher ---------- */
+  .role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .role-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+  .role-switcher select { width: auto; min-width: 270px; }
+
+  .role-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-bottom: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .role-banner[hidden] { display: none; }
+  .role-banner .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .role-banner strong { color: var(--color-fg); }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar { display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .filter-field { min-width: 220px; }
+
+  /* ---------- Candidate table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.candidate-table { width: 100%; border-collapse: collapse; min-width: 860px; }
+  .candidate-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .candidate-table td {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); vertical-align: top;
+  }
+  .candidate-table tbody tr:last-child td { border-bottom: none; }
+  .candidate-table tbody tr.row-changed { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  @media (prefers-reduced-motion: reduce) { .candidate-table tbody tr.row-changed { animation: none; } }
+
+  .name-cell .person-name-link {
+    background: none; border: none; padding: 0; cursor: pointer; text-align: left;
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); text-decoration: underline;
+  }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .role-cell .role-line { color: var(--color-fg); }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .col-actions { text-align: right; white-space: nowrap; }
+  .actions-stack { display: flex; justify-content: flex-end; gap: var(--space-2); flex-wrap: wrap; }
+  .actions-note { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 44px; }
+  .action-link {
+    background: none; border: 1px solid var(--color-border); color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    cursor: pointer; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); min-height: 44px;
+  }
+  .action-link:hover { background: var(--color-bg); }
+
+  /* ---------- Stage chip (recruiting pipeline position) ---------- */
+  .stage-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-regular);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .stage-chip--current { border-color: var(--color-primary); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Status chip (icon + label + border, never colour alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--rejected { border: 2px solid var(--color-fg-muted); color: var(--color-fg); }
+  .status-chip--withdrawn { border: 2px dashed var(--color-fg); color: var(--color-fg); }
+
+  /* ---------- Inline field validation (mirrors the shared .input pattern) ---------- */
+  .input-invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: flex-start; gap: var(--space-1);
+    margin: var(--space-2) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+    background: var(--color-bg); border: 2px solid var(--color-fg-muted); border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+  .field-error[hidden] { display: none; }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-surface); position: relative; overflow: hidden; }
+  .skeleton-bar::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(245,242,251,0.08), transparent);
+    animation: shimmer 1.3s infinite;
+  }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-bar::after { animation: none; } }
+
+  .empty-state { text-align: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2); }
+  .empty-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0; }
+
+  /* ---------- Profile / detail screen ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none;
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3);
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .profile-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+  .profile-header-meta { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+
+  .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .kv-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  /* Control blocks: each shows a current value + its action(s) + a reserved error slot
+     directly beneath, so a blocked attempt (AC2, AC3, AC4) reads as a field-level error
+     next to the exact field it targets, never a generic page-level toast. */
+  .control-block { margin-bottom: var(--space-4); }
+  .control-block:last-child { margin-bottom: 0; }
+  .control-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .control-row-main { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .control-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .control-note { margin: var(--space-2) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Stage history timeline ---------- */
+  .history-list { display: flex; flex-direction: column; gap: var(--space-3); margin: var(--space-3) 0 0 0; padding: 0; list-style: none; }
+  .history-item { display: flex; gap: var(--space-3); }
+  .history-dot { flex: 0 0 auto; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: var(--color-primary); }
+  .history-item.is-final .history-dot { background: var(--color-fg-muted); border: 2px solid var(--color-fg); width: 6px; height: 6px; }
+  .history-body p { margin: 0; font-family: var(--font-family-base); }
+  .history-headline { font-size: var(--font-size-md); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .history-meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: 2px !important; }
+
+  /* ---------- Permission-denied notice ---------- */
+  .notice--deny {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-bg); border: 2px solid var(--color-primary); border-radius: var(--radius-md);
+    padding: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .notice--deny .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); flex: 0 0 auto; }
+  .notice--deny p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .notice--deny p:last-child { margin-bottom: 0; }
+  .notice--deny .notice-sub { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Consequence box (confirm dialog) ---------- */
+  .consequence-box {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin: var(--space-3) 0 0 0;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .consequence-box .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .consequence-box strong { color: var(--color-fg); }
+
+  textarea.input { resize: vertical; min-height: 72px; font-family: var(--font-family-base); }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Pipeline (active) · Requisitions · Reports. A "Recruiting" area
+     distinct from the onboarding/new-hire-profile prototypes (TEST-M1-STORY-155/167) and
+     from the post-offer Workforce directory (TEST-M1-STORY-171): this story acts on a
+     candidate's hire record while it is still pre-offer, in the stages Applied → Phone
+     screen → Interview → Offer → Hired established by the recruiting-pipeline story
+     (TEST-M1-STORY-188). Rejected and Withdrawn are added here as two distinct, final
+     outcomes on that same hire record — never a delete, never a stage, and never
+     reachable once the record is already Deactivated (handled in 171) or already past
+     the Offer stage. Reuses the existing HR/Manager role check seen in 167/171. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;font-family:var(--font-sans)">
+    <span style="font-family:var(--font-mono);color:var(--muted)">TEST-M1-STORY-189</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Candidate Pipeline
+         Notes:
+           - "Signed in as" switches live between HR, Manager, and Interviewer (no
+             HR/Manager access) without reloading the page. Every row action below reacts
+             to that choice (AC5).
+           - The list loads with a brief skeleton, then renders. "Filter by status" shows
+             the empty state when filtered to a status with no matching rows.
+           - Each row's actions are contextual to that candidate's current stage/status —
+             try each of these as HR or Manager:
+               • Jordan Blake (Applied, Active) / Morgan Reyes (Phone screen, Active) /
+                 Casey Nguyen (Interview, Active) — "Reject" / "Withdraw" open the outcome
+                 dialog and update the row immediately on confirm (AC1).
+               • Avery Thompson (Offer, Active) — past the Offer stage, so "Reject" /
+                 "Withdraw" aren't offered here; only a note explains why.
+               • Riley Chen (Interview, Deactivated) — "Reject" / "Withdraw" are still
+                 clickable but return a blocked-attempt toast naming the exact reason
+                 (AC4). Open their record to see the full field-level version.
+               • Sam Okonkwo (Rejected) / Taylor Nakamura (Withdrawn) — "Advance" and
+                 "Reactivate" are still clickable but return blocked-attempt toasts
+                 (AC2, AC3); the status chip itself is visibly distinct from Active and
+                 Deactivated (AC6).
+           - As Interviewer: every action stays visible and clickable (so you can see the
+             request actually get made and denied) but produces a "Request denied" toast
+             and never changes anything (AC5).
+           - Click any candidate's name to open their full record for the canonical
+             field-level version of every blocked attempt.
+           - Data is written to real localStorage under `test-m1-story-189-candidates` —
+             reload this file to confirm a change is still present. "Reset demo data"
+             restores the original fixture rows for repeat walkthroughs.
+    -->
+    <div class="screen" data-name="Candidate Pipeline">
+      <div class="app-topbar">
+        <span class="brand">Recruiting</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Requisitions</a>
+          <a href="#" onclick="return false;">Reports</a>
+        </nav>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>Candidate pipeline</h1>
+            <p>Close out a candidate who won't reach an offer by marking them Rejected or Withdrawn — a distinct, final outcome.</p>
+          </div>
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+              <option value="interviewer">Interviewer (no HR/Manager access)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="role-banner" id="role-banner" hidden>
+          <span class="hint-icon" aria-hidden="true">⛔</span>
+          <span><strong>Viewing as Interviewer.</strong> Only HR or Manager can mark a candidate Rejected or Withdrawn, advance a stage, or reactivate a record. The buttons below are still clickable so you can see each request get denied.</span>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-field">
+            <label class="label" for="status-filter">Filter by status</label>
+            <select class="input" id="status-filter">
+              <option value="all">All candidates</option>
+              <option value="active">Active only</option>
+              <option value="deactivated">Deactivated only</option>
+              <option value="rejected">Rejected only</option>
+              <option value="withdrawn">Withdrawn only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="candidate-table">
+              <thead>
+                <tr>
+                  <th scope="col">Candidate</th>
+                  <th scope="col">Role / Department</th>
+                  <th scope="col">Stage</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pipeline-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reject / Withdraw outcome dialog -->
+      <div class="modal-overlay" id="outcome-overlay" hidden></div>
+      <div class="modal-wrap" id="outcome-wrap" role="dialog" aria-modal="true" aria-labelledby="outcome-title" hidden>
+        <div class="modal-panel" style="width:min(92vw, 460px);">
+          <div class="modal-header">
+            <div><h2 id="outcome-title">Mark candidate as rejected</h2></div>
+            <button class="icon-btn" id="outcome-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+          </div>
+          <p class="card-body" id="outcome-body" style="margin:0;">Are you sure?</p>
+          <div class="field" style="margin-top: var(--space-4);">
+            <label class="label" for="outcome-reason">Reason (optional, visible to the hiring team)</label>
+            <textarea class="input" id="outcome-reason" rows="3" placeholder="e.g. Not enough backend experience for this role"></textarea>
+          </div>
+          <div class="consequence-box">
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span id="outcome-consequence-text"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="outcome-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="outcome-confirm-btn">Mark as rejected</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Candidate updated</span>
+      </div>
+    </div>
+
+    <!-- Screen: Candidate Record
+         Notes:
+           - Deep-linkable: the URL hash (e.g. #candidate/cand_406) selects which
+             candidate renders here, same as navigating directly to that record. Use
+             Prev/Next to land here with whichever candidate was last opened from the
+             pipeline list, or jump straight to a blocked-attempt example from there.
+           - Three control blocks, each with its field reserved for an inline error
+             directly beneath it — this is the canonical place to see AC2, AC3 and AC4 as
+             field-level validation, not just a toast:
+               • "Recruiting stage" — "Advance to [next stage]". Try this on Sam Okonkwo
+                 (Rejected) or Taylor Nakamura (Withdrawn): the stage never changes and a
+                 field-level error explains why (AC3).
+               • "Outcome" — "Reactivate" appears once a record is Rejected or Withdrawn.
+                 Try it on either of the above: the status never changes and a field-level
+                 error explains why (AC2).
+               • Same "Outcome" block shows "Mark as rejected" / "Mark as withdrawn" while
+                 the record is Active and pre-offer — try this on Riley Chen (Deactivated):
+                 clicking either returns a field-level error instead of opening the dialog
+                 (AC4). On an eligible record (e.g. Casey Nguyen) the same buttons open the
+                 real outcome dialog and update the record immediately (AC1).
+           - "Stage & status history" lists every change ever recorded for this candidate,
+             so a Rejected/Withdrawn outcome reads as a permanent entry in the same
+             timeline, not a hidden field (AC6).
+    -->
+    <div class="screen" data-name="Candidate Record">
+      <div class="app-topbar">
+        <span class="brand">Recruiting</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Requisitions</a>
+          <a href="#" onclick="return false;">Reports</a>
+        </nav>
+      </div>
+      <div class="page">
+        <button type="button" class="back-link" id="record-back-btn">
+          <span aria-hidden="true">←</span> Back to pipeline
+        </button>
+
+        <div class="profile-header">
+          <div>
+            <h1 id="record-name">—</h1>
+            <p class="sub" id="record-role-line">—</p>
+          </div>
+          <div class="profile-header-meta">
+            <span id="record-stage-chip"></span>
+            <span id="record-status-chip"></span>
+          </div>
+        </div>
+
+        <div class="role-banner" id="record-role-banner" hidden>
+          <span class="hint-icon" aria-hidden="true">⛔</span>
+          <span><strong>Viewing as Interviewer.</strong> Only HR or Manager can change this candidate's stage or status. The record below is still fully viewable.</span>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Candidate details</h3>
+          <div class="kv-list">
+            <div class="kv-row"><span class="kv-label">Candidate ID</span><span class="kv-value" id="record-id">—</span></div>
+            <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value" id="record-email">—</span></div>
+            <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value" id="record-department">—</span></div>
+            <div class="kv-row"><span class="kv-label">Role applied for</span><span class="kv-value" id="record-role">—</span></div>
+            <div class="kv-row"><span class="kv-label">Applied</span><span class="kv-value" id="record-applied-date">—</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Recruiting stage</h3>
+          <div class="control-block">
+            <div class="control-row">
+              <div class="control-row-main">
+                <span class="kv-label">Stage</span>
+                <span id="record-stage-chip-2"></span>
+              </div>
+              <div class="control-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="advance-btn">Advance</button>
+              </div>
+            </div>
+            <p class="field-error" id="stage-error" role="alert" hidden></p>
+            <p class="control-note" id="stage-note" hidden></p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--space-4);">
+          <h3 class="card-title">Outcome</h3>
+          <div class="control-block">
+            <div class="control-row">
+              <div class="control-row-main">
+                <span class="kv-label">Status</span>
+                <span id="record-status-chip-2"></span>
+              </div>
+              <div class="control-actions" id="outcome-actions"><!-- rendered by JS --></div>
+            </div>
+            <p class="field-error" id="outcome-error" role="alert" hidden></p>
+            <p class="control-note" id="outcome-note" hidden></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Stage &amp; status history</h3>
+          <ul class="history-list" id="record-history"><!-- rendered by JS --></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Role Permissions (reference)
+         Notes:
+           - Summarizes exactly which roles can change a candidate's stage or status, and
+             which status combinations block each action, matching the behaviour wired
+             into the Pipeline and Candidate Record screens (AC1–AC5).
+    -->
+    <div class="screen" data-name="Role Permissions">
+      <div class="app-topbar">
+        <span class="brand">Recruiting</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Requisitions</a>
+          <a href="#" onclick="return false;">Reports</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Role &amp; status permissions</h1>
+          <p>Non-interactive reference. Switch "Signed in as" on the Pipeline screen to see these outcomes live.</p>
+        </div>
+        <div class="card">
+          <table class="matrix-table">
+            <thead><tr><th>Action</th><th>HR</th><th>Manager</th><th>Interviewer</th><th>Satisfies</th></tr></thead>
+            <tbody>
+              <tr><td>Mark an active, pre-offer candidate Rejected or Withdrawn</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Denied</span></td><td>AC1, AC5</td></tr>
+              <tr><td>Reactivate a Rejected or Withdrawn record</td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Denied</span></td><td>AC2, AC5</td></tr>
+              <tr><td>Advance a Rejected or Withdrawn record to another stage</td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Denied</span></td><td>AC3, AC5</td></tr>
+              <tr><td>Mark a Deactivated candidate Rejected or Withdrawn</td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Blocked — 400</span></td><td><span class="verdict block">Denied</span></td><td>AC4, AC5</td></tr>
+              <tr><td>Mark an Active candidate already at Offer or Hired</td><td><span class="verdict block">Not offered</span></td><td><span class="verdict block">Not offered</span></td><td><span class="verdict block">Not offered</span></td><td>Scope — "before the Offer stage"</td></tr>
+              <tr><td>View a Rejected or Withdrawn record</td><td><span class="verdict pass">Full record shown</span></td><td><span class="verdict pass">Full record shown</span></td><td><span class="verdict pass">Full record shown</span></td><td>AC6</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">A blocked attempt (Blocked — 400) is a field-level validation error: the request reaches the record, fails validation against its current status, and nothing changes. A denied attempt (Denied) never reaches validation at all — it fails the HR/Manager role check first. Viewing a record is never role- or status-gated — only changing its stage or status is.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Recruiting</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Pipeline</a>
+          <a href="#" onclick="return false;">Requisitions</a>
+          <a href="#" onclick="return false;">Reports</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>Marking an active, pre-offer candidate sets status to the selected outcome <span class="ac-id">— AC1</span></h3><p>As HR or Manager, "Reject" or "Withdraw" on Jordan Blake (Applied), Morgan Reyes (Phone screen) or Casey Nguyen (Interview) opens the outcome dialog; confirming sets their status chip to "Rejected" or "Withdrawn" immediately — on the Pipeline row and on the Candidate Record.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Reactivating a Rejected or Withdrawn record is blocked with a field-level 400 <span class="ac-id">— AC2</span></h3><p>Open Sam Okonkwo (Rejected) or Taylor Nakamura (Withdrawn) and click "Reactivate" in the Outcome block: status is unchanged and a field-level error appears directly beneath the Status field.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>Advancing a Rejected or Withdrawn record to another stage is blocked with a field-level 400 <span class="ac-id">— AC3</span></h3><p>On the same two records, click "Advance" in the Recruiting stage block: stage is unchanged and a field-level error appears directly beneath the Stage field.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>Marking a Deactivated candidate Rejected or Withdrawn is blocked with a field-level 400 <span class="ac-id">— AC4</span></h3><p>Open Riley Chen (Deactivated, Interview stage) and click "Reject" or "Withdraw": the outcome dialog never opens and a field-level error explains that a deactivated candidate must be reactivated first.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">5</span>
+            <div><h3>A user without HR or Manager role is denied <span class="ac-id">— AC5</span></h3><p>Switch "Signed in as" to Interviewer and attempt any action anywhere in this prototype: a "Request denied" toast appears, the outcome dialog never opens, and nothing changes — see "Role &amp; status permissions".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">6</span>
+            <div><h3>A Rejected or Withdrawn record is distinguishable from Active and Deactivated <span class="ac-id">— AC6</span></h3><p>Every status chip pairs a distinct icon, label and border treatment — Active (✓ solid primary border), Deactivated (⏸ dashed muted border), Rejected (✕ heavy solid border), Withdrawn (↩ heavy dashed border) — visible on both the Pipeline table and the Candidate Record header.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY = 'test-m1-story-189-candidates';
+
+  const STAGES = ['applied', 'phone_screen', 'interview', 'offer', 'hired'];
+  const STAGE_LABELS = { applied: 'Applied', phone_screen: 'Phone screen', interview: 'Interview', offer: 'Offer', hired: 'Hired' };
+
+  const INITIAL_CANDIDATES = [
+    {
+      id: 'cand_401', name: 'Jordan Blake', email: 'jordan.blake@example.com',
+      department: 'Engineering', role: 'Software Engineer', appliedDate: '2026-09-15',
+      stage: 'applied', status: 'active', reason: '',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-09-15', note: 'Candidate entered the pipeline at Applied.' },
+      ],
+    },
+    {
+      id: 'cand_402', name: 'Morgan Reyes', email: 'morgan.reyes@example.com',
+      department: 'Design', role: 'Product Designer', appliedDate: '2026-09-02',
+      stage: 'phone_screen', status: 'active', reason: '',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-09-02', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Dana Brooks (Manager)', at: '2026-09-08', note: 'Resume and portfolio review passed.' },
+      ],
+    },
+    {
+      id: 'cand_403', name: 'Casey Nguyen', email: 'casey.nguyen@example.com',
+      department: 'Finance', role: 'Data Analyst', appliedDate: '2026-08-20',
+      stage: 'interview', status: 'active', reason: '',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-08-20', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Jordan Flores (HR)', at: '2026-08-25', note: 'Strong alignment on required SQL skills.' },
+        { kind: 'stage', label: 'Advanced to Interview', actor: 'Jordan Flores (HR)', at: '2026-09-03', note: 'Scheduled with the Finance hiring panel.' },
+      ],
+    },
+    {
+      id: 'cand_404', name: 'Avery Thompson', email: 'avery.thompson@example.com',
+      department: 'Sales', role: 'Account Executive', appliedDate: '2026-07-30',
+      stage: 'offer', status: 'active', reason: '',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-07-30', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Dana Brooks (Manager)', at: '2026-08-04', note: '' },
+        { kind: 'stage', label: 'Advanced to Interview', actor: 'Dana Brooks (Manager)', at: '2026-08-12', note: '' },
+        { kind: 'stage', label: 'Advanced to Offer', actor: 'Dana Brooks (Manager)', at: '2026-08-22', note: 'Verbal offer extended; written offer pending.' },
+      ],
+    },
+    {
+      id: 'cand_405', name: 'Riley Chen', email: 'riley.chen@example.com',
+      department: 'Engineering', role: 'Support Specialist', appliedDate: '2026-08-05',
+      stage: 'interview', status: 'deactivated', reason: '',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-08-05', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Jordan Flores (HR)', at: '2026-08-11', note: '' },
+        { kind: 'stage', label: 'Advanced to Interview', actor: 'Jordan Flores (HR)', at: '2026-08-19', note: '' },
+        { kind: 'status', label: 'Deactivated', actor: 'Jordan Flores (HR)', at: '2026-09-10', note: 'Requisition paused — candidate record frozen, not closed out.' },
+      ],
+    },
+    {
+      id: 'cand_406', name: 'Sam Okonkwo', email: 'sam.okonkwo@example.com',
+      department: 'Engineering', role: 'Software Engineer', appliedDate: '2026-07-01',
+      stage: 'interview', status: 'rejected', reason: 'Not enough backend experience for this role.',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-07-01', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Jordan Flores (HR)', at: '2026-07-07', note: '' },
+        { kind: 'stage', label: 'Advanced to Interview', actor: 'Jordan Flores (HR)', at: '2026-07-15', note: '' },
+        { kind: 'status', label: 'Marked Rejected — final outcome', actor: 'Jordan Flores (HR)', at: '2026-07-24', note: 'Not enough backend experience for this role.', final: true },
+      ],
+    },
+    {
+      id: 'cand_407', name: 'Taylor Nakamura', email: 'taylor.nakamura@example.com',
+      department: 'Design', role: 'Product Designer', appliedDate: '2026-07-10',
+      stage: 'phone_screen', status: 'withdrawn', reason: 'Accepted another offer.',
+      history: [
+        { kind: 'created', label: 'Application received', actor: 'System', at: '2026-07-10', note: 'Candidate entered the pipeline at Applied.' },
+        { kind: 'stage', label: 'Advanced to Phone screen', actor: 'Dana Brooks (Manager)', at: '2026-07-16', note: '' },
+        { kind: 'status', label: 'Marked Withdrawn — final outcome', actor: 'Dana Brooks (Manager)', at: '2026-07-21', note: 'Accepted another offer.', final: true },
+      ],
+    },
+  ];
+
+  function loadCandidates() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_CANDIDATES)); } catch (e) { /* storage unavailable */ }
+    return cloneFixture();
+  }
+  function cloneFixture() {
+    return INITIAL_CANDIDATES.map(c => ({ ...c, history: c.history.map(h => ({ ...h })) }));
+  }
+  function persistCandidates(list) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+  let candidates = loadCandidates();
+  let lastChangedId = null;
+  let selectedRecordId = candidates[2] ? candidates[2].id : (candidates[0] ? candidates[0].id : null);
+  let pendingOutcome = null; // { id, outcome: 'rejected' | 'withdrawn' }
+
+  function currentRole() { return document.getElementById('role-select').value; } // 'hr' | 'manager' | 'interviewer'
+  function hasAccess() { return currentRole() !== 'interviewer'; }
+  function getCandidate(id) { return candidates.find(c => c.id === id); }
+  function isPreOffer(stage) { return STAGES.indexOf(stage) < STAGES.indexOf('offer'); }
+  function nextStage(stage) {
+    const idx = STAGES.indexOf(stage);
+    return idx >= 0 && idx < STAGES.length - 1 ? STAGES[idx + 1] : null;
+  }
+
+  function statusChipHtml(status) {
+    const map = {
+      active: { icon: '✓', label: 'Active' },
+      deactivated: { icon: '⏸', label: 'Deactivated' },
+      rejected: { icon: '✕', label: 'Rejected' },
+      withdrawn: { icon: '↩', label: 'Withdrawn' },
+    };
+    const m = map[status] || map.active;
+    return `<span class="status-chip status-chip--${status}"><span aria-hidden="true">${m.icon}</span> ${m.label}</span>`;
+  }
+  function stageChipHtml(stage, current) {
+    return `<span class="stage-chip${current ? ' stage-chip--current' : ''}">${STAGE_LABELS[stage]}</span>`;
+  }
+
+  // ---------- Validation (mirrors the API's field-level 400 responses) ----------
+  function validateReactivate(c) {
+    if (c.status === 'rejected' || c.status === 'withdrawn') {
+      return { ok: false, field: 'status', message: `Cannot reactivate — status is ${c.status === 'rejected' ? 'Rejected' : 'Withdrawn'}. Rejected and Withdrawn are final outcomes and aren't eligible for reactivation.` };
+    }
+    return { ok: true };
+  }
+  function validateAdvance(c) {
+    if (c.status === 'rejected' || c.status === 'withdrawn') {
+      return { ok: false, field: 'stage', message: `Cannot advance stage — status is ${c.status === 'rejected' ? 'Rejected' : 'Withdrawn'}. This candidate's record is closed and can't move to another stage.` };
+    }
+    if (c.status === 'deactivated') {
+      return { ok: false, field: 'stage', message: 'Cannot advance stage — candidate is deactivated. Reactivate the candidate first.' };
+    }
+    if (!nextStage(c.stage)) {
+      return { ok: false, field: 'stage', message: 'Already at the final stage — there is no further stage to advance to.' };
+    }
+    return { ok: true };
+  }
+  function validateOutcome(c) {
+    if (c.status === 'deactivated') {
+      return { ok: false, field: 'status', message: 'Cannot mark as Rejected or Withdrawn — candidate is deactivated. Reactivate the candidate first.' };
+    }
+    if (c.status === 'rejected' || c.status === 'withdrawn') {
+      return { ok: false, field: 'status', message: `Already closed — status is ${c.status === 'rejected' ? 'Rejected' : 'Withdrawn'}.` };
+    }
+    if (!isPreOffer(c.stage)) {
+      return { ok: false, field: 'status', message: `Cannot mark as Rejected or Withdrawn — ${STAGE_LABELS[c.stage]} is at or past the Offer stage.` };
+    }
+    return { ok: true };
+  }
+
+  // ---------- Pipeline list rendering ----------
+  function renderRoleBanners() {
+    const show = !hasAccess();
+    document.getElementById('role-banner').hidden = !show;
+    document.getElementById('record-role-banner').hidden = !show;
+  }
+
+  function renderPipelineSkeleton() {
+    const tbody = document.getElementById('pipeline-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+      const tr = document.createElement('tr');
+      tr.className = 'skeleton-row';
+      tr.innerHTML = `
+        <td><div class="skeleton-bar" style="width:70%;"></div></td>
+        <td><div class="skeleton-bar" style="width:60%;"></div></td>
+        <td><div class="skeleton-bar" style="width:50%;"></div></td>
+        <td><div class="skeleton-bar" style="width:40%;"></div></td>
+        <td><div class="skeleton-bar" style="width:35%; margin-left:auto;"></div></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function rowActionsHtml(c) {
+    const outcomeCheck = validateOutcome(c);
+    if (c.status === 'active' && !isPreOffer(c.stage)) {
+      return `<span class="actions-note">Past the Offer stage</span>`;
+    }
+    if (c.status === 'active' || c.status === 'deactivated') {
+      // Reject/Withdraw offered whenever not yet closed out, even when it will be
+      // blocked (deactivated) — so the blocked attempt itself is demonstrable (AC4).
+      return `
+        <div class="actions-stack">
+          <button type="button" class="action-link btn-sm" data-reject-id="${c.id}">${outcomeCheck.ok ? '' : '🔒'}Reject</button>
+          <button type="button" class="action-link btn-sm" data-withdraw-id="${c.id}">${outcomeCheck.ok ? '' : '🔒'}Withdraw</button>
+        </div>`;
+    }
+    // rejected / withdrawn — offer Advance + Reactivate so the block is demonstrable (AC2, AC3)
+    return `
+      <div class="actions-stack">
+        <button type="button" class="action-link btn-sm" data-advance-id="${c.id}">🔒Advance</button>
+        <button type="button" class="action-link btn-sm" data-reactivate-id="${c.id}">🔒Reactivate</button>
+      </div>`;
+  }
+
+  function renderPipelineList() {
+    const tbody = document.getElementById('pipeline-tbody');
+    const filter = document.getElementById('status-filter').value;
+    const rows = candidates.filter(c => filter === 'all' ? true : c.status === filter);
+    tbody.innerHTML = '';
+
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>No ${escapeHtml(filter)} candidates right now.</p></div></td></tr>`;
+      return;
+    }
+
+    rows.forEach(c => {
+      const tr = document.createElement('tr');
+      if (c.id === lastChangedId) tr.className = 'row-changed';
+      tr.innerHTML = `
+        <td class="name-cell">
+          <button type="button" class="person-name-link" data-view-id="${c.id}">${escapeHtml(c.name)}</button>
+          <span class="person-id">${c.id}</span>
+        </td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(c.role)}</span><br/><span class="dept-line">${escapeHtml(c.department)}</span></td>
+        <td>${stageChipHtml(c.stage, true)}</td>
+        <td>${statusChipHtml(c.status)}</td>
+        <td class="col-actions">${rowActionsHtml(c)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    lastChangedId = null;
+
+    tbody.querySelectorAll('[data-view-id]').forEach(btn => btn.addEventListener('click', () => openRecord(btn.getAttribute('data-view-id'))));
+    tbody.querySelectorAll('[data-reject-id]').forEach(btn => btn.addEventListener('click', () => onOutcomeClick(btn.getAttribute('data-reject-id'), 'rejected', false)));
+    tbody.querySelectorAll('[data-withdraw-id]').forEach(btn => btn.addEventListener('click', () => onOutcomeClick(btn.getAttribute('data-withdraw-id'), 'withdrawn', false)));
+    tbody.querySelectorAll('[data-advance-id]').forEach(btn => btn.addEventListener('click', () => onAdvanceClick(btn.getAttribute('data-advance-id'), false)));
+    tbody.querySelectorAll('[data-reactivate-id]').forEach(btn => btn.addEventListener('click', () => onReactivateClick(btn.getAttribute('data-reactivate-id'), false)));
+  }
+
+  async function refreshPipeline() {
+    renderPipelineSkeleton();
+    await wait(250);
+    renderPipelineList();
+  }
+
+  // ---------- Candidate Record rendering ----------
+  function renderHistory(c) {
+    const list = document.getElementById('record-history');
+    list.innerHTML = '';
+    c.history.forEach(h => {
+      const li = document.createElement('li');
+      li.className = 'history-item' + (h.final ? ' is-final' : '');
+      li.innerHTML = `
+        <span class="history-dot" aria-hidden="true"></span>
+        <div class="history-body">
+          <p class="history-headline">${escapeHtml(h.label)}</p>
+          <p class="history-meta">${escapeHtml(h.actor)} · ${formatDateDisplay(h.at)}</p>
+          ${h.note ? `<p class="history-meta">${escapeHtml(h.note)}</p>` : ''}
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  function clearFieldErrors() {
+    ['stage-error', 'outcome-error'].forEach(id => {
+      const el = document.getElementById(id);
+      el.hidden = true;
+      el.textContent = '';
+    });
+  }
+
+  function renderOutcomeActions(c) {
+    const host = document.getElementById('outcome-actions');
+    if (c.status === 'rejected' || c.status === 'withdrawn') {
+      host.innerHTML = `<button type="button" class="btn btn-secondary btn-sm" id="reactivate-btn">Reactivate</button>`;
+      document.getElementById('reactivate-btn').addEventListener('click', () => onReactivateClick(c.id, true));
+      const note = document.getElementById('outcome-note');
+      note.hidden = false;
+      note.textContent = `${c.name} is closed out and no longer part of the live pipeline.`;
+    } else {
+      host.innerHTML = `
+        <button type="button" class="btn btn-secondary btn-sm" id="reject-btn">Mark as rejected</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="withdraw-btn">Mark as withdrawn</button>
+      `;
+      document.getElementById('reject-btn').addEventListener('click', () => onOutcomeClick(c.id, 'rejected', true));
+      document.getElementById('withdraw-btn').addEventListener('click', () => onOutcomeClick(c.id, 'withdrawn', true));
+      const note = document.getElementById('outcome-note');
+      if (c.status === 'deactivated') {
+        note.hidden = false;
+        note.textContent = 'Deactivated candidates must be reactivated (Workforce directory, TEST-M1-STORY-171) before they can be marked Rejected or Withdrawn.';
+      } else if (!isPreOffer(c.stage)) {
+        note.hidden = false;
+        note.textContent = `Not available at ${STAGE_LABELS[c.stage]} — Rejected/Withdrawn only applies before the Offer stage.`;
+      } else {
+        note.hidden = true;
+      }
+    }
+  }
+
+  function renderRecord() {
+    const c = getCandidate(selectedRecordId);
+    if (!c) return;
+    clearFieldErrors();
+
+    document.getElementById('record-name').textContent = c.name;
+    document.getElementById('record-role-line').textContent = `${c.role} · ${c.department}`;
+    document.getElementById('record-id').textContent = c.id;
+    document.getElementById('record-email').textContent = c.email;
+    document.getElementById('record-department').textContent = c.department;
+    document.getElementById('record-role').textContent = c.role;
+    document.getElementById('record-applied-date').textContent = formatDateDisplay(c.appliedDate);
+
+    document.getElementById('record-stage-chip').innerHTML = stageChipHtml(c.stage, true);
+    document.getElementById('record-status-chip').innerHTML = statusChipHtml(c.status);
+    document.getElementById('record-stage-chip-2').innerHTML = stageChipHtml(c.stage, true);
+    document.getElementById('record-status-chip-2').innerHTML = statusChipHtml(c.status);
+
+    const advanceBtn = document.getElementById('advance-btn');
+    const next = nextStage(c.stage);
+    advanceBtn.textContent = next ? `Advance to ${STAGE_LABELS[next]}` : 'Advance';
+    const stageNote = document.getElementById('stage-note');
+    stageNote.hidden = true;
+    if (!next && c.status === 'active') { stageNote.hidden = false; stageNote.textContent = 'Already at the final stage.'; }
+
+    renderOutcomeActions(c);
+    renderHistory(c);
+    renderRoleBanners();
+  }
+
+  function openRecord(id) {
+    selectedRecordId = id;
+    location.hash = `candidate/${id}`;
+    show(1);
+  }
+
+  // ---------- Field-level error presentation ----------
+  function showFieldError(fieldId, message) {
+    const el = document.getElementById(fieldId);
+    el.hidden = false;
+    el.innerHTML = `<span aria-hidden="true">⚠</span><span>${escapeHtml(message)}</span>`;
+  }
+
+  // ---------- Advance stage ----------
+  async function onAdvanceClick(id, fromRecord) {
+    const c = getCandidate(id);
+    if (!c) return;
+    if (!hasAccess()) { showToast('⛔', 'Request denied — HR or Manager role required.'); return; }
+
+    const result = validateAdvance(c);
+    if (!result.ok) {
+      if (fromRecord) { clearFieldErrors(); showFieldError('stage-error', result.message); }
+      showToast('⚠', `Blocked — ${result.message}`);
+      return;
+    }
+
+    await wait(250);
+    const from = c.stage;
+    c.stage = nextStage(c.stage);
+    c.history.push({ kind: 'stage', label: `Advanced to ${STAGE_LABELS[c.stage]}`, actor: currentRole() === 'hr' ? 'You (HR)' : 'You (Manager)', at: new Date().toISOString().slice(0, 10), note: '' });
+    persistCandidates(candidates);
+    lastChangedId = id;
+    showToast('✓', `${c.name} advanced to ${STAGE_LABELS[c.stage]}`);
+    if (fromRecord) renderRecord();
+    renderPipelineList();
+  }
+
+  // ---------- Reactivate ----------
+  async function onReactivateClick(id, fromRecord) {
+    const c = getCandidate(id);
+    if (!c) return;
+    if (!hasAccess()) { showToast('⛔', 'Request denied — HR or Manager role required.'); return; }
+
+    const result = validateReactivate(c);
+    if (!result.ok) {
+      if (fromRecord) { clearFieldErrors(); showFieldError('outcome-error', result.message); }
+      showToast('⚠', `Blocked — ${result.message}`);
+      return;
+    }
+
+    await wait(250);
+    c.status = 'active';
+    c.history.push({ kind: 'status', label: 'Reactivated', actor: currentRole() === 'hr' ? 'You (HR)' : 'You (Manager)', at: new Date().toISOString().slice(0, 10), note: '' });
+    persistCandidates(candidates);
+    lastChangedId = id;
+    showToast('✓', `${c.name} reactivated`);
+    if (fromRecord) renderRecord();
+    renderPipelineList();
+  }
+
+  // ---------- Reject / Withdraw ----------
+  function onOutcomeClick(id, outcome, fromRecord) {
+    const c = getCandidate(id);
+    if (!c) return;
+    if (!hasAccess()) { showToast('⛔', 'Request denied — HR or Manager role required.'); return; }
+
+    const result = validateOutcome(c);
+    if (!result.ok) {
+      if (fromRecord) { clearFieldErrors(); showFieldError('outcome-error', result.message); }
+      showToast('⚠', `Blocked — ${result.message}`);
+      return;
+    }
+
+    pendingOutcome = { id, outcome, fromRecord };
+    const label = outcome === 'rejected' ? 'rejected' : 'withdrawn';
+    document.getElementById('outcome-title').textContent = `Mark candidate as ${label}`;
+    document.getElementById('outcome-body').textContent = `Mark ${c.name} as ${label === 'rejected' ? 'Rejected' : 'Withdrawn'}?`;
+    document.getElementById('outcome-reason').value = '';
+    document.getElementById('outcome-consequence-text').innerHTML = `This closes <strong>${escapeHtml(c.name)}</strong>'s hire record. ${label === 'rejected' ? 'Rejected' : 'Withdrawn'} is a final outcome — the record won't be eligible to advance to another stage or be reactivated into the live pipeline.`;
+    const confirmBtn = document.getElementById('outcome-confirm-btn');
+    confirmBtn.textContent = `Mark as ${label}`;
+    confirmBtn.disabled = false;
+
+    document.getElementById('outcome-overlay').hidden = false;
+    document.getElementById('outcome-wrap').hidden = false;
+  }
+
+  function closeOutcomeDialog() {
+    document.getElementById('outcome-overlay').hidden = true;
+    document.getElementById('outcome-wrap').hidden = true;
+    pendingOutcome = null;
+  }
+
+  async function confirmOutcome() {
+    if (!pendingOutcome) return;
+    const { id, outcome, fromRecord } = pendingOutcome;
+    const c = getCandidate(id);
+    if (!c) { closeOutcomeDialog(); return; }
+
+    const confirmBtn = document.getElementById('outcome-confirm-btn');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Saving…';
+    await wait(300);
+
+    const reason = document.getElementById('outcome-reason').value.trim();
+    const label = outcome === 'rejected' ? 'Rejected' : 'Withdrawn';
+    c.status = outcome;
+    c.reason = reason;
+    c.history.push({
+      kind: 'status', label: `Marked ${label} — final outcome`,
+      actor: currentRole() === 'hr' ? 'You (HR)' : 'You (Manager)',
+      at: new Date().toISOString().slice(0, 10),
+      note: reason, final: true,
+    });
+    persistCandidates(candidates);
+    lastChangedId = id;
+
+    closeOutcomeDialog();
+    showToast('✓', `${c.name} marked as ${label}`);
+
+    if (fromRecord && selectedRecordId === id) renderRecord();
+    renderPipelineList();
+  }
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(icon, message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    document.getElementById('toast-icon').textContent = icon || '✓';
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
+  }
+
+  // ---------- Wire up ----------
+  document.getElementById('role-select').addEventListener('change', () => {
+    renderRoleBanners();
+    renderPipelineList();
+    if (document.getElementById('record-name').textContent !== '—') renderRecord();
+  });
+  document.getElementById('status-filter').addEventListener('change', renderPipelineList);
+  document.getElementById('reset-data-btn').addEventListener('click', async () => {
+    candidates = cloneFixture();
+    persistCandidates(candidates);
+    showToast('↺', 'Demo data reset');
+    await refreshPipeline();
+    if (document.getElementById('record-name').textContent !== '—') renderRecord();
+  });
+
+  document.getElementById('outcome-close-btn').addEventListener('click', closeOutcomeDialog);
+  document.getElementById('outcome-cancel-btn').addEventListener('click', closeOutcomeDialog);
+  document.getElementById('outcome-confirm-btn').addEventListener('click', confirmOutcome);
+  document.getElementById('outcome-overlay').addEventListener('click', closeOutcomeDialog);
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && !document.getElementById('outcome-wrap').hidden) closeOutcomeDialog();
+  });
+
+  document.getElementById('record-back-btn').addEventListener('click', () => show(0));
+  document.getElementById('advance-btn').addEventListener('click', () => onAdvanceClick(selectedRecordId, true));
+
+  // ---------- Deep-link support ----------
+  function applyHashRoute() {
+    const match = /^#candidate\/(.+)$/.exec(location.hash);
+    if (match && getCandidate(match[1])) {
+      selectedRecordId = match[1];
+      show(1);
+      renderRecord();
+    }
+  }
+  window.addEventListener('hashchange', applyHashRoute);
+
+  // ---------- Screen navigation (reviewer bar) ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    if (cur === 1) renderRecord();
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  renderRoleBanners();
+  refreshPipeline();
+  const deepLinkMatch = /^#candidate\/(.+)$/.exec(location.hash);
+  if (deepLinkMatch && getCandidate(deepLinkMatch[1])) {
+    selectedRecordId = deepLinkMatch[1];
+    show(1);
+  } else {
+    show(0);
+  }
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
