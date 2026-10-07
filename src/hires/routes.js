@@ -6,7 +6,7 @@ const { pickFields } = require('../lib/pickFields');
 
 const router = express.Router();
 
-const PATCHABLE_FIELDS = ['name', 'email', 'phone', 'startDate', 'department', 'role', 'hireStage'];
+const PATCHABLE_FIELDS = ['name', 'email', 'phone', 'startDate', 'department', 'role', 'hireStage', 'hiringManager'];
 
 router.get('/', (req, res, next) => {
   try {

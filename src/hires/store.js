@@ -12,6 +12,7 @@ hires.set('hire_2031', {
   department: 'Engineering',
   role: 'Software Engineer II',
   hireStage: 'draft',
+  hiringManager: null,
   profileStatus: 'active',
   run: null,
   runHistory: [],
@@ -37,6 +38,32 @@ function assertValidHire(name, email, phone, department, role, startDate) {
   if (!startDate) fields.startDate = 'Start date is required.';
   if (Object.keys(fields).length > 0) {
     throw new HireValidationError('validation_error', fields);
+  }
+}
+
+const CANDIDATE_STAGES = ['applied', 'screening', 'interview', 'offer_extended', 'offer_accepted'];
+
+function assertValidStageTransition(hire, changes) {
+  if (!('hireStage' in changes) || changes.hireStage === hire.hireStage) return;
+
+  if (hire.profileStatus === 'deactivated') {
+    throw new HireValidationError('validation_error', { hireStage: 'Cannot change stage on a deactivated hire.' });
+  }
+
+  const fromIdx = CANDIDATE_STAGES.indexOf(hire.hireStage);
+  const toIdx = CANDIDATE_STAGES.indexOf(changes.hireStage);
+  if (fromIdx === -1 || toIdx === -1) return;
+
+  if (toIdx < fromIdx) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage cannot move backward.' });
+  }
+  if (toIdx > fromIdx + 1) {
+    throw new HireValidationError('validation_error', { hireStage: 'Stage cannot skip ahead.' });
+  }
+
+  const nextHiringManager = 'hiringManager' in changes ? changes.hiringManager : hire.hiringManager;
+  if (toIdx >= 1 && (!nextHiringManager || !String(nextHiringManager).trim())) {
+    throw new HireValidationError('validation_error', { hiringManager: 'Hiring manager is required from Screening onward.' });
   }
 }
 
@@ -89,6 +116,7 @@ async function updateHire(id, changes) {
   const nextStartDate = 'startDate' in changes ? changes.startDate : hire.startDate;
 
   assertValidHire(nextName, nextEmail, nextPhone, nextDepartment, nextRole, nextStartDate);
+  assertValidStageTransition(hire, changes);
 
   if (changingToOfferAccepted && !hasActiveRun) {
     const run = await engineClient.triggerRun({ hireId: hire.id, department: nextDepartment, role: nextRole });
