@@ -99,6 +99,41 @@ describe('Order tracking cancellation UI', () => {
     delete global.fetch;
   });
 
+  test('rejection with a terminal server status removes the stale cancel button', async () => {
+    const order = fixtureOrder({ id: 'ORD-48198', status: 'accepted' });
+    const api = { cancel: jest.fn().mockResolvedValue({ approved: false, order: { ...order, status: 'picked_up' } }) };
+    const { initOrdersApp } = require('../public/js/orders');
+    initOrdersApp(document, [order], api);
+    openAndConfirm('ORD-48198');
+    await flush();
+    expect(document.getElementById('outcome-banner-danger').hidden).toBe(false);
+    expect(document.getElementById('tracking-status-chip').textContent).toContain('Picked up');
+    expect(document.getElementById('tracking-cancel-btn')).toBeNull();
+    expect(document.getElementById('outcome-fail-copy').textContent).not.toContain('on its way');
+  });
+
+  test('cancelledAt ISO timestamp is formatted for display', async () => {
+    const order = fixtureOrder();
+    const iso = '2026-03-05T14:07:00.000Z';
+    const api = { cancel: jest.fn().mockResolvedValue({ approved: true, order: { ...order, status: 'cancelled', cancelledAt: iso } }) };
+    const { initOrdersApp } = require('../public/js/orders');
+    initOrdersApp(document, [order], api);
+    openAndConfirm('ORD-48213');
+    await flush();
+    const text = document.getElementById('tracking-timeline-container').textContent;
+    expect(text).toContain('Cancelled at');
+    expect(text).not.toContain(iso);
+  });
+
+  test('script loads in a browser-like scope where `module` is undefined', () => {
+    const vm = require('vm');
+    const src = fs.readFileSync(path.join(__dirname, '..', 'public', 'js', 'orders.js'), 'utf8');
+    const listeners = [];
+    const sandbox = { window: { addEventListener: (n) => listeners.push(n) }, console };
+    expect(() => vm.runInNewContext(src, sandbox)).not.toThrow();
+    expect(listeners).toContain('DOMContentLoaded');
+  });
+
   test('Escape closes the modal without cancelling', () => {
     const api = { cancel: jest.fn() };
     const { initOrdersApp } = require('../public/js/orders');

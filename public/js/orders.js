@@ -39,6 +39,11 @@ function statusChipInner(status) {
   return `<span class="dot">${statusChipParts(status).dot}</span> ${escapeHtml(STATUS_LABELS[status] || status)}`;
 }
 
+function formatCancelledAt(value) {
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? value : d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+}
+
 function timelineHtml(order) {
   if (order.status === 'cancelled') {
     return `
@@ -46,7 +51,7 @@ function timelineHtml(order) {
         <span class="icon-badge">✕</span>
         <div>
           <h3>This order was cancelled</h3>
-          <p>Cancelled at ${escapeHtml(order.cancelledAt)}. Any payment will be refunded to your original payment method within 3–5 business days.</p>
+          <p>Cancelled at ${escapeHtml(formatCancelledAt(order.cancelledAt))}. Any payment will be refunded to your original payment method within 3–5 business days.</p>
         </div>
       </div>`;
   }
@@ -178,7 +183,11 @@ function initOrdersApp(doc, initialOrders, api) {
         $('toast-success').hidden = false;
         $('outcome-banner-success').scrollIntoView?.({ behavior: 'smooth', block: 'start' });
       } else {
-        showDanger(`We couldn't cancel ${o.id}. ${o.restaurant} had already started on it, so the cancellation request wasn't successful — your order is still on its way. No charge changes were made.`);
+        if (result && result.order) {
+          orders = orders.map((x) => (x.id === o.id ? result.order : x));
+          renderStatus();
+        }
+        showDanger(`We couldn't cancel ${o.id}. The cancellation request wasn't successful and your order was not cancelled. No charge changes were made.`);
       }
     }).catch((err) => {
       console.error('Order cancellation request failed', err);
@@ -219,7 +228,7 @@ function createDefaultApi() {
   };
 }
 
-module.exports = { initOrdersApp, createDefaultApi };
+if (typeof module !== 'undefined' && module.exports) module.exports = { initOrdersApp, createDefaultApi };
 
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
