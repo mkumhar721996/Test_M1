@@ -31,3 +31,24 @@ test('submitting with no details is rejected and creates nothing', async () => {
   expect(res.body).toEqual({ error: 'validation_error', fields: { title: 'Add a title before submitting.' } });
   expect(listDefects().length).toBe(before);
 });
+
+test('non-string text fields and unknown severities are rejected with 400, not 500', async () => {
+  const before = listDefects().length;
+  const badTitle = await request(app).post('/defects').send({ title: 123 });
+  expect(badTitle.status).toBe(400);
+  expect(badTitle.body.fields).toHaveProperty('title');
+
+  const badDescription = await request(app).post('/defects').send({ title: 'T', description: { a: 1 } });
+  expect(badDescription.status).toBe(400);
+  expect(badDescription.body.fields).toHaveProperty('description');
+
+  const badSeverity = await request(app).post('/defects').send({ title: 'T', severity: 'Apocalyptic' });
+  expect(badSeverity.status).toBe(400);
+  expect(badSeverity.body.fields).toHaveProperty('severity');
+
+  const badReporter = await request(app).post('/defects').send({ title: 'T', reportedBy: { x: 1 } });
+  expect(badReporter.status).toBe(400);
+  expect(badReporter.body.fields).toHaveProperty('reportedBy');
+
+  expect(listDefects().length).toBe(before);
+});

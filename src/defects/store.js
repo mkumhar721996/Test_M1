@@ -9,14 +9,31 @@ class DefectValidationError extends Error {
 const defects = new Map();
 let nextDefectNumber = 1043;
 
+const SEVERITIES = ['', 'Low', 'Medium', 'High', 'Critical'];
+const TEXT_FIELDS = ['description', 'steps', 'environment'];
+
 function createDefect(data = {}) {
-  const title = (data.title || '').trim();
-  if (!title) {
-    throw new DefectValidationError('validation_error', { title: 'Add a title before submitting.' });
+  const fields = {};
+  const isMissing = (v) => v === undefined || v === null;
+
+  for (const key of ['title', ...TEXT_FIELDS, 'reportedBy']) {
+    if (!isMissing(data[key]) && typeof data[key] !== 'string') {
+      fields[key] = 'Must be text.';
+    }
   }
+  if (!isMissing(data.severity) && !SEVERITIES.includes(data.severity)) {
+    fields.severity = 'Choose Low, Medium, High or Critical.';
+  }
+  if (!fields.title && !(data.title || '').trim()) {
+    fields.title = 'Add a title before submitting.';
+  }
+  if (Object.keys(fields).length > 0) {
+    throw new DefectValidationError('validation_error', fields);
+  }
+
   const defect = {
     id: `DEF-${nextDefectNumber++}`,
-    title,
+    title: data.title.trim(),
     description: (data.description || '').trim(),
     steps: (data.steps || '').trim(),
     environment: (data.environment || '').trim(),
