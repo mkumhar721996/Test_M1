@@ -1,10 +1,23 @@
 const STAGE_LABELS = {
   draft: 'Draft',
+  applied: 'Applied',
+  screening: 'Screening',
+  interview: 'Interview',
+  offer_extended: 'Offer extended',
   offer_accepted: 'Offer accepted',
   onboarding_in_progress: 'Onboarding in progress',
   completed: 'Completed',
 };
-const STAGE_ICONS = { draft: '○', offer_accepted: '◐', onboarding_in_progress: '◑', completed: '✓' };
+const STAGE_ICONS = {
+  draft: '○',
+  applied: '○',
+  screening: '◔',
+  interview: '◑',
+  offer_extended: '◕',
+  offer_accepted: '◐',
+  onboarding_in_progress: '◑',
+  completed: '✓',
+};
 
 function escapeHtml(str) {
   return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({

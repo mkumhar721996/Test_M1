@@ -2,6 +2,23 @@ const { escapeHtml, formatDateDisplay } = require('./utils');
 
 const TASKS_TOTAL = 5;
 const DEPARTMENTS = ['Engineering', 'Product', 'Sales', 'People Ops', 'Finance'];
+const CANDIDATE_STAGES = ['applied', 'screening', 'interview', 'offer_extended', 'offer_accepted'];
+const STAGE_LABELS = {
+  draft: 'Draft',
+  applied: 'Applied',
+  screening: 'Screening',
+  interview: 'Interview',
+  offer_extended: 'Offer extended',
+  offer_accepted: 'Offer accepted',
+};
+
+function stageSelectOptions(currentStage) {
+  const idx = CANDIDATE_STAGES.indexOf(currentStage);
+  if (idx === -1) return [currentStage, ...CANDIDATE_STAGES];
+  const options = [currentStage];
+  if (idx + 1 < CANDIDATE_STAGES.length) options.push(CANDIDATE_STAGES[idx + 1]);
+  return options;
+}
 
 function workflowName(dept, role) {
   return `${dept} — ${role}`;
@@ -89,8 +106,9 @@ function initHireProfileApp(doc, initialHire, api) {
       ? '<span aria-hidden="true">●</span> Active profile'
       : '<span aria-hidden="true">○</span> Deactivated';
 
-    const stageLabel = hire.hireStage === 'offer_accepted' ? 'Offer accepted' : 'Draft';
+    const stageLabel = STAGE_LABELS[hire.hireStage] || hire.hireStage;
     const canEditStage = hire.hireStage !== 'offer_accepted' && hire.profileStatus === 'active';
+    const stageOptions = stageSelectOptions(hire.hireStage);
 
     kvList.innerHTML = `
       <div class="kv-row">
@@ -127,15 +145,23 @@ function initHireProfileApp(doc, initialHire, api) {
           <button class="btn btn-secondary btn-sm" type="button" id="edit-role-btn" ${hire.profileStatus !== 'active' ? 'disabled' : ''}>Edit role &amp; department</button>
         </span>
       </div>
-      <div class="kv-row" style="border-bottom:none;">
+      <div class="kv-row">
         <span class="kv-label">Hire stage</span>
         <span class="kv-value">
           ${canEditStage
             ? `<select class="input" id="field-hire-stage" style="max-width:220px; display:inline-block;">
-                 <option value="draft" ${hire.hireStage === 'draft' ? 'selected' : ''}>Draft</option>
-                 <option value="offer_accepted" ${hire.hireStage === 'offer_accepted' ? 'selected' : ''}>Offer accepted</option>
+                 ${stageOptions.map((s) => `<option value="${s}" ${s === hire.hireStage ? 'selected' : ''}>${STAGE_LABELS[s] || s}</option>`).join('')}
                </select>`
             : `${stageLabel} ${hire.hireStage === 'offer_accepted' ? '✓' : ''}`}
+        </span>
+        <span class="kv-actions"></span>
+      </div>
+      <div class="kv-row" style="border-bottom:none;">
+        <span class="kv-label">Hiring manager</span>
+        <span class="kv-value">
+          ${canEditStage
+            ? `<input class="input" id="field-hiring-manager" type="text" style="max-width:220px; display:inline-block;" value="${escapeHtml(doc, hire.hiringManager || '')}" placeholder="Required from Screening onward" />`
+            : escapeHtml(doc, hire.hiringManager || '—')}
         </span>
         <span class="kv-actions">
           ${canEditStage ? '<button class="btn btn-primary btn-sm" type="button" id="save-stage-btn">Save profile</button>' : ''}
@@ -378,9 +404,10 @@ function initHireProfileApp(doc, initialHire, api) {
   // ---------- Hire stage save (AC1, AC9) ----------
   function handleSaveStage() {
     const newStage = doc.getElementById('field-hire-stage').value;
+    const hiringManager = doc.getElementById('field-hiring-manager').value.trim();
     const willTriggerRun = newStage === 'offer_accepted' && newStage !== hire.hireStage;
     if (willTriggerRun) setPending(true, 'Starting onboarding Run…');
-    api.saveStage(newStage).then((updated) => {
+    api.saveStage({ hireStage: newStage, hiringManager }).then((updated) => {
       hire = updated;
       if (willTriggerRun) setPending(false);
       renderAll();
@@ -412,7 +439,7 @@ function createDefaultApi(hireId, getRole = () => 'manager') {
   const patch = (changes) => request(`/hires/${hireId}`, 'PATCH', changes);
 
   return {
-    saveStage: (hireStage) => patch({ hireStage }),
+    saveStage: (changes) => patch(changes),
     updateRoleDepartment: (changes) => patch(changes),
     updateContact: (changes) => patch(changes),
     deactivate: () => request(`/hires/${hireId}/deactivate`, 'POST'),
