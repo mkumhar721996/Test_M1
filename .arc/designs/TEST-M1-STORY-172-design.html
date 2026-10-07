@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-172 — Employee Directory &amp; Search</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per the UX baseline (never encode meaning in colour alone), the
+    Active/Inactive status badges and the access-denied panel below are signalled with an
+    icon + label + border weight using only the existing tokens, never by hue alone —
+    matching the convention already used in TEST-M1-STORY-171. If sdlc.design-system-bootstrap
+    later adds e.g. `color-success`/`color-danger`, the status badges are the only place to
+    swap them in.
+  */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Role switcher (demo auth) ---------- */
+  .role-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .role-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+  .role-switcher select { width: auto; min-width: 260px; }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar { display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-3); }
+  .filter-field { min-width: 200px; flex: 1 1 200px; }
+  .filter-field.search-field { flex: 2 1 260px; }
+  .clear-filters-btn { align-self: flex-end; margin-bottom: 1px; }
+
+  .filter-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-bottom: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .filter-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Direct ID lookup ---------- */
+  .lookup-row {
+    display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap;
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-bottom: var(--space-4);
+  }
+  .lookup-field { flex: 1 1 220px; min-width: 200px; margin: 0; }
+  .lookup-row .btn { min-height: 44px; }
+  .lookup-error {
+    width: 100%; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    margin-top: var(--space-1);
+  }
+  .lookup-error[hidden] { display: none; }
+
+  /* ---------- Results summary ---------- */
+  .results-summary { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-2) 0; }
+
+  /* ---------- Directory table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.directory-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .directory-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .directory-table td {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); vertical-align: top;
+  }
+  .directory-table tbody tr:last-child td { border-bottom: none; }
+
+  .name-cell .person-name-link {
+    background: none; border: none; padding: 0; cursor: pointer; text-align: left;
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); text-decoration: underline; min-height: 24px;
+    word-break: break-word; overflow-wrap: anywhere;
+  }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .role-cell .role-line { color: var(--color-fg); word-break: break-word; overflow-wrap: anywhere; }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); word-break: break-word; overflow-wrap: anywhere; }
+
+  /* ---------- Partial results (large result set, truncated) ---------- */
+  .partial-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin: 0 0 var(--space-3) 0;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .partial-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Status badge (icon + label, never colour alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--inactive { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-surface); position: relative; overflow: hidden; }
+  .skeleton-bar::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(245,242,251,0.08), transparent);
+    animation: shimmer 1.3s infinite;
+  }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-bar::after { animation: none; } }
+
+  /* ---------- Empty / error states ---------- */
+  .empty-state, .error-state { text-align: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2); }
+  .empty-state p, .error-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .empty-state .state-icon, .error-state .state-icon { font-size: var(--font-size-lg); display: block; margin-bottom: var(--space-2); color: var(--color-fg-muted); }
+  .error-state .state-icon { color: var(--color-primary); }
+
+  .dev-tools-row { display: flex; justify-content: flex-end; margin-bottom: var(--space-2); }
+  .dev-tools-btn {
+    background: none; border: none; color: var(--color-fg-muted); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); cursor: pointer; text-decoration: underline; padding: var(--space-2);
+  }
+
+  /* ---------- Access denied panel (full page) ---------- */
+  .access-denied-panel {
+    display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface); border: 2px solid var(--color-primary); border-radius: var(--card-default-radius);
+    padding: var(--space-4) calc(var(--space-4) * 1.5); margin: 0 auto; max-width: 560px;
+  }
+  .access-denied-panel .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); }
+  .access-denied-panel h2 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .access-denied-panel p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+  .access-denied-panel code { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0 var(--space-1); color: var(--color-fg); }
+
+  /* ---------- Profile screen ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none;
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px;
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .profile-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; word-break: break-word; overflow-wrap: anywhere; }
+  .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+
+  .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .kv-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); word-break: break-word; overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  .profile-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-top: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .profile-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border);
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⚠"; color: var(--color-fg); }
+  .hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-3) 0 0 0; }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Directory (active) · Org chart · Settings. Reuses the "Workforce" shell
+     introduced in TEST-M1-STORY-171 (Employee Status Management), since this story searches
+     and browses the same Employee record set, not a separate system. "Org chart" and
+     "Settings" are non-interactive placeholders, out of scope here. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-172</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Employee Directory (interactive)
+         Notes:
+           - "Signed in as" switches live between HR, Manager, Employee (wrong role), and
+             Signed out (not authenticated) — no reload. As HR or Manager the full directory,
+             search, filters, and ID lookup render (AC1). As Employee or Signed out, every one
+             of those is replaced by an "Access denied" panel (AC2) — the search/filter
+             controls and the ID-lookup box are not merely disabled, they are not rendered.
+           - Type in "Search by name", or choose a Department / Role filter (or combine all
+             three) to narrow the list live — a brief skeleton stands in while results
+             "load" (AC3). Try "Finance" + "Lena" to see a single match, or "Marketing" +
+             role "Sales Manager" together to see the no-match empty state (AC4).
+           - Edge case — duplicate names: two employees are both named "Sofia Russo" (People
+             Ops and Marketing). Search "Sofia Russo" to confirm both are returned, distinguished
+             by employee ID, department, and role rather than being collapsed into one row (AC3).
+           - Edge case — punctuation and accents: "Siobhán O'Connor-Reyes" (Engineering) proves
+             search matching and on-screen rendering both handle an accent, an apostrophe, and a
+             hyphen correctly — try searching "o'connor".
+           - Edge case — large result sets: clearing all filters returns more matches than fit
+             on one screen; only the first 8 render, with a "partial" notice above the table
+             explaining that more exist and how to narrow them down.
+           - Status is deliberately not offered as a filter — see the note under the filter
+             bar (AC6). Deactivated employees are never excluded: Marcus Chen (Sales) and
+             Lena Voss (Finance) both still appear in the table, each marked with a distinct
+             "Inactive" badge next to their name (AC5) — search "Lena" or "Chen" to confirm
+             they're still returned.
+           - "Look up by employee ID" jumps straight to a full record by ID, bypassing search
+             and filters entirely — try emp_c003 (Marcus Chen, inactive) to confirm a
+             deactivated record still opens on direct lookup (AC7), or emp_c001 (Ada Lovelace,
+             active) for the active case (AC8). Edge cases: submitting a blank field asks for an
+             ID instead of searching for nothing, and an unknown ID (e.g. emp_c999) shows an
+             inline "not found" message instead of navigating.
+           - Edge case — stale or mistyped links: opening this prototype directly at a URL like
+             <code>#employee/emp_c999</code> lands on the directory with that ID pre-filled in
+             the lookup box and its "not found" message already showing, rather than silently
+             doing nothing.
+           - Clicking any name in the table opens that employee's full record the same way
+             (AC8).
+           - "Simulate load error" (dev tool, bottom-right of the filter area) forces the next
+             search to fail, to review the error state and its "Retry" action.
+    -->
+    <div class="screen" data-name="Employee Directory">
+      <div class="app-topbar">
+        <span class="brand">Workforce</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Directory</a>
+          <a href="#" onclick="return false;">Org chart</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+
+      <div class="page">
+        <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <h1>Employee directory</h1>
+            <p>Search and filter employee records by name, department, or role.</p>
+          </div>
+          <div class="role-switcher">
+            <label for="role-select">Signed in as</label>
+            <select class="input" id="role-select">
+              <option value="hr">HR</option>
+              <option value="manager">Manager</option>
+              <option value="employee">Employee (no directory access)</option>
+              <option value="signedout">Signed out (not authenticated)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- State: access-denied -->
+        <div id="directory-denied" hidden style="padding: calc(var(--space-4) * 2) var(--space-3);">
+          <div class="access-denied-panel">
+            <span class="notice-icon" aria-hidden="true">⛔</span>
+            <h2>Access denied</h2>
+            <p id="directory-denied-text">You need the HR or Manager role to view the employee directory or run a search.</p>
+            <p>Switch "Signed in as" above to <code>HR</code> or <code>Manager</code> to continue.</p>
+          </div>
+        </div>
+
+        <!-- Authorized content: search, filters, ID lookup, results -->
+        <div id="directory-authorized">
+          <div class="lookup-row">
+            <div class="field lookup-field">
+              <label class="label" for="lookup-id-input">Look up by employee ID</label>
+              <input class="input" id="lookup-id-input" type="text" placeholder="e.g. emp_c003" />
+            </div>
+            <button type="button" class="btn btn-secondary" id="lookup-id-btn">View record</button>
+            <p class="lookup-error" id="lookup-id-error" hidden></p>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-field search-field">
+              <label class="label" for="search-input">Search by name</label>
+              <input class="input" id="search-input" type="text" placeholder="e.g. Priya" />
+            </div>
+            <div class="filter-field">
+              <label class="label" for="department-filter">Department</label>
+              <select class="input" id="department-filter">
+                <option value="all">All departments</option>
+              </select>
+            </div>
+            <div class="filter-field">
+              <label class="label" for="role-filter">Role</label>
+              <select class="input" id="role-filter">
+                <option value="all">All roles</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-secondary clear-filters-btn" id="clear-filters-btn">Clear filters</button>
+          </div>
+
+          <p class="filter-note">
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span>Status isn't offered as a filter here. Deactivated employees still appear below, each marked with a distinct "Inactive" badge next to their name.</span>
+          </p>
+
+          <div class="dev-tools-row">
+            <button type="button" class="dev-tools-btn" id="simulate-error-btn">Simulate load error (dev tool)</button>
+          </div>
+
+          <p class="results-summary" id="results-summary" aria-live="polite"></p>
+
+          <!-- State: partial -->
+          <p class="partial-note" id="partial-note" hidden>
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span id="partial-note-text"></span>
+          </p>
+
+          <div class="card table-card">
+            <div class="table-scroll">
+              <table class="directory-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Department / Role</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="directory-tbody">
+                  <!-- rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Employee Profile (interactive)
+         Notes:
+           - Deep-linkable: the URL hash (e.g. #employee/emp_c003) selects which employee
+             renders here — the same mechanism a direct "open by ID" link would use (AC7, AC8).
+           - Renders identically whether the employee is active or inactive — the full detail
+             card (email, department, role, start date, employee ID, status) never hides or
+             trims fields for a deactivated record (AC7).
+           - Gated the same way as the directory: as Employee or Signed out, this screen shows
+             the same access-denied panel instead of the record, regardless of which ID is in
+             the URL.
+    -->
+    <div class="screen" data-name="Employee Profile">
+      <div class="app-topbar">
+        <span class="brand">Workforce</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Directory</a>
+          <a href="#" onclick="return false;">Org chart</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+
+        <!-- State: access-denied -->
+        <div id="profile-denied" hidden style="padding: calc(var(--space-4) * 2) var(--space-3);">
+          <div class="access-denied-panel">
+            <span class="notice-icon" aria-hidden="true">⛔</span>
+            <h2>Access denied</h2>
+            <p>You need the HR or Manager role to view employee records.</p>
+            <p>Switch "Signed in as" on the directory screen to <code>HR</code> or <code>Manager</code> to continue.</p>
+          </div>
+        </div>
+
+        <!-- State: success -->
+        <div id="profile-authorized">
+          <button type="button" class="back-link" id="profile-back-btn">
+            <span aria-hidden="true">←</span> Back to directory
+          </button>
+
+          <div class="profile-header">
+            <div>
+              <h1 id="profile-name">—</h1>
+              <p class="sub" id="profile-role-line">—</p>
+            </div>
+            <span id="profile-status-chip"></span>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Employee details</h3>
+            <div class="kv-list">
+              <div class="kv-row"><span class="kv-label">Employee ID</span><span class="kv-value" id="profile-id">—</span></div>
+              <div class="kv-row"><span class="kv-label">Email</span><span class="kv-value" id="profile-email">—</span></div>
+              <div class="kv-row"><span class="kv-label">Department</span><span class="kv-value" id="profile-department">—</span></div>
+              <div class="kv-row"><span class="kv-label">Role</span><span class="kv-value" id="profile-role">—</span></div>
+              <div class="kv-row"><span class="kv-label">Start date</span><span class="kv-value" id="profile-start-date">—</span></div>
+            </div>
+          </div>
+
+          <p class="profile-note">
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span>Deactivating or reactivating an employee is managed from Employee Status Management, not from this directory — this screen is read-only.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Access &amp; Search Reference (reference)
+         Notes:
+           - Summarizes exactly which roles can open the directory, search/filter it, and view
+             a record by ID, matching the gating wired into the Directory and Profile screens
+             (AC1, AC2, AC7, AC8).
+    -->
+    <div class="screen" data-name="Access & Search Reference">
+      <div class="app-topbar">
+        <span class="brand">Workforce</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Directory</a>
+          <a href="#" onclick="return false;">Org chart</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Access &amp; search reference</h1>
+          <p>Non-interactive reference. Switch "Signed in as" on the Directory screen to see these outcomes live.</p>
+        </div>
+        <div class="card">
+          <table class="matrix-table">
+            <thead><tr><th>Action</th><th>HR</th><th>Manager</th><th>Employee</th><th>Signed out</th><th>Satisfies</th></tr></thead>
+            <tbody>
+              <tr><td>Open the employee directory</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC1, AC2</td></tr>
+              <tr><td>Search or filter by name, department, role</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC2, AC3, AC4</td></tr>
+              <tr><td>View an active employee's record (by ID or from directory)</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC8</td></tr>
+              <tr><td>View a deactivated employee's record directly by ID</td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict pass">Allowed</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC7</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">Deactivated employees are never filtered out of search results — they appear with a distinct "Inactive" badge instead (AC5). Status itself is never offered as something to filter by (AC6).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Workforce</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Directory</a>
+          <a href="#" onclick="return false;">Org chart</a>
+          <a href="#" onclick="return false;">Settings</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-badge">1</span>
+            <div><h3>HR/Manager sees the directory on open <span class="ac-id">— AC1</span></h3><p>With "Signed in as" set to HR or Manager, the Directory screen loads straight into the full, searchable table of employee records.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">2</span>
+            <div><h3>Non-HR/Manager access is denied <span class="ac-id">— AC2</span></h3><p>Switch "Signed in as" to Employee or Signed out: the Directory and Profile screens both replace all content with an "Access denied" panel — search, filters, and the ID lookup are not rendered at all. See "Access &amp; search reference".</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">3</span>
+            <div><h3>Search/filter by name, department, or role returns only matches <span class="ac-id">— AC3</span></h3><p>Type a name, or choose a Department and/or Role, and the table narrows live to only the matching records — try combining all three. Searching "Sofia Russo" returns both same-named employees, distinguished by ID/department/role; searching "o'connor" proves punctuation-safe matching.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">4</span>
+            <div><h3>No-match criteria show no results <span class="ac-id">— AC4</span></h3><p>Combine filters that no employee satisfies (e.g. Marketing + "Sales Manager") to see the empty state, with a "Clear filters" action.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">5</span>
+            <div><h3>Deactivated employees still appear, marked Inactive <span class="ac-id">— AC5</span></h3><p>Marcus Chen and Lena Voss are deactivated and still show up in the unfiltered directory and in name search, each with a distinct "Inactive" badge next to their name.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">6</span>
+            <div><h3>Status is not offered as a filter <span class="ac-id">— AC6</span></h3><p>The filter bar offers only Search, Department, and Role — there is no status dropdown, and the note beneath the filter bar calls this out explicitly.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">7</span>
+            <div><h3>A deactivated employee's record opens directly by ID <span class="ac-id">— AC7</span></h3><p>Enter <code>emp_c003</code> (Marcus Chen) or <code>emp_c008</code> (Lena Voss) into "Look up by employee ID" — the full record opens even though no filter was applied to find it. Try an unknown ID (e.g. <code>emp_c999</code>) or a blank field to see the inline validation instead.</p></div>
+          </div>
+          <div class="check-item">
+            <span class="check-badge">8</span>
+            <div><h3>An active employee's full record opens by ID or from the directory <span class="ac-id">— AC8</span></h3><p>Enter <code>emp_c001</code> into the ID lookup, or click any active employee's name in the table — both open the same full record detail page.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const EMPLOYEES = [
+    { id: 'emp_c001', name: 'Ada Lovelace', email: 'ada.lovelace@example.com', department: 'Engineering', role: 'Software Engineer', startDate: '2025-01-06', employmentStatus: 'active' },
+    { id: 'emp_c002', name: 'Grace Hopper', email: 'grace.hopper@example.com', department: 'People Ops', role: 'HR Generalist', startDate: '2024-11-11', employmentStatus: 'active' },
+    { id: 'emp_c003', name: 'Marcus Chen', email: 'marcus.chen@example.com', department: 'Sales', role: 'Account Executive', startDate: '2023-05-22', employmentStatus: 'deactivated' },
+    { id: 'emp_c004', name: 'Priya Nair', email: 'priya.nair@example.com', department: 'Finance', role: 'Financial Analyst', startDate: '2026-02-16', employmentStatus: 'active' },
+    { id: 'emp_c005', name: 'Diego Alvarez', email: 'diego.alvarez@example.com', department: 'Engineering', role: 'Engineering Manager', startDate: '2022-08-01', employmentStatus: 'active' },
+    { id: 'emp_c006', name: 'Fatima Siddiqui', email: 'fatima.siddiqui@example.com', department: 'Marketing', role: 'Marketing Specialist', startDate: '2024-03-18', employmentStatus: 'active' },
+    { id: 'emp_c007', name: 'Noah Kim', email: 'noah.kim@example.com', department: 'Sales', role: 'Sales Manager', startDate: '2021-10-04', employmentStatus: 'active' },
+    { id: 'emp_c008', name: 'Lena Voss', email: 'lena.voss@example.com', department: 'Finance', role: 'Finance Manager', startDate: '2020-06-29', employmentStatus: 'deactivated' },
+    { id: 'emp_c009', name: 'Omar Haddad', email: 'omar.haddad@example.com', department: 'Engineering', role: 'QA Engineer', startDate: '2025-07-14', employmentStatus: 'active' },
+    { id: 'emp_c010', name: 'Sofia Russo', email: 'sofia.russo@example.com', department: 'People Ops', role: 'Recruiter', startDate: '2026-04-02', employmentStatus: 'active' },
+    { id: 'emp_c011', name: 'Sofia Russo', email: 's.russo.marketing@example.com', department: 'Marketing', role: 'Social Media Coordinator', startDate: '2025-09-15', employmentStatus: 'active' },
+    { id: 'emp_c012', name: "Siobhán O'Connor-Reyes", email: 'siobhan.oconnor-reyes@example.com', department: 'Engineering', role: 'Staff Engineer', startDate: '2021-02-08', employmentStatus: 'active' },
+  ];
+  // Edge cases on purpose: emp_c010/emp_c011 share the exact name "Sofia Russo" in different
+  // departments, so a name search must return both, distinguished by ID/department/role
+  // (AC3). emp_c012's name carries an accent, an apostrophe, and a hyphen, to prove search
+  // matching and HTML-escaping both handle punctuation correctly.
+  const RESULTS_PAGE_SIZE = 8; // caps the rendered rows so a large, unfiltered result set
+  // demonstrates the "partial" state from the UX baseline instead of silently truncating.
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+  let selectedProfileId = EMPLOYEES[0].id;
+  let simulateErrorNext = false;
+  let searchRequestToken = 0;
+
+  function currentRole() {
+    return document.getElementById('role-select').value; // 'hr' | 'manager' | 'employee' | 'signedout'
+  }
+  function hasAccess() {
+    return currentRole() === 'hr' || currentRole() === 'manager';
+  }
+  function getEmployee(id) {
+    return EMPLOYEES.find(e => e.id.toLowerCase() === String(id || '').trim().toLowerCase());
+  }
+  function statusBadge(status) {
+    return status === 'active'
+      ? `<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>`
+      : `<span class="status-chip status-chip--inactive"><span aria-hidden="true">⏸</span> Inactive</span>`;
+  }
+
+  // ---------- Populate department / role filter options ----------
+  function populateFilterOptions() {
+    const departments = [...new Set(EMPLOYEES.map(e => e.department))].sort();
+    const roles = [...new Set(EMPLOYEES.map(e => e.role))].sort();
+    const deptSelect = document.getElementById('department-filter');
+    const roleSelect = document.getElementById('role-filter');
+    departments.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      deptSelect.appendChild(opt);
+    });
+    roles.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r; opt.textContent = r;
+      roleSelect.appendChild(opt);
+    });
+  }
+
+  // ---------- Directory rendering ----------
+  function renderDirectorySkeleton() {
+    const tbody = document.getElementById('directory-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+      const tr = document.createElement('tr');
+      tr.className = 'skeleton-row';
+      tr.innerHTML = `
+        <td><div class="skeleton-bar" style="width:70%;"></div></td>
+        <td><div class="skeleton-bar" style="width:55%;"></div></td>
+        <td><div class="skeleton-bar" style="width:35%;"></div></td>
+      `;
+      tbody.appendChild(tr);
+    }
+    document.getElementById('results-summary').textContent = 'Loading…';
+  }
+
+  function matchingEmployees() {
+    const search = document.getElementById('search-input').value.trim().toLowerCase();
+    const dept = document.getElementById('department-filter').value;
+    const role = document.getElementById('role-filter').value;
+    return EMPLOYEES.filter(e => {
+      if (search && !e.name.toLowerCase().includes(search)) return false;
+      if (dept !== 'all' && e.department !== dept) return false;
+      if (role !== 'all' && e.role !== role) return false;
+      return true;
+    });
+  }
+
+  function renderDirectoryList() {
+    const tbody = document.getElementById('directory-tbody');
+    const summary = document.getElementById('results-summary');
+    const partialNote = document.getElementById('partial-note');
+    partialNote.hidden = true;
+
+    if (simulateErrorNext) {
+      simulateErrorNext = false;
+      tbody.innerHTML = `
+        <!-- State: error -->
+        <tr><td colspan="3">
+          <div class="error-state">
+            <span class="state-icon" aria-hidden="true">⚠</span>
+            <p>Something went wrong loading the directory. Your search and filters weren't lost.</p>
+            <button type="button" class="btn btn-secondary" id="retry-search-btn">Retry</button>
+          </div>
+        </td></tr>
+      `;
+      summary.textContent = '';
+      document.getElementById('retry-search-btn').addEventListener('click', refreshDirectory);
+      return;
+    }
+
+    const matches = matchingEmployees();
+    const rows = matches.slice(0, RESULTS_PAGE_SIZE);
+    tbody.innerHTML = '';
+
+    if (matches.length === 0) {
+      summary.textContent = `Showing 0 of ${EMPLOYEES.length} employees`;
+      tbody.innerHTML = `
+        <!-- State: empty -->
+        <tr><td colspan="3">
+          <div class="empty-state">
+            <span class="state-icon" aria-hidden="true">🔍</span>
+            <p>No employees match your search or filters.</p>
+            <button type="button" class="btn btn-secondary" id="empty-clear-btn">Clear filters</button>
+          </div>
+        </td></tr>
+      `;
+      document.getElementById('empty-clear-btn').addEventListener('click', clearFilters);
+      return;
+    }
+
+    if (matches.length > RESULTS_PAGE_SIZE) {
+      summary.textContent = `Showing ${rows.length} of ${matches.length} matching employees`;
+      document.getElementById('partial-note-text').textContent =
+        `Only the first ${RESULTS_PAGE_SIZE} matches are shown. Add a search term or choose a department/role filter to narrow this down.`;
+      partialNote.hidden = false;
+    } else {
+      summary.textContent = `Showing ${rows.length} of ${EMPLOYEES.length} employees`;
+    }
+
+    // State: success
+    rows.forEach(e => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="name-cell">
+          <button type="button" class="person-name-link" data-view-id="${e.id}">${escapeHtml(e.name)}</button>
+          <span class="person-id">${e.id}</span>
+        </td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(e.role)}</span><br/><span class="dept-line">${escapeHtml(e.department)}</span></td>
+        <td>${statusBadge(e.employmentStatus)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('[data-view-id]').forEach(btn => {
+      btn.addEventListener('click', () => openProfile(btn.getAttribute('data-view-id')));
+    });
+  }
+
+  async function refreshDirectory() {
+    renderDirectorySkeleton();
+    const token = ++searchRequestToken;
+    await wait(280);
+    if (token !== searchRequestToken) return; // a newer search superseded this one
+    renderDirectoryList();
+  }
+
+  function clearFilters() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('department-filter').value = 'all';
+    document.getElementById('role-filter').value = 'all';
+    document.getElementById('lookup-id-error').hidden = true;
+    refreshDirectory();
+  }
+
+  function renderDirectoryAccess() {
+    const denied = document.getElementById('directory-denied');
+    const authorized = document.getElementById('directory-authorized');
+    if (hasAccess()) {
+      denied.hidden = true;
+      authorized.hidden = false;
+    } else {
+      const role = currentRole();
+      document.getElementById('directory-denied-text').textContent = role === 'signedout'
+        ? 'You must be signed in as HR or Manager to view the employee directory or run a search.'
+        : 'You need the HR or Manager role to view the employee directory or run a search.';
+      denied.hidden = false;
+      authorized.hidden = true;
+    }
+  }
+
+  // ---------- Direct ID lookup ----------
+  function onLookupSubmit(prefillId) {
+    const errorEl = document.getElementById('lookup-id-error');
+    const input = document.getElementById('lookup-id-input');
+    errorEl.hidden = true;
+
+    const id = prefillId !== undefined ? prefillId : input.value;
+    if (prefillId !== undefined) input.value = prefillId;
+
+    if (!id.trim()) {
+      errorEl.textContent = 'Enter an employee ID to look up.';
+      errorEl.hidden = false;
+      return;
+    }
+
+    const e = getEmployee(id);
+    if (!e) {
+      errorEl.textContent = `No employee found with ID "${id.trim()}".`;
+      errorEl.hidden = false;
+      return;
+    }
+    openProfile(e.id);
+  }
+
+  // ---------- Profile rendering ----------
+  function renderProfile() {
+    const authorized = document.getElementById('profile-authorized');
+    const denied = document.getElementById('profile-denied');
+
+    if (!hasAccess()) {
+      authorized.hidden = true;
+      denied.hidden = false;
+      return;
+    }
+    denied.hidden = true;
+    authorized.hidden = false;
+
+    const e = getEmployee(selectedProfileId);
+    if (!e) return;
+
+    document.getElementById('profile-name').textContent = e.name;
+    document.getElementById('profile-role-line').textContent = `${e.role} · ${e.department}`;
+    document.getElementById('profile-id').textContent = e.id;
+    document.getElementById('profile-email').textContent = e.email;
+    document.getElementById('profile-department').textContent = e.department;
+    document.getElementById('profile-role').textContent = e.role;
+    document.getElementById('profile-start-date').textContent = formatDateDisplay(e.startDate);
+    document.getElementById('profile-status-chip').innerHTML = statusBadge(e.employmentStatus);
+  }
+
+  function openProfile(id) {
+    selectedProfileId = id;
+    location.hash = `employee/${id}`;
+    show(1);
+  }
+
+  // ---------- Wire up ----------
+  document.getElementById('role-select').addEventListener('change', () => {
+    renderDirectoryAccess();
+    if (hasAccess()) refreshDirectory();
+    if (cur === 1) renderProfile();
+  });
+  document.getElementById('search-input').addEventListener('input', refreshDirectory);
+  document.getElementById('department-filter').addEventListener('change', refreshDirectory);
+  document.getElementById('role-filter').addEventListener('change', refreshDirectory);
+  document.getElementById('clear-filters-btn').addEventListener('click', clearFilters);
+  document.getElementById('simulate-error-btn').addEventListener('click', () => {
+    simulateErrorNext = true;
+    refreshDirectory();
+  });
+  document.getElementById('lookup-id-btn').addEventListener('click', () => onLookupSubmit());
+  document.getElementById('lookup-id-input').addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') { ev.preventDefault(); onLookupSubmit(); }
+  });
+
+  document.getElementById('profile-back-btn').addEventListener('click', () => show(0));
+
+  // ---------- Deep-link support (AC7, AC8: navigate directly to a record by ID) ----------
+  // Edge case: a bookmarked or mistyped URL (e.g. #employee/emp_c999) lands on the directory
+  // with the ID lookup pre-filled and its "not found" message shown, instead of silently
+  // doing nothing.
+  function routeToEmployeeId(id) {
+    if (getEmployee(id)) {
+      selectedProfileId = id;
+      show(1);
+    } else {
+      show(0);
+      onLookupSubmit(id);
+    }
+  }
+  function applyHashRoute() {
+    const match = /^#employee\/(.+)$/.exec(location.hash);
+    if (match) routeToEmployeeId(match[1]);
+  }
+  window.addEventListener('hashchange', applyHashRoute);
+
+  // ---------- Screen navigation (reviewer bar) ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    if (cur === 1) renderProfile();
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ---------- Init ----------
+  populateFilterOptions();
+  renderDirectoryAccess();
+  refreshDirectory();
+  const deepLinkMatch = /^#employee\/(.+)$/.exec(location.hash);
+  if (deepLinkMatch) {
+    routeToEmployeeId(deepLinkMatch[1]);
+  } else {
+    show(0);
+  }
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
