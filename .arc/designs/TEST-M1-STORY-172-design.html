@@ -409,10 +409,20 @@
     background: none; border: none; padding: 0; cursor: pointer; text-align: left;
     font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
     color: var(--color-fg); text-decoration: underline; min-height: 24px;
+    word-break: break-word; overflow-wrap: anywhere;
   }
   .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
-  .role-cell .role-line { color: var(--color-fg); }
-  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .role-cell .role-line { color: var(--color-fg); word-break: break-word; overflow-wrap: anywhere; }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); word-break: break-word; overflow-wrap: anywhere; }
+
+  /* ---------- Partial results (large result set, truncated) ---------- */
+  .partial-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin: 0 0 var(--space-3) 0;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .partial-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
 
   /* ---------- Status badge (icon + label, never colour alone) ---------- */
   .status-chip {
@@ -470,14 +480,14 @@
     display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
     flex-wrap: wrap; margin-bottom: var(--space-4);
   }
-  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; word-break: break-word; overflow-wrap: anywhere; }
   .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
 
   .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
   .kv-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
   .kv-row:last-child { border-bottom: none; }
   .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
-  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); word-break: break-word; overflow-wrap: anywhere; }
   @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
 
   .profile-note {
@@ -554,6 +564,15 @@
              three) to narrow the list live — a brief skeleton stands in while results
              "load" (AC3). Try "Finance" + "Lena" to see a single match, or "Marketing" +
              role "Sales Manager" together to see the no-match empty state (AC4).
+           - Edge case — duplicate names: two employees are both named "Sofia Russo" (People
+             Ops and Marketing). Search "Sofia Russo" to confirm both are returned, distinguished
+             by employee ID, department, and role rather than being collapsed into one row (AC3).
+           - Edge case — punctuation and accents: "Siobhán O'Connor-Reyes" (Engineering) proves
+             search matching and on-screen rendering both handle an accent, an apostrophe, and a
+             hyphen correctly — try searching "o'connor".
+           - Edge case — large result sets: clearing all filters returns more matches than fit
+             on one screen; only the first 8 render, with a "partial" notice above the table
+             explaining that more exist and how to narrow them down.
            - Status is deliberately not offered as a filter — see the note under the filter
              bar (AC6). Deactivated employees are never excluded: Marcus Chen (Sales) and
              Lena Voss (Finance) both still appear in the table, each marked with a distinct
@@ -562,8 +581,13 @@
            - "Look up by employee ID" jumps straight to a full record by ID, bypassing search
              and filters entirely — try emp_c003 (Marcus Chen, inactive) to confirm a
              deactivated record still opens on direct lookup (AC7), or emp_c001 (Ada Lovelace,
-             active) for the active case (AC8). An unknown ID shows an inline "not found"
-             message instead of navigating.
+             active) for the active case (AC8). Edge cases: submitting a blank field asks for an
+             ID instead of searching for nothing, and an unknown ID (e.g. emp_c999) shows an
+             inline "not found" message instead of navigating.
+           - Edge case — stale or mistyped links: opening this prototype directly at a URL like
+             <code>#employee/emp_c999</code> lands on the directory with that ID pre-filled in
+             the lookup box and its "not found" message already showing, rather than silently
+             doing nothing.
            - Clicking any name in the table opens that employee's full record the same way
              (AC8).
            - "Simulate load error" (dev tool, bottom-right of the filter area) forces the next
@@ -647,6 +671,12 @@
           </div>
 
           <p class="results-summary" id="results-summary" aria-live="polite"></p>
+
+          <!-- State: partial -->
+          <p class="partial-note" id="partial-note" hidden>
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span id="partial-note-text"></span>
+          </p>
 
           <div class="card table-card">
             <div class="table-scroll">
@@ -798,7 +828,7 @@
           </div>
           <div class="check-item">
             <span class="check-badge">3</span>
-            <div><h3>Search/filter by name, department, or role returns only matches <span class="ac-id">— AC3</span></h3><p>Type a name, or choose a Department and/or Role, and the table narrows live to only the matching records — try combining all three.</p></div>
+            <div><h3>Search/filter by name, department, or role returns only matches <span class="ac-id">— AC3</span></h3><p>Type a name, or choose a Department and/or Role, and the table narrows live to only the matching records — try combining all three. Searching "Sofia Russo" returns both same-named employees, distinguished by ID/department/role; searching "o'connor" proves punctuation-safe matching.</p></div>
           </div>
           <div class="check-item">
             <span class="check-badge">4</span>
@@ -814,7 +844,7 @@
           </div>
           <div class="check-item">
             <span class="check-badge">7</span>
-            <div><h3>A deactivated employee's record opens directly by ID <span class="ac-id">— AC7</span></h3><p>Enter <code>emp_c003</code> (Marcus Chen) or <code>emp_c008</code> (Lena Voss) into "Look up by employee ID" — the full record opens even though no filter was applied to find it.</p></div>
+            <div><h3>A deactivated employee's record opens directly by ID <span class="ac-id">— AC7</span></h3><p>Enter <code>emp_c003</code> (Marcus Chen) or <code>emp_c008</code> (Lena Voss) into "Look up by employee ID" — the full record opens even though no filter was applied to find it. Try an unknown ID (e.g. <code>emp_c999</code>) or a blank field to see the inline validation instead.</p></div>
           </div>
           <div class="check-item">
             <span class="check-badge">8</span>
@@ -839,7 +869,15 @@
     { id: 'emp_c008', name: 'Lena Voss', email: 'lena.voss@example.com', department: 'Finance', role: 'Finance Manager', startDate: '2020-06-29', employmentStatus: 'deactivated' },
     { id: 'emp_c009', name: 'Omar Haddad', email: 'omar.haddad@example.com', department: 'Engineering', role: 'QA Engineer', startDate: '2025-07-14', employmentStatus: 'active' },
     { id: 'emp_c010', name: 'Sofia Russo', email: 'sofia.russo@example.com', department: 'People Ops', role: 'Recruiter', startDate: '2026-04-02', employmentStatus: 'active' },
+    { id: 'emp_c011', name: 'Sofia Russo', email: 's.russo.marketing@example.com', department: 'Marketing', role: 'Social Media Coordinator', startDate: '2025-09-15', employmentStatus: 'active' },
+    { id: 'emp_c012', name: "Siobhán O'Connor-Reyes", email: 'siobhan.oconnor-reyes@example.com', department: 'Engineering', role: 'Staff Engineer', startDate: '2021-02-08', employmentStatus: 'active' },
   ];
+  // Edge cases on purpose: emp_c010/emp_c011 share the exact name "Sofia Russo" in different
+  // departments, so a name search must return both, distinguished by ID/department/role
+  // (AC3). emp_c012's name carries an accent, an apostrophe, and a hyphen, to prove search
+  // matching and HTML-escaping both handle punctuation correctly.
+  const RESULTS_PAGE_SIZE = 8; // caps the rendered rows so a large, unfiltered result set
+  // demonstrates the "partial" state from the UX baseline instead of silently truncating.
 
   function formatDateDisplay(iso) {
     if (!iso) return '—';
@@ -924,6 +962,8 @@
   function renderDirectoryList() {
     const tbody = document.getElementById('directory-tbody');
     const summary = document.getElementById('results-summary');
+    const partialNote = document.getElementById('partial-note');
+    partialNote.hidden = true;
 
     if (simulateErrorNext) {
       simulateErrorNext = false;
@@ -942,12 +982,12 @@
       return;
     }
 
-    const rows = matchingEmployees();
+    const matches = matchingEmployees();
+    const rows = matches.slice(0, RESULTS_PAGE_SIZE);
     tbody.innerHTML = '';
 
-    summary.textContent = `Showing ${rows.length} of ${EMPLOYEES.length} employees`;
-
-    if (rows.length === 0) {
+    if (matches.length === 0) {
+      summary.textContent = `Showing 0 of ${EMPLOYEES.length} employees`;
       tbody.innerHTML = `
         <!-- State: empty -->
         <tr><td colspan="3">
@@ -960,6 +1000,15 @@
       `;
       document.getElementById('empty-clear-btn').addEventListener('click', clearFilters);
       return;
+    }
+
+    if (matches.length > RESULTS_PAGE_SIZE) {
+      summary.textContent = `Showing ${rows.length} of ${matches.length} matching employees`;
+      document.getElementById('partial-note-text').textContent =
+        `Only the first ${RESULTS_PAGE_SIZE} matches are shown. Add a search term or choose a department/role filter to narrow this down.`;
+      partialNote.hidden = false;
+    } else {
+      summary.textContent = `Showing ${rows.length} of ${EMPLOYEES.length} employees`;
     }
 
     // State: success
@@ -1014,11 +1063,20 @@
   }
 
   // ---------- Direct ID lookup ----------
-  function onLookupSubmit() {
+  function onLookupSubmit(prefillId) {
     const errorEl = document.getElementById('lookup-id-error');
+    const input = document.getElementById('lookup-id-input');
     errorEl.hidden = true;
 
-    const id = document.getElementById('lookup-id-input').value;
+    const id = prefillId !== undefined ? prefillId : input.value;
+    if (prefillId !== undefined) input.value = prefillId;
+
+    if (!id.trim()) {
+      errorEl.textContent = 'Enter an employee ID to look up.';
+      errorEl.hidden = false;
+      return;
+    }
+
     const e = getEmployee(id);
     if (!e) {
       errorEl.textContent = `No employee found with ID "${id.trim()}".`;
@@ -1074,7 +1132,7 @@
     simulateErrorNext = true;
     refreshDirectory();
   });
-  document.getElementById('lookup-id-btn').addEventListener('click', onLookupSubmit);
+  document.getElementById('lookup-id-btn').addEventListener('click', () => onLookupSubmit());
   document.getElementById('lookup-id-input').addEventListener('keydown', (ev) => {
     if (ev.key === 'Enter') { ev.preventDefault(); onLookupSubmit(); }
   });
@@ -1082,12 +1140,21 @@
   document.getElementById('profile-back-btn').addEventListener('click', () => show(0));
 
   // ---------- Deep-link support (AC7, AC8: navigate directly to a record by ID) ----------
+  // Edge case: a bookmarked or mistyped URL (e.g. #employee/emp_c999) lands on the directory
+  // with the ID lookup pre-filled and its "not found" message shown, instead of silently
+  // doing nothing.
+  function routeToEmployeeId(id) {
+    if (getEmployee(id)) {
+      selectedProfileId = id;
+      show(1);
+    } else {
+      show(0);
+      onLookupSubmit(id);
+    }
+  }
   function applyHashRoute() {
     const match = /^#employee\/(.+)$/.exec(location.hash);
-    if (match && getEmployee(match[1])) {
-      selectedProfileId = match[1];
-      show(1);
-    }
+    if (match) routeToEmployeeId(match[1]);
   }
   window.addEventListener('hashchange', applyHashRoute);
 
@@ -1114,9 +1181,8 @@
   renderDirectoryAccess();
   refreshDirectory();
   const deepLinkMatch = /^#employee\/(.+)$/.exec(location.hash);
-  if (deepLinkMatch && getEmployee(deepLinkMatch[1])) {
-    selectedProfileId = deepLinkMatch[1];
-    show(1);
+  if (deepLinkMatch) {
+    routeToEmployeeId(deepLinkMatch[1]);
   } else {
     show(0);
   }
