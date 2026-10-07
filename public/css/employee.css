@@ -1,0 +1,36 @@
+/* Profile-specific styles; shared chip/banner/consequence styles live in employees.css. */
+  /* ---------- Profile screen ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none;
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3);
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .profile-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+  .profile-header-meta { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+  .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .kv-row { display: grid; grid-template-columns: 160px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  /* ---------- Status history timeline ---------- */
+  .history-list { display: flex; flex-direction: column; gap: var(--space-3); margin: var(--space-3) 0 0 0; padding: 0; list-style: none; }
+  .history-item { display: flex; gap: var(--space-3); }
+  .history-dot {
+    flex: 0 0 auto; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%;
+    background: var(--color-primary);
+  }
+  .history-item.is-system .history-dot { background: var(--color-fg-muted); }
+  .history-body p { margin: 0; font-family: var(--font-family-base); }
+  .history-headline { font-size: var(--font-size-md); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .history-meta { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: 2px !important; }
+

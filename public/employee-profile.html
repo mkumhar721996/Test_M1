@@ -135,12 +135,14 @@
                     <p class="field-error" id="error-start-date" role="alert" hidden>⚠ Start date is required.</p>
                   </div>
                   <div class="field" style="margin-bottom:0;">
-                    <label class="label" for="field-employment-status">Employment status <span class="required-tag">(required)</span></label>
-                    <select class="input" id="field-employment-status" name="employmentStatus">
+                    <label class="label" for="field-employment-status">Employment status</label>
+                    <select class="input" id="field-employment-status" name="employmentStatus" disabled>
                       <option value="active">Active</option>
+                      <option value="deactivated">Deactivated</option>
                       <option value="on_leave">On leave</option>
                       <option value="terminated">Terminated</option>
                     </select>
+                    <p class="hint">Changed from the Employee Directory's Deactivate/Reactivate action, not here.</p>
                   </div>
                 </div>
               </fieldset>

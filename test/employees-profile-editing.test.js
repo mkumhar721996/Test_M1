@@ -24,13 +24,21 @@ test('AC2: no x-staff-role header at all is rejected with 401', async () => {
   expect(res.status).toBe(401);
 });
 
-test.each(['hr', 'manager'])('AC3: %s can update all six editable fields', async (role) => {
+test.each(['hr', 'manager'])('AC3: %s can update all five editable fields', async (role) => {
   const employee = createEmployee(base());
-  const changes = { name: 'J. Reyes', email: 'new@example.com', department: 'Product', role: 'Senior Engineer', startDate: '2026-10-01', employmentStatus: 'on_leave' };
+  const changes = { name: 'J. Reyes', email: 'new@example.com', department: 'Product', role: 'Senior Engineer', startDate: '2026-10-01' };
   const res = await request(app).patch(`/employees/${employee.id}`).set('x-staff-role', role).send(changes);
   expect(res.status).toBe(200);
   expect(res.body).toMatchObject(changes);
   expect(getEmployee(employee.id).role).toBe('Senior Engineer');
+});
+
+test('AC3: employmentStatus is not an editable field — it is ignored by the generic update route', async () => {
+  const employee = createEmployee(base());
+  const res = await request(app).patch(`/employees/${employee.id}`).set('x-staff-role', 'hr').send({ employmentStatus: 'on_leave' });
+  expect(res.status).toBe(200);
+  expect(res.body.employmentStatus).toBe('active');
+  expect(getEmployee(employee.id).employmentStatus).toBe('active');
 });
 
 test('AC3: updating an unknown employee returns 404', async () => {
