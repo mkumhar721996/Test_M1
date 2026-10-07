@@ -1,2 +1,8 @@
 package_install_commands:
   npm: "npm install {name}@{version}"
+
+Expected commands to be executed:
+  npm install
+  npm test
+  npm install
+  npx jest
