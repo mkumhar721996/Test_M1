@@ -153,7 +153,7 @@ test('error state: other failures show Retry and keep filters', async () => {
   initEmployeeDirectoryApp(document, api, () => 'hr');
   await flush();
   expect($('directory-authorized').hidden).toBe(false);
-  document.querySelector('.error-state').textContent.includes('Something went wrong');
+  expect(document.querySelector('.error-state').textContent).toContain('Something went wrong');
   document.getElementById('retry-search-btn').click();
   await flush();
   expect(rows()).toHaveLength(1);

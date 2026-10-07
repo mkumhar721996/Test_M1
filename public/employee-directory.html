@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Directory &amp; Search — Workforce</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/employee-directory.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/employee-directory.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Workforce</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page">Directory</a>
+      <a href="#" onclick="return false;">Org chart</a>
+      <a href="#" onclick="return false;">Settings</a>
+    </nav>
+  </div>
+
+  <div class="page">
+    <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-3); flex-wrap: wrap;">
+      <div>
+        <h1>Employee directory</h1>
+        <p>Search and filter employee records by name, department, or role.</p>
+      </div>
+      <div class="role-switcher">
+        <label for="role-select">Signed in as</label>
+        <select class="input" id="role-select">
+          <option value="hr">HR</option>
+          <option value="manager">Manager</option>
+          <option value="employee">Employee (no directory access)</option>
+          <option value="signedout">Signed out (not authenticated)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="directory-denied" hidden style="padding: calc(var(--space-4) * 2) var(--space-3);">
+      <div class="access-denied-panel">
+        <span class="notice-icon" aria-hidden="true">⛔</span>
+        <h2>Access denied</h2>
+        <p id="directory-denied-text">You need the HR or Manager role to view the employee directory or run a search.</p>
+        <p>Switch "Signed in as" above to <code>HR</code> or <code>Manager</code> to continue.</p>
+      </div>
+    </div>
+
+    <div id="directory-authorized">
+      <div class="lookup-row">
+        <div class="field lookup-field">
+          <label class="label" for="lookup-id-input">Look up by employee ID</label>
+          <input class="input" id="lookup-id-input" type="text" placeholder="e.g. emp_c003" />
+        </div>
+        <button type="button" class="btn btn-secondary" id="lookup-id-btn">View record</button>
+        <p class="lookup-error" id="lookup-id-error" hidden></p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field search-field">
+          <label class="label" for="search-input">Search by name</label>
+          <input class="input" id="search-input" type="text" placeholder="e.g. Priya" />
+        </div>
+        <div class="filter-field">
+          <label class="label" for="department-filter">Department</label>
+          <select class="input" id="department-filter">
+            <option value="all">All departments</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="label" for="role-filter">Role</label>
+          <select class="input" id="role-filter">
+            <option value="all">All roles</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-secondary clear-filters-btn" id="clear-filters-btn">Clear filters</button>
+      </div>
+
+      <p class="filter-note">
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span>Status isn't offered as a filter here. Deactivated employees still appear below, each marked with a distinct "Inactive" badge next to their name.</span>
+      </p>
+
+      <p class="results-summary" id="results-summary" aria-live="polite"></p>
+
+      <p class="partial-note" id="partial-note" hidden>
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span id="partial-note-text"></span>
+      </p>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="directory-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Department / Role</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="directory-tbody"><!-- rendered by JS --></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
