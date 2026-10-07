@@ -216,13 +216,18 @@
        stacks above the create modal without collisions. -->
   <div class="modal-overlay" id="calculator-overlay" hidden></div>
   <div class="modal-wrap" id="calculator-modal-wrap" hidden>
-    <div class="modal-panel" id="calculator-modal" role="dialog" aria-modal="true" aria-labelledby="calculator-title">
+    <div class="modal-panel" id="calculator-modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="calculator-title">
       <div class="modal-header">
         <div>
           <h2 id="calculator-title">Calculator</h2>
-          <p>Basic arithmetic — tap digits and operators to build your amount.</p>
+          <p>Tap keys or type on your keyboard — both build the same expression.</p>
         </div>
         <button type="button" class="icon-btn" id="calc-close" aria-label="Close calculator">&times;</button>
+      </div>
+
+      <div class="layout-tabs" role="tablist" aria-label="Calculator layout">
+        <button type="button" class="layout-tab" id="tab-basic" role="tab" aria-selected="true" aria-controls="scientific-keys">Basic</button>
+        <button type="button" class="layout-tab" id="tab-scientific" role="tab" aria-selected="false" aria-controls="scientific-keys">Scientific</button>
       </div>
 
       <div class="calc-display" role="group" aria-label="Calculator display">
@@ -233,8 +238,26 @@
       </div>
       <div class="sr-only" aria-live="polite" id="calc-live-region"></div>
 
+      <div class="calc-keypad scientific-rows" id="scientific-keys" role="group" aria-label="Scientific function keys" hidden>
+        <button type="button" class="calc-key fn" data-key="sin(">sin(</button>
+        <button type="button" class="calc-key fn" data-key="cos(">cos(</button>
+        <button type="button" class="calc-key fn" data-key="tan(">tan(</button>
+        <button type="button" class="calc-key op" data-key="(" aria-label="Open parenthesis">(</button>
+
+        <button type="button" class="calc-key fn" data-key="log(">log(</button>
+        <button type="button" class="calc-key fn" data-key="ln(">ln(</button>
+        <button type="button" class="calc-key fn" data-key="√(" aria-label="Square root">√(</button>
+        <button type="button" class="calc-key op" data-key=")" aria-label="Close parenthesis">)</button>
+
+        <button type="button" class="calc-key fn" data-key="^2" aria-label="Square">x²</button>
+        <button type="button" class="calc-key fn op" data-key="^" aria-label="Power">^</button>
+        <button type="button" class="calc-key fn" data-key="π" aria-label="Pi">π</button>
+        <button type="button" class="calc-key fn" data-key="e" aria-label="Euler's number">e</button>
+      </div>
+
       <div class="calc-keypad" role="group" aria-label="Calculator keys">
-        <button type="button" class="calc-key clear span-3" data-key="clear">C</button>
+        <button type="button" class="calc-key clear span-2" data-key="clear">C</button>
+        <button type="button" class="calc-key backspace" data-key="backspace" aria-label="Delete last character">⌫</button>
         <button type="button" class="calc-key op" data-key="÷" aria-label="Divide">÷</button>
 
         <button type="button" class="calc-key" data-key="7">7</button>

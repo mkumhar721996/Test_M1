@@ -112,6 +112,11 @@ function pressKey(state, key) {
 
   const next = { ...state, forcedSyntaxError: false };
 
+  if (key === 'backspace') {
+    const expr = state.finalized ? formatNumber(state.finalizedValue) : expression;
+    return { ...next, expression: expr.slice(0, -1), finalized: false };
+  }
+
   if (isOperator(key)) {
     if (state.finalized) {
       return { ...next, expression: formatNumber(state.finalizedValue) + key, finalized: false };
@@ -177,6 +182,7 @@ function initCalculatorApp(doc = document) {
   if (!openBtn || !modalWrap) return;
 
   let state = createInitialState();
+  let currentLayout = 'basic';
 
   function setResultRow(className, text, errorText) {
     resultRowEl.textContent = '';
@@ -242,12 +248,21 @@ function initCalculatorApp(doc = document) {
     }
   }
 
+  function setLayout(layout) {
+    currentLayout = layout;
+    $('scientific-keys').hidden = layout !== 'scientific';
+    $('tab-basic').setAttribute('aria-selected', String(layout === 'basic'));
+    $('tab-scientific').setAttribute('aria-selected', String(layout === 'scientific'));
+  }
+
   function open() {
     state = createInitialState();
+    setLayout('basic');
     render('Calculator opened');
     overlay.hidden = false;
     modalWrap.hidden = false;
-    $('calc-close').focus();
+    // Focus the non-activating panel so Enter means "=" rather than clicking Close.
+    modalPanel.focus();
   }
 
   function close() {
@@ -264,17 +279,38 @@ function initCalculatorApp(doc = document) {
     });
   });
 
+  $('tab-basic').addEventListener('click', () => setLayout('basic'));
+  $('tab-scientific').addEventListener('click', () => setLayout('scientific'));
+
+  // Physical keys that map to on-screen button keys in every layout.
+  const KEYBOARD_KEYS = { '+': '+', '-': '-', '*': '×', '/': '÷', '.': '.', Enter: 'equals', Backspace: 'backspace' };
+  // No on-screen equivalent in Basic, so only mapped in Scientific.
+  const NATIVE_ENTER_CONTROLS = '#calc-close, #calc-cancel, #calc-use, .layout-tab';
+  const SCIENTIFIC_KEYBOARD_KEYS = ['(', ')', '^'];
+
+  function keyboardKeyFor(e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return null;
+    if (/^[0-9]$/.test(e.key)) return e.key;
+    if (Object.prototype.hasOwnProperty.call(KEYBOARD_KEYS, e.key)) return KEYBOARD_KEYS[e.key];
+    if (currentLayout === 'scientific' && SCIENTIFIC_KEYBOARD_KEYS.includes(e.key)) return e.key;
+    return null;
+  }
+
   function trapModalTab(e) {
     const focusable = getFocusableElements(modalPanel);
     if (focusable.length === 0) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
+    const atStart = doc.activeElement === modalPanel;
     if (e.shiftKey) {
-      if (doc.activeElement === first || !modalPanel.contains(doc.activeElement)) {
+      if (atStart || doc.activeElement === first || !modalPanel.contains(doc.activeElement)) {
         e.preventDefault();
         last.focus();
       }
+    } else if (atStart) {
+      e.preventDefault();
+      first.focus();
     } else if (doc.activeElement === last || !modalPanel.contains(doc.activeElement)) {
       e.preventDefault();
       first.focus();
@@ -292,12 +328,25 @@ function initCalculatorApp(doc = document) {
     (e) => {
       if (modalWrap.hidden) return;
       if (e.key === 'Escape') {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        // Deliberate: Escape clears the display (like "C") rather than closing the dialog.
         e.stopImmediatePropagation();
         e.preventDefault();
-        close();
+        state = pressKey(state, 'clear');
+        render('Display cleared');
       } else if (e.key === 'Tab') {
         e.stopImmediatePropagation();
         trapModalTab(e);
+      } else {
+        const mapped = keyboardKeyFor(e);
+        if (mapped === null) return;
+        // Enter on a focused Close/Cancel/Use/tab control must still activate it. Keypad keys
+        // are not exempt: Enter there means "=" (preventDefault stops the native click).
+        if (mapped === 'equals' && e.target.closest && e.target.closest(NATIVE_ENTER_CONTROLS)) return;
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        state = pressKey(state, mapped);
+        render();
       }
     },
     true,
