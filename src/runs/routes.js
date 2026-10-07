@@ -1,5 +1,5 @@
 const express = require('express');
-const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement } = require('./store');
+const { getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, applyCheckSignal } = require('./store');
 const { getHire } = require('../hires/store');
 const { enforceOnboardingRole } = require('./auth');
 
@@ -62,6 +62,16 @@ router.post('/:id/resolve-requirement', enforceOnboardingRole, (req, res) => {
   if (!run) {
     return res.status(404).json({ error: 'run not found' });
   }
+  res.status(200).json(withHire(run));
+});
+
+router.post('/:id/tasks/:taskId/signal', (req, res) => {
+  const { outcome } = req.body;
+  if (outcome !== 'pass' && outcome !== 'not-pass') {
+    return res.status(400).json({ error: 'outcome must be "pass" or "not-pass"' });
+  }
+  const run = applyCheckSignal(req.params.id, req.params.taskId, outcome);
+  if (!run) return res.status(404).json({ error: 'run not found' });
   res.status(200).json(withHire(run));
 });
 
