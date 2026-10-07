@@ -109,16 +109,19 @@ describe('calculator engine', () => {
 
   test('AC5 fitExpressionFontSize steps down progressively', () => {
     const el = document.createElement('div');
-    const widthBySize = { max: 400, mid: 250, min: 180 };
+    // Real CSS length values: jsdom's CSSStyleDeclaration rejects non-length strings like
+    // 'max'/'mid'/'min' (silently leaving fontSize as ''), so the fixture must use values the
+    // function will actually be assigned in production (see EXPR_SIZES).
+    const widthBySize = { '3rem': 400, '2rem': 250, '1rem': 180 };
     Object.defineProperty(el, 'clientWidth', { value: 200, configurable: true });
     Object.defineProperty(el, 'scrollWidth', { get: () => widthBySize[el.style.fontSize], configurable: true });
-    expect(fitExpressionFontSize(el, ['max', 'mid', 'min'])).toBe('min');
-    expect(el.style.fontSize).toBe('min');
+    expect(fitExpressionFontSize(el, ['3rem', '2rem', '1rem'])).toBe('1rem');
+    expect(el.style.fontSize).toBe('1rem');
 
     const fits = document.createElement('div');
     Object.defineProperty(fits, 'clientWidth', { value: 400, configurable: true });
     Object.defineProperty(fits, 'scrollWidth', { value: 100, configurable: true });
-    expect(fitExpressionFontSize(fits, ['max', 'mid', 'min'])).toBe('max');
+    expect(fitExpressionFontSize(fits, ['3rem', '2rem', '1rem'])).toBe('3rem');
   });
 });
 
@@ -136,6 +139,15 @@ describe('calculator stylesheet', () => {
     const rule = css.match(/\.calc-key\s*\{[^}]*\}/)[0];
     expect(rule).toMatch(/min-height:\s*44px/);
     expect(rule).toMatch(/min-width:\s*44px/);
+  });
+
+  test('TEST-M1-STORY-184 AC6 scientific keys inherit the 44x44 touch-target floor', () => {
+    // `.calc-key.fn` only overrides font-size; it inherits `.calc-key`'s own
+    // min-height/min-width: 44px rather than duplicating it.
+    const baseRule = css.match(/\.calc-key\s*\{[^}]*\}/)[0];
+    expect(baseRule).toMatch(/min-height:\s*44px/);
+    expect(baseRule).toMatch(/min-width:\s*44px/);
+    expect(css).toMatch(/\.calc-key\.fn\s*\{/);
   });
 });
 
@@ -214,6 +226,71 @@ describe('calculator UI', () => {
     expect(live()).toBe('Result 20, finalized');
     key('clear');
     expect(live()).toBe('Display cleared');
+  });
+
+  describe('scientific layout toggle (TEST-M1-STORY-184)', () => {
+    const REQUIRED_SCI_KEYS = [
+      'sin(', 'cos(', 'tan(', 'asin(', 'acos(', 'atan(', 'log(', 'ln(', '^', '^2', '√(', 'π', 'e', '!',
+    ];
+
+    test('AC1 the toggle switches which keypad is rendered', () => {
+      expect(document.getElementById('scientific-keys').hidden).toBe(true);
+      document.getElementById('tab-scientific').click();
+      expect(document.getElementById('scientific-keys').hidden).toBe(false);
+      expect(document.getElementById('tab-scientific').getAttribute('aria-selected')).toBe('true');
+      expect(document.getElementById('tab-basic').getAttribute('aria-selected')).toBe('false');
+    });
+
+    test('AC3 every required scientific function/constant button is present', () => {
+      document.getElementById('tab-scientific').click();
+      const sciKeys = Array.from(document.querySelectorAll('#scientific-keys .calc-key')).map(
+        (b) => b.dataset.key,
+      );
+      REQUIRED_SCI_KEYS.forEach((required) => expect(sciKeys).toContain(required));
+    });
+
+    test('AC4 Basic layout exposes only digits/decimal/operators/equals/clear keys', () => {
+      const keys = Array.from(
+        document.querySelectorAll('#calculator-modal .calc-keypad:not(.scientific-rows) .calc-key'),
+      ).map((b) => b.dataset.key);
+      expect(keys).toEqual([
+        'clear', 'backspace', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', 'equals',
+      ]);
+    });
+
+    test('AC4/AC5 scientific keys are excluded from focus/Tab order while Basic is active', () => {
+      const focusableKeys = calc
+        .getFocusableElements(document.getElementById('calculator-modal'))
+        .map((el) => el.dataset.key || el.id);
+      expect(focusableKeys).not.toEqual(expect.arrayContaining(['sin(']));
+    });
+
+    test('AC5 every visible button is reachable, in visual order, once Scientific is active', () => {
+      document.getElementById('tab-scientific').click();
+      const focusableKeys = calc
+        .getFocusableElements(document.getElementById('calculator-modal'))
+        .map((el) => el.dataset.key || el.id);
+      const closeIdx = focusableKeys.indexOf('calc-close');
+      const toggleIdx = focusableKeys.indexOf('tab-scientific');
+      const sinIdx = focusableKeys.indexOf('sin(');
+      const equalsIdx = focusableKeys.indexOf('equals');
+      expect(closeIdx).toBeGreaterThanOrEqual(0);
+      expect(toggleIdx).toBeGreaterThan(closeIdx);
+      expect(sinIdx).toBeGreaterThan(toggleIdx);
+      expect(equalsIdx).toBeGreaterThan(sinIdx);
+      REQUIRED_SCI_KEYS.forEach((k) => expect(focusableKeys).toContain(k));
+      calc
+        .getFocusableElements(document.getElementById('calculator-modal'))
+        .forEach((el) => expect(el.tagName).toBe('BUTTON'));
+    });
+
+    test('AC7 the layout switch is announced to assistive technology via the live region', () => {
+      expect(document.getElementById('calc-live-region').getAttribute('aria-live')).toBe('polite');
+      document.getElementById('tab-scientific').click();
+      expect(live()).toBe('Scientific layout active');
+      document.getElementById('tab-basic').click();
+      expect(live()).toBe('Basic layout active');
+    });
   });
 
   test('Use this amount writes the value and closes', () => {
@@ -394,6 +471,16 @@ describe('calculator UI', () => {
       document.getElementById('tab-basic').click();
       expect(document.getElementById('scientific-keys').hidden).toBe(true);
       expect(expr()).toBe('12');
+    });
+
+    test('AC2 a partially typed function call like "sin(" survives a layout toggle unchanged', () => {
+      sci();
+      document.querySelector('#scientific-keys .calc-key[data-key="sin("]').click();
+      expect(expr()).toBe('sin(');
+      document.getElementById('tab-basic').click();
+      expect(expr()).toBe('sin(');
+      sci();
+      expect(expr()).toBe('sin(');
     });
 
     test('leading operator ignored; second operator replaces', () => {
