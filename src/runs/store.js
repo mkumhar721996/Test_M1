@@ -5,6 +5,7 @@ const { appendOnboardingAuditEntry } = require('../hires/store');
 const { recordRunEvent, recordTaskEvent, DEFAULT_TENANT_ID } = require('./auditLog');
 
 const runs = new Map();
+const TERMINAL_STATUSES = ['completed', 'failed', 'cancelled'];
 
 const REQUIRED_STAFF_FIELDS = ['name', 'email', 'department', 'role', 'startDate'];
 
@@ -78,7 +79,7 @@ function listRuns() {
 function advanceStep(runId, actor = 'Manager') {
   const run = runs.get(runId);
   if (!run) return undefined;
-  if (run.status === 'completed') return run;
+  if (TERMINAL_STATUSES.includes(run.status) || run.status === 'paused') return run;
 
   const idx = run.currentIndex;
   const step = run.steps[idx];
@@ -144,7 +145,7 @@ function getRun(runId) {
 function completeRun(runId, payload = {}) {
   const run = runs.get(runId);
   if (!run) return undefined;
-  if (run.employeeId) return run;
+  if (run.employeeId || run.status === 'cancelled' || run.status === 'failed') return run;
 
   const missingFields = REQUIRED_STAFF_FIELDS.filter((field) => !payload[field]);
   if (missingFields.length > 0) {
@@ -160,8 +161,6 @@ function completeRun(runId, payload = {}) {
   run.employeeId = employee.id;
   return run;
 }
-
-const TERMINAL_STATUSES = ['completed', 'failed', 'cancelled'];
 
 function transitionRun(runId, actor, eventType, newState, canTransition) {
   const run = runs.get(runId);

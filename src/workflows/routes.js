@@ -23,7 +23,13 @@ router.post('/:id/runs', enforceOnboardingRole, (req, res) => {
     if (typeof hireId !== 'string') return res.status(400).json({ error: 'hireId must be a string' });
     if (!getHire(hireId)) return res.status(404).json({ error: 'hire not found' });
   }
-  const run = startRun(req.params.id, hireId, { tenantId: req.body.tenantId || undefined, projectId: req.body.projectId || null });
+  const { tenantId, projectId } = req.body;
+  for (const [name, value] of [['tenantId', tenantId], ['projectId', projectId]]) {
+    if (value !== undefined && value !== null && (typeof value !== 'string' || !value.trim())) {
+      return res.status(400).json({ error: `${name} must be a non-empty string` });
+    }
+  }
+  const run = startRun(req.params.id, hireId, { tenantId: tenantId || undefined, projectId: projectId || null });
   if (!run) return res.status(404).json({ error: 'workflow not found' });
   res.status(201).json(run);
 });
