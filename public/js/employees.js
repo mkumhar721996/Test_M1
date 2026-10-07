@@ -1,17 +1,5 @@
 (function () {
-  const { trapTab } = (typeof module !== 'undefined' && module.exports) ? require('./utils') : window.EmployeeUtils;
-
-  function escapeHtml(str) {
-    return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    }[c]));
-  }
-
-  function formatDateDisplay(iso) {
-    if (!iso) return '—';
-    const [y, m, d] = String(iso).slice(0, 10).split('-');
-    return `${m}/${d}/${y}`;
-  }
+  const { escapeHtml, formatDateDisplay, trapTab } = (typeof module !== 'undefined' && module.exports) ? require('./utils') : window.EmployeeUtils;
 
   function statusChipMarkup(status) {
     return status === 'deactivated'
@@ -78,11 +66,11 @@
       }
       tbody.innerHTML = visible.map((e) => {
         const active = e.employmentStatus !== 'deactivated';
-        const id = escapeHtml(e.id);
+        const id = escapeHtml(doc, e.id);
         return `<tr${e.id === lastChangedId ? ' class="row-changed"' : ''}>
-          <td class="name-cell"><button type="button" class="person-name-link" data-view-id="${id}">${escapeHtml(e.name)}</button><span class="person-id">${id}</span></td>
-          <td class="role-cell"><span class="role-line">${escapeHtml(e.role)}</span><br/><span class="dept-line">${escapeHtml(e.department)}</span></td>
-          <td>${escapeHtml(formatDateDisplay(e.startDate))}</td>
+          <td class="name-cell"><button type="button" class="person-name-link" data-view-id="${id}">${escapeHtml(doc, e.name)}</button><span class="person-id">${id}</span></td>
+          <td class="role-cell"><span class="role-line">${escapeHtml(doc, e.role)}</span><br/><span class="dept-line">${escapeHtml(doc, e.department)}</span></td>
+          <td>${escapeHtml(doc, formatDateDisplay(e.startDate))}</td>
           <td>${statusChipMarkup(e.employmentStatus)}</td>
           <td class="col-actions"><button type="button" class="action-link btn-sm" data-lifecycle-id="${id}">${active ? 'Deactivate' : 'Reactivate'}</button></td>
         </tr>`;
@@ -110,8 +98,8 @@
       $('confirm-title').textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
       $('confirm-body').textContent = `${willDeactivate ? 'Deactivate' : 'Reactivate'} ${e.name}?`;
       $('confirm-consequence-text').innerHTML = willDeactivate
-        ? `Marking <strong>${escapeHtml(e.name)}</strong> as deactivated takes effect immediately. Their record stays fully viewable to anyone who opens it — nothing is deleted.`
-        : `Marking <strong>${escapeHtml(e.name)}</strong> as active takes effect immediately and is visible the moment this dialog closes.`;
+        ? `Marking <strong>${escapeHtml(doc, e.name)}</strong> as deactivated takes effect immediately. Their record stays fully viewable to anyone who opens it — nothing is deleted.`
+        : `Marking <strong>${escapeHtml(doc, e.name)}</strong> as active takes effect immediately and is visible the moment this dialog closes.`;
       actionBtn.textContent = willDeactivate ? 'Deactivate employee' : 'Reactivate employee';
       actionBtn.disabled = false;
       $('confirm-overlay').hidden = false;

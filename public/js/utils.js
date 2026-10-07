@@ -6,7 +6,8 @@
   }
 
   function formatDateDisplay(iso) {
-    const [y, m, d] = iso.split('-');
+    if (!iso) return '—';
+    const [y, m, d] = String(iso).slice(0, 10).split('-');
     return `${m}/${d}/${y}`;
   }
 
