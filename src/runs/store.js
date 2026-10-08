@@ -32,6 +32,7 @@ function buildSteps(taskGraph) {
     requirementLabel: t.requirement ? t.requirement.label : undefined,
     requirementMet: t.requirement ? Boolean(t.requirement.metByDefault) : undefined,
     blockReason: t.requirement ? t.requirement.blockReason : undefined,
+    checkType: t.requirement ? t.requirement.checkType : undefined,
   }));
 }
 
@@ -55,6 +56,42 @@ function startRun(workflowId, hireId = null) {
   };
   runs.set(run.id, run);
   if (hireId) appendOnboardingAuditEntry(hireId, 'System', run.auditLog[0].action);
+  return run;
+}
+
+function applyCheckSignal(runId, taskId, outcome, actor = 'System') {
+  const run = runs.get(runId);
+  if (!run) return undefined;
+  if (run.status === 'completed') return run;
+
+  const idx = run.steps.findIndex((s) => s.id === taskId);
+  if (idx === -1) return run;
+  const step = run.steps[idx];
+  if (!step.checkType) return run;
+  if (idx !== run.currentIndex || step.status === 'done') return run;
+
+  if (outcome === 'pass') {
+    step.status = 'done';
+    const action = `${step.checkType} check signal received for step ${idx + 1} of ${run.steps.length} (${step.name}): pass.`;
+    run.auditLog.push({ ts: new Date().toISOString(), actor, action });
+    if (idx === run.steps.length - 1) {
+      run.status = 'completed';
+      if (run.hireId) appendOnboardingAuditEntry(run.hireId, actor, action, { completed: true });
+    } else {
+      run.currentIndex = idx + 1;
+      run.steps[run.currentIndex].status = 'current';
+      run.status = 'active';
+    }
+  } else if (outcome === 'not-pass') {
+    if (step.status === 'blocked') return run;
+    step.status = 'blocked';
+    run.status = 'blocked';
+    run.auditLog.push({
+      ts: new Date().toISOString(),
+      actor,
+      action: `${step.checkType} check signal received for step ${idx + 1} of ${run.steps.length} (${step.name}): not-pass.`,
+    });
+  }
   return run;
 }
 
@@ -160,4 +197,4 @@ function seedExampleRun() {
 
 seedExampleRun();
 
-module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, buildSteps, REQUIRED_STAFF_FIELDS };
+module.exports = { startRun, getRun, listRuns, completeRun, advanceStep, resolveStepRequirement, applyCheckSignal, buildSteps, REQUIRED_STAFF_FIELDS };
