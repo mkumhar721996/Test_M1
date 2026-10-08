@@ -41,3 +41,19 @@ test('AC6/AC7: queue is reachable by hash and shows Pending rows with an unstaff
   expect(r2.querySelector('.unstaffed-badge').textContent).toContain('No technician available yet');
   expect(document.querySelector('.queue-row[data-id="REQ-1"] .unstaffed-badge')).toBeNull();
 });
+
+test('queue shows an access message when the server denies the dispatcher role', async () => {
+  const api = {
+    getCatalog: jest.fn().mockResolvedValue(catalog),
+    createRequest: jest.fn(),
+    listQueue: jest.fn().mockRejectedValue({ status: 403 }),
+  };
+  initServicesApp(document, api);
+  await flush();
+  window.location.hash = '#/admin/queue';
+  window.dispatchEvent(new Event('hashchange'));
+  await flush();
+  expect(document.getElementById('queue-empty').hidden).toBe(false);
+  expect(document.getElementById('queue-empty').textContent).toContain('dispatcher account');
+  expect(document.querySelector('.queue-row')).toBeNull();
+});

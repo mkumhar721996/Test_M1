@@ -32,7 +32,7 @@ test('AC5: photos are included', async () => {
 
 test('AC6: submitted request appears first in the dispatch queue as Pending', async () => {
   const created = await request(app).post('/repair-requests').send(validPayload);
-  const queue = await request(app).get('/repair-requests');
+  const queue = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
   expect(queue.status).toBe(200);
   expect(queue.body[0]).toMatchObject({ id: created.body.id, status: 'Pending' });
 });
@@ -42,4 +42,15 @@ test('AC7: unstaffed window is still accepted as Pending', async () => {
   expect(res.status).toBe(201);
   expect(res.body.status).toBe('Pending');
   expect(res.body.staffed).toBe(false);
+});
+
+test('dispatch queue requires a dispatcher role', async () => {
+  await request(app).post('/repair-requests').send(validPayload);
+  expect((await request(app).get('/repair-requests')).status).toBe(401);
+  expect((await request(app).get('/repair-requests').set('x-staff-role', 'hr')).status).toBe(403);
+});
+
+test('customers can still submit without any role header', async () => {
+  const res = await request(app).post('/repair-requests').send(validPayload);
+  expect(res.status).toBe(201);
 });

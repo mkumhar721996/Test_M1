@@ -347,7 +347,13 @@
 
     function showQueue() {
       show(SCREEN_QUEUE);
-      return api.listQueue().then(renderQueue);
+      return api.listQueue().then(renderQueue).catch((err) => {
+        renderQueue([]);
+        const denied = err && (err.status === 401 || err.status === 403);
+        $('queue-empty').querySelector('p').textContent = denied
+          ? 'You need a dispatcher account to view the dispatch queue.'
+          : "We couldn't load the dispatch queue. Please try again.";
+      });
     }
 
     // ---------- Navigation ----------
@@ -388,8 +394,9 @@
   }
 
   function createDefaultApi() {
-    function request(url, method, body) {
-      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    // No real sign-in exists yet; the queue identifies as a dispatcher via the client-asserted role header.
+    function request(url, method, body, headers = {}) {
+      const opts = { method, headers: { 'Content-Type': 'application/json', ...headers } };
       if (body !== undefined) opts.body = JSON.stringify(body);
       return fetch(url, opts)
         .then((res) => res.json().catch(() => ({})).then((data) => (
@@ -400,7 +407,7 @@
     return {
       getCatalog: () => request('/service-catalog', 'GET'),
       createRequest: (payload) => request('/repair-requests', 'POST', payload),
-      listQueue: () => request('/repair-requests', 'GET'),
+      listQueue: () => request('/repair-requests', 'GET', undefined, { 'x-staff-role': 'dispatcher' }),
     };
   }
 

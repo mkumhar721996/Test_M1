@@ -1,6 +1,8 @@
 const express = require('express');
 const { RepairRequestValidationError, createRequest, listRequests } = require('./store');
 
+const { requireDispatcherRole } = require('./auth');
+
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
@@ -14,7 +16,7 @@ router.post('/', (req, res, next) => {
   }
 });
 
-router.get('/', (req, res, next) => {
+router.get('/', requireDispatcherRole, (req, res, next) => {
   try {
     res.status(200).json(listRequests());
   } catch (err) {
