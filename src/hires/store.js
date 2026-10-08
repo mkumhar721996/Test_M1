@@ -13,6 +13,7 @@ hires.set('hire_2031', {
   role: 'Software Engineer II',
   hireStage: 'draft',
   hiringManager: null,
+  tenant: 'Acme Corp',
   profileStatus: 'active',
   run: null,
   runHistory: [],
@@ -83,6 +84,7 @@ function assertValidStageTransition(hire, changes) {
 async function createHire(data) {
   assertValidHire(data.name, data.email, data.phone, data.department, data.role, data.startDate);
   const hire = {
+    tenant: 'Acme Corp',
     ...data,
     id: crypto.randomUUID(),
     profileStatus: 'active',

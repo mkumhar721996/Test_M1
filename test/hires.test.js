@@ -18,13 +18,13 @@ test('GET /hires/:id returns the created hire unchanged', async () => {
   const createRes = await request(app).post('/hires').set('x-staff-role', 'manager').send(payload);
   const { id } = createRes.body;
 
-  const getRes = await request(app).get(`/hires/${id}`);
+  const getRes = await request(app).get(`/hires/${id}`).set('x-staff-role', 'hr');
   expect(getRes.status).toBe(200);
   expect(getRes.body).toEqual(createRes.body);
 });
 
 test('GET /hires/:id returns 404 for an unknown id', async () => {
-  const res = await request(app).get('/hires/does-not-exist');
+  const res = await request(app).get('/hires/does-not-exist').set('x-staff-role', 'hr');
   expect(res.status).toBe(404);
 });
 
@@ -33,7 +33,7 @@ test('PATCH /hires/:id applies profile changes and returns the updated hire', as
   const createRes = await request(app).post('/hires').set('x-staff-role', 'manager').send(payload);
   const { id } = createRes.body;
 
-  const patchRes = await request(app).patch(`/hires/${id}`).set('x-staff-role', 'manager').send({ name: 'A B' });
+  const patchRes = await request(app).patch(`/hires/${id}`).set('x-staff-role', 'hr').send({ name: 'A B' });
   expect(patchRes.status).toBe(200);
   expect(patchRes.body.name).toBe('A B');
 });
@@ -43,12 +43,12 @@ test('POST /hires/:id/deactivate then /reactivate starts a fresh Run', async () 
   const createRes = await request(app).post('/hires').set('x-staff-role', 'manager').send(payload);
   const { id } = createRes.body;
 
-  const deactivateRes = await request(app).post(`/hires/${id}/deactivate`).set('x-staff-role', 'manager');
+  const deactivateRes = await request(app).post(`/hires/${id}/deactivate`).set('x-staff-role', 'hr');
   expect(deactivateRes.status).toBe(200);
   expect(deactivateRes.body.profileStatus).toBe('deactivated');
   expect(deactivateRes.body.run).toBeNull();
 
-  const reactivateRes = await request(app).post(`/hires/${id}/reactivate`).set('x-staff-role', 'manager');
+  const reactivateRes = await request(app).post(`/hires/${id}/reactivate`).set('x-staff-role', 'hr');
   expect(reactivateRes.status).toBe(200);
   expect(reactivateRes.body.run).toMatchObject({ status: 'active', freshStart: true });
 });

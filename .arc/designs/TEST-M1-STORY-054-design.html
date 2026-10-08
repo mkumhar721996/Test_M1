@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-054 — Role-Based Access Control for Profiles</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no dedicated success/danger/warning color
+    (only color-fg, color-fg-muted, color-primary/-fg, color-surface, color-bg,
+    color-border). Per the UX baseline (never encode meaning in colour alone), every
+    status chip, the access-denied notice, and the audit "Denied" result below are
+    signalled with an icon + text label + border weight using only existing tokens.
+    If sdlc.design-system-bootstrap later adds e.g. color-success/color-danger, these
+    chips are the only place to swap them in.
+
+    Data-model note: this prototype reuses the real "hire profile" record shape already
+    in src/hires/store.js (name, email, phone, department, role, startDate, hireStage,
+    hiringManager, profileStatus, onboardingStatus) — this is the "profile" this story's
+    RBAC applies to. Recruiting-pipeline stage progression itself is TEST-M1-STORY-188's
+    concern, so hireStage is shown read-only here; this story only adds the access layer
+    (who may view/edit/deactivate which profiles) and the hiringManager reassignment that
+    drives AC6/AC7.
+
+    Tenant note: the codebase has no multi-tenant concept yet. To make "within the
+    tenant" (AC1–3) and the tenant-level scope of AC9–11 visible, this prototype adds one
+    profile (Sam Okafor) tagged to a second tenant, "Globex Corp" — never visible in
+    Acme Corp's hire list for any role, used only for the cross-tenant denial demo.
+  -->
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  .reset-link {
+    background: none; border: none; color: var(--color-fg-muted);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; text-decoration: underline; padding: var(--space-2);
+  }
+
+  /* ---------- Topbar extras ---------- */
+  .tenant-badge {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .actor-switcher { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .actor-switcher label { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+  .actor-switcher select { width: auto; min-width: 260px; }
+
+  /* ---------- Scope note ---------- */
+  .scope-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-bottom: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .scope-note[hidden] { display: none; }
+  .scope-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .scope-note strong { color: var(--color-fg); }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .filter-field { min-width: 200px; }
+
+  /* ---------- Directory table ---------- */
+  .table-card { padding: 0; overflow: hidden; }
+  .table-scroll { overflow-x: auto; }
+  table.directory-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .directory-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .directory-table td {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); vertical-align: top;
+  }
+  .directory-table tbody tr:last-child td { border-bottom: none; }
+  .directory-table tbody tr.row-changed { animation: flash-added 1.6s ease-out; }
+  @keyframes flash-added { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  @media (prefers-reduced-motion: reduce) { .directory-table tbody tr.row-changed { animation: none; } }
+
+  .name-cell .person-name-link {
+    background: none; border: none; padding: 0; cursor: pointer; text-align: left;
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); text-decoration: underline; min-height: 44px;
+  }
+  .name-cell .person-id { display: block; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .role-cell .role-line { color: var(--color-fg); }
+  .role-cell .dept-line { color: var(--color-fg-muted); font-size: var(--font-size-sm); }
+  .not-set { color: var(--color-fg-muted); font-style: italic; }
+  .col-actions { text-align: right; white-space: nowrap; }
+
+  .btn-sm { padding: var(--space-2) var(--space-3); font-size: var(--font-size-sm); min-height: 44px; }
+
+  /* ---------- Status chips (icon + label, never colour alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--radius-lg);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    border: 1px solid var(--color-border); color: var(--color-fg-muted); white-space: nowrap;
+  }
+  .status-chip--active { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--neutral { color: var(--color-fg); }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-row td { padding: var(--space-4); }
+  .skeleton-bar { height: 14px; border-radius: var(--radius-sm); background: var(--color-surface); position: relative; overflow: hidden; }
+  .skeleton-bar::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(245,242,251,0.08), transparent);
+    animation: shimmer 1.3s infinite;
+  }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) { .skeleton-bar::after { animation: none; } }
+
+  .empty-state { text-align: center; padding: var(--space-4) var(--space-4) calc(var(--space-4) * 2); }
+  .empty-state p { font-family: var(--font-family-base); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .empty-state p:last-child { margin-bottom: 0; }
+
+  /* ---------- Error state ---------- */
+  .error-state {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .error-state .notice-icon { font-size: var(--font-size-lg); color: var(--color-fg-muted); flex: 0 0 auto; }
+  .error-state p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Access-boundary demo box ---------- */
+  .boundary-demo {
+    margin-top: var(--space-4); padding: var(--space-3) var(--space-4);
+    background: var(--color-surface); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+  }
+  .boundary-demo p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-2) 0; }
+
+  /* ---------- Restricted (new-hire) list card ---------- */
+  .restricted-card { text-align: center; padding: calc(var(--space-4) * 2) var(--space-4); }
+  .restricted-card .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); }
+  .restricted-card p { font-family: var(--font-family-base); color: var(--color-fg-muted); max-width: 52ch; margin: var(--space-2) auto var(--space-4); }
+
+  /* ---------- Profile screen ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none;
+    color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    cursor: pointer; padding: var(--space-2) 0; margin-bottom: var(--space-3); min-height: 44px;
+  }
+  .back-link:hover { color: var(--color-fg); }
+
+  .profile-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-3);
+  }
+  .profile-header h1 { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .profile-header .sub { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); margin: 0; }
+  .profile-header-meta { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+  .kv-list { border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+  .kv-row { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-2); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); }
+  .kv-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  @media (max-width: 480px) { .kv-row { grid-template-columns: 1fr; gap: var(--space-1); } }
+
+  .readonly-note {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin-top: var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .readonly-note[hidden] { display: none; }
+  .readonly-note .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+
+  /* ---------- Permission-denied notice ---------- */
+  .notice--deny {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-bg); border: 2px solid var(--color-primary); border-radius: var(--radius-md);
+    padding: var(--space-4); margin-bottom: var(--space-4);
+  }
+  .notice--deny .notice-icon { font-size: var(--font-size-lg); color: var(--color-primary); flex: 0 0 auto; }
+  .notice--deny p { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-2) 0; }
+  .notice--deny p:last-child { margin-bottom: 0; }
+  .notice--deny .notice-sub { font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Confirm dialog ---------- */
+  .consequence-box {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); margin: var(--space-3) 0 0 0;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+  }
+  .consequence-box .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+  .consequence-box strong { color: var(--color-fg); }
+  .field-error { color: var(--color-fg); font-family: var(--font-family-base); font-size: var(--font-size-sm); margin-top: var(--space-1); display: none; }
+  .field-error.is-visible { display: block; }
+  .field.has-error .input { border-color: var(--color-fg); }
+  .field-static { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg-muted); padding: var(--space-2) 0; }
+
+  /* ---------- Audit log ---------- */
+  .audit-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .audit-table th {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg-muted); text-transform: uppercase;
+    letter-spacing: 0.03em; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border);
+  }
+  .audit-table td {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); vertical-align: top;
+  }
+  .audit-table tbody tr:last-child td { border-bottom: none; }
+  .audit-table tbody tr.row-changed { animation: flash-added 1.6s ease-out; }
+  .result-chip { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); white-space: nowrap; }
+  .result-chip.allowed::before { content: "✓"; }
+  .result-chip.denied::before { content: "⛔"; }
+  .audit-detail { color: var(--color-fg-muted); }
+
+  /* ---------- Reference screens ---------- */
+  .matrix-table { width: 100%; border-collapse: collapse; }
+  .matrix-table th, .matrix-table td {
+    text-align: left; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    padding: var(--space-3) var(--space-3); border-bottom: 1px solid var(--color-border); vertical-align: top;
+  }
+  .matrix-table th { color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .matrix-table td { color: var(--color-fg); }
+  .verdict { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); }
+  .verdict.pass::before { content: "✓"; color: var(--color-fg); }
+  .verdict.block::before { content: "⛔"; color: var(--color-fg); }
+
+  .checklist { display: flex; flex-direction: column; gap: var(--space-3); }
+  .check-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .check-badge {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-primary-fg);
+    font-family: var(--font-family-base); font-weight: var(--font-weight-bold); font-size: var(--font-size-sm);
+  }
+  .check-item h3 { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .check-item p { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; }
+  .check-item .ac-id { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* Reviewer bar buttons */
+  #review-bar button {
+    background: none; border: none; color: var(--color-primary);
+    font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3);
+  }
+</style>
+</head>
+<!-- App nav: top bar — Hire profiles (active) · Audit log · Access & tenant matrix.
+     "Signed in as" lives in the topbar (not per-page) because who you are is the one
+     thing that must stay visible and consistent across every screen in an RBAC
+     prototype. Switching it re-evaluates access on whichever screen is open. -->
+<body class="u-surface">
+
+  <!-- Fixture data: inline JSON, parsed at boot -->
+  <script type="application/json" id="fixture-data">
+  {
+    "tenant": "Acme Corp",
+    "managers": ["Dana Brooks", "Marcus Chen", "Elena Vance"],
+    "actors": [
+      { "id": "priya", "name": "Priya Shah", "role": "hr" },
+      { "id": "dana", "name": "Dana Brooks", "role": "manager" },
+      { "id": "marcus", "name": "Marcus Chen", "role": "manager" },
+      { "id": "elena", "name": "Elena Vance", "role": "manager" },
+      { "id": "jordan", "name": "Jordan Reyes", "role": "new_hire", "selfProfileId": "hire_2031" }
+    ],
+    "hires": [
+      { "id": "hire_2031", "name": "Jordan Reyes", "email": "jordan.reyes@example.com", "phone": "(312) 555-0148", "department": "Engineering", "role": "Software Engineer II", "startDate": "2026-10-19", "hireStage": "offer_accepted", "hiringManager": "Dana Brooks", "profileStatus": "active", "onboardingStatus": "in_progress", "tenant": "Acme Corp" },
+      { "id": "hire_2032", "name": "Amara Obi", "email": "amara.obi@example.com", "phone": "(415) 555-0199", "department": "Design", "role": "Product Designer", "startDate": "2026-09-28", "hireStage": "offer_accepted", "hiringManager": "Dana Brooks", "profileStatus": "active", "onboardingStatus": "in_progress", "tenant": "Acme Corp" },
+      { "id": "hire_2033", "name": "Felix Tran", "email": "felix.tran@example.com", "phone": "", "department": "Data & Analytics", "role": "Data Analyst", "startDate": "2026-11-02", "hireStage": "screening", "hiringManager": "Marcus Chen", "profileStatus": "active", "onboardingStatus": null, "tenant": "Acme Corp" },
+      { "id": "hire_2034", "name": "Rosa Delgado", "email": "rosa.delgado@example.com", "phone": "(206) 555-0133", "department": "Sales", "role": "Account Executive", "startDate": "2026-10-26", "hireStage": "interview", "hiringManager": "Marcus Chen", "profileStatus": "active", "onboardingStatus": null, "tenant": "Acme Corp" },
+      { "id": "hire_2035", "name": "Theo Walsh", "email": "theo.walsh@example.com", "phone": "(702) 555-0177", "department": "Customer Success", "role": "Support Specialist", "startDate": "2026-03-10", "hireStage": "offer_accepted", "hiringManager": "Dana Brooks", "profileStatus": "deactivated", "onboardingStatus": "completed", "tenant": "Acme Corp" },
+      { "id": "hire_9099", "name": "Sam Okafor", "email": "sam.okafor@example.com", "phone": "(555) 555-0101", "department": "Engineering", "role": "Backend Engineer", "startDate": "2026-10-12", "hireStage": "interview", "hiringManager": "Robin Patel", "profileStatus": "active", "onboardingStatus": null, "tenant": "Globex Corp" }
+    ],
+    "auditLog": [
+      { "id": "audit_seed_1", "at": "2026-09-30T16:05:00Z", "tenant": "Acme Corp", "actorName": "Priya Shah", "actorRole": "HR Admin", "action": "Edited profile", "targetId": "hire_2031", "targetName": "Jordan Reyes", "result": "allowed", "detail": "Corrected start date." },
+      { "id": "audit_seed_2", "at": "2026-10-01T13:40:00Z", "tenant": "Acme Corp", "actorName": "Dana Brooks", "actorRole": "Manager", "action": "Viewed profile", "targetId": "hire_2032", "targetName": "Amara Obi", "result": "allowed", "detail": "Reviewed ahead of interview debrief." },
+      { "id": "audit_seed_3", "at": "2026-10-02T09:12:00Z", "tenant": "Acme Corp", "actorName": "Marcus Chen", "actorRole": "Manager", "action": "Attempted to view profile", "targetId": "hire_2031", "targetName": "Jordan Reyes", "result": "denied", "detail": "Not one of Marcus Chen's direct reports." },
+      { "id": "audit_seed_4", "at": "2026-10-03T11:00:00Z", "tenant": "Acme Corp", "actorName": "Priya Shah", "actorRole": "HR Admin", "action": "Deactivated profile", "targetId": "hire_2035", "targetName": "Theo Walsh", "result": "allowed", "detail": "Employee departed after completing onboarding." }
+    ]
+  }
+  </script>
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-054</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Hire List
+         Notes:
+           - "Signed in as" (topbar) switches live between an HR admin, three managers,
+             and a new hire, with no reload. Every row and empty state below reacts
+             immediately (AC4, AC5).
+           - Priya Shah (HR admin) sees every profile in Acme Corp. Dana Brooks sees
+             exactly her 3 direct reports; Marcus Chen sees exactly his 2. Elena Vance
+             starts with 0 direct reports — switch to her to see the AC5 empty state.
+           - Jordan Reyes (new hire) has no list at all — only a "View my profile" card
+             (AC8 is about a single profile, not a roster).
+           - The dashed "Try an out-of-scope profile" box changes target per role and
+             demonstrates AC9/AC10 without editing the URL by hand.
+           - "Simulate load error" / "Retry" demonstrates the error state required by
+             the UX baseline for every data view.
+           - To see AC6/AC7: sign in as Priya Shah, open Felix Tran, click Edit, change
+             "Hiring manager" to Elena Vance, Save. Then switch to Marcus Chen (Felix is
+             gone from his list — AC7) and to Elena Vance (Felix now appears, no longer
+             empty — AC6).
+    -->
+    <div class="screen" data-name="Hire List">
+      <div class="app-topbar">
+        <span class="brand">Hiring</span>
+        <span class="tenant-badge" id="tenant-badge-top"><span aria-hidden="true">🏢</span> Acme Corp</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-list" aria-current="page">Hire profiles</a>
+          <a href="#" id="nav-audit">Audit log</a>
+          <a href="#" id="nav-matrix">Access &amp; tenant matrix</a>
+        </nav>
+        <div class="actor-switcher">
+          <label for="actor-select">Signed in as</label>
+          <select class="input" id="actor-select">
+            <option value="priya">Priya Shah — HR Admin</option>
+            <option value="dana">Dana Brooks — Manager</option>
+            <option value="marcus">Marcus Chen — Manager</option>
+            <option value="elena">Elena Vance — Manager</option>
+            <option value="jordan">Jordan Reyes — New hire (self)</option>
+          </select>
+        </div>
+        <button class="reset-link" id="reset-data-btn" type="button">Reset demo data</button>
+      </div>
+
+      <div class="page">
+        <div class="page-header">
+          <h1>Hire profiles</h1>
+          <p id="list-subtitle">—</p>
+        </div>
+
+        <div class="scope-note" id="list-scope-note" hidden>
+          <span class="hint-icon" aria-hidden="true">ℹ</span>
+          <span id="list-scope-note-text"></span>
+        </div>
+
+        <!-- New-hire: no roster, own profile only -->
+        <div class="card restricted-card" id="restricted-card" hidden>
+          <div class="notice-icon" aria-hidden="true">🔒</div>
+          <p id="restricted-card-text">As a new hire, you have access to your own profile only — not a list of other candidates or employees.</p>
+          <button type="button" class="btn btn-primary" id="view-own-profile-btn">View my profile</button>
+        </div>
+
+        <!-- HR / Manager: filterable roster -->
+        <div id="roster-wrap">
+          <div class="error-state" id="list-error-state" hidden>
+            <span class="notice-icon" aria-hidden="true">⚠</span>
+            <div>
+              <p>Couldn't load hire profiles. Check your connection and try again.</p>
+              <button type="button" class="btn btn-secondary btn-sm" id="list-retry-btn">Retry</button>
+            </div>
+          </div>
+
+          <div id="roster-normal">
+            <div class="filter-bar">
+              <div class="filter-field">
+                <label class="label" for="status-filter">Filter by status</label>
+                <select class="input" id="status-filter">
+                  <option value="all">All statuses</option>
+                  <option value="active">Active only</option>
+                  <option value="deactivated">Deactivated only</option>
+                </select>
+              </div>
+              <button type="button" class="reset-link" id="simulate-error-btn">Simulate load error</button>
+            </div>
+
+            <div class="card table-card">
+              <div class="table-scroll">
+                <table class="directory-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Department / Role</th>
+                      <th scope="col">Hiring manager</th>
+                      <th scope="col">Stage</th>
+                      <th scope="col">Profile status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="roster-tbody"><!-- rendered by JS --></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="boundary-demo" id="boundary-demo" hidden>
+          <p id="boundary-demo-text">Demo: see what happens outside your permitted scope.</p>
+          <button type="button" class="btn btn-secondary btn-sm" id="boundary-demo-btn">—</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Profile Detail
+         Notes:
+           - Deep-linkable at #profile/<id>, same as navigating directly to a record's
+             URL. Every entry into this screen (clicking a name, the "View my profile"
+             card, a boundary-demo button, or changing "Signed in as" while already
+             here) is logged to the audit trail as a view attempt — allowed or denied
+             (AC9, AC10, AC11).
+           - As HR admin: full field set, "Edit profile" and "Deactivate profile"
+             controls (AC1, AC2, AC3).
+           - As a manager viewing a direct report: the same full field set, read-only —
+             no edit or deactivate controls (editing/deactivating is HR-only per this
+             story's scope).
+           - As the new hire viewing their own profile: a friendlier field set (no
+             internal pipeline stage) that foregrounds onboarding status (AC8).
+           - Outside your permitted scope (a profile that isn't yours to see): the
+             "Access denied" state renders instead of any profile data, with a reason
+             and a way back (AC9, AC10).
+    -->
+    <div class="screen" data-name="Profile Detail">
+      <div class="app-topbar">
+        <span class="brand">Hiring</span>
+        <span class="tenant-badge"><span aria-hidden="true">🏢</span> Acme Corp</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-list-2">Hire profiles</a>
+          <a href="#" id="nav-audit-2">Audit log</a>
+          <a href="#" id="nav-matrix-2">Access &amp; tenant matrix</a>
+        </nav>
+        <div class="actor-switcher">
+          <label for="actor-select-2">Signed in as</label>
+          <select class="input" id="actor-select-2">
+            <option value="priya">Priya Shah — HR Admin</option>
+            <option value="dana">Dana Brooks — Manager</option>
+            <option value="marcus">Marcus Chen — Manager</option>
+            <option value="elena">Elena Vance — Manager</option>
+            <option value="jordan">Jordan Reyes — New hire (self)</option>
+          </select>
+        </div>
+      </div>
+      <div class="page">
+        <button type="button" class="back-link" id="profile-back-btn">
+          <span aria-hidden="true">←</span> Back to hire profiles
+        </button>
+
+        <!-- State: profile-access-denied -->
+        <div id="profile-denied-state" hidden>
+          <div class="notice--deny">
+            <span class="notice-icon" aria-hidden="true">⛔</span>
+            <div>
+              <p id="denied-title">Access denied</p>
+              <p class="notice-sub" id="denied-reason">—</p>
+              <p class="notice-sub">This attempt has been logged to Acme Corp's audit trail. If you believe this is a mistake, contact your HR admin.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- State: profile-viewable -->
+        <div id="profile-viewable-state" hidden>
+          <div class="profile-header">
+            <div>
+              <h1 id="profile-name">—</h1>
+              <p class="sub" id="profile-sub">—</p>
+            </div>
+            <div class="profile-header-meta">
+              <span id="profile-status-chip"></span>
+              <button type="button" class="btn btn-secondary" id="profile-edit-btn">Edit profile</button>
+              <button type="button" class="btn btn-primary" id="profile-lifecycle-btn">Deactivate profile</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title" id="profile-card-title">Profile details</h3>
+            <div class="kv-list" id="profile-kv-list"><!-- rendered by JS --></div>
+          </div>
+
+          <p class="readonly-note" id="profile-readonly-note" hidden>
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span>You can view this profile because it's one of your direct reports. Only an HR admin can edit or deactivate it.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Edit profile modal (HR admin only) -->
+      <div class="modal-overlay" id="edit-overlay" hidden></div>
+      <div class="modal-wrap" id="edit-wrap" role="dialog" aria-modal="true" aria-labelledby="edit-title" hidden>
+        <div class="modal-panel" style="width:min(92vw, 520px);">
+          <div class="modal-header">
+            <div>
+              <h2 id="edit-title">Edit hire profile</h2>
+              <p>Changes save immediately and are visible to anyone with access to this profile.</p>
+            </div>
+            <button class="icon-btn" id="edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+          </div>
+          <form id="edit-form" novalidate>
+            <div class="field" id="field-wrap-name">
+              <label class="label" for="field-name">Full name</label>
+              <input class="input" id="field-name" type="text" />
+              <p class="field-error" id="error-name">Full name is required.</p>
+            </div>
+            <div class="field" id="field-wrap-email">
+              <label class="label" for="field-email">Email</label>
+              <input class="input" id="field-email" type="email" />
+              <p class="field-error" id="error-email">Email is required.</p>
+            </div>
+            <div class="field" id="field-wrap-phone">
+              <label class="label" for="field-phone">Phone</label>
+              <input class="input" id="field-phone" type="tel" />
+              <p class="field-error" id="error-phone">Phone is required.</p>
+            </div>
+            <div class="field" id="field-wrap-department">
+              <label class="label" for="field-department">Department</label>
+              <input class="input" id="field-department" type="text" />
+              <p class="field-error" id="error-department">Department is required.</p>
+            </div>
+            <div class="field" id="field-wrap-role">
+              <label class="label" for="field-role">Role / title</label>
+              <input class="input" id="field-role" type="text" />
+              <p class="field-error" id="error-role">Role is required.</p>
+            </div>
+            <div class="field" id="field-wrap-start-date">
+              <label class="label" for="field-start-date">Start date</label>
+              <input class="input" id="field-start-date" type="date" />
+              <p class="field-error" id="error-start-date">Start date is required.</p>
+            </div>
+            <div class="field" id="field-wrap-hiring-manager">
+              <label class="label" for="field-hiring-manager">Hiring manager</label>
+              <select class="input" id="field-hiring-manager">
+                <option value="">Unassigned</option>
+                <option value="Dana Brooks">Dana Brooks</option>
+                <option value="Marcus Chen">Marcus Chen</option>
+                <option value="Elena Vance">Elena Vance</option>
+              </select>
+              <p class="field-error" id="error-hiring-manager">Hiring manager is required from Screening onward.</p>
+            </div>
+            <div class="field">
+              <span class="label">Pipeline stage</span>
+              <p class="field-static" id="field-stage-readonly">—</p>
+              <p class="u-text-sm u-text-muted" style="margin:0;">Pipeline stage is managed from the recruiting pipeline screen, not here.</p>
+            </div>
+          </form>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deactivate / reactivate confirm modal (HR admin only) -->
+      <div class="modal-overlay" id="confirm-overlay" hidden></div>
+      <div class="modal-wrap" id="confirm-wrap" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+        <div class="modal-panel" style="width:min(92vw, 440px);">
+          <div class="modal-header">
+            <div><h2 id="confirm-title">Deactivate profile</h2></div>
+            <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+          </div>
+          <p class="card-body" id="confirm-body" style="margin:0;">Are you sure?</p>
+          <div class="consequence-box">
+            <span class="hint-icon" aria-hidden="true">ℹ</span>
+            <span id="confirm-consequence-text"></span>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirm-action-btn">Deactivate profile</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+        <span id="toast-message">Profile updated</span>
+      </div>
+    </div>
+
+    <!-- Screen: Audit Log (reference, tenant-level)
+         Notes:
+           - Every view (allowed or denied), edit, deactivation, and reactivation
+             performed anywhere in this prototype is appended here in real time, newest
+             first, scoped to the current tenant (AC11). The four seeded rows show what
+             history already looked like before this review session.
+           - Denied attempts are never silently dropped — they're the same shape of row
+             as an allowed one, just with a "Denied" result and a reason, so this table
+             alone is enough to audit both successful access and rejected attempts.
+    -->
+    <div class="screen" data-name="Audit Log">
+      <div class="app-topbar">
+        <span class="brand">Hiring</span>
+        <span class="tenant-badge"><span aria-hidden="true">🏢</span> Acme Corp</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-list-3">Hire profiles</a>
+          <a href="#" id="nav-audit-3" aria-current="page">Audit log</a>
+          <a href="#" id="nav-matrix-3">Access &amp; tenant matrix</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Audit log</h1>
+          <p>Every profile CRUD action and access decision for Acme Corp, logged for auditability. Newest first.</p>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table class="audit-table">
+              <thead>
+                <tr><th>Time</th><th>Actor</th><th>Action</th><th>Target profile</th><th>Result</th><th>Detail</th></tr>
+              </thead>
+              <tbody id="audit-tbody"><!-- rendered by JS --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Access & Tenant Matrix (reference)
+         Notes:
+           - Non-interactive summary of exactly who can do what, matching the behaviour
+             wired into the Hire List and Profile Detail screens. Switch "Signed in as"
+             on those screens to see every row below happen live.
+    -->
+    <div class="screen" data-name="Access & Tenant Matrix">
+      <div class="app-topbar">
+        <span class="brand">Hiring</span>
+        <span class="tenant-badge"><span aria-hidden="true">🏢</span> Acme Corp</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-list-4">Hire profiles</a>
+          <a href="#" id="nav-audit-4">Audit log</a>
+          <a href="#" id="nav-matrix-4" aria-current="page">Access &amp; tenant matrix</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Access &amp; tenant matrix</h1>
+          <p>Non-interactive reference. Switch "Signed in as" on the Hire profiles or Profile Detail screens to see these outcomes live.</p>
+        </div>
+        <div class="card">
+          <table class="matrix-table">
+            <thead><tr><th>Action</th><th>HR admin</th><th>Manager</th><th>New hire</th><th>Satisfies</th></tr></thead>
+            <tbody>
+              <tr><td>View a profile's full data</td><td><span class="verdict pass">Any profile in the tenant</span></td><td><span class="verdict pass">Direct reports only</span></td><td><span class="verdict pass">Own profile only</span></td><td>AC1, AC4, AC8</td></tr>
+              <tr><td>Edit profile fields</td><td><span class="verdict pass">Allowed, saves immediately</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC2</td></tr>
+              <tr><td>Deactivate / reactivate a profile</td><td><span class="verdict pass">Allowed, takes effect immediately</span></td><td><span class="verdict block">Denied</span></td><td><span class="verdict block">Denied</span></td><td>AC3</td></tr>
+              <tr><td>Open the hire list</td><td><span class="verdict pass">Every tenant profile</span></td><td><span class="verdict pass">Current direct reports; empty state if none</span></td><td><span class="verdict block">Not available — own profile only</span></td><td>AC4, AC5</td></tr>
+              <tr><td>Access a profile outside permitted scope</td><td><span class="verdict block">Denied for other tenants</span></td><td><span class="verdict block">Denied for non-direct-reports</span></td><td><span class="verdict block">Denied for anyone else's profile</span></td><td>AC9, AC10</td></tr>
+              <tr><td>Direct-report relationship changes</td><td colspan="3">New manager gains access the instant the change saves; former manager loses access the instant it saves</td><td>AC6, AC7</td></tr>
+              <tr><td>Every CRUD action or access decision</td><td colspan="3">Logged to the tenant-level audit trail, including denied attempts</td><td>AC11</td></tr>
+            </tbody>
+          </table>
+          <p class="u-text-sm u-text-muted" style="margin-top: var(--space-3);">A denied attempt never renders profile data and never opens an edit or deactivate control — the denial happens at the point access is attempted, same as the underlying API returning a 403.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Acceptance Criteria Checklist (reference)
+         Notes:
+           - Sign-off style summary mapping every acceptance criterion to where it's
+             demonstrated, for a reviewer who wants the full list in one place.
+    -->
+    <div class="screen" data-name="Acceptance Criteria Checklist">
+      <div class="app-topbar">
+        <span class="brand">Hiring</span>
+        <span class="tenant-badge"><span aria-hidden="true">🏢</span> Acme Corp</span>
+        <nav class="app-nav">
+          <a href="#" id="nav-list-5">Hire profiles</a>
+          <a href="#" id="nav-audit-5">Audit log</a>
+          <a href="#" id="nav-matrix-5">Access &amp; tenant matrix</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Acceptance criteria checklist</h1>
+          <p>Every acceptance criterion for this story, mapped to where it's demonstrated.</p>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><span class="check-badge">1</span><div><h3>HR admin views full profile data within the tenant <span class="ac-id">— AC1</span></h3><p>Sign in as Priya Shah (HR Admin) and open any Acme Corp profile from the hire list — every field renders.</p></div></div>
+          <div class="check-item"><span class="check-badge">2</span><div><h3>HR admin's edit is saved <span class="ac-id">— AC2</span></h3><p>As Priya Shah, open a profile, click "Edit profile", change a field, and Save — the detail view and list update immediately and a "Profile updated" toast confirms it.</p></div></div>
+          <div class="check-item"><span class="check-badge">3</span><div><h3>HR admin's deactivation takes effect <span class="ac-id">— AC3</span></h3><p>As Priya Shah, open an active profile and click "Deactivate profile", confirm the dialog — the status chip flips to "Deactivated" immediately.</p></div></div>
+          <div class="check-item"><span class="check-badge">4</span><div><h3>Manager's hire list shows only current direct reports <span class="ac-id">— AC4</span></h3><p>Sign in as Dana Brooks or Marcus Chen — the hire list shows exactly their own direct reports, no one else's.</p></div></div>
+          <div class="check-item"><span class="check-badge">5</span><div><h3>Manager with no direct reports sees an empty state <span class="ac-id">— AC5</span></h3><p>Sign in as Elena Vance (0 direct reports, until you reassign one to her) — the hire list shows "You don't have any direct reports yet" instead of a table.</p></div></div>
+          <div class="check-item"><span class="check-badge">6</span><div><h3>New manager immediately gains access after reassignment <span class="ac-id">— AC6</span></h3><p>As Priya Shah, edit Felix Tran's profile and change "Hiring manager" to Elena Vance, Save. Switch to Elena Vance — Felix now appears in her list and profile, no reload needed.</p></div></div>
+          <div class="check-item"><span class="check-badge">7</span><div><h3>Former manager immediately loses access after reassignment <span class="ac-id">— AC7</span></h3><p>After the same reassignment, switch to Marcus Chen — Felix Tran is gone from his list, and opening Felix's profile link now shows "Access denied".</p></div></div>
+          <div class="check-item"><span class="check-badge">8</span><div><h3>New hire views their own personal details and onboarding status <span class="ac-id">— AC8</span></h3><p>Sign in as Jordan Reyes (New hire) and click "View my profile" — personal details and an "Onboarding: In progress" status render, with no edit controls.</p></div></div>
+          <div class="check-item"><span class="check-badge">9</span><div><h3>Out-of-scope access is denied for any role <span class="ac-id">— AC9</span></h3><p>Use the "Try an out-of-scope profile" demo on the hire list for any signed-in role (manager, new hire, or HR admin against the Globex Corp profile) — access is refused and no data renders.</p></div></div>
+          <div class="check-item"><span class="check-badge">10</span><div><h3>An error message is shown for denied access <span class="ac-id">— AC10</span></h3><p>The same demo above lands on the "Access denied" screen with a specific reason (not a direct report / not your profile / different tenant) and a way back.</p></div></div>
+          <div class="check-item"><span class="check-badge">11</span><div><h3>Every profile CRUD action or access decision is logged <span class="ac-id">— AC11</span></h3><p>Open "Audit log" after any of the walkthroughs above — each view (allowed or denied), edit, and deactivation appears as a new row at the top, tagged to the Acme Corp tenant.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const STORAGE_KEY_HIRES = 'test-m1-story-054-hires';
+  const STORAGE_KEY_AUDIT = 'test-m1-story-054-audit';
+  const FIXTURE = JSON.parse(document.getElementById('fixture-data').textContent);
+  const TENANT = FIXTURE.tenant;
+  const ACTORS = FIXTURE.actors;
+
+  const STAGE_LABELS = {
+    draft: 'Draft', applied: 'Applied', screening: 'Screening', interview: 'Interview',
+    offer_extended: 'Offer extended', offer_accepted: 'Offer accepted',
+  };
+
+  function wait(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  function formatDateDisplay(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${m}/${d}/${y}`;
+  }
+
+  function formatTimestamp(iso) {
+    const d = new Date(iso);
+    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
+  function loadHires() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_HIRES);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try { localStorage.setItem(STORAGE_KEY_HIRES, JSON.stringify(FIXTURE.hires)); } catch (e) { /* storage unavailable */ }
+    return FIXTURE.hires.map((h) => ({ ...h }));
+  }
+  function persistHires() {
+    try { localStorage.setItem(STORAGE_KEY_HIRES, JSON.stringify(hires)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function loadAudit() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_AUDIT);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    try { localStorage.setItem(STORAGE_KEY_AUDIT, JSON.stringify(FIXTURE.auditLog)); } catch (e) { /* storage unavailable */ }
+    return FIXTURE.auditLog.map((a) => ({ ...a }));
+  }
+  function persistAudit() {
+    try { localStorage.setItem(STORAGE_KEY_AUDIT, JSON.stringify(auditLog)); } catch (e) { /* storage unavailable */ }
+  }
+
+  let hires = loadHires();
+  let auditLog = loadAudit();
+  let selectedProfileId = FIXTURE.hires[0].id;
+  let lastChangedRosterId = null;
+  let lastChangedAuditId = null;
+  let shouldLogAccessOnRender = false;
+  let pendingEdit = null;
+  let pendingLifecycle = null;
+  let listErrored = false;
+
+  function currentActor() {
+    const el = screens[cur] && screens[cur].dataset.name === 'Hire List'
+      ? document.getElementById('actor-select')
+      : document.getElementById('actor-select-2');
+    return ACTORS.find((a) => a.id === el.value) || ACTORS[0];
+  }
+  function getHire(id) { return hires.find((h) => h.id === id); }
+
+  function roleLabel(role) {
+    return role === 'hr' ? 'HR Admin' : role === 'manager' ? 'Manager' : 'New hire';
+  }
+
+  // ---------- Access rules ----------
+  function canView(actor, hire) {
+    if (!hire) return { allowed: false, reason: 'not_found' };
+    if (hire.tenant !== TENANT) return { allowed: false, reason: 'cross_tenant' };
+    if (actor.role === 'hr') return { allowed: true };
+    if (actor.role === 'manager') {
+      return hire.hiringManager === actor.name ? { allowed: true } : { allowed: false, reason: 'not_direct_report' };
+    }
+    if (actor.role === 'new_hire') {
+      return hire.id === actor.selfProfileId ? { allowed: true } : { allowed: false, reason: 'not_own_profile' };
+    }
+    return { allowed: false, reason: 'unknown' };
+  }
+  function canEdit(actor, hire) { return actor.role === 'hr' && hire && hire.tenant === TENANT; }
+
+  function visibleHiresFor(actor) {
+    return hires.filter((h) => h.tenant === TENANT && (actor.role === 'hr' || (actor.role === 'manager' && h.hiringManager === actor.name)));
+  }
+
+  function denialText(reason) {
+    switch (reason) {
+      case 'cross_tenant': return "This profile belongs to a different tenant and isn't accessible from Acme Corp.";
+      case 'not_direct_report': return "This profile isn't one of your direct reports, so you don't have permission to view it.";
+      case 'not_own_profile': return 'You can only view your own profile.';
+      case 'not_found': return "This profile doesn't exist.";
+      default: return "You don't have permission to view this profile.";
+    }
+  }
+
+  // ---------- Audit log ----------
+  function logEvent({ actor, action, hire, hireId, hireName, result, detail }) {
+    const entry = {
+      id: 'audit_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+      at: new Date().toISOString(),
+      tenant: TENANT,
+      actorName: actor.name,
+      actorRole: roleLabel(actor.role),
+      action,
+      targetId: hire ? hire.id : (hireId || '—'),
+      targetName: hire ? hire.name : (hireName || 'Unknown profile'),
+      result,
+      detail,
+    };
+    auditLog.unshift(entry);
+    persistAudit();
+    lastChangedAuditId = entry.id;
+    renderAuditLog();
+  }
+
+  function renderAuditLog() {
+    const tbody = document.getElementById('audit-tbody');
+    tbody.innerHTML = auditLog.map((a) => {
+      const resultChip = a.result === 'allowed'
+        ? '<span class="result-chip allowed">Allowed</span>'
+        : '<span class="result-chip denied">Denied</span>';
+      const tr = a.id === lastChangedAuditId ? ' class="row-changed"' : '';
+      return `<tr${tr}>
+        <td>${formatTimestamp(a.at)}</td>
+        <td>${escapeHtml(a.actorName)}<br/><span class="audit-detail">${escapeHtml(a.actorRole)}</span></td>
+        <td>${escapeHtml(a.action)}</td>
+        <td>${escapeHtml(a.targetName)}<br/><span class="audit-detail">${escapeHtml(a.targetId)}</span></td>
+        <td>${resultChip}</td>
+        <td class="audit-detail">${escapeHtml(a.detail)}</td>
+      </tr>`;
+    }).join('');
+    lastChangedAuditId = null;
+  }
+
+  // ---------- Hire List rendering ----------
+  function scopeNoteText(actor) {
+    if (actor.role === 'manager') return `Showing only ${escapeHtml(actor.name)}'s current direct reports within ${escapeHtml(TENANT)}.`;
+    return null;
+  }
+
+  function demoOutOfScopeTarget(actor) {
+    if (actor.role === 'manager') return hires.find((h) => h.tenant === TENANT && h.hiringManager && h.hiringManager !== actor.name);
+    if (actor.role === 'new_hire') return hires.find((h) => h.tenant === TENANT && h.id !== actor.selfProfileId);
+    if (actor.role === 'hr') return hires.find((h) => h.tenant !== TENANT);
+    return null;
+  }
+  function demoOutOfScopeReason(actor) {
+    if (actor.role === 'manager') return 'not your direct report';
+    if (actor.role === 'new_hire') return 'not yours';
+    if (actor.role === 'hr') return 'a different tenant — Globex Corp';
+    return '';
+  }
+
+  function stageChip(hire) {
+    return `<span class="chip">${escapeHtml(STAGE_LABELS[hire.hireStage] || hire.hireStage)}</span>`;
+  }
+  function statusChip(hire) {
+    return hire.profileStatus === 'active'
+      ? '<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>'
+      : '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">⏸</span> Deactivated</span>';
+  }
+
+  function renderRosterSkeleton() {
+    const tbody = document.getElementById('roster-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const tr = document.createElement('tr');
+      tr.className = 'skeleton-row';
+      tr.innerHTML = `
+        <td><div class="skeleton-bar" style="width:70%;"></div></td>
+        <td><div class="skeleton-bar" style="width:60%;"></div></td>
+        <td><div class="skeleton-bar" style="width:50%;"></div></td>
+        <td><div class="skeleton-bar" style="width:40%;"></div></td>
+        <td><div class="skeleton-bar" style="width:40%;"></div></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function renderRosterList() {
+    const actor = currentActor();
+    const filter = document.getElementById('status-filter').value;
+    const allForActor = visibleHiresFor(actor);
+    const rows = allForActor.filter((h) => filter === 'all' ? true : h.profileStatus === filter);
+    const tbody = document.getElementById('roster-tbody');
+
+    if (allForActor.length === 0 && actor.role === 'manager') {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+        <p><strong>You don't have any direct reports yet.</strong></p>
+        <p>Once a candidate is assigned to you as hiring manager, their profile will appear here.</p>
+      </div></td></tr>`;
+      return;
+    }
+    if (rows.length === 0) {
+      const label = filter === 'active' ? 'active' : 'deactivated';
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>No ${label} profiles match this filter.</p></div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map((h) => {
+      const tr = h.id === lastChangedRosterId ? ' class="row-changed"' : '';
+      const manager = h.hiringManager ? escapeHtml(h.hiringManager) : '<span class="not-set">Unassigned</span>';
+      return `<tr${tr}>
+        <td class="name-cell">
+          <button type="button" class="person-name-link" data-view-id="${h.id}">${escapeHtml(h.name)}</button>
+          <span class="person-id">${h.id}</span>
+        </td>
+        <td class="role-cell"><span class="role-line">${escapeHtml(h.role)}</span><br/><span class="dept-line">${escapeHtml(h.department)}</span></td>
+        <td>${manager}</td>
+        <td>${stageChip(h)}</td>
+        <td>${statusChip(h)}</td>
+      </tr>`;
+    }).join('');
+    lastChangedRosterId = null;
+
+    tbody.querySelectorAll('[data-view-id]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        shouldLogAccessOnRender = true;
+        openProfile(btn.getAttribute('data-view-id'));
+      });
+    });
+  }
+
+  async function refreshRoster() {
+    if (listErrored) {
+      document.getElementById('list-error-state').hidden = false;
+      document.getElementById('roster-normal').hidden = true;
+      return;
+    }
+    document.getElementById('list-error-state').hidden = true;
+    document.getElementById('roster-normal').hidden = false;
+    renderRosterSkeleton();
+    await wait(250);
+    renderRosterList();
+  }
+
+  function renderHireList() {
+    const actor = currentActor();
+    document.getElementById('list-subtitle').textContent = actor.role === 'hr'
+      ? `View, edit, and deactivate any hire profile in ${TENANT}.`
+      : actor.role === 'manager'
+        ? `You see only the hire profiles of your current direct reports in ${TENANT}.`
+        : `You have access to your own hire profile in ${TENANT}.`;
+
+    const note = scopeNoteText(actor);
+    document.getElementById('list-scope-note').hidden = !note;
+    if (note) document.getElementById('list-scope-note-text').innerHTML = note;
+
+    const isNewHire = actor.role === 'new_hire';
+    document.getElementById('restricted-card').hidden = !isNewHire;
+    document.getElementById('roster-wrap').hidden = isNewHire;
+
+    const demoBox = document.getElementById('boundary-demo');
+    const target = demoOutOfScopeTarget(actor);
+    if (target) {
+      demoBox.hidden = false;
+      document.getElementById('boundary-demo-text').textContent = 'Demo: see what happens when you try to access a profile outside your permitted scope.';
+      const btn = document.getElementById('boundary-demo-btn');
+      btn.textContent = `Try opening ${target.name}'s profile (${demoOutOfScopeReason(actor)})`;
+      btn.onclick = () => { shouldLogAccessOnRender = true; openProfile(target.id); };
+    } else {
+      demoBox.hidden = true;
+    }
+
+    if (!isNewHire) refreshRoster();
+  }
+
+  // ---------- Profile Detail rendering ----------
+  function openProfile(id) {
+    selectedProfileId = id;
+    location.hash = `profile/${id}`;
+    show(1);
+  }
+
+  function renderProfileSelf(hire) {
+    document.getElementById('profile-card-title').textContent = 'My profile';
+    document.getElementById('profile-sub').textContent = 'Personal details & onboarding status';
+    const onboarding = hire.onboardingStatus === 'completed'
+      ? '<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Completed</span>'
+      : hire.onboardingStatus === 'in_progress'
+        ? '<span class="status-chip status-chip--neutral"><span aria-hidden="true">⏳</span> In progress</span>'
+        : '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">—</span> Not started</span>';
+    const rows = [
+      ['Email', hire.email ? escapeHtml(hire.email) : '<span class="not-set">Not provided</span>'],
+      ['Phone', hire.phone ? escapeHtml(hire.phone) : '<span class="not-set">Not provided</span>'],
+      ['Department', escapeHtml(hire.department)],
+      ['Role / title', escapeHtml(hire.role)],
+      ['Start date', formatDateDisplay(hire.startDate)],
+      ['Your hiring manager', hire.hiringManager ? escapeHtml(hire.hiringManager) : '<span class="not-set">Not yet assigned</span>'],
+      ['Onboarding status', onboarding],
+    ];
+    document.getElementById('profile-kv-list').innerHTML = rows.map(([k, v]) => `<div class="kv-row"><span class="kv-label">${k}</span><span class="kv-value">${v}</span></div>`).join('');
+  }
+
+  function renderProfileInternal(hire) {
+    document.getElementById('profile-card-title').textContent = 'Profile details';
+    document.getElementById('profile-sub').textContent = `${hire.role} · ${hire.department}`;
+    const onboarding = hire.onboardingStatus === 'completed'
+      ? '<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Completed</span>'
+      : hire.onboardingStatus === 'in_progress'
+        ? '<span class="status-chip status-chip--neutral"><span aria-hidden="true">⏳</span> In progress</span>'
+        : '<span class="status-chip status-chip--deactivated"><span aria-hidden="true">—</span> Not started</span>';
+    const rows = [
+      ['Hire ID', hire.id],
+      ['Email', hire.email ? escapeHtml(hire.email) : '<span class="not-set">Not provided</span>'],
+      ['Phone', hire.phone ? escapeHtml(hire.phone) : '<span class="not-set">Not provided</span>'],
+      ['Department', escapeHtml(hire.department)],
+      ['Role / title', escapeHtml(hire.role)],
+      ['Start date', formatDateDisplay(hire.startDate)],
+      ['Hiring manager', hire.hiringManager ? escapeHtml(hire.hiringManager) : '<span class="not-set">Unassigned</span>'],
+      ['Pipeline stage', stageChip(hire)],
+      ['Onboarding status', onboarding],
+    ];
+    document.getElementById('profile-kv-list').innerHTML = rows.map(([k, v]) => `<div class="kv-row"><span class="kv-label">${k}</span><span class="kv-value">${v}</span></div>`).join('');
+  }
+
+  function renderProfileDetail() {
+    const actor = currentActor();
+    const hire = getHire(selectedProfileId);
+    const access = canView(actor, hire);
+
+    if (shouldLogAccessOnRender) {
+      logEvent({
+        actor, action: access.allowed ? 'Viewed profile' : 'Attempted to view profile', hire,
+        hireId: selectedProfileId, hireName: hire ? hire.name : selectedProfileId,
+        result: access.allowed ? 'allowed' : 'denied',
+        detail: access.allowed ? '—' : denialText(access.reason),
+      });
+      shouldLogAccessOnRender = false;
+    }
+
+    const deniedEl = document.getElementById('profile-denied-state');
+    const viewableEl = document.getElementById('profile-viewable-state');
+
+    if (!access.allowed) {
+      viewableEl.hidden = true;
+      deniedEl.hidden = false;
+      document.getElementById('denied-title').textContent = hire ? `Access denied — ${hire.name}` : 'Access denied';
+      document.getElementById('denied-reason').textContent = denialText(access.reason);
+      return;
+    }
+    deniedEl.hidden = true;
+    viewableEl.hidden = false;
+
+    document.getElementById('profile-name').textContent = hire.name;
+    document.getElementById('profile-status-chip').innerHTML = statusChip(hire);
+
+    if (actor.role === 'new_hire') {
+      renderProfileSelf(hire);
+    } else {
+      renderProfileInternal(hire);
+    }
+
+    const editable = canEdit(actor, hire);
+    document.getElementById('profile-edit-btn').hidden = !editable;
+    document.getElementById('profile-lifecycle-btn').hidden = !editable;
+    document.getElementById('profile-lifecycle-btn').textContent = hire.profileStatus === 'active' ? 'Deactivate profile' : 'Reactivate profile';
+    document.getElementById('profile-readonly-note').hidden = editable || actor.role !== 'manager';
+  }
+
+  // ---------- Edit modal ----------
+  function clearFieldErrors() {
+    ['name', 'email', 'phone', 'department', 'role', 'start-date', 'hiring-manager'].forEach((f) => {
+      document.getElementById('error-' + f).classList.remove('is-visible');
+      const wrap = document.getElementById('field-wrap-' + f);
+      if (wrap) wrap.classList.remove('has-error');
+    });
+  }
+
+  function openEditModal(id) {
+    const hire = getHire(id);
+    if (!hire) return;
+    pendingEdit = id;
+    clearFieldErrors();
+    document.getElementById('field-name').value = hire.name || '';
+    document.getElementById('field-email').value = hire.email || '';
+    document.getElementById('field-phone').value = hire.phone || '';
+    document.getElementById('field-department').value = hire.department || '';
+    document.getElementById('field-role').value = hire.role || '';
+    document.getElementById('field-start-date').value = hire.startDate || '';
+    document.getElementById('field-hiring-manager').value = hire.hiringManager || '';
+    document.getElementById('field-stage-readonly').textContent = STAGE_LABELS[hire.hireStage] || hire.hireStage;
+    document.getElementById('edit-save-btn').disabled = false;
+    document.getElementById('edit-save-btn').textContent = 'Save changes';
+    document.getElementById('edit-overlay').hidden = false;
+    document.getElementById('edit-wrap').hidden = false;
+  }
+  function closeEditModal() {
+    document.getElementById('edit-overlay').hidden = true;
+    document.getElementById('edit-wrap').hidden = true;
+    pendingEdit = null;
+  }
+
+  function showFieldError(field) {
+    document.getElementById('error-' + field).classList.add('is-visible');
+    document.getElementById('field-wrap-' + field).classList.add('has-error');
+  }
+
+  async function saveEdit() {
+    if (!pendingEdit) return;
+    const hire = getHire(pendingEdit);
+    if (!hire) { closeEditModal(); return; }
+
+    clearFieldErrors();
+    const values = {
+      name: document.getElementById('field-name').value.trim(),
+      email: document.getElementById('field-email').value.trim(),
+      phone: document.getElementById('field-phone').value.trim(),
+      department: document.getElementById('field-department').value.trim(),
+      role: document.getElementById('field-role').value.trim(),
+      startDate: document.getElementById('field-start-date').value,
+      hiringManager: document.getElementById('field-hiring-manager').value,
+    };
+
+    let hasError = false;
+    if (!values.name) { showFieldError('name'); hasError = true; }
+    if (!values.email) { showFieldError('email'); hasError = true; }
+    if (!values.phone) { showFieldError('phone'); hasError = true; }
+    if (!values.department) { showFieldError('department'); hasError = true; }
+    if (!values.role) { showFieldError('role'); hasError = true; }
+    if (!values.startDate) { showFieldError('start-date'); hasError = true; }
+    const stageIndex = ['applied', 'screening', 'interview', 'offer_extended', 'offer_accepted'].indexOf(hire.hireStage);
+    if (stageIndex >= 1 && !values.hiringManager) { showFieldError('hiring-manager'); hasError = true; }
+    if (hasError) return;
+
+    const saveBtn = document.getElementById('edit-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    await wait(300);
+
+    const changedFields = [];
+    Object.keys(values).forEach((key) => {
+      if (hire[key] !== values[key]) changedFields.push(key === 'hiringManager' ? 'hiring manager' : key === 'startDate' ? 'start date' : key);
+    });
+    Object.assign(hire, values);
+    persistHires();
+    lastChangedRosterId = hire.id;
+
+    logEvent({
+      actor: currentActor(), action: 'Edited profile', hire, result: 'allowed',
+      detail: changedFields.length ? `Updated ${changedFields.join(', ')}.` : 'Saved with no field changes.',
+    });
+
+    closeEditModal();
+    showToast('Profile updated', '✓');
+    renderProfileDetail();
+    renderHireList();
+  }
+
+  // ---------- Deactivate / reactivate modal ----------
+  function openLifecycleModal(id) {
+    const hire = getHire(id);
+    if (!hire) return;
+    pendingLifecycle = id;
+    const willDeactivate = hire.profileStatus === 'active';
+
+    document.getElementById('confirm-title').textContent = willDeactivate ? 'Deactivate profile' : 'Reactivate profile';
+    document.getElementById('confirm-body').textContent = willDeactivate ? `Deactivate ${hire.name}'s profile?` : `Reactivate ${hire.name}'s profile?`;
+    document.getElementById('confirm-consequence-text').innerHTML = willDeactivate
+      ? `Marking <strong>${escapeHtml(hire.name)}</strong>'s profile as deactivated takes effect immediately. The record stays fully viewable to anyone with access — nothing is deleted.`
+      : `Marking <strong>${escapeHtml(hire.name)}</strong>'s profile as active takes effect immediately and is visible the moment this dialog closes.`;
+    const actionBtn = document.getElementById('confirm-action-btn');
+    actionBtn.textContent = willDeactivate ? 'Deactivate profile' : 'Reactivate profile';
+    actionBtn.disabled = false;
+
+    document.getElementById('confirm-overlay').hidden = false;
+    document.getElementById('confirm-wrap').hidden = false;
+  }
+  function closeConfirm() {
+    document.getElementById('confirm-overlay').hidden = true;
+    document.getElementById('confirm-wrap').hidden = true;
+    pendingLifecycle = null;
+  }
+  async function confirmLifecycle() {
+    if (!pendingLifecycle) return;
+    const hire = getHire(pendingLifecycle);
+    if (!hire) { closeConfirm(); return; }
+
+    const actionBtn = document.getElementById('confirm-action-btn');
+    actionBtn.disabled = true;
+    actionBtn.textContent = 'Saving…';
+    await wait(300);
+
+    const willDeactivate = hire.profileStatus === 'active';
+    hire.profileStatus = willDeactivate ? 'deactivated' : 'active';
+    persistHires();
+    lastChangedRosterId = hire.id;
+
+    logEvent({
+      actor: currentActor(), action: willDeactivate ? 'Deactivated profile' : 'Reactivated profile', hire, result: 'allowed',
+      detail: willDeactivate ? 'Manually deactivated from the profile screen.' : 'Manually reactivated from the profile screen.',
+    });
+
+    closeConfirm();
+    showToast(willDeactivate ? 'Profile deactivated' : 'Profile reactivated', '✓');
+    renderProfileDetail();
+    renderHireList();
+  }
+
+  // ---------- Toast ----------
+  let toastTimer = null;
+  function showToast(message, icon) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    document.getElementById('toast-icon').textContent = icon || '✓';
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+  }
+
+  // ---------- Keep both "Signed in as" selects in sync ----------
+  function syncActorSelects(sourceId) {
+    const value = document.getElementById(sourceId).value;
+    ['actor-select', 'actor-select-2'].forEach((id) => { document.getElementById(id).value = value; });
+  }
+
+  // ---------- Wire up: Hire List screen ----------
+  document.getElementById('actor-select').addEventListener('change', () => {
+    syncActorSelects('actor-select');
+    renderHireList();
+  });
+  document.getElementById('status-filter').addEventListener('change', renderRosterList);
+  document.getElementById('view-own-profile-btn').addEventListener('click', () => {
+    const actor = currentActor();
+    shouldLogAccessOnRender = true;
+    openProfile(actor.selfProfileId);
+  });
+  document.getElementById('simulate-error-btn').addEventListener('click', () => { listErrored = true; refreshRoster(); });
+  document.getElementById('list-retry-btn').addEventListener('click', () => { listErrored = false; refreshRoster(); });
+  document.getElementById('reset-data-btn').addEventListener('click', async () => {
+    hires = FIXTURE.hires.map((h) => ({ ...h }));
+    auditLog = FIXTURE.auditLog.map((a) => ({ ...a }));
+    persistHires();
+    persistAudit();
+    listErrored = false;
+    showToast('Demo data reset', '↺');
+    renderHireList();
+    renderAuditLog();
+    if (screens[cur] && screens[cur].dataset.name === 'Profile Detail') renderProfileDetail();
+  });
+
+  // ---------- Wire up: Profile Detail screen ----------
+  document.getElementById('actor-select-2').addEventListener('change', () => {
+    syncActorSelects('actor-select-2');
+    shouldLogAccessOnRender = true;
+    renderProfileDetail();
+  });
+  document.getElementById('profile-back-btn').addEventListener('click', () => show(0));
+  document.getElementById('profile-edit-btn').addEventListener('click', () => openEditModal(selectedProfileId));
+  document.getElementById('profile-lifecycle-btn').addEventListener('click', () => openLifecycleModal(selectedProfileId));
+
+  document.getElementById('edit-close-btn').addEventListener('click', closeEditModal);
+  document.getElementById('edit-cancel-btn').addEventListener('click', closeEditModal);
+  document.getElementById('edit-save-btn').addEventListener('click', saveEdit);
+  document.getElementById('edit-overlay').addEventListener('click', closeEditModal);
+
+  document.getElementById('confirm-close-btn').addEventListener('click', closeConfirm);
+  document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
+  document.getElementById('confirm-action-btn').addEventListener('click', confirmLifecycle);
+  document.getElementById('confirm-overlay').addEventListener('click', closeConfirm);
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'Escape') return;
+    if (!document.getElementById('edit-wrap').hidden) closeEditModal();
+    if (!document.getElementById('confirm-wrap').hidden) closeConfirm();
+  });
+
+  // ---------- Nav links (consistent across every screen) ----------
+  ['nav-list', 'nav-list-2', 'nav-list-3', 'nav-list-4', 'nav-list-5'].forEach((id) => {
+    document.getElementById(id).addEventListener('click', (e) => { e.preventDefault(); show(0); });
+  });
+  ['nav-audit', 'nav-audit-2', 'nav-audit-3', 'nav-audit-4', 'nav-audit-5'].forEach((id) => {
+    document.getElementById(id).addEventListener('click', (e) => { e.preventDefault(); show(2); });
+  });
+  ['nav-matrix', 'nav-matrix-2', 'nav-matrix-3', 'nav-matrix-4', 'nav-matrix-5'].forEach((id) => {
+    document.getElementById(id).addEventListener('click', (e) => { e.preventDefault(); show(3); });
+  });
+
+  // ---------- Deep-link support (navigate directly to a record) ----------
+  function applyHashRoute() {
+    const match = /^#profile\/(.+)$/.exec(location.hash);
+    if (match) {
+      selectedProfileId = match[1];
+      shouldLogAccessOnRender = true;
+      show(1);
+    }
+  }
+  window.addEventListener('hashchange', applyHashRoute);
+
+  // ---------- Screen navigation (reviewer bar) ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent = `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+    if (cur === 0) renderHireList();
+    if (cur === 1) renderProfileDetail();
+    if (cur === 2) renderAuditLog();
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  renderAuditLog();
+  const deepLinkMatch = /^#profile\/(.+)$/.exec(location.hash);
+  if (deepLinkMatch) {
+    selectedProfileId = deepLinkMatch[1];
+    show(1);
+  } else {
+    show(0);
+  }
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

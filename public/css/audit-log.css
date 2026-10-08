@@ -1,0 +1,6 @@
+/* Shared topbar/table rules come from hire-directory.css. */
+.page { max-width: 1040px; }
+.result-chip { display: inline-flex; align-items: center; gap: var(--space-1); font-weight: var(--font-weight-bold); white-space: nowrap; }
+.result-chip.allowed::before { content: "✓"; }
+.result-chip.denied::before { content: "⛔"; }
+.audit-detail { color: var(--color-fg-muted); }

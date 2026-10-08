@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hire profile — Hiring</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hire-directory.css" />
+<link rel="stylesheet" href="./css/hire-access.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/hire-actors.js" defer></script>
+<script src="./js/hire-access.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Hiring</span>
+    <span class="tenant-badge" id="tenant-badge-top"><span aria-hidden="true">🏢</span> Acme Corp</span>
+    <nav class="app-nav">
+      <a href="hire-directory.html">Hire profiles</a>
+      <a href="audit-log.html">Audit log</a>
+    </nav>
+    <div class="actor-switcher">
+      <label for="actor-select">Signed in as</label>
+      <select class="input" id="actor-select"></select>
+    </div>
+  </div>
+
+  <div class="page">
+    <button type="button" class="back-link" id="profile-back-btn">
+      <span aria-hidden="true">←</span> Back to hire profiles
+    </button>
+
+    <div id="profile-denied-state" hidden>
+      <div class="notice--deny" role="alert">
+        <span class="notice-icon" aria-hidden="true">⛔</span>
+        <div>
+          <p id="denied-title">Access denied</p>
+          <p class="notice-sub" id="denied-reason">—</p>
+          <p class="notice-sub" id="denied-logged">This attempt has been logged to Acme Corp's audit trail. If you believe this is a mistake, contact your HR admin.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="profile-viewable-state" hidden>
+      <div class="profile-header">
+        <div>
+          <h1 id="profile-name">—</h1>
+          <p class="sub" id="profile-sub">—</p>
+        </div>
+        <div class="profile-header-meta">
+          <span id="profile-status-chip"></span>
+          <button type="button" class="btn btn-secondary" id="profile-edit-btn" hidden>Edit profile</button>
+          <button type="button" class="btn btn-primary" id="profile-lifecycle-btn" hidden>Deactivate profile</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title" id="profile-card-title">Profile details</h3>
+        <div class="kv-list" id="profile-kv-list"><!-- rendered by JS --></div>
+      </div>
+
+      <p class="readonly-note" id="profile-readonly-note" hidden>
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span>You can view this profile because it's one of your direct reports. Only an HR admin can edit or deactivate it.</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="edit-overlay" hidden></div>
+  <div class="modal-wrap" id="edit-wrap" role="dialog" aria-modal="true" aria-labelledby="edit-title" hidden>
+    <div class="modal-panel" style="width:min(92vw, 520px);">
+      <div class="modal-header">
+        <div>
+          <h2 id="edit-title">Edit hire profile</h2>
+          <p>Changes save immediately and are visible to anyone with access to this profile.</p>
+        </div>
+        <button class="icon-btn" id="edit-close-btn" type="button" aria-label="Close dialog without saving">✕</button>
+      </div>
+      <form id="edit-form" novalidate>
+        <div class="field" id="field-wrap-name">
+          <label class="label" for="field-name">Full name</label>
+          <input class="input" id="field-name" type="text" />
+          <p class="field-error" id="error-name">Full name is required.</p>
+        </div>
+        <div class="field" id="field-wrap-email">
+          <label class="label" for="field-email">Email</label>
+          <input class="input" id="field-email" type="email" />
+          <p class="field-error" id="error-email">Email is required.</p>
+        </div>
+        <div class="field" id="field-wrap-phone">
+          <label class="label" for="field-phone">Phone</label>
+          <input class="input" id="field-phone" type="tel" />
+          <p class="field-error" id="error-phone">Phone is required.</p>
+        </div>
+        <div class="field" id="field-wrap-department">
+          <label class="label" for="field-department">Department</label>
+          <input class="input" id="field-department" type="text" />
+          <p class="field-error" id="error-department">Department is required.</p>
+        </div>
+        <div class="field" id="field-wrap-role">
+          <label class="label" for="field-role">Role / title</label>
+          <input class="input" id="field-role" type="text" />
+          <p class="field-error" id="error-role">Role is required.</p>
+        </div>
+        <div class="field" id="field-wrap-start-date">
+          <label class="label" for="field-start-date">Start date</label>
+          <input class="input" id="field-start-date" type="date" />
+          <p class="field-error" id="error-start-date">Start date is required.</p>
+        </div>
+        <div class="field" id="field-wrap-hiring-manager">
+          <label class="label" for="field-hiring-manager">Hiring manager</label>
+          <select class="input" id="field-hiring-manager">
+            <option value="">Unassigned</option>
+            <option value="Dana Brooks">Dana Brooks</option>
+            <option value="Marcus Chen">Marcus Chen</option>
+            <option value="Elena Vance">Elena Vance</option>
+          </select>
+          <p class="field-error" id="error-hiring-manager">Hiring manager is required from Screening onward.</p>
+        </div>
+        <div class="field">
+          <span class="label">Pipeline stage</span>
+          <p class="field-static" id="field-stage-readonly">—</p>
+          <p class="u-text-sm u-text-muted" style="margin:0;">Pipeline stage is managed from the recruiting pipeline screen, not here.</p>
+        </div>
+      </form>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="edit-save-btn">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirm-overlay" hidden></div>
+  <div class="modal-wrap" id="confirm-wrap" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="modal-panel" style="width:min(92vw, 440px);">
+      <div class="modal-header">
+        <div><h2 id="confirm-title">Deactivate profile</h2></div>
+        <button class="icon-btn" id="confirm-close-btn" type="button" aria-label="Close dialog without making changes">✕</button>
+      </div>
+      <p class="card-body" id="confirm-body" style="margin:0;">Are you sure?</p>
+      <div class="consequence-box">
+        <span class="hint-icon" aria-hidden="true">ℹ</span>
+        <span id="confirm-consequence-text"></span>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-action-btn">Deactivate profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon" id="toast-icon" aria-hidden="true">✓</span>
+    <span id="toast-message">Profile updated</span>
+  </div>
+</body>
+</html>

@@ -11,9 +11,16 @@ test('AC1: applied -> screening with hiringManager succeeds', async () => {
   expect(updated.hireStage).toBe('screening');
 });
 
-test.each(['hr', 'manager'])('AC1: PATCH as %s advances to screening', async (role) => {
+test('AC1: PATCH as hr advances to screening', async () => {
   const hire = await mk();
-  const res = await request(app).patch(`/hires/${hire.id}`).set('x-staff-role', role).send({ hireStage: 'screening', hiringManager: 'mgr_1' });
+  const res = await request(app).patch(`/hires/${hire.id}`).set('x-staff-role', 'hr').send({ hireStage: 'screening', hiringManager: 'mgr_1' });
+  expect(res.status).toBe(200);
+  expect(res.body.hireStage).toBe('screening');
+});
+
+test('AC1: PATCH as the hire\'s own manager advances the stage', async () => {
+  const hire = await mk({ hiringManager: 'mgr_1' });
+  const res = await request(app).patch(`/hires/${hire.id}`).set('x-staff-role', 'manager').set('x-staff-name', 'mgr_1').send({ hireStage: 'screening' });
   expect(res.status).toBe(200);
   expect(res.body.hireStage).toBe('screening');
 });
@@ -45,7 +52,7 @@ test('AC5: screening without hiringManager is blocked (store and route)', async 
   const hire = await mk();
   await expect(updateHire(hire.id, { hireStage: 'screening' }))
     .rejects.toMatchObject({ statusCode: 400, fields: { hiringManager: 'Hiring manager is required from Screening onward.' } });
-  const res = await request(app).patch(`/hires/${hire.id}`).set('x-staff-role', 'manager').send({ hireStage: 'screening' });
+  const res = await request(app).patch(`/hires/${hire.id}`).set('x-staff-role', 'hr').send({ hireStage: 'screening' });
   expect(res.status).toBe(400);
   expect(res.body).toMatchObject({ error: 'validation_error', fields: { hiringManager: 'Hiring manager is required from Screening onward.' } });
 });

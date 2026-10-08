@@ -251,10 +251,10 @@ function initHireProfilesApp(doc, initialHires, api) {
 }
 
 function createDefaultApi(getRole = () => 'manager') {
-  function request(url, method, body) {
+  function request(url, method, body, roleOverride) {
     return fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', 'x-staff-role': getRole() },
+      headers: { 'Content-Type': 'application/json', 'x-staff-role': roleOverride || getRole() },
       body: body === undefined ? undefined : JSON.stringify(body),
     }).then((res) => res.json().catch(() => ({})).then((data) => (
       res.ok ? data : Promise.reject({ status: res.status, ...data })
@@ -262,9 +262,11 @@ function createDefaultApi(getRole = () => 'manager') {
   }
 
   return {
-    list: () => request('/hires', 'GET'),
+    // This page has no per-user identity (no x-staff-name), so a "manager" here could never match a
+    // profile's hiringManager under the scoped /hires rules; reads and edits go through as HR instead.
+    list: () => request('/hires', 'GET', undefined, 'hr'),
     create: (data) => request('/hires', 'POST', data),
-    update: (id, changes) => request(`/hires/${id}`, 'PATCH', changes),
+    update: (id, changes) => request(`/hires/${id}`, 'PATCH', changes, getRole() === 'manager' ? 'hr' : undefined),
   };
 }
 

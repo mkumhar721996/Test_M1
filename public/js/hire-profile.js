@@ -425,8 +425,11 @@ function initHireProfileApp(doc, initialHire, api) {
 }
 
 function createDefaultApi(hireId, getRole = () => 'manager') {
+  // This page has no per-user identity (no x-staff-name), so a "manager" here could never match the
+  // profile's hiringManager under the scoped /hires rules; edits go through as HR instead.
+  const actingRole = () => (getRole() === 'manager' ? 'hr' : getRole());
   function request(url, method, body) {
-    const opts = { method, headers: { 'x-staff-role': getRole() } };
+    const opts = { method, headers: { 'x-staff-role': actingRole() } };
     if (body !== undefined) {
       opts.headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(body);
@@ -452,7 +455,7 @@ module.exports = { initHireProfileApp, createDefaultApi };
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
     const roleSelect = document.getElementById('role-select');
-    fetch('/hires')
+    fetch('/hires', { headers: { 'x-staff-role': 'hr' } })
       .then((res) => res.json())
       .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id, () => roleSelect.value)));
   });

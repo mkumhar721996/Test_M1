@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audit log — Hiring</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hire-directory.css" />
+<link rel="stylesheet" href="./css/audit-log.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/hire-actors.js" defer></script>
+<script src="./js/audit-log.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Hiring</span>
+    <span class="tenant-badge"><span aria-hidden="true">🏢</span> Acme Corp</span>
+    <nav class="app-nav">
+      <a href="hire-directory.html">Hire profiles</a>
+      <a href="audit-log.html" aria-current="page">Audit log</a>
+    </nav>
+    <div class="actor-switcher">
+      <label for="actor-select">Signed in as</label>
+      <select class="input" id="actor-select"></select>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Audit log</h1>
+      <p>Every profile CRUD action and access decision for Acme Corp, logged for auditability. Newest first.</p>
+    </div>
+    <div class="error-state" id="audit-error-state" role="alert" hidden>
+      <span class="notice-icon" aria-hidden="true">⚠</span>
+      <p id="audit-error-text"></p>
+    </div>
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="audit-table">
+          <thead>
+            <tr><th>Time</th><th>Actor</th><th>Action</th><th>Target profile</th><th>Result</th><th>Detail</th></tr>
+          </thead>
+          <tbody id="audit-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
