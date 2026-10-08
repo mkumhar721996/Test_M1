@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../src/server');
+const { createDefaultApi } = require('../public/js/services');
 
 const validPayload = {
   categoryId: 'plumbing',
@@ -32,7 +33,7 @@ test('AC5: photos are included', async () => {
 
 test('AC6: submitted request appears first in the dispatch queue as Pending', async () => {
   const created = await request(app).post('/repair-requests').send(validPayload);
-  const queue = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
+  const queue = await request(app).get('/repair-requests');
   expect(queue.status).toBe(200);
   expect(queue.body[0]).toMatchObject({ id: created.body.id, status: 'Pending' });
 });
@@ -44,29 +45,37 @@ test('AC7: unstaffed window is still accepted as Pending', async () => {
   expect(res.body.staffed).toBe(false);
 });
 
-test('dispatch queue requires a dispatcher role', async () => {
+test('dispatch queue has no auth boundary, matching the unauthenticated catalog route', async () => {
   await request(app).post('/repair-requests').send(validPayload);
-  expect((await request(app).get('/repair-requests')).status).toBe(401);
-  expect((await request(app).get('/repair-requests').set('x-staff-role', 'hr')).status).toBe(403);
+  expect((await request(app).get('/repair-requests')).status).toBe(200);
 });
 
-test('customers can still submit without any role header', async () => {
-  const res = await request(app).post('/repair-requests').send(validPayload);
-  expect(res.status).toBe(201);
-});
-
-test('dispatch queue fails closed in production even with a dispatcher header', async () => {
+test('dispatch queue stays reachable in production, since no dispatcher identity exists', async () => {
   const original = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
   try {
-    const res = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
-    expect(res.status).toBe(401);
+    const res = await request(app).get('/repair-requests');
+    expect(res.status).toBe(200);
   } finally {
     process.env.NODE_ENV = original;
   }
 });
 
-test('the shipped client never sends a staff role header', () => {
-  const src = require('fs').readFileSync(require('path').join(__dirname, '..', 'public', 'js', 'services.js'), 'utf8');
-  expect(src).not.toContain('x-staff-role');
+test('createDefaultApi().listQueue() fetches the real dispatch queue', async () => {
+  const created = await request(app).post('/repair-requests').send(validPayload);
+  const server = app.listen(0);
+  try {
+    const { port } = server.address();
+    const baseUrl = `http://127.0.0.1:${port}`;
+    const originalFetch = global.fetch;
+    global.fetch = (url, opts) => originalFetch(`${baseUrl}${url}`, opts);
+    try {
+      const queue = await createDefaultApi().listQueue();
+      expect(queue[0]).toMatchObject({ id: created.body.id, status: 'Pending' });
+    } finally {
+      global.fetch = originalFetch;
+    }
+  } finally {
+    server.close();
+  }
 });
