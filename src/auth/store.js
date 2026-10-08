@@ -58,12 +58,19 @@ function findUserByContact(contact) {
   return Array.from(users.values()).find((u) => u.email === contact || u.phone === contact);
 }
 
+function generateCredential(channel) {
+  if (channel === 'phone') {
+    return String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+  }
+  return crypto.randomUUID();
+}
+
 async function requestPasswordReset(contact) {
   const channel = detectChannel(contact);
   const user = findUserByContact(contact);
 
   if (user) {
-    const credential = crypto.randomUUID();
+    const credential = generateCredential(channel);
     const ttlMinutes = channel === 'email' ? EMAIL_TTL_MINUTES : SMS_TTL_MINUTES;
     resetCredentials.set(credential, {
       userId: user.id,

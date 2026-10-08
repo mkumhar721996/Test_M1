@@ -103,3 +103,15 @@ test('AC9: a valid matching submission returns success', async () => {
   expect(res.body.success).toBe(true);
   notifyClient.sendResetEmail.mockRestore();
 });
+
+test('AC3: a 6-digit SMS code shaped exactly like what the OTP screen collects verifies successfully', async () => {
+  const notifyClient = require('../src/auth/notifyClient');
+  let captured;
+  jest.spyOn(notifyClient, 'sendResetSms').mockImplementation(async (args) => { captured = args; return args; });
+  await request(app).post('/auth/forgot-password').send({ contact: '+1 555 010 0100' });
+  expect(captured.credential).toMatch(/^[0-9]{6}$/);
+  const res = await request(app).post('/auth/reset/verify').send({ credential: captured.credential });
+  expect(res.status).toBe(200);
+  expect(res.body.valid).toBe(true);
+  notifyClient.sendResetSms.mockRestore();
+});
