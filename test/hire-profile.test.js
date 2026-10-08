@@ -132,17 +132,26 @@ describe('createDefaultApi', () => {
     const { createDefaultApi } = require('../public/js/hire-profile');
     await createDefaultApi('hire_1')[action]();
     expect(global.fetch).toHaveBeenCalledWith(`/hires/hire_1/${action}`, expect.objectContaining({
-      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+      headers: expect.objectContaining({ 'x-staff-role': 'hr' }),
     }));
   });
 
-  test('updateContact() sends the x-staff-role header on the PATCH', async () => {
+  test('updateContact() sends the x-staff-role header on the PATCH (manager acts as hr)', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
     const { createDefaultApi } = require('../public/js/hire-profile');
     await createDefaultApi('hire_1').updateContact({ name: 'A' });
     expect(global.fetch).toHaveBeenCalledWith('/hires/hire_1', expect.objectContaining({
       method: 'PATCH',
-      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+      headers: expect.objectContaining({ 'x-staff-role': 'hr' }),
+    }));
+  });
+
+  test('an employee role is passed through unchanged so the server still denies it', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    const { createDefaultApi } = require('../public/js/hire-profile');
+    await createDefaultApi('hire_1', () => 'employee').deactivate();
+    expect(global.fetch).toHaveBeenCalledWith('/hires/hire_1/deactivate', expect.objectContaining({
+      headers: expect.objectContaining({ 'x-staff-role': 'employee' }),
     }));
   });
 });

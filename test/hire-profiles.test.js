@@ -140,12 +140,12 @@ describe('createDefaultApi', () => {
     }));
   });
 
-  test('update() sends the x-staff-role header', async () => {
+  test('update() sends the x-staff-role header (manager acts as hr)', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ id: 'hire_1' }) });
     const { createDefaultApi } = require('../public/js/hire-profiles');
     await createDefaultApi().update('hire_1', { name: 'A' });
     expect(global.fetch).toHaveBeenCalledWith('/hires/hire_1', expect.objectContaining({
-      headers: expect.objectContaining({ 'x-staff-role': 'manager' }),
+      headers: expect.objectContaining({ 'x-staff-role': 'hr' }),
     }));
   });
 });
