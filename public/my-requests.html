@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fixly — My requests</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/my-requests.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/my-requests.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div id="screens">
+    <div class="screen" data-name="My Requests">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line"></span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1>My requests</h1>
+            <span class="request-count" id="request-count"></span>
+          </div>
+          <p>Track every repair request you've submitted, from the moment it's sent to a dispatcher through completion.</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+        <div id="list-loading">
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:55%;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:80%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:40%;height:24px;"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:45%;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:35%;height:24px;"></div>
+          </div>
+        </div>
+
+        <div class="state-banner" id="list-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your requests right now. Check your connection and try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+          </div>
+        </div>
+
+        <div class="empty-state" id="list-empty" hidden>
+          <span class="icon" aria-hidden="true">🗒️</span>
+          <p>You haven't submitted any repair requests yet. Once you do, you'll be able to track their status here.</p>
+        </div>
+
+        <div id="list-success" hidden>
+          <div id="open-section">
+            <p class="section-heading" id="open-heading">Open requests</p>
+            <div id="request-list"></div>
+          </div>
+          <div id="past-section">
+            <p class="section-heading" id="past-heading">Past requests</p>
+            <div id="past-request-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" data-name="Request Detail">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#/requests" id="back-to-list">← My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line-detail"></span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="card">
+          <div class="detail-head">
+            <h1 class="card-title" id="detail-category" style="margin-bottom:0;"></h1>
+            <span id="detail-status-chip"></span>
+          </div>
+          <p class="detail-id" id="detail-id"></p>
+
+          <div id="detail-tracker"></div>
+          <div id="detail-cancelled-banner"></div>
+
+          <div class="detail-section">
+            <p class="detail-label">Assigned technician</p>
+            <div id="detail-tech-slot"></div>
+          </div>
+
+          <div class="detail-section" id="detail-window-section" hidden>
+            <p class="detail-label">Scheduled window</p>
+            <p class="detail-value" id="detail-window"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">What you reported</p>
+            <p class="detail-value" id="detail-description"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">Service address</p>
+            <p class="detail-value" id="detail-address"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">Submitted</p>
+            <p class="detail-value" id="detail-submitted"></p>
+          </div>
+
+          <p class="readonly-note"><span aria-hidden="true">ℹ</span><span>This is a status overview only — status changes are made by your dispatcher and technician, not from here.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

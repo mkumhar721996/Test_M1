@@ -17,4 +17,14 @@ function requireDispatcherRole(req, res, next) {
   return next();
 }
 
-module.exports = { requireDispatcherRole };
+// Same unverified, fail-closed-in-production identity pattern as src/jobs/auth.js.
+function requireAuthenticatedCustomer(req, res, next) {
+  const customerId = req.headers['x-customer-id'];
+  if (process.env.NODE_ENV === 'production' || !customerId) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  req.customerId = customerId;
+  return next();
+}
+
+module.exports = { requireDispatcherRole, requireAuthenticatedCustomer };
