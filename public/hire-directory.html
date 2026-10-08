@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hire profiles — Hiring</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/hire-directory.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/hire-actors.js" defer></script>
+<script src="./js/hire-directory.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Hiring</span>
+    <span class="tenant-badge" id="tenant-badge-top"><span aria-hidden="true">🏢</span> Acme Corp</span>
+    <nav class="app-nav">
+      <a href="hire-directory.html" aria-current="page">Hire profiles</a>
+      <a href="audit-log.html">Audit log</a>
+    </nav>
+    <div class="actor-switcher">
+      <label for="actor-select">Signed in as</label>
+      <select class="input" id="actor-select"></select>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Hire profiles</h1>
+      <p id="list-subtitle">—</p>
+    </div>
+
+    <div class="scope-note" id="list-scope-note" hidden>
+      <span class="hint-icon" aria-hidden="true">ℹ</span>
+      <span id="list-scope-note-text"></span>
+    </div>
+
+    <div class="card restricted-card" id="restricted-card" hidden>
+      <div class="notice-icon" aria-hidden="true">🔒</div>
+      <p id="restricted-card-text">As a new hire, you have access to your own profile only — not a list of other candidates or employees.</p>
+      <button type="button" class="btn btn-primary" id="view-own-profile-btn">View my profile</button>
+    </div>
+
+    <div id="roster-wrap">
+      <div class="error-state" id="list-error-state" role="alert" hidden>
+        <span class="notice-icon" aria-hidden="true">⚠</span>
+        <p id="list-error-text">Couldn't load hire profiles. Check your connection and try again.</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label class="label" for="status-filter">Filter by status</label>
+          <select class="input" id="status-filter">
+            <option value="all">All statuses</option>
+            <option value="active">Active only</option>
+            <option value="deactivated">Deactivated only</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-scroll">
+          <table class="directory-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Department / Role</th>
+                <th scope="col">Hiring manager</th>
+                <th scope="col">Stage</th>
+                <th scope="col">Profile status</th>
+              </tr>
+            </thead>
+            <tbody id="roster-tbody"><!-- rendered by JS --></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

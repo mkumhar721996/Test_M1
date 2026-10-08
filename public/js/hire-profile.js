@@ -452,7 +452,7 @@ module.exports = { initHireProfileApp, createDefaultApi };
 if (typeof window !== 'undefined') {
   window.addEventListener('DOMContentLoaded', () => {
     const roleSelect = document.getElementById('role-select');
-    fetch('/hires')
+    fetch('/hires', { headers: { 'x-staff-role': 'hr' } })
       .then((res) => res.json())
       .then((hires) => initHireProfileApp(document, hires[0], createDefaultApi(hires[0].id, () => roleSelect.value)));
   });

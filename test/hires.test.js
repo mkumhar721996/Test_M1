@@ -18,13 +18,13 @@ test('GET /hires/:id returns the created hire unchanged', async () => {
   const createRes = await request(app).post('/hires').set('x-staff-role', 'manager').send(payload);
   const { id } = createRes.body;
 
-  const getRes = await request(app).get(`/hires/${id}`);
+  const getRes = await request(app).get(`/hires/${id}`).set('x-staff-role', 'hr');
   expect(getRes.status).toBe(200);
   expect(getRes.body).toEqual(createRes.body);
 });
 
 test('GET /hires/:id returns 404 for an unknown id', async () => {
-  const res = await request(app).get('/hires/does-not-exist');
+  const res = await request(app).get('/hires/does-not-exist').set('x-staff-role', 'hr');
   expect(res.status).toBe(404);
 });
 
