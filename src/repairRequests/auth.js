@@ -1,8 +1,10 @@
-// Role is a client-asserted `x-staff-role` header (same convention as src/leave/auth.js); it is
-// NOT a verified credential and must be replaced by real authn before production use.
+// The dispatcher role is a client-asserted `x-staff-role` header, which is NOT verified. It is
+// accepted only outside production so it can never be the production authn/authz boundary; in
+// production every request is rejected (fail closed) until a verified credential (session/token)
+// replaces this. Mirrors src/defects/auth.js.
 function requireDispatcherRole(req, res, next) {
   const role = req.headers['x-staff-role'];
-  if (!role) {
+  if (process.env.NODE_ENV === 'production' || !role) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   if (role !== 'dispatcher') {

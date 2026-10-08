@@ -394,9 +394,8 @@
   }
 
   function createDefaultApi() {
-    // No real sign-in exists yet; the queue identifies as a dispatcher via the client-asserted role header.
-    function request(url, method, body, headers = {}) {
-      const opts = { method, headers: { 'Content-Type': 'application/json', ...headers } };
+    function request(url, method, body) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
       if (body !== undefined) opts.body = JSON.stringify(body);
       return fetch(url, opts)
         .then((res) => res.json().catch(() => ({})).then((data) => (
@@ -407,7 +406,7 @@
     return {
       getCatalog: () => request('/service-catalog', 'GET'),
       createRequest: (payload) => request('/repair-requests', 'POST', payload),
-      listQueue: () => request('/repair-requests', 'GET', undefined, { 'x-staff-role': 'dispatcher' }),
+      listQueue: () => request('/repair-requests', 'GET'),
     };
   }
 

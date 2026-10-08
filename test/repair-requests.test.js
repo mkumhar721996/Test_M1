@@ -54,3 +54,19 @@ test('customers can still submit without any role header', async () => {
   const res = await request(app).post('/repair-requests').send(validPayload);
   expect(res.status).toBe(201);
 });
+
+test('dispatch queue fails closed in production even with a dispatcher header', async () => {
+  const original = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  try {
+    const res = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
+    expect(res.status).toBe(401);
+  } finally {
+    process.env.NODE_ENV = original;
+  }
+});
+
+test('the shipped client never sends a staff role header', () => {
+  const src = require('fs').readFileSync(require('path').join(__dirname, '..', 'public', 'js', 'services.js'), 'utf8');
+  expect(src).not.toContain('x-staff-role');
+});
