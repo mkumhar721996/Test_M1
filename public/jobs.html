@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FieldOps — My Jobs</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/jobs.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/jobs.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div id="screens">
+    <div class="screen" data-name="My Jobs">
+      <div class="app-topbar">
+        <span class="brand">FieldOps</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">My Jobs</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line">Signed in as Marcus Webb</span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1 id="list-heading">Today's jobs</h1>
+            <span class="job-count" id="job-count"></span>
+          </div>
+          <p id="list-subtitle">Sorted by scheduled time</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+        <div id="list-loading">
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:60%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:80%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:50%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+        </div>
+
+        <div class="state-banner" id="list-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your jobs right now. Check your connection and try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+          </div>
+        </div>
+
+        <div class="empty-state" id="job-list-empty" hidden>
+          <span class="icon" aria-hidden="true">🗓️</span>
+          <p>No jobs assigned to you for today yet. Once dispatch assigns one, it'll show up here.</p>
+        </div>
+
+        <div id="job-list" hidden></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
