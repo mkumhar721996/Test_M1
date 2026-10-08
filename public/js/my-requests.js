@@ -201,12 +201,17 @@
       }
       return api.get(id).then((record) => {
         current = record;
-      }).catch((err) => {
-        current = null;
-        if (!err || err.status !== 404) throw err;
-      }).then(() => {
         renderDetail();
         show(SCREEN_DETAIL);
+      }).catch((err) => {
+        if (err && err.status === 404) {
+          current = null;
+          renderDetail();
+          show(SCREEN_DETAIL);
+          return;
+        }
+        showToast("Couldn't load this request. Try again.");
+        show(SCREEN_LIST);
       });
     }
 
@@ -255,7 +260,8 @@
           showToast('Request cancelled.');
           if (current && current.id === id && !$('detail-content').hidden) renderDetail();
         })
-        .catch((err) => handleRejection(err, id, 'cancel'));
+        .catch((err) => handleRejection(err, id, 'cancel'))
+        .catch(() => showToast("Couldn't cancel the request. Try again."));
     });
 
     // ---------- Edit ----------
@@ -379,9 +385,11 @@
       if (edit) {
         const id = decodeURIComponent(edit[1]);
         const known = requests.find((r) => r.id === id);
+        // Anything that isn't an openable Pending request falls through to the detail screen,
+        // which handles the missing / locked / cancelled states (and load failures) itself.
         return (known ? Promise.resolve(known) : api.get(id).catch(() => null)).then((record) => {
           if (record && isPending(record)) openEdit(record);
-          else { current = record; renderDetail(); show(SCREEN_DETAIL); }
+          else openDetail(id);
         });
       }
       const detail = DETAIL_HASH.exec(hash);

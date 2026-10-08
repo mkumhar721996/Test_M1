@@ -128,3 +128,27 @@ test('baseline: loading skeleton, error with retry, and empty state', async () =
   await flush();
   expect(document.getElementById('request-list-empty').hidden).toBe(false);
 });
+
+test('a non-409 cancel failure tells the customer and leaves the request Submitted', async () => {
+  const api = {
+    listMine: jest.fn().mockResolvedValue([make('REQ-1', 'Pending')]),
+    cancel: jest.fn().mockRejectedValue({ status: 500 }),
+  };
+  await start(api);
+  document.querySelector('[data-cancel="REQ-1"]').click();
+  document.getElementById('cancel-modal-confirm').click();
+  await flush();
+  expect(document.getElementById('toast').textContent).toBe("Couldn't cancel the request. Try again.");
+  expect(document.querySelector('[data-cancel="REQ-1"]')).not.toBeNull();
+});
+
+test('a non-404 failure opening a request shows an error toast, not the denied state', async () => {
+  window.location.hash = '#/requests/REQ-7';
+  const api = {
+    listMine: jest.fn().mockResolvedValue([make('REQ-1', 'Pending')]),
+    get: jest.fn().mockRejectedValue({ status: 500 }),
+  };
+  await start(api);
+  expect(document.getElementById('toast').textContent).toBe("Couldn't load this request. Try again.");
+  expect(document.getElementById('detail-denied').hidden).toBe(true);
+});
