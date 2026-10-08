@@ -401,8 +401,8 @@
   }
 
   function createDefaultApi() {
-    function request(url, method, body, headers) {
-      const opts = { method, headers: { 'Content-Type': 'application/json', ...headers } };
+    function request(url, method, body) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
       if (body !== undefined) opts.body = JSON.stringify(body);
       return fetch(url, opts)
         .then((res) => res.json().catch(() => ({})).then((data) => (
@@ -413,10 +413,13 @@
     return {
       getCatalog: () => request('/service-catalog', 'GET'),
       createRequest: (payload) => request('/repair-requests', 'POST', payload),
-      // Dispatcher queue preview is reviewer-only scaffolding (no customer ever sees it), so the
-      // role is hardcoded rather than wired to a role switcher, matching guest-profiles.js's
-      // hardcoded 'front_desk' header for its own internal-only reads.
-      listQueue: () => request('/repair-requests', 'GET', undefined, { 'x-staff-role': 'dispatcher' }),
+      // Deliberately does NOT send an 'x-staff-role' header: whatever value this public client
+      // bundle asserted would be readable by anyone, so it would be a cosmetic, bypassable gate
+      // on an endpoint that returns real customer PII (see src/repairRequests/auth.js). Until a
+      // server-verified dispatcher credential exists, the shipped queue screen shows the "need a
+      // dispatcher account" message; a developer/reviewer can still inspect the route directly
+      // (e.g. curl -H 'x-staff-role: dispatcher') outside production.
+      listQueue: () => request('/repair-requests', 'GET'),
     };
   }
 

@@ -1,11 +1,14 @@
-// The dispatcher role is a client-asserted `x-staff-role` header — the same trust model used by
-// every other role gate in this app (guests/routes.js, rooms/routes.js, leave/auth.js,
-// runs/auth.js). No NODE_ENV production lockout: this story has no verified dispatcher identity
-// to fail open to (see plan.md), so a prod-only 401 would make the dispatch queue permanently
-// unreachable through the shipped UI while leaving every other x-staff-role consumer reachable.
+// Unlike guests/rooms/leave/runs (which only gate *actions*, not bulk PII reads), GET / here
+// returns every customer's address, description and photos — a self-asserted `x-staff-role`
+// header is not a meaningful boundary for that, because whatever value the shipped client would
+// send is public (readable in the bundle / devtools). So this gate fails closed in production
+// (reject regardless of header) until a server-verified credential (session/token, checked
+// server-side) replaces it; outside production the header still lets a developer/reviewer probe
+// the route directly, matching src/defects/auth.js's identity gate. The client in
+// public/js/services.js deliberately does NOT send this header — see its listQueue() comment.
 function requireDispatcherRole(req, res, next) {
   const role = req.headers['x-staff-role'];
-  if (!role) {
+  if (process.env.NODE_ENV === 'production' || !role) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   if (role !== 'dispatcher') {

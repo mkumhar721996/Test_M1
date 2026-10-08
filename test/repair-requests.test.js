@@ -56,28 +56,29 @@ test('customers can still submit without any role header', async () => {
   expect(res.status).toBe(201);
 });
 
-test('dispatch queue stays reachable in production with the dispatcher header, unlike a prod-locked gate', async () => {
+test('dispatch queue fails closed in production even with a dispatcher header', async () => {
   const original = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
   try {
     const res = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(401);
   } finally {
     process.env.NODE_ENV = original;
   }
 });
 
-test('createDefaultApi().listQueue() fetches the real dispatch queue', async () => {
-  const created = await request(app).post('/repair-requests').send(validPayload);
+test('createDefaultApi().listQueue() never sends a dispatcher header, so it is rejected by the real route', async () => {
   const server = app.listen(0);
   try {
     const { port } = server.address();
     const baseUrl = `http://127.0.0.1:${port}`;
     const originalFetch = global.fetch;
-    global.fetch = (url, opts) => originalFetch(`${baseUrl}${url}`, opts);
+    global.fetch = (url, opts) => {
+      expect(opts.headers || {}).not.toHaveProperty('x-staff-role');
+      return originalFetch(`${baseUrl}${url}`, opts);
+    };
     try {
-      const queue = await createDefaultApi().listQueue();
-      expect(queue[0]).toMatchObject({ id: created.body.id, status: 'Pending' });
+      await expect(createDefaultApi().listQueue()).rejects.toMatchObject({ status: 401 });
     } finally {
       global.fetch = originalFetch;
     }
