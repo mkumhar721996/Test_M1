@@ -14,6 +14,14 @@ function isVisible(definition, req) {
   return !definition.projectId || projectsStore.listProjectIdsForUser(req.userId).includes(definition.projectId);
 }
 
+// Unscoped workflows stay globally accessible; project-scoped ones require membership (x-user-id).
+function isAccessible(workflowId, req) {
+  const definition = getLatestVersion(workflowId);
+  if (!definition) return false;
+  if (!definition.projectId) return true;
+  return isVisible(definition, { userId: req.headers['x-user-id'] });
+}
+
 function toBody(d) {
   return { id: d.workflowId, version: d.version, taskGraph: d.taskGraph, projectId: d.projectId, savedBy: d.savedBy, savedAt: d.savedAt };
 }
@@ -40,6 +48,7 @@ router.post('/', enforceWorkflowAuthorRole, (req, res, next) => {
 
 router.post('/:id/versions', enforceWorkflowAuthorRole, (req, res, next) => {
   try {
+    if (!isAccessible(req.params.id, req)) return res.status(404).json({ error: 'workflow not found' });
     const definition = updateWorkflow(req.params.id, req.body.taskGraph, { actor: req.actor });
     if (!definition) return res.status(404).json({ error: 'workflow not found' });
     res.status(201).json(toBody(definition));
@@ -66,6 +75,7 @@ router.post('/:id/runs', enforceOnboardingRole, (req, res) => {
     if (typeof hireId !== 'string') return res.status(400).json({ error: 'hireId must be a string' });
     if (!getHire(hireId)) return res.status(404).json({ error: 'hire not found' });
   }
+  if (!isAccessible(req.params.id, req)) return res.status(404).json({ error: 'workflow not found' });
   const run = startRun(req.params.id, hireId);
   if (!run) return res.status(404).json({ error: 'workflow not found' });
   res.status(201).json(run);

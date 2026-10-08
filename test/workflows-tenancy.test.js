@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../src/server');
 const projectsStore = require('../src/projects/store');
+const runsStore = require('../src/runs/store');
 
 const validTaskGraph = { tasks: [{ id: 't1', next: [] }] };
 
@@ -44,4 +45,28 @@ test('AC9: a non-member cannot create a workflow in a project', async () => {
 test('retrieval requires an authenticated user', async () => {
   const res = await request(app).get('/workflows/anything');
   expect(res.status).toBe(401);
+});
+
+test('AC10: a non-member cannot start a Run against a project workflow', async () => {
+  const mine = memberProject('Onboarding Pilot', 'alex5');
+  memberProject('Other Team', 'jordan5');
+  const created = await save('alex5', mine.id);
+  const run = (user) => request(app).post(`/workflows/${created.body.id}/runs`).set('x-staff-role', 'hr_coordinator').set('x-user-id', user).send({});
+  const denied = await run('jordan5');
+  expect(denied.status).toBe(404);
+  const anon = await request(app).post(`/workflows/${created.body.id}/runs`).set('x-staff-role', 'hr_coordinator').send({});
+  expect(anon.status).toBe(404);
+  expect(runsStore.listRuns().filter((r) => r.workflowId === created.body.id)).toHaveLength(0);
+  expect((await run('alex5')).status).toBe(201);
+});
+
+test('AC10: a non-member cannot save a version of a project workflow', async () => {
+  const mine = memberProject('Onboarding Pilot', 'alex6');
+  memberProject('Other Team', 'jordan6');
+  const created = await save('alex6', mine.id);
+  const post = (user) => request(app).post(`/workflows/${created.body.id}/versions`).set('x-staff-role', 'hr_coordinator').set('x-user-id', user).send({ taskGraph: { tasks: [{ id: 'evil', next: [] }] } });
+  expect((await post('jordan6')).status).toBe(404);
+  const latest = await request(app).get(`/workflows/${created.body.id}`).set('x-user-id', 'alex6');
+  expect(latest.body.version).toBe(1);
+  expect((await post('alex6')).status).toBe(201);
 });

@@ -28,7 +28,8 @@ function validateTaskGraph(taskGraph) {
         fields[`tasks[${i}].next`] = 'next must be an array of task ids.';
       } else {
         task.next.forEach((targetId, j) => {
-          if (!ids.has(targetId)) fields[`tasks[${i}].next[${j}]`] = `References unknown task id "${targetId}".`;
+          if (typeof targetId !== 'string') fields[`tasks[${i}].next[${j}]`] = 'Task reference must be a string.';
+          else if (!ids.has(targetId)) fields[`tasks[${i}].next[${j}]`] = `References unknown task id "${targetId}".`;
         });
       }
     }
@@ -39,9 +40,9 @@ function validateTaskGraph(taskGraph) {
       } else {
         ['whenTrue', 'whenFalse'].forEach((key) => {
           const targetId = branch[key];
-          if (targetId !== undefined && !ids.has(targetId)) {
-            fields[`tasks[${i}].branch.${key}`] = `References unknown task id "${targetId}".`;
-          }
+          if (targetId === undefined) return;
+          if (typeof targetId !== 'string') fields[`tasks[${i}].branch.${key}`] = 'Task reference must be a string.';
+          else if (!ids.has(targetId)) fields[`tasks[${i}].branch.${key}`] = `References unknown task id "${targetId}".`;
         });
       }
     }

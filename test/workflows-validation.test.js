@@ -39,3 +39,9 @@ test('AC6: conditional branches referencing unknown tasks are reported', () => {
 test('a valid graph with branches passes', () => {
   expect(() => validateTaskGraph({ tasks: [{ id: 'a', next: ['b'], branch: { whenTrue: 'b', whenFalse: 'c' } }, { id: 'b' }, { id: 'c' }] })).not.toThrow();
 });
+
+test('AC6: non-string next and branch targets are rejected as non-string references', () => {
+  const fields = fieldsOf({ tasks: [{ id: 't1', next: [5], branch: { whenTrue: {} } }] });
+  expect(fields['tasks[0].next[0]']).toMatch(/string/);
+  expect(fields['tasks[0].branch.whenTrue']).toMatch(/string/);
+});
