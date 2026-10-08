@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fixly — Browse Services</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/services.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/services.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div id="screens">
+
+    <!-- Screen: Browse Services
+         Notes:
+           - AC1: the Service Catalog's categories render as a read-only grid — no edit/add/delete
+             affordances anywhere on this screen, since catalog management is out of scope.
+           - Each card's "Request this service" jumps to the booking form with that category
+             pre-selected; AC2 is demonstrated on the booking form itself since the category
+             selector lives there too (a customer can also change category after arriving).
+    -->
+    <div class="screen" data-name="Browse Services">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Browse services</h1>
+          <p>Pick what's going on and submit a repair request in a couple of minutes — no phone call needed.</p>
+        </div>
+
+        <div class="category-grid" id="category-grid"></div>
+      </div>
+    </div>
+
+    <!-- Screen: Booking Form
+         Notes:
+           - Default state on arrival shows an empty, unsubmitted form. Use the reviewer tooling
+             panel to preview the validation-error state or a filled example with photos.
+           - "About the job" fields are entirely driven by the selected category's metadata — try
+             switching categories to see the question set change (AC2).
+           - Submitting with description, time window, and address filled (photos optional)
+             succeeds (AC3). Leaving any of those three blank and submitting shows the error
+             summary plus inline field errors (AC4). Attaching photos before submitting carries
+             them through to the confirmation screen (AC5).
+    -->
+    <div class="screen" data-name="Booking Form">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-browse">← Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>New repair request</h1>
+          <p>Fields marked <span class="required-mark">*</span> are required.</p>
+        </div>
+
+        <div class="card">
+          <form id="booking-form" novalidate>
+            <div id="form-error-summary" tabindex="-1"></div>
+
+            <div class="form-section">
+              <label class="label" for="category-select" style="font-size:var(--font-size-md);margin-bottom:var(--space-3);">Service category <span class="required-mark">*</span></label>
+              <select class="input" id="category-select">
+                <option value="">Choose a category…</option>
+              </select>
+              <p class="field-error" id="category-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a service category.</p>
+            </div>
+
+            <fieldset class="form-section" id="dynamic-fields-section">
+              <legend class="legend">About the job</legend>
+              <div id="dynamic-fields"></div>
+            </fieldset>
+
+            <div class="form-section">
+              <label class="label" for="description">What's going on? <span class="required-mark">*</span></label>
+              <textarea class="input" id="description" placeholder="" aria-required="true"></textarea>
+              <p class="field-error" id="description-error" hidden><span class="icon" aria-hidden="true">!</span> Describe the problem so the technician knows what to expect.</p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend class="legend">Preferred time window <span class="required-mark">*</span></legend>
+              <p class="hint">We'll confirm the exact appointment once a technician is assigned.</p>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="preferred-date">Date</label>
+                  <input class="input" type="date" id="preferred-date" aria-required="true" />
+                </div>
+                <div>
+                  <label class="label" for="time-window">Time window</label>
+                  <select class="input" id="time-window" aria-required="true">
+                    <option value="">Choose a window…</option>
+                  </select>
+                </div>
+              </div>
+              <p class="field-error" id="time-window-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a date and a preferred time window.</p>
+              <div id="unstaffed-notice" hidden></div>
+            </fieldset>
+
+            <fieldset class="form-section">
+              <legend class="legend">Service address <span class="required-mark">*</span></legend>
+              <div class="form-row">
+                <div>
+                  <label class="label" for="addr-street">Street address</label>
+                  <input class="input" type="text" id="addr-street" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="addr-unit">Apt / unit <span class="optional-tag">(optional)</span></label>
+                  <input class="input" type="text" id="addr-unit" />
+                </div>
+                <div>
+                  <label class="label" for="addr-city">City</label>
+                  <input class="input" type="text" id="addr-city" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="addr-state">State</label>
+                  <input class="input" type="text" id="addr-state" maxlength="2" placeholder="e.g. CA" />
+                </div>
+                <div>
+                  <label class="label" for="addr-zip">ZIP code</label>
+                  <input class="input" type="text" id="addr-zip" inputmode="numeric" />
+                </div>
+              </div>
+              <p class="field-error" id="address-error" hidden><span class="icon" aria-hidden="true">!</span> Enter the street address, city, state, and ZIP code.</p>
+            </fieldset>
+
+            <div class="form-section">
+              <p class="legend">Photos <span class="optional-tag">(optional)</span></p>
+              <p class="hint">Add photos to help the technician understand the issue before they arrive.</p>
+              <div class="photo-grid" id="photo-grid"></div>
+              <p class="photo-empty-hint" id="photo-empty-hint">No photos added yet.</p>
+              <input type="file" id="photo-input" accept="image/*" multiple hidden />
+            </div>
+
+            <div class="submit-bar">
+              <button type="submit" class="btn btn-primary" id="submit-btn">Submit request</button>
+              <span class="u-text-sm u-text-muted" id="submit-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Request Submitted
+         Notes:
+           - Shown immediately after a successful submission (AC3/AC5). Summarizes exactly what
+             was submitted, including the photo count when photos were attached.
+           - If the chosen window had no technician available, a neutral "still in the queue" note
+             appears here too — matching the booking form's notice, never styled as an error (AC7).
+           - "View admin dispatch queue" is reviewer-only scaffolding (a real customer never sees
+             the internal queue) so you can confirm the request landed there with status Pending.
+    -->
+    <div class="screen" data-name="Request Submitted">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-browse-2">← Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="card">
+          <span class="confirm-icon" aria-hidden="true">✓</span>
+          <h1 class="card-title">Request submitted</h1>
+          <p class="card-body">A dispatcher will match you with a technician. You'll be notified as soon as your appointment is confirmed.</p>
+
+          <dl class="confirm-grid">
+            <div class="confirm-field"><dt>Request ID</dt><dd id="conf-id"></dd></div>
+            <div class="confirm-field"><dt>Status</dt><dd><span class="status-chip"><span aria-hidden="true">●</span> Pending</span></dd></div>
+            <div class="confirm-field"><dt>Service category</dt><dd id="conf-category"></dd></div>
+            <div class="confirm-field"><dt>Preferred time</dt><dd id="conf-time"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Service address</dt><dd id="conf-address"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Description</dt><dd id="conf-description"></dd></div>
+            <div class="confirm-field"><dt>Photos</dt><dd id="conf-photos"></dd></div>
+          </dl>
+
+          <div id="conf-unstaffed-notice"></div>
+
+          <div class="submit-bar">
+            <button type="button" class="btn btn-primary" id="submit-another">Submit another request</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Admin Dispatch Queue (internal preview)
+         Notes:
+           - Minimal, read-only preview of the queue a dispatcher sees — enough to prove AC6/AC7,
+             not a full admin feature (technician assignment is out of scope for this story).
+           - Starts with two pre-existing fixture requests; every successful submission from the
+             booking form is prepended here with status Pending and a brief highlight.
+           - A request whose preferred window has no technician available still shows status
+             Pending, plus a neutral "No technician available yet" badge — it is never rejected.
+    -->
+    <div class="screen" data-name="Admin Dispatch Queue">
+      <div class="app-topbar internal">
+        <span class="brand">Fixly</span>
+        <span class="internal-tag">Internal — Dispatcher view</span>
+        <div class="app-topbar-right">
+          <button type="button" class="link-btn" id="back-to-browse-3">← Back to customer app</button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Dispatch queue</h1>
+          <p>Repair requests submitted by customers, newest first.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All requests</h3>
+          <div id="queue-list"></div>
+          <div class="empty-state" id="queue-empty" hidden>
+            <span class="icon" aria-hidden="true">🗒️</span>
+            <p>No repair requests yet. Once a customer submits one, it'll show up here as Pending.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
