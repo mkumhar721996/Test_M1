@@ -83,6 +83,8 @@ body { margin: 0; min-height: 100dvh; }
   color: var(--color-fg-muted);
 }
 .profile-status-chip--active { border-color: var(--color-primary); color: var(--color-fg); }
+.profile-status-chip--rejected { border: 2px solid var(--color-fg-muted); color: var(--color-fg); }
+.profile-status-chip--withdrawn { border: 2px dashed var(--color-fg); color: var(--color-fg); }
 
 /* ---------- Pending lock banner (AC9) ---------- */
 .pending-banner {
@@ -268,3 +270,31 @@ fieldset.profile-fieldset[disabled] .top-actions button {
 }
 /* ---------- Toast (page-specific override; base rule in prototype-utils.css) ---------- */
 .toast { max-width: min(90vw, 340px); }
+
+/* ---------- Outcome card (status chip variants, inline field error, consequence box) ---------- */
+.status-chip--deactivated { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+.status-chip--rejected { border: 2px solid var(--color-fg-muted); color: var(--color-fg); }
+.status-chip--withdrawn { border: 2px dashed var(--color-fg); color: var(--color-fg); }
+.control-block { margin-bottom: var(--space-4); }
+.control-block:last-child { margin-bottom: 0; }
+.control-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+.control-row-main { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.control-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.control-note { margin: var(--space-2) 0 0 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+.field-error {
+  display: flex; align-items: center; gap: var(--space-1);
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.field-error[hidden] { display: none; }
+.consequence-box {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  padding: var(--space-3); margin: var(--space-3) 0 0 0;
+  font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+}
+.consequence-box .hint-icon { color: var(--color-primary); flex: 0 0 auto; }
+textarea.input { resize: vertical; min-height: 72px; font-family: var(--font-family-base); }

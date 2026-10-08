@@ -36,7 +36,7 @@ test('AC5: a non-HR/Manager role editing a profile gets 403 and the profile is u
   expect(getHire(hire.id).name).toBe('A');
 });
 
-test.each(['deactivate', 'reactivate'])('AC6: a non-HR/Manager role calling %s gets 403 and profileStatus is unchanged', async (action) => {
+test.each(['deactivate', 'reactivate', 'reject', 'withdraw'])('AC6: a non-HR/Manager role calling %s gets 403 and profileStatus is unchanged', async (action) => {
   const hire = await seedHire({ hireStage: 'offer_accepted' });
   const before = getHire(hire.id).profileStatus;
   const res = await request(app).post(`/hires/${hire.id}/${action}`).set('x-staff-role', 'front_desk').send({});
@@ -44,7 +44,7 @@ test.each(['deactivate', 'reactivate'])('AC6: a non-HR/Manager role calling %s g
   expect(getHire(hire.id).profileStatus).toBe(before);
 });
 
-test.each(['deactivate', 'reactivate'])('AC6: no role header on %s is 401', async (action) => {
+test.each(['deactivate', 'reactivate', 'reject', 'withdraw'])('AC6: no role header on %s is 401', async (action) => {
   const hire = await seedHire({ hireStage: 'offer_accepted' });
   const res = await request(app).post(`/hires/${hire.id}/${action}`).send({});
   expect(res.status).toBe(401);
