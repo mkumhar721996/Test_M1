@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-207 — Manage Availability</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has no switch/toggle component alias and no semantic
+    success/warning/danger colors. The availability switch and the "available"/"unavailable"
+    chips below are built entirely from existing color/spacing/radius tokens, and every state is
+    distinguished by icon shape + text label + border/background treatment, never by hue alone
+    (consistent with the status-chip pattern used in prior stories). If this becomes a permanent
+    component, a "switch" token alias and semantic status colors would be worth proposing to the
+    design-system owner — not done here, since evolving tokens.json is out of scope for this file.
+
+    Scope note (per the work item): the exact mechanism — simple on/off, date-specific windows,
+    or recurring working hours — is explicitly unsettled pending business confirmation. This
+    prototype designs the safest common denominator: a single on/off "available for new jobs"
+    signal, since every candidate mechanism reduces to that signal for the dispatcher's purposes.
+    Date ranges / recurring schedules are NOT designed here and would need their own follow-up
+    once the mechanism is confirmed.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .session-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .app-topbar.internal { background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .internal-tag {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: 2px var(--space-2); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .link-btn {
+    background: none; border: none; padding: var(--space-1) var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .page { max-width: 640px; }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .link-btn:focus-visible, .avail-switch:focus-visible,
+  .demo-note-actions button:focus-visible, #review-bar button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Availability status card ---------- */
+  .status-card {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .status-card-main { display: flex; gap: var(--space-3); align-items: flex-start; min-width: 0; }
+  .status-icon {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: var(--font-size-lg); border: 1px solid var(--color-border);
+    background: var(--color-bg); color: var(--color-fg);
+  }
+  .status-card.is-unavailable .status-icon { border-color: var(--color-primary); background: var(--color-surface); }
+  .status-heading { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .status-sub { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0; max-width: 46ch; }
+
+  .avail-switch-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); flex: 0 0 auto; }
+  .avail-switch {
+    display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: var(--space-1) var(--space-2);
+    background: none; border: none; cursor: pointer; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); color: var(--color-fg);
+  }
+  .avail-switch[disabled] { cursor: not-allowed; opacity: 0.7; }
+  .switch-track {
+    position: relative; width: 52px; height: 30px; border-radius: var(--radius-lg);
+    background: var(--color-bg); border: 1px solid var(--color-border); flex: 0 0 auto;
+  }
+  .avail-switch[aria-checked="true"] .switch-track { background: var(--color-primary); border-color: var(--color-primary); }
+  .switch-knob {
+    position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--color-fg); transition: transform 0.2s ease-out;
+  }
+  .avail-switch[aria-checked="true"] .switch-knob { transform: translateX(22px); background: var(--color-primary-fg); }
+  .switch-status-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); min-height: 1.3em; }
+
+  /* ---------- Chips (icon + label, never color alone) ---------- */
+  .avail-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); white-space: nowrap;
+  }
+  .avail-chip.is-available { background: transparent; border: 1px solid var(--color-border); color: var(--color-fg-muted); }
+  .avail-chip.is-unavailable { background: var(--color-surface); border: 1px solid var(--color-primary); color: var(--color-fg); }
+
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); white-space: nowrap;
+  }
+  .status-chip.status-assigned { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-muted); }
+  .status-chip.status-accepted { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+
+  /* ---------- Assignments list (AC3) ---------- */
+  .assignment-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
+  }
+  .assignment-item:last-child { border-bottom: none; }
+  .assignment-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 260px; }
+  .assignment-time { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .assignment-customer { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); }
+  .assignment-address { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Notices / banners ---------- */
+  .notice {
+    display: flex; align-items: flex-start; gap: var(--space-2); background: var(--color-surface);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-2);
+  }
+  .notice .icon {
+    display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 20px;
+    border: 1px solid var(--color-fg-muted); border-radius: 50%; font-weight: var(--font-weight-bold); color: var(--color-fg-muted); font-size: 12px;
+  }
+  .notice strong { color: var(--color-fg); }
+
+  .state-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2); background: var(--color-surface);
+    border: 1px solid var(--color-primary); border-left-width: var(--space-1); border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg); margin-bottom: var(--space-4);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner-actions { margin-top: var(--space-2); }
+
+  .empty-state { text-align: center; padding: var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0; }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-block {
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 37%, var(--color-surface) 63%);
+    background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; border-radius: var(--radius-sm);
+  }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Dispatcher roster (AC1 / AC2) ---------- */
+  .roster-row {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
+  }
+  .roster-row:last-child { border-bottom: none; }
+  .roster-row.just-changed { animation: row-flash 1.8s ease-out; }
+  @keyframes row-flash { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  .roster-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .roster-name { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .roster-role { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .roster-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .roster-updated { font-family: var(--font-family-base); font-size: 11px; color: var(--color-fg-muted); }
+
+  /* ---------- Assign job screen (AC4) ---------- */
+  .job-mini-card { margin-bottom: var(--space-4); }
+  .job-mini-title { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0 0 var(--space-1) 0; }
+  .job-mini-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; }
+  .job-mini-desc { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: var(--space-2) 0 0 0; }
+  .form-section { margin-bottom: var(--space-4); }
+  .label-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .confirm-icon { font-size: 2.25rem; display: block; margin-bottom: var(--space-2); }
+
+  /* ---------- Toast ---------- */
+  .toast { position: fixed; bottom: var(--space-4); right: var(--space-4); z-index: 200; display: flex; align-items: center; gap: var(--space-2);
+    background: var(--card-default-background); border: 1px solid var(--card-default-border); border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); color: var(--color-fg); max-width: min(90vw, 320px); }
+  .toast[hidden] { display: none; }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note {
+    display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-surface);
+    border: 1px solid var(--color-primary); border-left-width: var(--space-1); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px; padding: var(--space-1) var(--space-3); background: var(--color-bg); color: var(--color-fg-muted);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — "FieldOps" (technician-facing), single destination "Availability" since
+     this story covers only the technician's own availability signal (the assigned-jobs list is a
+     separate story/nav destination not re-built here). Two "Internal — Dispatcher view" screens
+     use the same muted/internal topbar treatment established in prior stories, to make clear they
+     belong to a different persona and are reviewer-only previews, not shipped admin features
+     (the dispatcher's broader assignment UI is out of scope for this story).
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - Mechanism (open per the work item): a single "available for new jobs" on/off switch is
+         the only control. No date range or recurring-hours UI is designed — see the gap note at
+         the top of the stylesheet. If the business confirms date-specific or recurring hours are
+         required, this switch becomes one more input alongside a schedule, not a replacement.
+       - AC1 / AC2: toggling the switch on "My Availability" updates a shared in-memory roster.
+         Flip it, then use Next → to reach "Dispatcher Team Availability (internal preview)" and
+         see Marcus Webb's row update to match — in both directions (available → unavailable and
+         back). The row briefly highlights so the change is easy to spot, never relying on color
+         alone (the chip pairs a distinct icon with its text label).
+       - AC3: "Your upcoming assignments" on the technician screen is a fixed fixture list that
+         never reacts to the switch — toggling unavailable does not alter, cancel, or reflow any
+         existing assignment, demonstrating they remain unchanged.
+       - AC4: "Dispatcher Assign Job (internal preview)" lets a dispatcher assign a new job to
+         Marcus Webb while he is shown as unavailable. Selecting him surfaces a neutral,
+         non-blocking informational notice (not an error, no confirmation step) and the "Assign
+         job" button completes the assignment normally — availability never restricts it.
+       - Every "Reviewer tooling" panel is scaffolding for this review only and ships with nothing
+         in the real app. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-207</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Inline fixture data -->
+  <script id="fixture-techs" type="application/json">
+  [
+    { "id": "marcus", "name": "Marcus Webb", "role": "Field technician", "available": true, "updatedAt": "Today, 7:52 AM" },
+    { "id": "renata", "name": "Renata Alvarez", "role": "Field technician", "available": true, "updatedAt": "Yesterday, 4:10 PM" },
+    { "id": "jamal", "name": "Jamal Fischer", "role": "Field technician", "available": false, "updatedAt": "Today, 6:30 AM" },
+    { "id": "hannah", "name": "Hannah Osei", "role": "Field technician", "available": true, "updatedAt": "3 days ago" }
+  ]
+  </script>
+
+  <script id="fixture-assignments" type="application/json">
+  [
+    { "id": "JOB-5041", "customerName": "Elena Brooks", "address": "410 Sycamore St, Rosedale", "scheduledStart": "2026-10-09T09:00:00", "scheduledEnd": "2026-10-09T10:00:00", "status": "Assigned" },
+    { "id": "JOB-5042", "customerName": "Victor Simms", "address": "22 Harbor Rd, Millbrook", "scheduledStart": "2026-10-09T13:00:00", "scheduledEnd": "2026-10-09T14:00:00", "status": "Accepted" }
+  ]
+  </script>
+
+  <script id="fixture-new-job" type="application/json">
+  { "id": "JOB-5050", "customerName": "Priya Anand", "address": "908 Laurel Ave, Unit 4, Rosedale", "scheduledStart": "2026-10-10T11:00:00", "scheduledEnd": "2026-10-10T12:00:00", "problemDescription": "Bathroom exhaust fan is extremely loud and smells like burning dust.", "serviceCategory": "Electrical" }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: My Availability
+         Notes:
+           - Default state on load is a brief loading skeleton, then the populated status card and
+             assignments list.
+           - The switch is the one control: "Available for new jobs" on, or "Unavailable" off.
+             Saving simulates latency; the switch disables and the line beneath it relabels to
+             "Saving…" while pending (AC1/AC2).
+           - "Your upcoming assignments" never changes when the switch changes (AC3) — use the
+             reviewer tooling to preview its own empty/error states independently.
+    -->
+    <div class="screen" data-name="My Availability">
+      <div class="app-topbar">
+        <span class="brand">FieldOps</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Availability</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line">Signed in as Marcus Webb</span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Your availability</h1>
+          <p>Let dispatch know when you can't take new jobs. This never changes jobs you're already assigned.</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="avail-live-region"></div>
+
+        <!-- State: loading -->
+        <div id="status-loading">
+          <div class="card" style="margin-bottom:var(--space-4);">
+            <div class="skeleton-block" style="width:44px;height:44px;border-radius:50%;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:60%;height:20px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:85%;height:14px;"></div>
+          </div>
+        </div>
+
+        <!-- State: success (status card, toggles between available/unavailable) -->
+        <div class="card" id="status-card-wrap" hidden>
+          <div class="status-card" id="status-card">
+            <div class="status-card-main">
+              <span class="status-icon" aria-hidden="true" id="status-icon">✓</span>
+              <div>
+                <h2 class="status-heading" id="status-heading">You're available for new jobs</h2>
+                <p class="status-sub" id="status-sub">Dispatch can assign you new jobs right now.</p>
+              </div>
+            </div>
+            <div class="avail-switch-wrap">
+              <button type="button" class="avail-switch" id="avail-switch" role="switch" aria-checked="true" aria-label="Available for new jobs">
+                <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+                <span id="switch-text-label">On</span>
+              </button>
+              <span class="switch-status-line" id="switch-status-line"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- State: save error (shown in place of the status card line when a save attempt fails) -->
+        <div class="state-banner" id="save-error-banner" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't update your availability. Your status is still what it was before — try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="save-retry-btn">Try again</button></div>
+          </div>
+        </div>
+
+        <div class="page-header" style="margin-top:var(--space-4);">
+          <h2 style="font-family:var(--font-family-base);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);color:var(--color-fg);margin:0 0 var(--space-1) 0;">Your upcoming assignments</h2>
+          <p style="font-family:var(--font-family-base);font-size:var(--font-size-sm);color:var(--color-fg-muted);margin:0;">These stay on your schedule no matter what you set above.</p>
+        </div>
+
+        <!-- State: assignments loading -->
+        <div id="assignments-loading">
+          <div class="card">
+            <div class="skeleton-block" style="width:40%;height:16px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;"></div>
+          </div>
+        </div>
+
+        <!-- State: assignments error (partial — status card above still works) -->
+        <div class="state-banner" id="assignments-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your upcoming assignments. Your availability switch above still works.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="assignments-retry-btn">Retry</button></div>
+          </div>
+        </div>
+
+        <!-- State: assignments empty -->
+        <div class="empty-state card" id="assignments-empty" hidden>
+          <span class="icon" aria-hidden="true">🗓️</span>
+          <p>No upcoming assignments scheduled.</p>
+        </div>
+
+        <!-- State: assignments success -->
+        <div class="card" id="assignments-list-wrap" hidden>
+          <div id="assignments-list"></div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Preview other states for the assignments list below (AC3: none of these affect the switch above, or vice versa).</p>
+          <div class="demo-note-actions">
+            <button type="button" id="demo-assignments-success">Assignments: success</button>
+            <button type="button" id="demo-assignments-empty">Assignments: empty</button>
+            <button type="button" id="demo-assignments-error">Assignments: error</button>
+            <button type="button" id="demo-save-fail-once">Make next switch save fail once</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Dispatcher Team Availability (internal preview)
+         Notes:
+           - Read-only preview of what a dispatcher sees for every technician's availability
+             signal (AC1/AC2) — assigning jobs from here is covered on the next screen, not here.
+           - Marcus Webb's row reflects whatever you last set on "My Availability".
+    -->
+    <div class="screen" data-name="Dispatcher Team Availability (internal preview)">
+      <div class="app-topbar internal">
+        <span class="brand">FieldOps</span>
+        <span class="internal-tag">Internal — Dispatcher view</span>
+        <div class="app-topbar-right">
+          <button type="button" class="link-btn" id="back-to-tech-1">← Back to technician app</button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Team availability</h1>
+          <p>Who's available for new jobs right now, across the whole crew.</p>
+        </div>
+
+        <!-- State: loading -->
+        <div class="card" id="roster-loading">
+          <div class="skeleton-block" style="width:50%;height:16px;margin-bottom:var(--space-2);"></div>
+          <div class="skeleton-block" style="width:35%;height:14px;margin-bottom:var(--space-3);"></div>
+          <div class="skeleton-block" style="width:60%;height:16px;margin-bottom:var(--space-2);"></div>
+          <div class="skeleton-block" style="width:30%;height:14px;"></div>
+        </div>
+
+        <!-- State: error -->
+        <div class="state-banner" id="roster-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load team availability right now.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="roster-retry-btn">Retry</button></div>
+          </div>
+        </div>
+
+        <!-- State: success -->
+        <div class="card" id="roster-list-wrap" hidden>
+          <div id="roster-list"></div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Flip Marcus Webb's status on "My Availability", then come back here with Next →/← Prev to confirm it updates in both directions (AC1/AC2).</p>
+          <div class="demo-note-actions">
+            <button type="button" id="demo-roster-error">Preview: load error</button>
+            <button type="button" id="demo-roster-success">Preview: success</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Dispatcher Assign Job (internal preview)
+         Notes:
+           - Marcus Webb is shown as unavailable by default here (set him unavailable on
+             "My Availability" first, or just use the demo note below to force it for this
+             preview). Assigning the job to him succeeds with no blocking dialog and no
+             confirmation step — availability is informational only (AC4).
+    -->
+    <div class="screen" data-name="Dispatcher Assign Job (internal preview)">
+      <div class="app-topbar internal">
+        <span class="brand">FieldOps</span>
+        <span class="internal-tag">Internal — Dispatcher view</span>
+        <div class="app-topbar-right">
+          <button type="button" class="link-btn" id="back-to-tech-2">← Back to technician app</button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Assign a job</h1>
+          <p>Pick a technician for this new request. Availability is shown for context — it never blocks an assignment.</p>
+        </div>
+
+        <!-- State: default / form -->
+        <div id="assign-form-wrap">
+          <div class="card job-mini-card" id="new-job-card"></div>
+
+          <div class="card">
+            <form id="assign-form">
+              <div class="form-section">
+                <div class="label-row">
+                  <label class="label" for="tech-select">Assign to</label>
+                </div>
+                <select class="input" id="tech-select"></select>
+                <div id="unavailable-notice"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary" id="assign-submit-btn">Assign job</button>
+                <span class="u-text-sm u-text-muted" id="assign-status" aria-live="polite"></span>
+              </div>
+            </form>
+          </div>
+
+          <!-- State: error -->
+          <div class="state-banner" id="assign-error" role="alert" hidden>
+            <span class="icon" aria-hidden="true">⚠</span>
+            <div>
+              <p style="margin:0;">Couldn't assign this job. Your selection is still here — try again.</p>
+              <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="assign-retry-btn">Try again</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State: success -->
+        <div class="card" id="assign-success" hidden>
+          <span class="confirm-icon" aria-hidden="true">✓</span>
+          <h2 class="card-title" id="assign-success-title">Job assigned</h2>
+          <p class="card-body" id="assign-success-body"></p>
+          <div style="margin-top:var(--space-4);">
+            <button type="button" class="btn btn-primary" id="assign-another-btn">Assign another job</button>
+          </div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Force Marcus Webb unavailable so you can see AC4 without switching screens.</p>
+          <div class="demo-note-actions">
+            <button type="button" id="demo-force-unavailable">Mark Marcus Webb unavailable</button>
+            <button type="button" id="demo-force-available">Mark Marcus Webb available</button>
+            <button type="button" id="demo-assign-error">Preview: assignment error</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const techs = JSON.parse(document.getElementById('fixture-techs').textContent);
+  const baseAssignments = JSON.parse(document.getElementById('fixture-assignments').textContent);
+  const newJob = JSON.parse(document.getElementById('fixture-new-job').textContent);
+  const SIGNED_IN_TECH_ID = 'marcus';
+  let saveFailOnce = false;
+  let assignFailOnce = false;
+
+  function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+  function randLatency() { return 200 + Math.floor(Math.random() * 200); }
+
+  function formatDay(iso) {
+    return new Date(iso).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+  function formatTimeRange(startIso, endIso) {
+    const opts = { hour: 'numeric', minute: '2-digit' };
+    return new Date(startIso).toLocaleTimeString(undefined, opts) + ' – ' + new Date(endIso).toLocaleTimeString(undefined, opts);
+  }
+
+  function getTech(id) { return techs.find(t => t.id === id); }
+
+  // ---------- Screen 1: My Availability ----------
+  function renderStatusCard() {
+    const tech = getTech(SIGNED_IN_TECH_ID);
+    const card = document.getElementById('status-card');
+    const icon = document.getElementById('status-icon');
+    const heading = document.getElementById('status-heading');
+    const sub = document.getElementById('status-sub');
+    const sw = document.getElementById('avail-switch');
+    const swLabel = document.getElementById('switch-text-label');
+
+    sw.setAttribute('aria-checked', String(tech.available));
+    swLabel.textContent = tech.available ? 'On' : 'Off';
+
+    if (tech.available) {
+      card.classList.remove('is-unavailable');
+      icon.textContent = '✓';
+      heading.textContent = "You're available for new jobs";
+      sub.textContent = 'Dispatch can assign you new jobs right now.';
+    } else {
+      card.classList.add('is-unavailable');
+      icon.textContent = '⏸';
+      heading.textContent = "You're marked unavailable";
+      sub.textContent = "Dispatch can see you're unavailable. Jobs already on your schedule are unaffected.";
+    }
+  }
+
+  async function toggleAvailability() {
+    const tech = getTech(SIGNED_IN_TECH_ID);
+    const nextVal = !tech.available;
+    const sw = document.getElementById('avail-switch');
+    const line = document.getElementById('switch-status-line');
+    const live = document.getElementById('avail-live-region');
+    const errorBanner = document.getElementById('save-error-banner');
+
+    sw.disabled = true;
+    errorBanner.hidden = true;
+    line.textContent = 'Saving…';
+
+    await wait(randLatency());
+
+    if (saveFailOnce) {
+      saveFailOnce = false;
+      sw.disabled = false;
+      line.textContent = '';
+      errorBanner.hidden = false;
+      live.textContent = "Couldn't update your availability.";
+      return;
+    }
+
+    tech.available = nextVal;
+    tech.updatedAt = 'Just now';
+    sw.disabled = false;
+    renderStatusCard();
+    line.textContent = nextVal ? "Saved — you're available." : "Saved — you're unavailable.";
+    live.textContent = nextVal ? "You're now available for new jobs." : "You're now unavailable for new jobs.";
+    showToast(nextVal ? "You're now available" : "You're now unavailable");
+  }
+
+  function renderAssignments(mode) {
+    document.getElementById('assignments-loading').hidden = mode !== 'loading';
+    document.getElementById('assignments-error').hidden = mode !== 'error';
+    document.getElementById('assignments-empty').hidden = mode !== 'empty';
+    document.getElementById('assignments-list-wrap').hidden = mode !== 'success';
+    if (mode !== 'success') return;
+
+    const list = document.getElementById('assignments-list');
+    list.innerHTML = '';
+    baseAssignments.forEach(job => {
+      const row = document.createElement('div');
+      row.className = 'assignment-item';
+      const chipClass = job.status === 'Accepted' ? 'status-accepted' : 'status-assigned';
+      row.innerHTML = `
+        <div class="assignment-main">
+          <span class="assignment-time">${formatDay(job.scheduledStart)} · ${formatTimeRange(job.scheduledStart, job.scheduledEnd)}</span>
+          <span class="assignment-customer">${job.customerName}</span>
+          <span class="assignment-address">${job.address}</span>
+        </div>
+        <span class="status-chip ${chipClass}">${job.status}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('avail-toast');
+    toast.textContent = message;
+    toast.hidden = false;
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { toast.hidden = true; }, 3000);
+  }
+
+  // ---------- Screen 2: Dispatcher Team Availability ----------
+  function renderRoster(mode, highlightId) {
+    document.getElementById('roster-loading').hidden = mode !== 'loading';
+    document.getElementById('roster-error').hidden = mode !== 'error';
+    document.getElementById('roster-list-wrap').hidden = mode !== 'success';
+    if (mode !== 'success') return;
+
+    const list = document.getElementById('roster-list');
+    list.innerHTML = '';
+    techs.forEach(t => {
+      const row = document.createElement('div');
+      row.className = 'roster-row' + (t.id === highlightId ? ' just-changed' : '');
+      const chipClass = t.available ? 'is-available' : 'is-unavailable';
+      const chipIcon = t.available ? '✓' : '⏸';
+      const chipLabel = t.available ? 'Available' : 'Unavailable';
+      row.innerHTML = `
+        <div class="roster-main">
+          <span class="roster-name">${t.name}</span>
+          <span class="roster-role">${t.role}</span>
+        </div>
+        <div class="roster-right">
+          <span class="avail-chip ${chipClass}"><span aria-hidden="true">${chipIcon}</span> ${chipLabel}</span>
+          <span class="roster-updated">Updated ${t.updatedAt}</span>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  // ---------- Screen 3: Dispatcher Assign Job ----------
+  function renderNewJobCard() {
+    const card = document.getElementById('new-job-card');
+    card.innerHTML = `
+      <h3 class="job-mini-title">${newJob.id} · ${newJob.serviceCategory}</h3>
+      <p class="job-mini-meta">${newJob.customerName} · ${newJob.address}</p>
+      <p class="job-mini-meta">${formatDay(newJob.scheduledStart)} · ${formatTimeRange(newJob.scheduledStart, newJob.scheduledEnd)}</p>
+      <p class="job-mini-desc">${newJob.problemDescription}</p>
+    `;
+  }
+
+  function populateTechSelect() {
+    const select = document.getElementById('tech-select');
+    const prevValue = select.value;
+    select.innerHTML = '';
+    techs.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = `${t.name} — ${t.available ? 'Available' : 'Unavailable'}`;
+      select.appendChild(opt);
+    });
+    if (prevValue) select.value = prevValue;
+    updateUnavailableNotice();
+  }
+
+  function updateUnavailableNotice() {
+    const select = document.getElementById('tech-select');
+    const tech = getTech(select.value);
+    const notice = document.getElementById('unavailable-notice');
+    if (tech && !tech.available) {
+      notice.innerHTML = `<div class="notice"><span class="icon" aria-hidden="true">i</span><span><strong>${tech.name}</strong> is currently marked unavailable. Availability doesn't restrict assignment — you can still assign this job.</span></div>`;
+    } else {
+      notice.innerHTML = '';
+    }
+  }
+
+  async function handleAssignSubmit(e) {
+    e.preventDefault();
+    const select = document.getElementById('tech-select');
+    const tech = getTech(select.value);
+    const btn = document.getElementById('assign-submit-btn');
+    const status = document.getElementById('assign-status');
+    const errorBanner = document.getElementById('assign-error');
+
+    errorBanner.hidden = true;
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Assigning…';
+    status.textContent = '';
+
+    await wait(randLatency());
+
+    if (assignFailOnce) {
+      assignFailOnce = false;
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      errorBanner.hidden = false;
+      return;
+    }
+
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    document.getElementById('assign-form-wrap').hidden = true;
+    document.getElementById('assign-success').hidden = false;
+    document.getElementById('assign-success-body').textContent =
+      `${newJob.id} is now assigned to ${tech.name}, regardless of their current availability status.`;
+  }
+
+  function resetAssignScreen() {
+    document.getElementById('assign-form-wrap').hidden = false;
+    document.getElementById('assign-success').hidden = true;
+    document.getElementById('assign-error').hidden = true;
+    populateTechSelect();
+  }
+
+  // ---------- Wiring ----------
+  document.getElementById('avail-switch').addEventListener('click', toggleAvailability);
+  document.getElementById('save-retry-btn').addEventListener('click', toggleAvailability);
+
+  document.getElementById('demo-assignments-success').addEventListener('click', () => renderAssignments('success'));
+  document.getElementById('demo-assignments-empty').addEventListener('click', () => renderAssignments('empty'));
+  document.getElementById('demo-assignments-error').addEventListener('click', () => renderAssignments('error'));
+  document.getElementById('assignments-retry-btn').addEventListener('click', () => renderAssignments('success'));
+  document.getElementById('demo-save-fail-once').addEventListener('click', () => { saveFailOnce = true; showToast('Next switch toggle will simulate a save failure.'); });
+
+  document.getElementById('demo-roster-error').addEventListener('click', () => renderRoster('error'));
+  document.getElementById('demo-roster-success').addEventListener('click', () => renderRoster('success'));
+  document.getElementById('roster-retry-btn').addEventListener('click', () => renderRoster('success'));
+
+  document.getElementById('back-to-tech-1').addEventListener('click', () => show(0));
+  document.getElementById('back-to-tech-2').addEventListener('click', () => show(0));
+
+  document.getElementById('tech-select').addEventListener('change', updateUnavailableNotice);
+  document.getElementById('assign-form').addEventListener('submit', handleAssignSubmit);
+  document.getElementById('assign-retry-btn').addEventListener('click', () => handleAssignSubmit({ preventDefault(){} }));
+  document.getElementById('assign-another-btn').addEventListener('click', resetAssignScreen);
+  document.getElementById('demo-force-unavailable').addEventListener('click', () => { getTech(SIGNED_IN_TECH_ID).available = false; getTech(SIGNED_IN_TECH_ID).updatedAt = 'Just now'; populateTechSelect(); renderStatusCard(); });
+  document.getElementById('demo-force-available').addEventListener('click', () => { getTech(SIGNED_IN_TECH_ID).available = true; getTech(SIGNED_IN_TECH_ID).updatedAt = 'Just now'; populateTechSelect(); renderStatusCard(); });
+  document.getElementById('demo-assign-error').addEventListener('click', () => { assignFailOnce = true; showToast('Next assignment attempt will simulate an error.'); });
+
+  // ---------- Initial load simulation ----------
+  (async function initScreen1() {
+    await wait(randLatency());
+    document.getElementById('status-loading').hidden = true;
+    document.getElementById('status-card-wrap').hidden = false;
+    renderStatusCard();
+    await wait(150);
+    renderAssignments('success');
+  })();
+
+  (function initScreen3() {
+    renderNewJobCard();
+    populateTechSelect();
+  })();
+
+  renderRoster('loading');
+
+  // ---------- Toast element ----------
+  const toastEl = document.createElement('div');
+  toastEl.id = 'avail-toast';
+  toastEl.className = 'toast';
+  toastEl.hidden = true;
+  toastEl.setAttribute('role', 'status');
+  document.body.appendChild(toastEl);
+
+  // ---------- Reviewer bar / screen navigation ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+
+    if (screens[cur].dataset.name.indexOf('Dispatcher Team Availability') === 0) {
+      renderRoster('success');
+    }
+    if (screens[cur].dataset.name.indexOf('Dispatcher Assign Job') === 0) {
+      populateTechSelect();
+    }
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) show(cur + 1);
+    if (e.key === 'ArrowLeft' && !['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
