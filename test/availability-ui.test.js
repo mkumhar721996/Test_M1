@@ -70,3 +70,17 @@ test('assignments error and empty states render independently of the switch', as
   expect(document.getElementById('assignments-error').hidden).toBe(false);
   expect(document.getElementById('status-card-wrap').hidden).toBe(false);
 });
+
+test('a failed status load shows its own retry, which reloads instead of toggling', async () => {
+  const api = makeApi({ getStatus: jest.fn().mockRejectedValueOnce({ status: 500 }).mockResolvedValue({ available: true }) });
+  initAvailabilityApp(document, api);
+  await flush();
+  expect(document.getElementById('status-error-banner').hidden).toBe(false);
+  expect(document.getElementById('save-error-banner').hidden).toBe(true);
+  document.getElementById('status-retry-btn').click();
+  await flush();
+  expect(api.setStatus).not.toHaveBeenCalled();
+  expect(api.getStatus).toHaveBeenCalledTimes(2);
+  expect(document.getElementById('status-card-wrap').hidden).toBe(false);
+  expect(document.getElementById('status-error-banner').hidden).toBe(true);
+});

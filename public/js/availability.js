@@ -43,13 +43,14 @@
     function loadStatus() {
       $('status-loading').hidden = false;
       $('status-card-wrap').hidden = true;
+      $('status-error-banner').hidden = true;
       return api.getStatus().then((record) => {
         renderStatus(record.available);
         $('status-loading').hidden = true;
         $('status-card-wrap').hidden = false;
       }).catch(() => {
         $('status-loading').hidden = true;
-        $('save-error-banner').hidden = false;
+        $('status-error-banner').hidden = false;
         live.textContent = "Couldn't load your availability.";
       });
     }
@@ -106,6 +107,7 @@
 
     sw.addEventListener('click', toggle);
     $('save-retry-btn').addEventListener('click', toggle);
+    $('status-retry-btn').addEventListener('click', loadStatus);
     $('assignments-retry-btn').addEventListener('click', loadAssignments);
     return loadStatus().then(loadAssignments);
   }

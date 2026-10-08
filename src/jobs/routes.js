@@ -21,6 +21,7 @@ router.post('/:id/assign', requireDispatcherRole, (req, res, next) => {
     }
     const job = assignJob(req.params.id, technicianId);
     if (!job) return res.status(404).json({ error: 'job not found' });
+    if (job.conflict) return res.status(409).json({ error: 'job cannot be assigned in its current status' });
     res.status(200).json(job);
   } catch (err) {
     next(err);

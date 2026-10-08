@@ -1,5 +1,8 @@
 const ASSIGNED_STATUSES = ['Assigned', 'Accepted', 'In Progress'];
 
+// Completed / In Progress jobs cannot be (re)assigned; technician availability is not a factor.
+const ASSIGNABLE_STATUSES = ['Assigned', 'Accepted'];
+
 const jobs = new Map();
 
 function seed(job) {
@@ -76,6 +79,7 @@ function listAssignedJobs(technicianId) {
 function assignJob(id, technicianId) {
   const job = jobs.get(id);
   if (!job) return undefined;
+  if (!ASSIGNABLE_STATUSES.includes(job.status)) return { conflict: true, job };
   job.technicianId = technicianId;
   job.status = 'Assigned';
   return job;
