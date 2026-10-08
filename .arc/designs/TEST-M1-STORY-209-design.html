@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-209 — Register on webpage</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json defines a single brand hue (color-primary, purple) and
+    no semantic success/error/danger color alias. Invalid fields and error banners below are
+    never signalled by color alone — every one pairs a "⚠" icon and explicit text ("Error: …")
+    with the border/accent color, and the success confirmation pairs a "✓" icon with its text.
+    All rules compose existing tokens only; no literal colors are introduced. The 44px tap
+    target floor on checkboxes/toggle buttons and the auth-card max-width are layout mechanics
+    (not design decisions) needed to satisfy the 360px/touch-target baseline.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Auth shell (no app nav — pre-authentication screen) ---------- */
+  .auth-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: var(--space-4);
+  }
+  .auth-card {
+    width: min(92vw, 440px);
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4) calc(var(--space-4) * 1.25);
+  }
+  .auth-brand {
+    text-align: center;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+  }
+  .auth-header { margin-bottom: var(--space-4); }
+  .auth-header h1 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .auth-header p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-fg-muted);
+    margin: 0;
+  }
+
+  /* ---------- Form ---------- */
+  .field-hint {
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+  }
+  .field-error {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin: var(--space-1) 0 0 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+  .field-error[hidden] { display: none; }
+  .input.input-invalid { border-color: var(--color-primary); border-width: 2px; }
+
+  .password-row { position: relative; }
+  .password-row .input { padding-right: calc(var(--space-4) * 3); min-height: 44px; }
+  .password-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-fg-muted);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+  }
+  .password-toggle:hover { color: var(--color-fg); }
+
+  .terms-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) 0;
+  }
+  .terms-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    margin-top: 2px;
+    accent-color: var(--color-primary);
+  }
+  .terms-row label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    cursor: pointer;
+  }
+
+  #submit-btn { width: 100%; min-height: 44px; }
+  #submit-btn[disabled] { opacity: 0.75; cursor: not-allowed; }
+
+  .form-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin-bottom: var(--space-4);
+  }
+  .form-banner[hidden] { display: none; }
+  .form-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+
+  /* ---------- Confirmation screen ---------- */
+  .confirm-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin: 0 auto var(--space-4) auto;
+  }
+  .confirm-summary {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+  .confirm-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) 0;
+  }
+  .confirm-summary-row dt { color: var(--color-fg-muted); margin: 0; }
+  .confirm-summary-row dd { color: var(--color-fg); margin: 0; font-weight: var(--font-weight-bold); text-align: right; word-break: break-all; }
+  .confirm-actions { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-4); }
+  .confirm-actions .btn { width: 100%; min-height: 44px; }
+  .link-btn {
+    background: none; border: none; padding: var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline; min-height: 44px;
+  }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary);
+    border-left-width: var(--space-1);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg);
+    margin: var(--space-4) auto 0 auto;
+    width: min(92vw, 440px);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-bg);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+
+  .input:focus-visible, .btn:focus-visible, .password-toggle:focus-visible,
+  .link-btn:focus-visible, .demo-note-actions button:focus-visible,
+  .terms-row input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<!-- App nav: none — this is a pre-authentication screen reached before any account exists, so
+     there is no signed-in app shell (topbar/sidebar) to show yet; that nav is designed in
+     whichever story covers the signed-in experience.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - AC1 ("a new user account is created"): there is no real backend here, so creation is
+         simulated by pushing the submitted name/email into an in-memory "accounts" list after a
+         simulated network delay. To make that observable, trying to register again with an
+         email already in that list (including one just created in this session) produces the
+         same "account already exists" error as the two seeded fixture accounts — proving the
+         first submission really did persist something.
+       - AC2 ("they see a confirmation that their registration was successful"): success
+         navigates to a dedicated confirmation screen (not just a toast) that restates the
+         action by name ("Registration successful") and echoes back the name/email just
+         submitted, per the baseline rule that a "Create account" action produces a "created"
+         confirmation using the same vocabulary.
+       - Validation is inline per-field (kept, not cleared, on error) plus one form-level banner
+         reserved for the server-side case (duplicate email) that can't be known until submit.
+       - "Go to sign in" on the confirmation screen is shown for flow completeness (a real app
+         would send a new user there) but sign-in itself is a different story, so it opens a
+         toast explaining that boundary instead of a fake navigation.
+       - The "Reviewer tooling" panel on the form is scaffolding for this review only; it does
+         not ship in the real app. -->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;font-family:var(--font-sans)">
+    <span style="font-family:var(--font-mono);color:var(--muted)">TEST-M1-STORY-209</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Inline fixture data: accounts that already exist, used to demonstrate the
+       "email already registered" error without a real backend. -->
+  <script id="fixture-accounts" type="application/json">
+  [
+    { "name": "Jordan Price", "email": "jordan.price@example.com" },
+    { "name": "Alicia Monroe", "email": "alicia.monroe@example.com" }
+  ]
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: Create account
+         Notes:
+           - Default state is a blank form. Submitting with invalid data shows inline, specific
+             field errors and keeps everything the user typed.
+           - Submitting valid, non-duplicate data disables/relabels the button ("Creating
+             account…") for a simulated delay, then advances to the Registration confirmed
+             screen (AC1, AC2).
+           - Submitting an email already in the accounts list shows a form-level banner instead
+             of creating a second account.
+    -->
+    <div class="screen" data-name="Create account">
+      <div class="auth-wrap">
+        <div style="width:100%; display:flex; flex-direction:column; align-items:center;">
+          <div class="auth-card">
+            <p class="auth-brand">Fixly</p>
+            <div class="auth-header">
+              <h1>Create your account</h1>
+              <p>Register to start requesting and tracking repairs.</p>
+            </div>
+
+            <div aria-live="polite" class="u-sr-only" id="form-live-region"></div>
+
+            <!-- State: duplicate-email-error (form-level, only known after submit) -->
+            <div class="form-banner" id="form-error-banner" role="alert" hidden>
+              <span class="icon" aria-hidden="true">⚠</span>
+              <span id="form-error-text"></span>
+            </div>
+
+            <!-- State: default (empty form) -->
+            <form id="register-form" novalidate>
+              <div class="field">
+                <label class="label" for="reg-name">Full name</label>
+                <input class="input" type="text" id="reg-name" name="name" autocomplete="name" />
+                <!-- State: validation-error -->
+                <p class="field-error" id="err-name" hidden><span aria-hidden="true">⚠</span><span>Error: enter your full name.</span></p>
+              </div>
+
+              <div class="field">
+                <label class="label" for="reg-email">Email address</label>
+                <input class="input" type="email" id="reg-email" name="email" autocomplete="email" />
+                <p class="field-error" id="err-email" hidden><span aria-hidden="true">⚠</span><span>Error: enter a valid email address.</span></p>
+              </div>
+
+              <div class="field">
+                <label class="label" for="reg-password">Password</label>
+                <div class="password-row">
+                  <input class="input" type="password" id="reg-password" name="password" autocomplete="new-password" aria-describedby="hint-password" />
+                  <button type="button" class="password-toggle" id="toggle-password" aria-pressed="false">Show</button>
+                </div>
+                <p class="field-hint" id="hint-password">At least 8 characters, including a number.</p>
+                <p class="field-error" id="err-password" hidden><span aria-hidden="true">⚠</span><span>Error: password must be at least 8 characters and include a number.</span></p>
+              </div>
+
+              <div class="field">
+                <label class="label" for="reg-confirm-password">Confirm password</label>
+                <div class="password-row">
+                  <input class="input" type="password" id="reg-confirm-password" name="confirmPassword" autocomplete="new-password" />
+                  <button type="button" class="password-toggle" id="toggle-confirm-password" aria-pressed="false">Show</button>
+                </div>
+                <p class="field-error" id="err-confirm-password" hidden><span aria-hidden="true">⚠</span><span>Error: passwords don't match.</span></p>
+              </div>
+
+              <div class="field">
+                <div class="terms-row">
+                  <input type="checkbox" id="reg-terms" name="terms" />
+                  <label for="reg-terms">I agree to the Terms of Service and Privacy Policy.</label>
+                </div>
+                <p class="field-error" id="err-terms" hidden><span aria-hidden="true">⚠</span><span>Error: you must agree to the terms to continue.</span></p>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="submit-btn">Create account</button>
+            </form>
+          </div>
+
+          <div class="demo-note">
+            <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+            <p style="margin:0;">Jump straight to a given form state.</p>
+            <div class="demo-note-actions">
+              <button type="button" id="demo-valid">Preview: valid submission → success</button>
+              <button type="button" id="demo-invalid">Preview: validation errors</button>
+              <button type="button" id="demo-duplicate">Preview: duplicate email error</button>
+              <button type="button" id="demo-reset">Reset form</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Registration confirmed
+         Notes:
+           - Reached only after a successful submission; restates the submitted name/email so
+             the user can verify what was created (AC2).
+           - "Go to sign in" is scaffolding — sign-in is a different story, so it shows a toast
+             rather than a fake navigation.
+    -->
+    <div class="screen" data-name="Registration confirmed">
+      <div class="auth-wrap">
+        <div style="width:100%; display:flex; flex-direction:column; align-items:center;">
+          <div class="auth-card" style="text-align:center;">
+            <div class="confirm-icon" aria-hidden="true">✓</div>
+            <div class="auth-header" style="text-align:center;">
+              <h1>Registration successful</h1>
+              <p>Your account has been created. Welcome aboard!</p>
+            </div>
+
+            <dl class="confirm-summary">
+              <div class="confirm-summary-row">
+                <dt>Name</dt>
+                <dd id="confirm-name"></dd>
+              </div>
+              <div class="confirm-summary-row">
+                <dt>Email</dt>
+                <dd id="confirm-email"></dd>
+              </div>
+            </dl>
+
+            <div class="confirm-actions">
+              <button type="button" class="btn btn-primary" id="go-to-signin">Go to sign in</button>
+              <button type="button" class="link-btn" id="back-to-form">Register another account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="scope-toast" role="status" hidden>
+        Sign-in isn't part of this prototype — shown here for flow completeness only.
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const FIXTURE_ACCOUNTS = JSON.parse(document.getElementById('fixture-accounts').textContent);
+  const accounts = FIXTURE_ACCOUNTS.slice(); // mutable, simulates account creation persisting
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const PASSWORD_RE = /^(?=.*[0-9]).{8,}$/;
+
+  const form = document.getElementById('register-form');
+  const nameEl = document.getElementById('reg-name');
+  const emailEl = document.getElementById('reg-email');
+  const passwordEl = document.getElementById('reg-password');
+  const confirmEl = document.getElementById('reg-confirm-password');
+  const termsEl = document.getElementById('reg-terms');
+  const submitBtn = document.getElementById('submit-btn');
+  const formErrorBanner = document.getElementById('form-error-banner');
+  const formErrorText = document.getElementById('form-error-text');
+  const liveRegion = document.getElementById('form-live-region');
+
+  const fieldErrors = {
+    name: document.getElementById('err-name'),
+    email: document.getElementById('err-email'),
+    password: document.getElementById('err-password'),
+    confirmPassword: document.getElementById('err-confirm-password'),
+    terms: document.getElementById('err-terms'),
+  };
+  const fieldInputs = {
+    name: nameEl,
+    email: emailEl,
+    password: passwordEl,
+    confirmPassword: confirmEl,
+    terms: termsEl,
+  };
+
+  function setFieldError(key, show) {
+    fieldErrors[key].hidden = !show;
+    const input = fieldInputs[key];
+    if (key !== 'terms') {
+      input.classList.toggle('input-invalid', show);
+      input.setAttribute('aria-invalid', show ? 'true' : 'false');
+    }
+  }
+
+  function clearErrors() {
+    Object.keys(fieldErrors).forEach((key) => setFieldError(key, false));
+    formErrorBanner.hidden = true;
+  }
+
+  function validate() {
+    clearErrors();
+    let firstInvalid = null;
+    let valid = true;
+
+    if (!nameEl.value.trim()) {
+      setFieldError('name', true);
+      valid = false;
+      firstInvalid = firstInvalid || nameEl;
+    }
+    if (!EMAIL_RE.test(emailEl.value.trim())) {
+      setFieldError('email', true);
+      valid = false;
+      firstInvalid = firstInvalid || emailEl;
+    }
+    if (!PASSWORD_RE.test(passwordEl.value)) {
+      setFieldError('password', true);
+      valid = false;
+      firstInvalid = firstInvalid || passwordEl;
+    }
+    if (confirmEl.value !== passwordEl.value || !confirmEl.value) {
+      setFieldError('confirmPassword', true);
+      valid = false;
+      firstInvalid = firstInvalid || confirmEl;
+    }
+    if (!termsEl.checked) {
+      setFieldError('terms', true);
+      valid = false;
+      firstInvalid = firstInvalid || termsEl;
+    }
+
+    if (!valid && firstInvalid) firstInvalid.focus();
+    return valid;
+  }
+
+  // State: submitting (loading) — button disables and relabels while the simulated
+  // account-creation request is in flight.
+  function setSubmitting(isSubmitting) {
+    submitBtn.disabled = isSubmitting;
+    submitBtn.textContent = isSubmitting ? 'Creating account…' : 'Create account';
+  }
+
+  function showConfirmation(name, email) {
+    document.getElementById('confirm-name').textContent = name;
+    document.getElementById('confirm-email').textContent = email;
+    show(1);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!validate()) {
+      liveRegion.textContent = 'There are errors in the form. Please review the fields above.';
+      return;
+    }
+
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
+
+    setSubmitting(true);
+    liveRegion.textContent = 'Creating your account…';
+
+    setTimeout(() => {
+      const exists = accounts.some((a) => a.email.toLowerCase() === email.toLowerCase());
+      if (exists) {
+        setSubmitting(false);
+        formErrorText.textContent = 'An account with this email address already exists. Try a different email.';
+        formErrorBanner.hidden = false;
+        liveRegion.textContent = 'An account with this email address already exists.';
+        emailEl.focus();
+        return;
+      }
+
+      accounts.push({ name, email });
+      setSubmitting(false);
+      liveRegion.textContent = 'Registration successful.';
+      showConfirmation(name, email);
+    }, 300);
+  });
+
+  document.getElementById('toggle-password').addEventListener('click', function () {
+    const showing = passwordEl.type === 'text';
+    passwordEl.type = showing ? 'password' : 'text';
+    this.textContent = showing ? 'Show' : 'Hide';
+    this.setAttribute('aria-pressed', String(!showing));
+  });
+  document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+    const showing = confirmEl.type === 'text';
+    confirmEl.type = showing ? 'password' : 'text';
+    this.textContent = showing ? 'Show' : 'Hide';
+    this.setAttribute('aria-pressed', String(!showing));
+  });
+
+  document.getElementById('back-to-form').addEventListener('click', () => {
+    form.reset();
+    clearErrors();
+    show(0);
+    nameEl.focus();
+  });
+
+  const scopeToast = document.getElementById('scope-toast');
+  let toastTimer;
+  document.getElementById('go-to-signin').addEventListener('click', () => {
+    scopeToast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { scopeToast.hidden = true; }, 3200);
+  });
+
+  // ---------- Reviewer tooling ----------
+  document.getElementById('demo-reset').addEventListener('click', () => {
+    form.reset();
+    clearErrors();
+    setSubmitting(false);
+  });
+
+  document.getElementById('demo-invalid').addEventListener('click', () => {
+    show(0);
+    form.reset();
+    emailEl.value = 'not-an-email';
+    passwordEl.value = 'short';
+    confirmEl.value = 'mismatch';
+    validate();
+  });
+
+  document.getElementById('demo-duplicate').addEventListener('click', () => {
+    show(0);
+    form.reset();
+    clearErrors();
+    nameEl.value = 'Sam Whitaker';
+    emailEl.value = 'jordan.price@example.com';
+    passwordEl.value = 'Password1';
+    confirmEl.value = 'Password1';
+    termsEl.checked = true;
+    form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+
+  document.getElementById('demo-valid').addEventListener('click', () => {
+    show(0);
+    form.reset();
+    clearErrors();
+    nameEl.value = 'Taylor Reed';
+    emailEl.value = 'taylor.reed+' + Date.now() + '@example.com';
+    passwordEl.value = 'Password1';
+    confirmEl.value = 'Password1';
+    termsEl.checked = true;
+    form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
