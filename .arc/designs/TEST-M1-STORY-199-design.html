@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-199 — Browse Services &amp; Submit Repair Request</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has one brand hue (color-primary, purple) and no
+    semantic success/warning/danger colors. Validation errors never rely on color alone — every
+    invalid field pairs a "!" icon with text, and the summary banner reuses the same
+    icon+border treatment as other stories in this project (primary-colored left border, not a
+    new red). The "no technician available yet" notice is intentionally NOT styled as an error
+    (per AC7 it must not read as a rejection): it reuses the neutral card/border tokens instead
+    of the primary-colored error treatment, with an "i" icon + label so the distinction doesn't
+    depend on color. No literal colors are introduced anywhere below; every rule composes
+    existing tokens only.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .app-topbar.internal { background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .internal-tag {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: 2px var(--space-2); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .link-btn {
+    background: none; border: none; padding: var(--space-1) var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .link-btn:focus-visible, .photo-add-btn:focus-visible,
+  .category-card button:focus-visible, .photo-remove:focus-visible, .demo-note-actions button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Category browse grid (AC1) ---------- */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-4);
+  }
+  .category-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .category-card .cat-icon { font-size: 1.75rem; line-height: 1; }
+  .category-card .cat-meta {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .category-card .btn { margin-top: auto; align-self: flex-start; }
+
+  /* ---------- Form layout ---------- */
+  .form-section { margin-bottom: var(--space-4); border: none; padding: 0; min-width: 0; }
+  .form-section legend, .form-section .legend {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); padding: 0; margin: 0 0 var(--space-3) 0; width: 100%;
+  }
+  .form-section .hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .form-row { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-3); }
+  @media (min-width: 560px) { .form-row.two-col { grid-template-columns: 1fr 1fr; } }
+  .form-row:last-child { margin-bottom: 0; }
+  .required-mark { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .optional-tag { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); font-size: var(--font-size-sm); }
+
+  .input.invalid, select.input.invalid, textarea.input.invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: flex-start; gap: var(--space-1); margin-top: var(--space-1);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); font-weight: var(--font-weight-bold);
+  }
+  .field-error .icon { color: var(--color-primary); }
+
+  textarea.input { resize: vertical; min-height: 96px; font-family: var(--font-family-base); }
+
+  /* ---------- Neutral "notice" box (never styled as an error) ---------- */
+  .notice {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+    margin-top: var(--space-2);
+  }
+  .notice .icon {
+    display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 20px;
+    border: 1px solid var(--color-fg-muted); border-radius: 50%; font-weight: var(--font-weight-bold); color: var(--color-fg-muted); font-size: 12px;
+  }
+  .notice strong { color: var(--color-fg); }
+
+  /* ---------- Error summary banner ---------- */
+  .state-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-primary); border-left-width: var(--space-1);
+    border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: var(--space-4);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner ul { margin: var(--space-2) 0 0 0; padding-left: 1.1em; }
+  .state-banner li + li { margin-top: var(--space-1); }
+  .state-banner button.link-btn { padding: 0; font-size: inherit; }
+
+  /* ---------- Photos ---------- */
+  .photo-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+  .photo-thumb {
+    position: relative; width: 88px; height: 88px; border-radius: var(--radius-md); overflow: hidden;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-remove {
+    position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; min-width: 0; min-height: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 50%;
+    background: var(--color-bg); color: var(--color-fg); border: 1px solid var(--color-border);
+    cursor: pointer; font-size: 13px; line-height: 1; padding: 0;
+  }
+  .photo-remove:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .photo-add-btn {
+    width: 88px; height: 88px; border-radius: var(--radius-md); border: 2px dashed var(--color-border);
+    background: none; color: var(--color-fg-muted); cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  }
+  .photo-add-btn:hover { border-color: var(--color-primary); color: var(--color-fg); }
+  .photo-add-btn .icon { font-size: 1.25rem; }
+  .photo-empty-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  /* ---------- Submit bar ---------- */
+  .submit-bar { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+  .submit-bar .btn[disabled] { opacity: 0.7; cursor: not-allowed; }
+
+  /* ---------- Status chip (shape + icon + label, never color alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); white-space: nowrap; background: var(--color-surface);
+    border: 1px solid var(--color-primary); color: var(--color-fg);
+  }
+
+  /* ---------- Confirmation screen ---------- */
+  .confirm-icon { font-size: 2.25rem; display: block; margin-bottom: var(--space-2); }
+  .confirm-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-4) 0; }
+  @media (min-width: 560px) { .confirm-grid { grid-template-columns: 1fr 1fr; } }
+  .confirm-field dt {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .confirm-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+  .confirm-field { margin: 0; }
+
+  /* ---------- Admin dispatch queue ---------- */
+  .queue-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
+  }
+  .queue-row:last-child { border-bottom: none; }
+  .queue-row.just-added { animation: row-flash 1.8s ease-out; }
+  @keyframes row-flash { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  .queue-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; flex: 1 1 260px; }
+  .queue-row-title { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .queue-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .queue-row-sub { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .queue-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); flex: 0 0 auto; }
+  .unstaffed-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 2px var(--space-2);
+  }
+
+  /* ---------- Empty state ---------- */
+  .empty-state { text-align: center; padding: var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note {
+    display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-surface);
+    border: 1px solid var(--color-primary); border-left-width: var(--space-1); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px; padding: var(--space-1) var(--space-3); background: var(--color-bg); color: var(--color-fg-muted);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — "Fixly" (customer-facing), single destination "Browse services" since
+     this story's scope is browse + booking only (no "My requests" / account area yet — cancelling
+     or editing an existing request is explicitly excluded from this story). The Admin Dispatch
+     Queue screen uses a visually distinct, muted "internal" top bar to make clear it belongs to a
+     different persona (dispatcher), not the customer app; it exists only so a reviewer can see
+     AC6/AC7 land somewhere, not as a designed admin feature (technician assignment is excluded).
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - AC2 (fields adapt to category): change "Service category" on the booking form and the
+         "About the job" section re-renders with that category's own question set (e.g. Plumbing
+         asks for the fixture; Appliance repair asks for the appliance type and brand). This is
+         driven by one CATEGORIES fixture array edited in the <script> block — swap in real
+         catalog metadata later without touching the form markup.
+       - AC3/AC5 (photos optional): "Add photos" uses a real file input + FileReader so a reviewer
+         can attach actual images and see real thumbnails; nothing is uploaded anywhere.
+       - AC4 (validation): description, time window, and service address are required; leaving any
+         blank on submit shows a summary banner (role="alert", focus moves to it) listing exactly
+         the missing fields, each jumping to and focusing that field, plus an inline "! This field
+         is required" message under every blank field. Never color-only — every invalid field pairs
+         a bold "!" icon + text.
+       - AC7 (no technician available ≠ rejected): the Evening (5–8pm) window is marked unstaffed
+         in fixture data. Choosing it shows a neutral "i" notice under the field — not an error —
+         and submission still succeeds; the resulting dispatch-queue row carries a matching neutral
+         "No technician available yet" badge alongside status Pending, never a rejection state.
+       - AC6: every successful submission is pushed to the top of the Admin Dispatch Queue fixture
+         list with status "Pending" and a "just added" highlight, viewable via the confirmation
+         screen's "Preview: admin dispatch queue" reviewer link.
+-->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-199</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <div id="screens">
+
+    <!-- Screen: Browse Services
+         Notes:
+           - AC1: the Service Catalog's categories render as a read-only grid — no edit/add/delete
+             affordances anywhere on this screen, since catalog management is out of scope.
+           - Each card's "Request this service" jumps to the booking form with that category
+             pre-selected; AC2 is demonstrated on the booking form itself since the category
+             selector lives there too (a customer can also change category after arriving).
+    -->
+    <div class="screen" data-name="Browse Services">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Browse services</h1>
+          <p>Pick what's going on and submit a repair request in a couple of minutes — no phone call needed.</p>
+        </div>
+
+        <div class="category-grid" id="category-grid"></div>
+      </div>
+    </div>
+
+    <!-- Screen: Booking Form
+         Notes:
+           - Default state on arrival shows an empty, unsubmitted form. Use the reviewer tooling
+             panel to preview the validation-error state or a filled example with photos.
+           - "About the job" fields are entirely driven by the selected category's metadata — try
+             switching categories to see the question set change (AC2).
+           - Submitting with description, time window, and address filled (photos optional)
+             succeeds (AC3). Leaving any of those three blank and submitting shows the error
+             summary plus inline field errors (AC4). Attaching photos before submitting carries
+             them through to the confirmation screen (AC5).
+    -->
+    <div class="screen" data-name="Booking Form">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-browse">← Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>New repair request</h1>
+          <p>Fields marked <span class="required-mark">*</span> are required.</p>
+        </div>
+
+        <div class="card">
+          <form id="booking-form" novalidate>
+            <div id="form-error-summary" tabindex="-1"></div>
+
+            <div class="form-section">
+              <label class="label" for="category-select" style="font-size:var(--font-size-md);margin-bottom:var(--space-3);">Service category <span class="required-mark">*</span></label>
+              <select class="input" id="category-select">
+                <option value="">Choose a category…</option>
+              </select>
+              <p class="field-error" id="category-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a service category.</p>
+            </div>
+
+            <fieldset class="form-section" id="dynamic-fields-section">
+              <legend class="legend">About the job</legend>
+              <div id="dynamic-fields"></div>
+            </fieldset>
+
+            <div class="form-section">
+              <label class="label" for="description">What's going on? <span class="required-mark">*</span></label>
+              <textarea class="input" id="description" placeholder="" aria-required="true"></textarea>
+              <p class="field-error" id="description-error" hidden><span class="icon" aria-hidden="true">!</span> Describe the problem so the technician knows what to expect.</p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend class="legend">Preferred time window <span class="required-mark">*</span></legend>
+              <p class="hint">We'll confirm the exact appointment once a technician is assigned.</p>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="preferred-date">Date</label>
+                  <input class="input" type="date" id="preferred-date" aria-required="true" />
+                </div>
+                <div>
+                  <label class="label" for="time-window">Time window</label>
+                  <select class="input" id="time-window" aria-required="true">
+                    <option value="">Choose a window…</option>
+                  </select>
+                </div>
+              </div>
+              <p class="field-error" id="time-window-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a date and a preferred time window.</p>
+              <div id="unstaffed-notice" hidden></div>
+            </fieldset>
+
+            <fieldset class="form-section">
+              <legend class="legend">Service address <span class="required-mark">*</span></legend>
+              <div class="form-row">
+                <div>
+                  <label class="label" for="addr-street">Street address</label>
+                  <input class="input" type="text" id="addr-street" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="addr-unit">Apt / unit <span class="optional-tag">(optional)</span></label>
+                  <input class="input" type="text" id="addr-unit" />
+                </div>
+                <div>
+                  <label class="label" for="addr-city">City</label>
+                  <input class="input" type="text" id="addr-city" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="addr-state">State</label>
+                  <input class="input" type="text" id="addr-state" maxlength="2" placeholder="e.g. CA" />
+                </div>
+                <div>
+                  <label class="label" for="addr-zip">ZIP code</label>
+                  <input class="input" type="text" id="addr-zip" inputmode="numeric" />
+                </div>
+              </div>
+              <p class="field-error" id="address-error" hidden><span class="icon" aria-hidden="true">!</span> Enter the street address, city, state, and ZIP code.</p>
+            </fieldset>
+
+            <div class="form-section">
+              <p class="legend">Photos <span class="optional-tag">(optional)</span></p>
+              <p class="hint">Add photos to help the technician understand the issue before they arrive.</p>
+              <div class="photo-grid" id="photo-grid"></div>
+              <p class="photo-empty-hint" id="photo-empty-hint">No photos added yet.</p>
+              <input type="file" id="photo-input" accept="image/*" multiple hidden />
+            </div>
+
+            <div class="submit-bar">
+              <button type="submit" class="btn btn-primary" id="submit-btn">Submit request</button>
+              <span class="u-text-sm u-text-muted" id="submit-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Preview the form in different states.</p>
+          <div class="demo-note-actions">
+            <button type="button" id="demo-fill-valid">Fill valid example (no photos)</button>
+            <button type="button" id="demo-fill-with-photos">Fill valid example + 2 photos</button>
+            <button type="button" id="demo-fill-unstaffed">Fill example in an unstaffed window</button>
+            <button type="button" id="demo-trigger-error">Preview: validation error</button>
+            <button type="button" id="demo-clear-form">Clear form</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Request Submitted
+         Notes:
+           - Shown immediately after a successful submission (AC3/AC5). Summarizes exactly what
+             was submitted, including the photo count when photos were attached.
+           - If the chosen window had no technician available, a neutral "still in the queue" note
+             appears here too — matching the booking form's notice, never styled as an error (AC7).
+           - "View admin dispatch queue" is reviewer-only scaffolding (a real customer never sees
+             the internal queue) so you can confirm the request landed there with status Pending.
+    -->
+    <div class="screen" data-name="Request Submitted">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-browse-2">← Browse services</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="card">
+          <span class="confirm-icon" aria-hidden="true">✓</span>
+          <h1 class="card-title">Request submitted</h1>
+          <p class="card-body">A dispatcher will match you with a technician. You'll be notified as soon as your appointment is confirmed.</p>
+
+          <dl class="confirm-grid">
+            <div class="confirm-field"><dt>Request ID</dt><dd id="conf-id"></dd></div>
+            <div class="confirm-field"><dt>Status</dt><dd><span class="status-chip"><span aria-hidden="true">●</span> Pending</span></dd></div>
+            <div class="confirm-field"><dt>Service category</dt><dd id="conf-category"></dd></div>
+            <div class="confirm-field"><dt>Preferred time</dt><dd id="conf-time"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Service address</dt><dd id="conf-address"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Description</dt><dd id="conf-description"></dd></div>
+            <div class="confirm-field"><dt>Photos</dt><dd id="conf-photos"></dd></div>
+          </dl>
+
+          <div id="conf-unstaffed-notice"></div>
+
+          <div class="submit-bar">
+            <button type="button" class="btn btn-primary" id="submit-another">Submit another request</button>
+          </div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Confirm this request reached dispatch (AC6/AC7).</p>
+          <div class="demo-note-actions">
+            <button type="button" id="view-admin-queue">View admin dispatch queue →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Admin Dispatch Queue (internal preview)
+         Notes:
+           - Minimal, read-only preview of the queue a dispatcher sees — enough to prove AC6/AC7,
+             not a full admin feature (technician assignment is out of scope for this story).
+           - Starts with two pre-existing fixture requests; every successful submission from the
+             booking form is prepended here with status Pending and a brief highlight.
+           - A request whose preferred window has no technician available still shows status
+             Pending, plus a neutral "No technician available yet" badge — it is never rejected.
+    -->
+    <div class="screen" data-name="Admin Dispatch Queue">
+      <div class="app-topbar internal">
+        <span class="brand">Fixly</span>
+        <span class="internal-tag">Internal — Dispatcher view</span>
+        <div class="app-topbar-right">
+          <button type="button" class="link-btn" id="back-to-browse-3">← Back to customer app</button>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Dispatch queue</h1>
+          <p>Repair requests submitted by customers, newest first.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">All requests</h3>
+          <div id="queue-list"></div>
+          <div class="empty-state" id="queue-empty" hidden>
+            <span class="icon" aria-hidden="true">🗒️</span>
+            <p>No repair requests yet. Once a customer submits one, it'll show up here as Pending.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const CATEGORIES = [
+    {
+      id: 'plumbing', name: 'Plumbing', icon: '🚰',
+      description: 'Leaks, clogs, water heaters, and fixture repairs.',
+      duration: 'Typically 45–90 min on site',
+      fields: [
+        { id: 'issueType', label: "What's the issue?", type: 'select', options: ['Leak', 'Clog', 'No hot water', 'Running toilet', 'Other'] },
+        { id: 'fixture', label: 'Which fixture is affected?', type: 'select', options: ['Sink', 'Toilet', 'Water heater', 'Shower / tub', 'Other'] }
+      ]
+    },
+    {
+      id: 'electrical', name: 'Electrical', icon: '💡',
+      description: 'Outlets, breakers, lighting, and wiring concerns.',
+      duration: 'Typically 30–75 min on site',
+      fields: [
+        { id: 'issueType', label: "What's the issue?", type: 'select', options: ['Outlet not working', 'Breaker trips repeatedly', 'Flickering lights', 'Exposed wiring', 'Other'] },
+        { id: 'room', label: 'Which room is affected?', type: 'text', placeholder: 'e.g. Kitchen, garage' }
+      ]
+    },
+    {
+      id: 'hvac', name: 'Heating & cooling', icon: '🌡️',
+      description: 'Furnaces, air conditioners, heat pumps, and thermostats.',
+      duration: 'Typically 60–120 min on site',
+      fields: [
+        { id: 'systemType', label: 'System type', type: 'select', options: ['Furnace', 'Central air conditioner', 'Heat pump', 'Mini-split', 'Other'] },
+        { id: 'issueType', label: "What's happening?", type: 'select', options: ['Not heating', 'Not cooling', 'Strange noise', 'Thermostat issue', 'Other'] }
+      ]
+    },
+    {
+      id: 'appliance', name: 'Appliance repair', icon: '🧺',
+      description: 'Refrigerators, washers, dryers, ovens, and dishwashers.',
+      duration: 'Typically 45–90 min on site',
+      fields: [
+        { id: 'applianceType', label: 'Appliance type', type: 'select', options: ['Refrigerator', 'Washer', 'Dryer', 'Oven / range', 'Dishwasher', 'Other'] },
+        { id: 'brand', label: 'Brand', type: 'text', placeholder: 'e.g. Whirlpool (optional)', optional: true }
+      ]
+    },
+    {
+      id: 'handyman', name: 'General handyman', icon: '🛠️',
+      description: 'Drywall, furniture assembly, painting, and small repairs.',
+      duration: 'Typically 30–90 min on site',
+      fields: [
+        { id: 'taskType', label: 'Task type', type: 'select', options: ['Drywall repair', 'Furniture assembly', 'Painting', 'Door / window repair', 'Other'] }
+      ]
+    }
+  ];
+
+  const TIME_WINDOWS = [
+    { id: 'morning', label: 'Morning (8am–11am)', staffed: true },
+    { id: 'midday', label: 'Midday (11am–2pm)', staffed: true },
+    { id: 'afternoon', label: 'Afternoon (2pm–5pm)', staffed: true },
+    { id: 'evening', label: 'Evening (5pm–8pm)', staffed: false }
+  ];
+
+  let queueCounter = 1032;
+  const ADMIN_QUEUE = [
+    {
+      id: 'REQ-1031', categoryId: 'hvac', categoryName: 'Heating & cooling',
+      timeLabel: 'Oct 9, Morning (8am–11am)', address: '14 Birchwood Ln, Austin, TX 78701',
+      submittedAt: '2026-10-07T14:20:00', staffed: true, status: 'Pending'
+    },
+    {
+      id: 'REQ-1028', categoryId: 'plumbing', categoryName: 'Plumbing',
+      timeLabel: 'Oct 9, Evening (5pm–8pm)', address: '902 Maple Ave, Austin, TX 78702',
+      submittedAt: '2026-10-07T09:05:00', staffed: false, status: 'Pending'
+    }
+  ];
+
+  // ---------- State ----------
+  let photos = [];
+  let lastSubmission = null;
+  let justAddedQueueId = null;
+
+  // ---------- Helpers ----------
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+      ' at ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function categoryById(id) { return CATEGORIES.find((c) => c.id === id); }
+  function windowById(id) { return TIME_WINDOWS.find((w) => w.id === id); }
+
+  // ---------- Browse screen (AC1) ----------
+  const categoryGrid = document.getElementById('category-grid');
+  categoryGrid.innerHTML = CATEGORIES.map((c) => (
+    '<div class="card category-card">' +
+      '<span class="cat-icon" aria-hidden="true">' + c.icon + '</span>' +
+      '<h3 class="card-title" style="margin-bottom:0;">' + c.name + '</h3>' +
+      '<p class="card-body">' + c.description + '</p>' +
+      '<p class="cat-meta">' + c.duration + '</p>' +
+      '<button type="button" class="btn btn-secondary" data-request-category="' + c.id + '">Request this service →</button>' +
+    '</div>'
+  )).join('');
+  categoryGrid.querySelectorAll('[data-request-category]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      goToBooking(btn.dataset.requestCategory);
+    });
+  });
+
+  // ---------- Booking form ----------
+  const categorySelect = document.getElementById('category-select');
+  CATEGORIES.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.icon + ' ' + c.name;
+    categorySelect.appendChild(opt);
+  });
+
+  const timeWindowSelect = document.getElementById('time-window');
+  TIME_WINDOWS.forEach((w) => {
+    const opt = document.createElement('option');
+    opt.value = w.id;
+    opt.textContent = w.label;
+    timeWindowSelect.appendChild(opt);
+  });
+
+  const dynamicFieldsEl = document.getElementById('dynamic-fields');
+
+  function renderDynamicFields(categoryId) {
+    const category = categoryById(categoryId);
+    if (!category) {
+      dynamicFieldsEl.innerHTML = '<p class="hint" style="margin:0;">Choose a service category above to see the questions for your job.</p>';
+      return;
+    }
+    dynamicFieldsEl.innerHTML = category.fields.map((f) => {
+      const req = f.optional ? '<span class="optional-tag">(optional)</span>' : '<span class="required-mark">*</span>';
+      if (f.type === 'select') {
+        const options = ['<option value="">Choose…</option>'].concat(
+          f.options.map((o) => '<option value="' + escapeHTML(o) + '">' + escapeHTML(o) + '</option>')
+        ).join('');
+        return (
+          '<div class="form-row">' +
+            '<div>' +
+              '<label class="label" for="dyn-' + f.id + '">' + f.label + ' ' + req + '</label>' +
+              '<select class="input" id="dyn-' + f.id + '" data-dyn-field="' + f.id + '" data-dyn-required="' + (!f.optional) + '" data-dyn-label="' + escapeHTML(f.label) + '">' + options + '</select>' +
+              '<p class="field-error" id="dyn-' + f.id + '-error" hidden><span class="icon" aria-hidden="true">!</span> ' + f.label + ' is required.</p>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+      return (
+        '<div class="form-row">' +
+          '<div>' +
+            '<label class="label" for="dyn-' + f.id + '">' + f.label + ' ' + req + '</label>' +
+            '<input class="input" type="text" id="dyn-' + f.id + '" data-dyn-field="' + f.id + '" data-dyn-required="' + (!f.optional) + '" data-dyn-label="' + escapeHTML(f.label) + '" placeholder="' + (f.placeholder || '') + '" />' +
+            '<p class="field-error" id="dyn-' + f.id + '-error" hidden><span class="icon" aria-hidden="true">!</span> ' + f.label + ' is required.</p>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+    category.fields.forEach((f) => {
+      const input = document.getElementById('dyn-' + f.id);
+      if (input) input.addEventListener(f.type === 'select' ? 'change' : 'input', () => setDynFieldError(f.id, false));
+    });
+  }
+
+  categorySelect.addEventListener('change', () => {
+    renderDynamicFields(categorySelect.value);
+    clearFieldError('category');
+  });
+  renderDynamicFields('');
+
+  // ---------- Unstaffed window notice (AC7, non-blocking) ----------
+  const unstaffedNotice = document.getElementById('unstaffed-notice');
+  function updateUnstaffedNotice() {
+    const w = windowById(timeWindowSelect.value);
+    if (w && !w.staffed) {
+      unstaffedNotice.hidden = false;
+      unstaffedNotice.innerHTML =
+        '<div class="notice"><span class="icon" aria-hidden="true">i</span>' +
+        '<span><strong>No technician is currently available</strong> for this window. You can still submit — your request will be queued and assigned as soon as one opens up.</span></div>';
+    } else {
+      unstaffedNotice.hidden = true;
+      unstaffedNotice.innerHTML = '';
+    }
+  }
+  timeWindowSelect.addEventListener('change', () => { updateUnstaffedNotice(); clearFieldError('time-window'); });
+  document.getElementById('preferred-date').addEventListener('input', () => clearFieldError('time-window'));
+  document.getElementById('description').addEventListener('input', () => clearFieldError('description'));
+  ['addr-street', 'addr-city', 'addr-state', 'addr-zip'].forEach((id) => {
+    document.getElementById(id).addEventListener('input', () => clearFieldError('address'));
+  });
+
+  // ---------- Photos (AC3 optional / AC5 included) ----------
+  const photoInput = document.getElementById('photo-input');
+  const photoGrid = document.getElementById('photo-grid');
+  const photoEmptyHint = document.getElementById('photo-empty-hint');
+  const MAX_PHOTOS = 6;
+
+  function renderPhotos() {
+    photoEmptyHint.hidden = photos.length > 0;
+    const addBtnHTML = photos.length < MAX_PHOTOS
+      ? '<button type="button" class="photo-add-btn" id="photo-add-btn"><span class="icon" aria-hidden="true">+</span>Add photo</button>'
+      : '';
+    photoGrid.innerHTML = photos.map((p, i) => (
+      '<div class="photo-thumb">' +
+        '<img src="' + p.url + '" alt="Attached photo ' + (i + 1) + ': ' + escapeHTML(p.name) + '" />' +
+        '<button type="button" class="photo-remove" data-remove-index="' + i + '" aria-label="Remove photo ' + (i + 1) + '">✕</button>' +
+      '</div>'
+    )).join('') + addBtnHTML;
+
+    const addBtn = document.getElementById('photo-add-btn');
+    if (addBtn) addBtn.addEventListener('click', () => photoInput.click());
+    photoGrid.querySelectorAll('[data-remove-index]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.removeIndex);
+        URL.revokeObjectURL(photos[idx].url);
+        photos.splice(idx, 1);
+        renderPhotos();
+      });
+    });
+  }
+  renderPhotos();
+
+  photoInput.addEventListener('change', () => {
+    Array.from(photoInput.files).slice(0, MAX_PHOTOS - photos.length).forEach((file) => {
+      photos.push({ name: file.name, url: URL.createObjectURL(file) });
+    });
+    photoInput.value = '';
+    renderPhotos();
+  });
+
+  // Placeholder thumbnails for the reviewer "fill example" demo buttons (no real files picked).
+  function addDemoPhoto(label, color) {
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88">' +
+      '<rect width="88" height="88" fill="' + color + '"/>' +
+      '<text x="50%" y="50%" fill="#ffffff" font-family="sans-serif" font-size="11" text-anchor="middle" dominant-baseline="middle">' + label + '</text></svg>';
+    photos.push({ name: label + '.jpg', url: 'data:image/svg+xml;utf8,' + encodeURIComponent(svg) });
+  }
+
+  // ---------- Validation (AC4) ----------
+  function setFieldError(key, show) {
+    const errEl = document.getElementById(key + '-error');
+    const inputIds = {
+      'category': ['category-select'],
+      'description': ['description'],
+      'time-window': ['preferred-date', 'time-window'],
+      'address': ['addr-street', 'addr-city', 'addr-state', 'addr-zip']
+    };
+    if (errEl) errEl.hidden = !show;
+    (inputIds[key] || []).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('invalid', show);
+      if (el) el.setAttribute('aria-invalid', show ? 'true' : 'false');
+    });
+  }
+  function clearFieldError(key) { setFieldError(key, false); }
+
+  function setDynFieldError(fieldId, show) {
+    const input = document.getElementById('dyn-' + fieldId);
+    const errEl = document.getElementById('dyn-' + fieldId + '-error');
+    if (input) { input.classList.toggle('invalid', show); input.setAttribute('aria-invalid', show ? 'true' : 'false'); }
+    if (errEl) errEl.hidden = !show;
+  }
+
+  function validateForm() {
+    const missing = [];
+    const categoryId = categorySelect.value;
+
+    if (!categoryId) {
+      missing.push({ key: 'category', label: 'Service category', focusId: 'category-select' });
+    }
+    setFieldError('category', !categoryId);
+
+    const category = categoryById(categoryId);
+    if (category) {
+      category.fields.forEach((f) => {
+        if (f.optional) { setDynFieldError(f.id, false); return; }
+        const input = document.getElementById('dyn-' + f.id);
+        const empty = !input || !input.value.trim();
+        setDynFieldError(f.id, empty);
+        if (empty) missing.push({ key: 'dyn-' + f.id, label: f.label, focusId: 'dyn-' + f.id });
+      });
+    }
+
+    const description = document.getElementById('description').value.trim();
+    setFieldError('description', !description);
+    if (!description) missing.push({ key: 'description', label: "What's going on?", focusId: 'description' });
+
+    const date = document.getElementById('preferred-date').value;
+    const windowVal = timeWindowSelect.value;
+    const timeMissing = !date || !windowVal;
+    setFieldError('time-window', timeMissing);
+    if (timeMissing) missing.push({ key: 'time-window', label: 'Preferred time window', focusId: date ? 'time-window' : 'preferred-date' });
+
+    const street = document.getElementById('addr-street').value.trim();
+    const city = document.getElementById('addr-city').value.trim();
+    const state = document.getElementById('addr-state').value.trim();
+    const zip = document.getElementById('addr-zip').value.trim();
+    const addressMissing = !street || !city || !state || !zip;
+    setFieldError('address', addressMissing);
+    if (addressMissing) missing.push({ key: 'address', label: 'Service address', focusId: !street ? 'addr-street' : (!city ? 'addr-city' : (!state ? 'addr-state' : 'addr-zip')) });
+
+    return missing;
+  }
+
+  const errorSummaryEl = document.getElementById('form-error-summary');
+  function renderErrorSummary(missing) {
+    if (missing.length === 0) { errorSummaryEl.innerHTML = ''; return; }
+    errorSummaryEl.innerHTML =
+      '<div class="state-banner" role="alert">' +
+        '<span class="icon" aria-hidden="true">!</span>' +
+        '<div><p style="margin:0;font-weight:700;">We couldn\'t submit your request — please fix the following:</p>' +
+          '<ul>' + missing.map((m) => '<li><button type="button" class="link-btn" data-jump-to="' + m.focusId + '">' + escapeHTML(m.label) + '</button></li>').join('') + '</ul>' +
+        '</div>' +
+      '</div>';
+    errorSummaryEl.querySelectorAll('[data-jump-to]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const el = document.getElementById(btn.dataset.jumpTo);
+        if (el) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      });
+    });
+    errorSummaryEl.focus();
+  }
+
+  // ---------- Submit (AC3, AC4, AC5, AC6, AC7) ----------
+  const bookingForm = document.getElementById('booking-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitStatus = document.getElementById('submit-status');
+
+  bookingForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const missing = validateForm();
+    renderErrorSummary(missing);
+    if (missing.length > 0) {
+      submitStatus.textContent = '';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    submitStatus.textContent = '';
+
+    setTimeout(() => {
+      const categoryId = categorySelect.value;
+      const category = categoryById(categoryId);
+      const w = windowById(timeWindowSelect.value);
+      const date = document.getElementById('preferred-date').value;
+      const dateLabel = date ? new Date(date + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+      const address = [
+        document.getElementById('addr-street').value.trim(),
+        document.getElementById('addr-unit').value.trim(),
+        document.getElementById('addr-city').value.trim() + ', ' + document.getElementById('addr-state').value.trim().toUpperCase() + ' ' + document.getElementById('addr-zip').value.trim()
+      ].filter(Boolean).join(', ');
+
+      queueCounter += 1;
+      const requestId = 'REQ-' + queueCounter;
+      const record = {
+        id: requestId,
+        categoryId: category.id,
+        categoryName: category.name,
+        timeLabel: dateLabel + ', ' + w.label,
+        address,
+        description: document.getElementById('description').value.trim(),
+        photoCount: photos.length,
+        submittedAt: new Date().toISOString(),
+        staffed: w.staffed,
+        status: 'Pending'
+      };
+
+      ADMIN_QUEUE.unshift({
+        id: record.id, categoryId: record.categoryId, categoryName: record.categoryName,
+        timeLabel: record.timeLabel, address: record.address, submittedAt: record.submittedAt,
+        staffed: record.staffed, status: 'Pending'
+      });
+      justAddedQueueId = record.id;
+      lastSubmission = record;
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit request';
+
+      renderConfirmation(record);
+      show(2);
+    }, 350);
+  });
+
+  // ---------- Confirmation screen ----------
+  function renderConfirmation(record) {
+    document.getElementById('conf-id').textContent = record.id;
+    document.getElementById('conf-category').textContent = record.categoryName;
+    document.getElementById('conf-time').textContent = record.timeLabel;
+    document.getElementById('conf-address').textContent = record.address;
+    document.getElementById('conf-description').textContent = record.description;
+    document.getElementById('conf-photos').textContent = record.photoCount > 0
+      ? record.photoCount + ' photo' + (record.photoCount === 1 ? '' : 's') + ' attached'
+      : 'No photos attached';
+
+    const noticeEl = document.getElementById('conf-unstaffed-notice');
+    noticeEl.innerHTML = record.staffed ? '' :
+      '<div class="notice"><span class="icon" aria-hidden="true">i</span>' +
+      '<span><strong>Heads up:</strong> no technician is currently free for your requested window. Your request is still in the queue and will be assigned as soon as one opens up.</span></div>';
+  }
+
+  // ---------- Admin dispatch queue (AC6, AC7) ----------
+  const queueListEl = document.getElementById('queue-list');
+  const queueEmptyEl = document.getElementById('queue-empty');
+  function renderQueue() {
+    if (ADMIN_QUEUE.length === 0) {
+      queueListEl.innerHTML = '';
+      queueEmptyEl.hidden = false;
+      return;
+    }
+    queueEmptyEl.hidden = true;
+    queueListEl.innerHTML = ADMIN_QUEUE.map((r) => {
+      const category = categoryById(r.categoryId);
+      const rowClass = r.id === justAddedQueueId ? 'queue-row just-added' : 'queue-row';
+      return (
+        '<div class="' + rowClass + '">' +
+          '<div class="queue-row-main">' +
+            '<span class="queue-row-title">' + (category ? category.icon + ' ' : '') + r.categoryName + '</span>' +
+            '<span class="queue-row-meta">' + r.id + ' · submitted ' + formatDateTime(r.submittedAt) + '</span>' +
+            '<span class="queue-row-sub">' + escapeHTML(r.address) + '</span>' +
+          '</div>' +
+          '<div class="queue-row-right">' +
+            '<span class="status-chip"><span aria-hidden="true">●</span> ' + r.status + '</span>' +
+            '<span class="queue-row-sub">' + r.timeLabel + '</span>' +
+            (r.staffed ? '' : '<span class="unstaffed-badge"><span aria-hidden="true">i</span> No technician available yet</span>') +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  // ---------- Reviewer demo tooling ----------
+  function fillCommonFields() {
+    document.getElementById('preferred-date').value = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10);
+    document.getElementById('addr-street').value = '221 Sunridge Dr';
+    document.getElementById('addr-unit').value = '';
+    document.getElementById('addr-city').value = 'Austin';
+    document.getElementById('addr-state').value = 'TX';
+    document.getElementById('addr-zip').value = '78704';
+    document.getElementById('description').value = 'Kitchen sink has been dripping steadily under the cabinet for two days and the cabinet floor is starting to warp.';
+  }
+
+  function fillDynExample(categoryId) {
+    categorySelect.value = categoryId;
+    renderDynamicFields(categoryId);
+    const category = categoryById(categoryId);
+    category.fields.forEach((f, i) => {
+      const input = document.getElementById('dyn-' + f.id);
+      if (!input) return;
+      if (f.type === 'select') input.value = f.options[0];
+      else input.value = i === 0 ? 'Sample value' : '';
+    });
+  }
+
+  document.getElementById('demo-fill-valid').addEventListener('click', () => {
+    fillDynExample('plumbing');
+    timeWindowSelect.value = 'morning';
+    updateUnstaffedNotice();
+    fillCommonFields();
+    [...document.querySelectorAll('.input')].forEach((el) => el.classList.remove('invalid'));
+    errorSummaryEl.innerHTML = '';
+  });
+
+  document.getElementById('demo-fill-with-photos').addEventListener('click', () => {
+    fillDynExample('appliance');
+    timeWindowSelect.value = 'afternoon';
+    updateUnstaffedNotice();
+    fillCommonFields();
+    document.getElementById('description').value = "Refrigerator isn't cooling below 55°F even on the coldest setting; photos attached of the display and the back vents.";
+    photos = [];
+    addDemoPhoto('Fridge front', '#40325c');
+    addDemoPhoto('Back vents', '#291c3d');
+    renderPhotos();
+    [...document.querySelectorAll('.input')].forEach((el) => el.classList.remove('invalid'));
+    errorSummaryEl.innerHTML = '';
+  });
+
+  document.getElementById('demo-fill-unstaffed').addEventListener('click', () => {
+    fillDynExample('electrical');
+    timeWindowSelect.value = 'evening';
+    updateUnstaffedNotice();
+    fillCommonFields();
+    document.getElementById('description').value = 'The outlet behind the TV stand stopped working and the breaker trips whenever we try to reset it.';
+    [...document.querySelectorAll('.input')].forEach((el) => el.classList.remove('invalid'));
+    errorSummaryEl.innerHTML = '';
+  });
+
+  document.getElementById('demo-trigger-error').addEventListener('click', () => {
+    const missing = validateForm();
+    renderErrorSummary(missing);
+  });
+
+  document.getElementById('demo-clear-form').addEventListener('click', () => {
+    bookingForm.reset();
+    categorySelect.value = '';
+    renderDynamicFields('');
+    updateUnstaffedNotice();
+    photos.forEach((p) => URL.revokeObjectURL(p.url));
+    photos = [];
+    renderPhotos();
+    errorSummaryEl.innerHTML = '';
+    [...document.querySelectorAll('.input')].forEach((el) => el.classList.remove('invalid'));
+    document.querySelectorAll('.field-error').forEach((el) => { el.hidden = true; });
+  });
+
+  // ---------- Navigation ----------
+  function goToBooking(categoryId) {
+    bookingForm.reset();
+    photos.forEach((p) => URL.revokeObjectURL(p.url));
+    photos = [];
+    renderPhotos();
+    errorSummaryEl.innerHTML = '';
+    document.querySelectorAll('.field-error').forEach((el) => { el.hidden = true; });
+    [...document.querySelectorAll('.input')].forEach((el) => el.classList.remove('invalid'));
+    categorySelect.value = categoryId || '';
+    renderDynamicFields(categoryId || '');
+    updateUnstaffedNotice();
+    show(1);
+  }
+
+  document.getElementById('back-to-browse').addEventListener('click', (e) => { e.preventDefault(); show(0); });
+  document.getElementById('back-to-browse-2').addEventListener('click', (e) => { e.preventDefault(); show(0); });
+  document.getElementById('back-to-browse-3').addEventListener('click', (e) => { e.preventDefault(); show(0); });
+  document.getElementById('submit-another').addEventListener('click', () => goToBooking(''));
+  document.getElementById('view-admin-queue').addEventListener('click', () => { renderQueue(); show(3); });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    if (cur === 3) renderQueue();
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes((document.activeElement || {}).tagName)) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
