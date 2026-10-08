@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fixly — My Requests</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/my-requests.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/my-requests.js" defer></script>
+</head>
+<body class="u-surface">
+  <div id="screens">
+    <div class="screen" data-name="My Requests">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line">Signed in as Jordan Avery</span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1>My requests</h1>
+            <span class="request-count" id="request-count"></span>
+          </div>
+          <p>Track a request's status, or edit and cancel it while it's still waiting to be assigned.</p>
+        </div>
+        <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+        <div id="list-loading">
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:60%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:80%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:50%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+        </div>
+        <div class="state-banner" id="list-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your requests right now. Check your connection and try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+          </div>
+        </div>
+        <div class="empty-state" id="request-list-empty" hidden>
+          <span class="icon" aria-hidden="true">🗒️</span>
+          <p>You haven't submitted any repair requests yet. Once you do, it'll show up here so you can track, edit, or cancel it.</p>
+        </div>
+        <div id="request-list"></div>
+      </div>
+    </div>
+    <div class="screen" data-name="Request Detail">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-list">← My requests</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div id="detail-rejection-banner"></div>
+        <div class="empty-state" id="detail-denied" hidden>
+          <span class="icon" aria-hidden="true">🔒</span>
+          <p><strong>This repair request isn't associated with your account.</strong><br />Double-check the link, or go back to your own requests.</p>
+          <button type="button" class="btn btn-secondary" id="denied-back-btn">Back to my requests</button>
+        </div>
+        <div class="card" id="detail-content" hidden>
+          <div class="request-card-head">
+            <h1 class="card-title" id="detail-category" style="margin-bottom:0;"></h1>
+            <span id="detail-status-chip"></span>
+          </div>
+          <dl class="confirm-grid">
+            <div class="confirm-field"><dt>Request ID</dt><dd id="detail-id"></dd></div>
+            <div class="confirm-field"><dt>Submitted</dt><dd id="detail-submitted"></dd></div>
+            <div class="confirm-field"><dt>Preferred time</dt><dd id="detail-time"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Service address</dt><dd id="detail-address"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Description</dt><dd id="detail-description"></dd></div>
+          </dl>
+          <div id="detail-locked-notice"></div>
+          <div id="detail-cancelled-notice"></div>
+          <div class="submit-bar" id="detail-actions"></div>
+        </div>
+      </div>
+    </div>
+    <div class="screen" data-name="Edit Request">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-detail">← Back to request</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Edit repair request</h1>
+          <p>Fields marked <span class="required-mark">*</span> are required. Editing <strong id="edit-request-id"></strong>.</p>
+        </div>
+        <div class="card">
+          <form id="edit-form" novalidate>
+            <div id="edit-error-summary" tabindex="-1"></div>
+            <div class="form-section">
+              <label class="label" for="edit-category">Service category <span class="required-mark">*</span></label>
+              <select class="input" id="edit-category"></select>
+            </div>
+            <div class="form-section">
+              <label class="label" for="edit-description">What's going on? <span class="required-mark">*</span></label>
+              <textarea class="input" id="edit-description" aria-required="true"></textarea>
+              <p class="field-error" id="edit-description-error" hidden><span class="icon" aria-hidden="true">!</span> Describe the problem so the technician knows what to expect.</p>
+            </div>
+            <fieldset class="form-section">
+              <legend class="legend">Preferred time window <span class="required-mark">*</span></legend>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-date">Date</label>
+                  <input class="input" type="date" id="edit-date" aria-required="true" />
+                </div>
+                <div>
+                  <label class="label" for="edit-window">Time window</label>
+                  <select class="input" id="edit-window" aria-required="true"></select>
+                </div>
+              </div>
+              <p class="field-error" id="edit-time-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a date and a preferred time window.</p>
+            </fieldset>
+            <fieldset class="form-section">
+              <legend class="legend">Service address <span class="required-mark">*</span></legend>
+              <div class="form-row">
+                <div>
+                  <label class="label" for="edit-addr-street">Street address</label>
+                  <input class="input" type="text" id="edit-addr-street" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-addr-unit">Apt / unit <span class="u-text-muted">(optional)</span></label>
+                  <input class="input" type="text" id="edit-addr-unit" />
+                </div>
+                <div>
+                  <label class="label" for="edit-addr-city">City</label>
+                  <input class="input" type="text" id="edit-addr-city" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-addr-state">State</label>
+                  <input class="input" type="text" id="edit-addr-state" maxlength="2" placeholder="e.g. TX" />
+                </div>
+                <div>
+                  <label class="label" for="edit-addr-zip">ZIP code</label>
+                  <input class="input" type="text" id="edit-addr-zip" inputmode="numeric" />
+                </div>
+              </div>
+              <p class="field-error" id="edit-address-error" hidden><span class="icon" aria-hidden="true">!</span> Enter the street address, city, state, and ZIP code.</p>
+            </fieldset>
+            <div class="submit-bar">
+              <button type="submit" class="btn btn-primary" id="edit-submit-btn">Save changes</button>
+              <button type="button" class="btn btn-secondary" id="edit-discard-btn">Discard changes</button>
+              <span class="u-text-sm u-text-muted" id="edit-submit-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="cancel-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="cancel-modal-wrap" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="cancel-modal-title">Cancel this repair request?</h2>
+          <p>This can't be undone. You'll need to submit a new request if you still need service.</p>
+        </div>
+        <button type="button" class="icon-btn" id="cancel-modal-close" aria-label="Close dialog">✕</button>
+      </div>
+      <p class="u-text-md" id="cancel-modal-summary" style="margin:0;"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-modal-keep">Keep request</button>
+        <button type="button" class="btn btn-primary" id="cancel-modal-confirm">Cancel request</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+</body>
+</html>
