@@ -4,7 +4,9 @@ const app = require('../src/server');
 const base = { phone: '555-0100', department: 'Engineering', role: 'Engineer', startDate: '2026-11-01' };
 
 async function makeHire(overrides) {
-  const res = await request(app).post('/hires').set('x-staff-role', 'hr').send({ ...base, email: 'a@example.com', name: 'Test Hire', ...overrides });
+  const { tenant, ...fields } = overrides;
+  const res = await request(app).post('/hires').set('x-staff-role', 'hr').set('x-tenant', tenant || 'Acme Corp')
+    .send({ ...base, email: 'a@example.com', name: 'Test Hire', ...fields });
   return res.body;
 }
 const as = (req, role, name, extra = {}) => {
@@ -47,6 +49,47 @@ test('mutations across tenants are forbidden', async () => {
   expect(res.body).toEqual({ error: 'forbidden', reason: 'cross_tenant' });
   expect((await as(request(app).post(`/hires/${globex.id}/deactivate`), 'hr')).status).toBe(403);
   expect((await as(request(app).post(`/hires/${globex.id}/reactivate`), 'hr')).status).toBe(403);
+});
+
+test('AC9: a manager cannot edit, deactivate or reactivate a profile that is not their direct report', async () => {
+  const hire = await makeHire({ hiringManager: 'Dana Brooks' });
+  const patch = await as(request(app).patch(`/hires/${hire.id}`), 'manager', 'Marcus Chen').send({ department: 'Product' });
+  expect(patch.status).toBe(403);
+  expect(patch.body).toEqual({ error: 'forbidden', reason: 'not_direct_report' });
+  expect((await as(request(app).post(`/hires/${hire.id}/deactivate`), 'manager', 'Marcus Chen')).status).toBe(403);
+  expect((await as(request(app).post(`/hires/${hire.id}/reactivate`), 'manager', 'Marcus Chen')).status).toBe(403);
+  const after = await as(request(app).get(`/hires/${hire.id}`), 'hr', 'Priya Shah');
+  expect(after.body).toMatchObject({ department: 'Engineering', profileStatus: 'active' });
+});
+
+test('AC9: a manager cannot reassign themselves as hiring manager of someone else\'s report', async () => {
+  const hire = await makeHire({ hiringManager: 'Dana Brooks' });
+  const res = await as(request(app).patch(`/hires/${hire.id}`), 'manager', 'Marcus Chen').send({ hiringManager: 'Marcus Chen' });
+  expect(res.status).toBe(403);
+  expect((await as(request(app).get(`/hires/${hire.id}`), 'manager', 'Marcus Chen')).status).toBe(403);
+});
+
+test('a manager cannot hand off their own direct report, but can edit it', async () => {
+  const hire = await makeHire({ hiringManager: 'Dana Brooks' });
+  const handoff = await as(request(app).patch(`/hires/${hire.id}`), 'manager', 'Dana Brooks').send({ hiringManager: 'Elena Vance' });
+  expect(handoff.status).toBe(403);
+  expect(handoff.body.reason).toBe('manager_cannot_reassign');
+  const edit = await as(request(app).patch(`/hires/${hire.id}`), 'manager', 'Dana Brooks').send({ department: 'Product' });
+  expect(edit.status).toBe(200);
+});
+
+test('a new hire cannot edit, deactivate or create profiles', async () => {
+  const hire = await makeHire({});
+  const nh = (r) => as(r, 'new_hire', 'Test Hire', { hireId: hire.id });
+  expect((await nh(request(app).patch(`/hires/${hire.id}`)).send({ department: 'Product' })).status).toBe(403);
+  expect((await nh(request(app).post(`/hires/${hire.id}/deactivate`))).status).toBe(403);
+  expect((await nh(request(app).post('/hires')).send({ ...base, name: 'X', email: 'x@example.com' })).status).toBe(403);
+});
+
+test('create stamps the actor tenant, ignoring a body-supplied tenant', async () => {
+  const res = await as(request(app).post('/hires'), 'hr', 'Priya Shah').send({ ...base, name: 'X', email: 'x@example.com', tenant: 'Globex Corp' });
+  expect(res.status).toBe(201);
+  expect(res.body.tenant).toBe('Acme Corp');
 });
 
 test('AC4: manager list shows only current direct reports', async () => {
