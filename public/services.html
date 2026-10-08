@@ -31,7 +31,7 @@
       </div>
       <div class="page">
         <div class="page-header">
-          <h1>Browse services</h1>
+          <h1 tabindex="-1">Browse services</h1>
           <p>Pick what's going on and submit a repair request in a couple of minutes — no phone call needed.</p>
         </div>
 
@@ -59,7 +59,7 @@
       </div>
       <div class="page">
         <div class="page-header">
-          <h1>New repair request</h1>
+          <h1 tabindex="-1">New repair request</h1>
           <p>Fields marked <span class="required-mark">*</span> are required.</p>
         </div>
 
@@ -69,7 +69,7 @@
 
             <div class="form-section">
               <label class="label" for="category-select" style="font-size:var(--font-size-md);margin-bottom:var(--space-3);">Service category <span class="required-mark">*</span></label>
-              <select class="input" id="category-select">
+              <select class="input" id="category-select" aria-describedby="category-error">
                 <option value="">Choose a category…</option>
               </select>
               <p class="field-error" id="category-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a service category.</p>
@@ -82,7 +82,7 @@
 
             <div class="form-section">
               <label class="label" for="description">What's going on? <span class="required-mark">*</span></label>
-              <textarea class="input" id="description" placeholder="" aria-required="true"></textarea>
+              <textarea class="input" id="description" placeholder="" aria-required="true" aria-describedby="description-error"></textarea>
               <p class="field-error" id="description-error" hidden><span class="icon" aria-hidden="true">!</span> Describe the problem so the technician knows what to expect.</p>
             </div>
 
@@ -92,17 +92,17 @@
               <div class="form-row two-col">
                 <div>
                   <label class="label" for="preferred-date">Date</label>
-                  <input class="input" type="date" id="preferred-date" aria-required="true" />
+                  <input class="input" type="date" id="preferred-date" aria-required="true" aria-describedby="time-window-error" />
                 </div>
                 <div>
                   <label class="label" for="time-window">Time window</label>
-                  <select class="input" id="time-window" aria-required="true">
+                  <select class="input" id="time-window" aria-required="true" aria-describedby="time-window-error">
                     <option value="">Choose a window…</option>
                   </select>
                 </div>
               </div>
               <p class="field-error" id="time-window-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a date and a preferred time window.</p>
-              <div id="unstaffed-notice" hidden></div>
+              <div id="unstaffed-notice" role="status"></div>
             </fieldset>
 
             <fieldset class="form-section">
@@ -110,7 +110,7 @@
               <div class="form-row">
                 <div>
                   <label class="label" for="addr-street">Street address</label>
-                  <input class="input" type="text" id="addr-street" />
+                  <input class="input" type="text" id="addr-street" aria-describedby="address-error" />
                 </div>
               </div>
               <div class="form-row two-col">
@@ -120,17 +120,17 @@
                 </div>
                 <div>
                   <label class="label" for="addr-city">City</label>
-                  <input class="input" type="text" id="addr-city" />
+                  <input class="input" type="text" id="addr-city" aria-describedby="address-error" />
                 </div>
               </div>
               <div class="form-row two-col">
                 <div>
                   <label class="label" for="addr-state">State</label>
-                  <input class="input" type="text" id="addr-state" maxlength="2" placeholder="e.g. CA" />
+                  <input class="input" type="text" id="addr-state" maxlength="2" placeholder="e.g. CA" aria-describedby="address-error" />
                 </div>
                 <div>
                   <label class="label" for="addr-zip">ZIP code</label>
-                  <input class="input" type="text" id="addr-zip" inputmode="numeric" />
+                  <input class="input" type="text" id="addr-zip" inputmode="numeric" aria-describedby="address-error" />
                 </div>
               </div>
               <p class="field-error" id="address-error" hidden><span class="icon" aria-hidden="true">!</span> Enter the street address, city, state, and ZIP code.</p>
@@ -172,7 +172,7 @@
       <div class="page">
         <div class="card">
           <span class="confirm-icon" aria-hidden="true">✓</span>
-          <h1 class="card-title">Request submitted</h1>
+          <h1 class="card-title" tabindex="-1">Request submitted</h1>
           <p class="card-body">A dispatcher will match you with a technician. You'll be notified as soon as your appointment is confirmed.</p>
 
           <dl class="confirm-grid">
@@ -185,7 +185,7 @@
             <div class="confirm-field"><dt>Photos</dt><dd id="conf-photos"></dd></div>
           </dl>
 
-          <div id="conf-unstaffed-notice"></div>
+          <div id="conf-unstaffed-notice" role="status"></div>
 
           <div class="submit-bar">
             <button type="button" class="btn btn-primary" id="submit-another">Submit another request</button>
@@ -213,7 +213,7 @@
       </div>
       <div class="page">
         <div class="page-header">
-          <h1>Dispatch queue</h1>
+          <h1 tabindex="-1">Dispatch queue</h1>
           <p>Repair requests submitted by customers, newest first.</p>
         </div>
 

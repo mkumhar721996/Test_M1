@@ -25,7 +25,7 @@ app.use('/guests', guestsRouter);
 app.use('/rooms', roomsRouter);
 app.use('/defects', defectsRouter);
 app.use('/service-catalog', serviceCatalogRouter);
-app.use('/repair-requests', repairRequestsRouter);
+app.use('/repair-requests', requestMetrics, repairRequestsRouter);
 app.use('/leave', requestMetrics, leaveRouter);
 
 app.use(errorHandler);

@@ -33,7 +33,7 @@ test('AC5: photos are included', async () => {
 
 test('AC6: submitted request appears first in the dispatch queue as Pending', async () => {
   const created = await request(app).post('/repair-requests').send(validPayload);
-  const queue = await request(app).get('/repair-requests');
+  const queue = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
   expect(queue.status).toBe(200);
   expect(queue.body[0]).toMatchObject({ id: created.body.id, status: 'Pending' });
 });
@@ -45,16 +45,22 @@ test('AC7: unstaffed window is still accepted as Pending', async () => {
   expect(res.body.staffed).toBe(false);
 });
 
-test('dispatch queue has no auth boundary, matching the unauthenticated catalog route', async () => {
+test('dispatch queue requires a dispatcher role: anonymous is 401, wrong role is 403', async () => {
   await request(app).post('/repair-requests').send(validPayload);
-  expect((await request(app).get('/repair-requests')).status).toBe(200);
+  expect((await request(app).get('/repair-requests')).status).toBe(401);
+  expect((await request(app).get('/repair-requests').set('x-staff-role', 'hr')).status).toBe(403);
 });
 
-test('dispatch queue stays reachable in production, since no dispatcher identity exists', async () => {
+test('customers can still submit without any role header', async () => {
+  const res = await request(app).post('/repair-requests').send(validPayload);
+  expect(res.status).toBe(201);
+});
+
+test('dispatch queue stays reachable in production with the dispatcher header, unlike a prod-locked gate', async () => {
   const original = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
   try {
-    const res = await request(app).get('/repair-requests');
+    const res = await request(app).get('/repair-requests').set('x-staff-role', 'dispatcher');
     expect(res.status).toBe(200);
   } finally {
     process.env.NODE_ENV = original;

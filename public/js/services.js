@@ -67,6 +67,8 @@
 
     function show(index) {
       screens.forEach((s, i) => { s.style.display = i === index ? 'block' : 'none'; });
+      const heading = screens[index].querySelector('h1');
+      if (heading) heading.focus();
     }
 
     // ---------- Browse (AC1) ----------
@@ -143,7 +145,7 @@
       }
       dynamicFieldsEl.innerHTML = category.fields.map((f) => {
         const mark = f.optional ? '<span class="optional-tag">(optional)</span>' : '<span class="required-mark">*</span>';
-        const attrs = `id="dyn-${esc(f.id)}" data-dyn-field="${esc(f.id)}"`;
+        const attrs = `id="dyn-${esc(f.id)}" data-dyn-field="${esc(f.id)}" aria-describedby="dyn-${esc(f.id)}-error"`;
         const control = f.type === 'select'
           ? `<select class="input" ${attrs}><option value="">Choose…</option>${f.options.map((o) => `<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select>`
           : `<input class="input" type="text" ${attrs} placeholder="${esc(f.placeholder || '')}" />`;
@@ -167,7 +169,6 @@
     function updateUnstaffedNotice() {
       const w = windowById(timeWindowSelect.value);
       const unstaffed = Boolean(w) && !w.staffed;
-      unstaffedNotice.hidden = !unstaffed;
       unstaffedNotice.innerHTML = unstaffed ? UNSTAFFED_FORM_NOTICE : '';
     }
 
@@ -194,9 +195,15 @@
       if (add) add.addEventListener('click', () => photoInput.click());
       photoGrid.querySelectorAll('[data-remove-index]').forEach((btn) => {
         btn.addEventListener('click', () => {
-          const [removed] = photos.splice(Number(btn.dataset.removeIndex), 1);
+          const index = Number(btn.dataset.removeIndex);
+          const [removed] = photos.splice(index, 1);
           if (removed.url && win.URL.revokeObjectURL) win.URL.revokeObjectURL(removed.url);
           renderPhotos();
+          const nextFocusIndex = Math.min(index, photos.length - 1);
+          const nextBtn = nextFocusIndex >= 0
+            ? photoGrid.querySelector(`[data-remove-index="${nextFocusIndex}"]`)
+            : null;
+          (nextBtn || $('photo-add-btn')).focus();
         });
       });
     }
@@ -394,8 +401,8 @@
   }
 
   function createDefaultApi() {
-    function request(url, method, body) {
-      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    function request(url, method, body, headers) {
+      const opts = { method, headers: { 'Content-Type': 'application/json', ...headers } };
       if (body !== undefined) opts.body = JSON.stringify(body);
       return fetch(url, opts)
         .then((res) => res.json().catch(() => ({})).then((data) => (
@@ -406,7 +413,10 @@
     return {
       getCatalog: () => request('/service-catalog', 'GET'),
       createRequest: (payload) => request('/repair-requests', 'POST', payload),
-      listQueue: () => request('/repair-requests', 'GET'),
+      // Dispatcher queue preview is reviewer-only scaffolding (no customer ever sees it), so the
+      // role is hardcoded rather than wired to a role switcher, matching guest-profiles.js's
+      // hardcoded 'front_desk' header for its own internal-only reads.
+      listQueue: () => request('/repair-requests', 'GET', undefined, { 'x-staff-role': 'dispatcher' }),
     };
   }
 

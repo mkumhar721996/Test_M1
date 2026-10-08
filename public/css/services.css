@@ -114,6 +114,8 @@
     background: var(--color-bg); color: var(--color-fg); border: 1px solid var(--color-border);
     cursor: pointer; font-size: 13px; line-height: 1; padding: 0;
   }
+  /* Extends the tappable area to ~44px without growing the visible 22px badge. */
+  .photo-remove::after { content: ''; position: absolute; inset: -11px; }
   .photo-remove:hover { border-color: var(--color-primary); color: var(--color-primary); }
   .photo-add-btn {
     width: 88px; height: 88px; border-radius: var(--radius-md); border: 2px dashed var(--color-border);
