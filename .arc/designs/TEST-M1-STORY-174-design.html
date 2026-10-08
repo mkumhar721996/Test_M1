@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-174 — Time Off Request Submission &amp; Cancellation</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /* App nav: top bar — Time Off Requests (single module, no in-place editing per scope) */
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+
+  .page { max-width: 920px; }
+
+  /* Open-decision callout: no dedicated "warning" token exists, so each blocker is
+     distinguished with an explicit icon + "Open decision" label rather than color alone. */
+  .decision-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    background: var(--card-default-background);
+    border: 1px solid var(--card-default-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .decision-banner .icon { font-size: var(--font-size-lg); line-height: 1; }
+  .decision-banner .tag {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    display: inline-block;
+    margin-bottom: var(--space-2);
+  }
+  .decision-banner h3 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-1) 0;
+  }
+  .decision-banner p {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .decision-banner .decision-item + .decision-item { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--card-default-border); }
+
+  .demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: flex-end;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .demo-controls .demo-label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted);
+    width: 100%;
+  }
+  .demo-controls .field-mini { display: flex; flex-direction: column; gap: var(--space-1); min-width: 200px; }
+  .demo-controls .field-mini label {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+  }
+
+  .balance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .balance-card .balance-amount { font-family: var(--font-family-base); font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .balance-card .balance-amount small { font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); color: var(--color-fg-muted); }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .section-heading h2 {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    margin: 0;
+  }
+
+  table.requests-table { width: 100%; border-collapse: collapse; }
+  table.requests-table th, table.requests-table td {
+    text-align: left;
+    padding: var(--space-3);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  table.requests-table th {
+    color: var(--color-fg-muted);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+  }
+  table.requests-table td.col-actions { text-align: right; white-space: nowrap; }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+  }
+  .status-chip--pending { border: 1px dashed var(--color-fg-muted); color: var(--color-fg-muted); }
+  .status-chip--approved { border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip--cancelled { border: 1px solid var(--color-border); color: var(--color-fg-muted); text-decoration: line-through; }
+
+  .flag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary);
+    color: var(--color-fg);
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    margin-left: var(--space-2);
+  }
+
+  .empty-state, .error-state {
+    text-align: center;
+    padding: var(--space-4) var(--space-4);
+  }
+  .empty-state p, .error-state p { color: var(--color-fg-muted); font-family: var(--font-family-base); max-width: 48ch; margin: var(--space-2) auto var(--space-3) auto; }
+  .empty-state .icon, .error-state .icon { font-size: 2rem; }
+
+  .skeleton-row td { padding: var(--space-3); }
+  .skeleton-bar {
+    height: 14px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+  .inline-note { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin-top: var(--space-1); }
+  .inline-error { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); background: var(--color-surface); border: 1px solid var(--color-primary); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); margin-top: var(--space-2); display: flex; gap: var(--space-2); align-items: flex-start; }
+  .inline-warning { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); background: var(--color-surface); border: 1px dashed var(--color-fg-muted); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); margin-top: var(--space-2); display: flex; gap: var(--space-2); align-items: flex-start; }
+
+  .summary-panel { text-align: center; padding: var(--space-4); }
+  .summary-panel .icon { font-size: 2.25rem; }
+
+  .back-link { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--color-fg-muted); font-family: var(--font-family-base); font-size: var(--font-size-sm); text-decoration: none; margin-bottom: var(--space-3); }
+  .back-link:hover { color: var(--color-fg); }
+  .back-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+  .u-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  #review-bar button { color: var(--brand, var(--color-primary)); background: none; border: none; cursor: pointer; font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); padding: var(--space-2) var(--space-3); min-height: 44px; }
+  #review-bar button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+</style>
+</head>
+<body class="u-surface">
+
+<script>
+  // Fixture data — inline, no network. All numbers are "days" (whole-day units).
+  const FIXTURES = {
+    currentUser: { id: 'emp_jordan', name: 'Jordan Avery' },
+    leaveTypes: [
+      { id: 'vacation', name: 'Vacation', total: 15, balance: 12.5 },
+      { id: 'sick', name: 'Sick', total: 10, balance: 6 },
+      { id: 'personal', name: 'Personal', total: 5, balance: 3 }
+    ],
+    requests: [
+      { id: 'REQ-1042', employee: 'Jordan Avery', leaveType: 'vacation', start: '2026-12-22', end: '2026-12-26', days: 5, status: 'pending', exceedsBalance: false },
+      { id: 'REQ-1038', employee: 'Jordan Avery', leaveType: 'sick', start: '2026-11-03', end: '2026-11-03', days: 1, status: 'approved', exceedsBalance: false },
+      { id: 'REQ-1031', employee: 'Jordan Avery', leaveType: 'vacation', start: '2026-10-01', end: '2026-10-02', days: 2, status: 'cancelled', exceedsBalance: false },
+      { id: 'REQ-1019', employee: 'Jordan Avery', leaveType: 'personal', start: '2026-08-14', end: '2026-08-14', days: 1, status: 'approved', exceedsBalance: false },
+      { id: 'REQ-1040', employee: 'Priya Shah', leaveType: 'vacation', start: '2026-12-01', end: '2026-12-03', days: 3, status: 'pending', exceedsBalance: false },
+      { id: 'REQ-1033', employee: 'Devon Ruiz', leaveType: 'sick', start: '2026-10-20', end: '2026-10-21', days: 2, status: 'approved', exceedsBalance: false }
+    ]
+  };
+</script>
+
+<!-- Reviewer bar -->
+<div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:var(--surface,var(--color-surface));border-bottom:1px solid var(--border,var(--color-border));font-size:13px;font-family:var(--font-sans,var(--font-family-base))">
+  <span style="font-family:var(--font-mono,monospace);color:var(--muted,var(--color-fg-muted))">TEST-M1-STORY-174</span>
+  <button id="prev-btn">← Prev</button>
+  <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg,var(--color-fg))"></span>
+  <button id="next-btn">Next →</button>
+</div>
+<div style="height:46px"></div><!-- spacer -->
+
+<div id="screens">
+
+<!-- State: list (default), with loading / error / empty / partial variants reachable via Demo controls
+     Screen: Time Off Requests
+     Notes:
+       - Combined "Open decision" banner surfaces both unresolved blockers from the story
+         without picking a side: (1) who is the actor (employee self-service vs HR/Manager
+         logged-on-behalf), (2) what happens when a request exceeds the remaining balance
+         (blocked outright vs allowed through for review). The "Demo controls" panel lets a
+         reviewer flip each independently and see every downstream screen react — nothing here
+         commits to one answer.
+       - "Signed in as: Employee" shows "My time off requests" (AC4, submitter's own view) with
+         no Employee column. "Signed in as: HR / Manager" shows every employee's requests with
+         an Employee column and relabels the primary action to "Log request for employee"
+         (also AC4 — "the submitter or an HR/Manager views the list").
+       - "List state" simulates loading (skeleton rows), error (retry), empty (first-time
+         employee with no requests yet — invites the primary action), and partial (the table
+         loads fine but the balance summary cards fail — a data view failure that shouldn't
+         block the rest of the page).
+       - Each row's Cancel button opens a confirmation modal whose consequence line is status-
+         aware: pending → "balance is unchanged" (AC2); approved → "N days will be restored"
+         (AC3). A cancelled row keeps its chip but loses the Cancel action — no further action
+         is possible on it, and there is no edit action anywhere (out of scope).
+-->
+<div class="screen" data-name="Time Off Requests">
+  <div class="app-topbar">
+    <span class="brand">Time &amp; Leave</span>
+    <nav class="app-nav">
+      <a href="#" class="active" aria-current="page" onclick="return false;">Time Off Requests</a>
+    </nav>
+  </div>
+  <div class="page">
+    <div class="page-header">
+      <h1 id="list-title">My time off requests</h1>
+      <p id="list-subtitle">Track requests you've submitted and cancel one if your plans change.</p>
+    </div>
+
+    <div class="decision-banner">
+      <span class="icon" aria-hidden="true">⚠</span>
+      <div style="flex:1">
+        <div class="decision-item">
+          <span class="tag">Open decision 1 of 2 — not yet settled by the product owner</span>
+          <h3>Who submits a time-off request: the employee, or HR/Manager on their behalf?</h3>
+          <p>This determines the actor and UI of the whole flow. Use "Signed in as" below to preview both candidate answers — no decision is implied by the current default.</p>
+        </div>
+        <div class="decision-item">
+          <span class="tag">Open decision 2 of 2 — not yet settled by the product owner</span>
+          <h3>Should a request exceeding the remaining balance be blocked outright, or allowed through for review?</h3>
+          <p>Use "If request exceeds balance" below to preview both candidate answers on the New request form.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-controls">
+      <span class="demo-label">Demo controls (not part of the real product)</span>
+      <div class="field-mini">
+        <label for="role-select">Signed in as (open decision)</label>
+        <select class="input" id="role-select" onchange="onRoleChange(this.value)">
+          <option value="employee">Employee (self-service)</option>
+          <option value="hrmanager">HR / Manager (on behalf of employee)</option>
+        </select>
+      </div>
+      <div class="field-mini">
+        <label for="policy-select">If request exceeds balance (open decision)</label>
+        <select class="input" id="policy-select" onchange="onPolicyChange(this.value)">
+          <option value="block">Block at submission</option>
+          <option value="allow">Allow through for review</option>
+        </select>
+      </div>
+      <div class="field-mini">
+        <label for="liststate-select">List state</label>
+        <select class="input" id="liststate-select" onchange="onListStateChange(this.value)">
+          <option value="success">Success (populated)</option>
+          <option value="loading">Loading</option>
+          <option value="error">Error</option>
+          <option value="empty">Empty</option>
+          <option value="partial">Partial (balances fail, table ok)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <h2>Leave balances</h2>
+    </div>
+    <div id="balance-region"></div>
+
+    <div class="section-heading">
+      <h2 id="table-heading">Requests</h2>
+      <button class="btn btn-primary" id="new-request-btn" onclick="openNewRequest()">Request time off</button>
+    </div>
+    <div id="table-region"></div>
+  </div>
+
+  <!-- Cancel confirmation modal -->
+  <div class="modal-overlay" id="cancel-overlay" hidden></div>
+  <div class="modal-wrap" id="cancel-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="cancel-title">Cancel this request?</h2>
+          <p id="cancel-sub"></p>
+        </div>
+        <button class="icon-btn" aria-label="Close" onclick="closeCancelModal()">✕</button>
+      </div>
+      <p id="cancel-consequence" class="u-text-sm"></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeCancelModal()">Keep request</button>
+        <button class="btn btn-primary" id="confirm-cancel-btn" onclick="confirmCancel()">Cancel request</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<!-- State: create form, with validation + success variants
+     Screen: New Time Off Request
+     Notes:
+       - Leave type select shows that type's available balance inline (AC1's "leave type and
+         an available balance"). Start/end date are whole-day only — no time-of-day fields —
+         and a helper line states that explicitly, since half/partial days are out of scope.
+       - Exceeding the balance behaves per the "If request exceeds balance" demo control set on
+         the list screen: "Block" disables Submit with a field-level error naming the shortfall;
+         "Allow" shows a non-blocking warning and still submits, tagging the created request
+         "Exceeds balance" in the list (visible proof the review-path answer is still honored
+         downstream in AC4's list view).
+       - Submitting disables and relabels the button ("Submitting…") before showing a status =
+         Pending confirmation panel (AC1), then "Back to requests" returns to the list with the
+         new row present.
+       - When "Signed in as" is HR/Manager, an Employee field appears above Leave type and the
+         page title changes to "Log time off for an employee" — same form, different actor,
+         per the undecided-actor blocker.
+-->
+<div class="screen" data-name="New Time Off Request">
+  <div class="app-topbar">
+    <span class="brand">Time &amp; Leave</span>
+    <nav class="app-nav">
+      <a href="#" onclick="backToList();return false;">Time Off Requests</a>
+    </nav>
+  </div>
+  <div class="page">
+    <a href="#" class="back-link" onclick="backToList();return false;">← Back to requests</a>
+
+    <div id="form-view">
+      <div class="page-header">
+        <h1 id="form-title">Request time off</h1>
+        <p id="form-subtitle">Pick a leave type and a whole-day date range. Your request starts as Pending until it's reviewed.</p>
+      </div>
+
+      <div class="card u-stack" style="margin-bottom: var(--space-4);">
+        <div class="field" id="employee-field" style="display:none;margin-bottom:0;">
+          <label class="label" for="employee-select">Employee</label>
+          <select class="input" id="employee-select">
+            <option>Jordan Avery</option>
+            <option>Priya Shah</option>
+            <option>Devon Ruiz</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="leavetype-select">Leave type</label>
+          <select class="input" id="leavetype-select" onchange="onFormChange()"></select>
+          <p class="inline-note" id="balance-hint"></p>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="start-date">Start date</label>
+            <input class="input" type="date" id="start-date" onchange="onFormChange()" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label class="label" for="end-date">End date</label>
+            <input class="input" type="date" id="end-date" onchange="onFormChange()" />
+          </div>
+        </div>
+        <p class="inline-note">Whole days only — half-day and partial-day requests aren't supported yet.</p>
+
+        <p class="u-text-sm" id="days-preview"></p>
+        <div id="validation-region"></div>
+      </div>
+
+      <button class="btn btn-primary" id="submit-btn" onclick="submitRequest()">Submit request</button>
+    </div>
+
+    <div id="success-view" style="display:none;">
+      <div class="card summary-panel">
+        <div class="icon" aria-hidden="true">✓</div>
+        <h2 class="card-title">Request submitted</h2>
+        <p class="card-body" id="success-detail"></p>
+        <p class="card-body"><span class="status-chip status-chip--pending">⏳ Pending</span></p>
+        <div style="margin-top: var(--space-4);">
+          <button class="btn btn-primary" onclick="backToList()">Back to requests</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  // ---- Mutable state (resets on page load) ----
+  let leaveTypes = JSON.parse(JSON.stringify(FIXTURES.leaveTypes));
+  let requests = JSON.parse(JSON.stringify(FIXTURES.requests));
+  let role = 'employee';          // 'employee' | 'hrmanager'  (open decision 1)
+  let overBalancePolicy = 'block'; // 'block' | 'allow'         (open decision 2)
+  let listState = 'success';       // success | loading | error | empty | partial
+
+  function leaveTypeById(id) { return leaveTypes.find(lt => lt.id === id); }
+  function fmtDate(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function daysBetween(startIso, endIso) {
+    const s = new Date(startIso + 'T00:00:00');
+    const e = new Date(endIso + 'T00:00:00');
+    return Math.round((e - s) / 86400000) + 1;
+  }
+
+  function showToast(message) {
+    const t = document.getElementById('toast');
+    t.textContent = message;
+    t.hidden = false;
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { t.hidden = true; }, 3200);
+  }
+
+  function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+  // ---- List screen rendering ----
+  function visibleRequests() {
+    return role === 'employee'
+      ? requests.filter(r => r.employee === FIXTURES.currentUser.name)
+      : requests.slice();
+  }
+
+  function onRoleChange(v) {
+    role = v;
+    document.getElementById('list-title').textContent = role === 'employee' ? 'My time off requests' : 'Time off requests — all employees';
+    document.getElementById('list-subtitle').textContent = role === 'employee'
+      ? "Track requests you've submitted and cancel one if your plans change."
+      : 'HR/Manager view: requests submitted on behalf of any employee, grouped across the team.';
+    document.getElementById('new-request-btn').textContent = role === 'employee' ? 'Request time off' : 'Log request for employee';
+    renderTable();
+  }
+
+  function onPolicyChange(v) { overBalancePolicy = v; onFormChange(); }
+
+  function onListStateChange(v) {
+    listState = v;
+    renderBalances();
+    renderTable();
+  }
+
+  function statusChipHtml(status) {
+    if (status === 'pending') return '<span class="status-chip status-chip--pending">⏳ Pending</span>';
+    if (status === 'approved') return '<span class="status-chip status-chip--approved">✓ Approved</span>';
+    return '<span class="status-chip status-chip--cancelled">✕ Cancelled</span>';
+  }
+
+  function renderBalances() {
+    const region = document.getElementById('balance-region');
+    if (listState === 'loading') {
+      region.innerHTML = `<div class="balance-grid">${leaveTypes.map(() => `
+        <div class="card balance-card"><div class="skeleton-bar" style="width:60%;margin-bottom:8px;"></div><div class="skeleton-bar" style="width:40%;"></div></div>`).join('')}</div>`;
+      return;
+    }
+    if (listState === 'partial') {
+      region.innerHTML = `<div class="error-state card">
+        <div class="icon" aria-hidden="true">⚠</div>
+        <p><strong>Balances couldn't load right now.</strong> The requests below are still accurate — try reloading just the balances.</p>
+        <button class="btn btn-secondary" onclick="onListStateChange('success')">Retry balances</button>
+      </div>`;
+      return;
+    }
+    region.innerHTML = `<div class="balance-grid">${leaveTypes.map(lt => `
+      <div class="card balance-card">
+        <p class="u-text-sm u-text-muted" style="margin:0 0 4px 0;">${lt.name}</p>
+        <p class="balance-amount">${lt.balance} <small>/ ${lt.total} days left</small></p>
+      </div>`).join('')}</div>`;
+  }
+
+  function renderTable() {
+    const region = document.getElementById('table-region');
+    const heading = document.getElementById('table-heading');
+
+    if (listState === 'loading') {
+      heading.textContent = 'Requests';
+      region.innerHTML = `<div class="card" style="padding:0;overflow:hidden;">
+        <table class="requests-table"><tbody>
+          ${[1,2,3].map(() => `<tr class="skeleton-row">
+            <td><div class="skeleton-bar" style="width:80px;"></div></td>
+            <td><div class="skeleton-bar" style="width:140px;"></div></td>
+            <td><div class="skeleton-bar" style="width:60px;"></div></td>
+            <td><div class="skeleton-bar" style="width:90px;"></div></td>
+            <td></td>
+          </tr>`).join('')}
+        </tbody></table>
+      </div>`;
+      return;
+    }
+
+    if (listState === 'error') {
+      heading.textContent = 'Requests';
+      region.innerHTML = `<div class="card error-state">
+        <div class="icon" aria-hidden="true">⚠</div>
+        <p><strong>We couldn't load your time off requests.</strong> Check your connection and try again.</p>
+        <button class="btn btn-primary" onclick="onListStateChange('success')">Retry</button>
+      </div>`;
+      return;
+    }
+
+    const rows = visibleRequests();
+
+    if (listState === 'empty' || rows.length === 0) {
+      heading.textContent = 'Requests';
+      region.innerHTML = `<div class="card empty-state">
+        <div class="icon" aria-hidden="true">🗓</div>
+        <p><strong>No time off requests yet.</strong> When you request time off, it'll show up here with its status.</p>
+        <button class="btn btn-primary" onclick="openNewRequest()">${role === 'employee' ? 'Request time off' : 'Log request for employee'}</button>
+      </div>`;
+      return;
+    }
+
+    heading.textContent = `Requests (${rows.length})`;
+    const showEmployee = role === 'hrmanager';
+    region.innerHTML = `<div class="card" style="padding:0;overflow-x:auto;">
+      <table class="requests-table">
+        <thead><tr>
+          ${showEmployee ? '<th scope="col">Employee</th>' : ''}
+          <th scope="col">Leave type</th>
+          <th scope="col">Dates</th>
+          <th scope="col">Days</th>
+          <th scope="col">Status</th>
+          <th scope="col"><span class="u-visually-hidden">Actions</span></th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(r => {
+            const lt = leaveTypeById(r.leaveType);
+            const canCancel = r.status === 'pending' || r.status === 'approved';
+            return `<tr>
+              ${showEmployee ? `<td>${r.employee}</td>` : ''}
+              <td>${lt.name}</td>
+              <td>${fmtDate(r.start)}${r.start !== r.end ? ' – ' + fmtDate(r.end) : ''}</td>
+              <td>${r.days}</td>
+              <td>${statusChipHtml(r.status)}${r.exceedsBalance ? '<span class="flag-chip">Exceeds balance</span>' : ''}</td>
+              <td class="col-actions">${canCancel ? `<button class="btn btn-secondary" onclick="openCancelModal('${r.id}')">Cancel</button>` : '—'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  // ---- Cancel modal ----
+  let cancelTargetId = null;
+  function openCancelModal(id) {
+    cancelTargetId = id;
+    const r = requests.find(x => x.id === id);
+    const lt = leaveTypeById(r.leaveType);
+    document.getElementById('cancel-sub').textContent = `${lt.name} · ${fmtDate(r.start)}${r.start !== r.end ? ' – ' + fmtDate(r.end) : ''} · ${r.days} day${r.days > 1 ? 's' : ''}`;
+    const consequence = document.getElementById('cancel-consequence');
+    if (r.status === 'pending') {
+      consequence.innerHTML = `This request hasn't been approved yet, so cancelling it <strong>won't change</strong> your ${lt.name} balance.`;
+    } else {
+      consequence.innerHTML = `Cancelling this approved request will <strong>restore ${r.days} day${r.days > 1 ? 's' : ''}</strong> to your ${lt.name} balance (new balance: ${lt.balance + r.days} of ${lt.total}).`;
+    }
+    document.getElementById('cancel-overlay').hidden = false;
+    document.getElementById('cancel-wrap').hidden = false;
+    document.getElementById('confirm-cancel-btn').focus();
+  }
+  function closeCancelModal() {
+    document.getElementById('cancel-overlay').hidden = true;
+    document.getElementById('cancel-wrap').hidden = true;
+    cancelTargetId = null;
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !document.getElementById('cancel-wrap').hidden) closeCancelModal();
+  });
+
+  async function confirmCancel() {
+    const btn = document.getElementById('confirm-cancel-btn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Cancelling…';
+    await wait(300);
+    const r = requests.find(x => x.id === cancelTargetId);
+    const wasApproved = r.status === 'approved';
+    const lt = leaveTypeById(r.leaveType);
+    if (wasApproved) lt.balance += r.days;
+    r.status = 'cancelled';
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    closeCancelModal();
+    renderBalances();
+    renderTable();
+    showToast(wasApproved
+      ? `Request cancelled. ${r.days} day${r.days > 1 ? 's' : ''} restored to your ${lt.name} balance.`
+      : `Request cancelled. Your ${lt.name} balance is unchanged.`);
+  }
+
+  // ---- New request form ----
+  // Resets/fills the form so the screen is self-contained and correct whether it's reached
+  // via the "Request time off" button or directly via the reviewer bar's Prev/Next.
+  function resetForm() {
+    document.getElementById('employee-field').style.display = role === 'hrmanager' ? 'block' : 'none';
+    document.getElementById('form-title').textContent = role === 'hrmanager' ? 'Log time off for an employee' : 'Request time off';
+    document.getElementById('form-subtitle').textContent = role === 'hrmanager'
+      ? "Pick the employee, a leave type, and a whole-day date range. It's created as Pending until it's reviewed."
+      : "Pick a leave type and a whole-day date range. Your request starts as Pending until it's reviewed.";
+    const sel = document.getElementById('leavetype-select');
+    sel.innerHTML = leaveTypes.map(lt => `<option value="${lt.id}">${lt.name}</option>`).join('');
+    document.getElementById('start-date').value = '';
+    document.getElementById('end-date').value = '';
+    document.getElementById('form-view').style.display = 'block';
+    document.getElementById('success-view').style.display = 'none';
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').textContent = 'Submit request';
+    onFormChange();
+  }
+  function openNewRequest() {
+    resetForm();
+    show(1);
+  }
+
+  function backToList() {
+    onListStateChange(listState === 'loading' || listState === 'error' ? 'success' : listState);
+    show(0);
+  }
+
+  function currentFormState() {
+    const leaveTypeId = document.getElementById('leavetype-select').value;
+    const start = document.getElementById('start-date').value;
+    const end = document.getElementById('end-date').value;
+    return { leaveTypeId, start, end };
+  }
+
+  function onFormChange() {
+    const { leaveTypeId, start, end } = currentFormState();
+    const lt = leaveTypeById(leaveTypeId);
+    document.getElementById('balance-hint').textContent = lt ? `Available balance: ${lt.balance} of ${lt.total} days` : '';
+
+    const preview = document.getElementById('days-preview');
+    const validation = document.getElementById('validation-region');
+    const submitBtn = document.getElementById('submit-btn');
+    validation.innerHTML = '';
+    submitBtn.disabled = false;
+
+    if (!start || !end) { preview.textContent = ''; return; }
+
+    if (end < start) {
+      preview.textContent = '';
+      validation.innerHTML = `<div class="inline-error"><span aria-hidden="true">⚠</span><span>End date can't be before the start date.</span></div>`;
+      submitBtn.disabled = true;
+      return;
+    }
+
+    const days = daysBetween(start, end);
+    preview.innerHTML = `<strong>${days} day${days > 1 ? 's' : ''}</strong> requested`;
+
+    if (lt && days > lt.balance) {
+      const shortfall = (days - lt.balance);
+      if (overBalancePolicy === 'block') {
+        validation.innerHTML = `<div class="inline-error"><span aria-hidden="true">⚠</span><span>This request is ${shortfall} day${shortfall === 1 ? '' : 's'} more than your available ${lt.name} balance (${lt.balance} days). Reduce the date range or choose a different leave type.</span></div>`;
+        submitBtn.disabled = true;
+      } else {
+        validation.innerHTML = `<div class="inline-warning"><span aria-hidden="true">ℹ</span><span>This request exceeds your available ${lt.name} balance by ${shortfall} day${shortfall === 1 ? '' : 's'}. It will still be submitted as Pending, flagged for review.</span></div>`;
+      }
+    }
+  }
+
+  async function submitRequest() {
+    const { leaveTypeId, start, end } = currentFormState();
+    const lt = leaveTypeById(leaveTypeId);
+    const days = daysBetween(start, end);
+    const exceeds = days > lt.balance;
+    const employeeName = role === 'hrmanager' ? document.getElementById('employee-select').value : FIXTURES.currentUser.name;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    await wait(350);
+
+    const newReq = {
+      id: 'REQ-' + (1042 + requests.length + 1),
+      employee: employeeName,
+      leaveType: leaveTypeId,
+      start, end, days,
+      status: 'pending',
+      exceedsBalance: exceeds
+    };
+    requests.unshift(newReq);
+
+    document.getElementById('success-detail').textContent = `${lt.name} · ${fmtDate(start)}${start !== end ? ' – ' + fmtDate(end) : ''} · ${days} day${days > 1 ? 's' : ''} · for ${employeeName}`;
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('success-view').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit request';
+  }
+
+  // ---- Reviewer bar wiring ----
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (document.activeElement && ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  renderBalances();
+  renderTable();
+  resetForm();
+  show(0);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

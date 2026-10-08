@@ -121,3 +121,20 @@ describe('access control: who may set or adjust balances is HR-only by default',
     expect(managerRes.status).toBe(200);
   });
 });
+
+describe('self-access to a balance via x-employee-id', () => {
+  test('GET /leave/balances/:employeeId: an employee may read their own balance', async () => {
+    const employeeId = await newEmployee();
+    await asHr(request(app).post(`/leave/balances/${employeeId}`)).send({ annual: 15, sick: 10, unpaid: 5 });
+    const res = await request(app).get(`/leave/balances/${employeeId}`).set('x-employee-id', employeeId);
+    expect(res.status).toBe(200);
+    expect(res.body.balances.annual).toBe(15);
+  });
+
+  test('GET /leave/balances/:employeeId: an employee may not read someone else\'s balance', async () => {
+    const employeeId = await newEmployee();
+    const other = await newEmployee('Devon Ruiz');
+    const res = await request(app).get(`/leave/balances/${other}`).set('x-employee-id', employeeId);
+    expect(res.status).toBe(403);
+  });
+});

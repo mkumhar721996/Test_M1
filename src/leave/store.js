@@ -49,6 +49,20 @@ function getAllBalances() {
   return Array.from(balancesByEmployee.values());
 }
 
+function consumeBalance(employeeId, leaveTypeId, amount) {
+  const record = balancesByEmployee.get(employeeId);
+  if (!record) return undefined;
+  record.balances[leaveTypeId] -= amount;
+  return record;
+}
+
+function restoreBalance(employeeId, leaveTypeId, amount) {
+  const record = balancesByEmployee.get(employeeId);
+  if (!record) return undefined;
+  record.balances[leaveTypeId] += amount;
+  return record;
+}
+
 module.exports = {
-  LEAVE_TYPES, LeaveBalanceError, initializeBalances, getBalances, getAllBalances,
+  LEAVE_TYPES, LeaveBalanceError, initializeBalances, getBalances, getAllBalances, consumeBalance, restoreBalance,
 };

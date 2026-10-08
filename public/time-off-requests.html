@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Time off requests — Time &amp; Leave</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/leave-common.css" />
+<link rel="stylesheet" href="./css/time-off-requests.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/time-off-requests.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div class="app-topbar">
+    <span class="brand">Time &amp; Leave</span>
+    <nav class="app-nav">
+      <a href="./time-off-requests.html" class="active" aria-current="page">Time Off Requests</a>
+    </nav>
+    <div class="topbar-actions">
+      <div class="role-switcher">
+        <label for="viewer-select">Signed in as</label>
+        <select class="input" id="viewer-select"></select>
+      </div>
+    </div>
+  </div>
+
+<div class="page" id="list-screen">
+  <div class="page-header">
+    <h1 id="list-title">My time off requests</h1>
+    <p id="list-subtitle">Track requests you've submitted and cancel one if your plans change.</p>
+  </div>
+
+  <div class="decision-banner">
+    <span class="icon" aria-hidden="true">⚠</span>
+    <div style="flex:1">
+      <div class="decision-item">
+        <span class="tag">Open decision 1 of 2 — not yet settled by the product owner</span>
+        <h3>Who submits a time-off request: the employee, or HR/Manager on their behalf?</h3>
+        <p>Until this is decided, only employee self-service submission is available; an HR/Manager may view every employee's requests but cannot submit one on another employee's behalf.</p>
+      </div>
+      <div class="decision-item">
+        <span class="tag">Open decision 2 of 2 — not yet settled by the product owner</span>
+        <h3>Should a request exceeding the remaining balance be blocked outright, or allowed through for review?</h3>
+        <p>This isn't implemented in either direction yet — a request that exceeds the remaining balance isn't validated until this is decided.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="balances-section">
+    <div class="section-heading"><h2>Leave balances</h2></div>
+    <div id="balance-region"></div>
+  </div>
+
+  <div class="section-heading">
+    <h2 id="table-heading">Requests</h2>
+    <button type="button" class="btn btn-primary" id="new-request-btn">Request time off</button>
+  </div>
+  <div id="table-region" role="status" aria-live="polite"></div>
+</div>
+
+<div class="page" id="form-screen" hidden>
+  <button type="button" class="back-link" id="back-link">← Back to requests</button>
+
+  <div id="form-view">
+    <div class="page-header">
+      <h1>Request time off</h1>
+      <p>Pick a leave type and a whole-day date range. Your request starts as Pending until it's reviewed.</p>
+    </div>
+
+    <div class="card u-stack" style="margin-bottom: var(--space-4);">
+      <div class="field" style="margin-bottom:0;">
+        <label class="label" for="leavetype-select">Leave type</label>
+        <select class="input" id="leavetype-select"></select>
+        <p class="inline-note" id="balance-hint"></p>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="start-date">Start date</label>
+          <input class="input" type="date" id="start-date" />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label class="label" for="end-date">End date</label>
+          <input class="input" type="date" id="end-date" />
+        </div>
+      </div>
+      <p class="inline-note">Whole days only — half-day and partial-day requests aren't supported yet.</p>
+
+      <p class="u-text-sm" id="days-preview"></p>
+      <div id="validation-region" role="alert"></div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="submit-btn">Submit request</button>
+  </div>
+
+  <div id="success-view" hidden>
+    <div class="card summary-panel">
+      <div class="icon" aria-hidden="true">✓</div>
+      <h2 class="card-title">Request submitted</h2>
+      <p class="card-body" id="success-detail"></p>
+      <p class="card-body"><span class="status-chip status-chip--pending">⏳ Pending</span></p>
+      <div style="margin-top: var(--space-4);">
+        <button type="button" class="btn btn-primary" id="success-back-btn">Back to requests</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="modal-overlay" id="cancel-overlay" hidden></div>
+  <div class="modal-wrap" id="cancel-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="cancel-title">Cancel this request?</h2>
+          <p id="cancel-sub"></p>
+        </div>
+        <button type="button" class="icon-btn" id="cancel-close-btn" aria-label="Close">✕</button>
+      </div>
+      <p id="cancel-consequence" class="u-text-sm"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="keep-request-btn">Keep request</button>
+        <button type="button" class="btn btn-primary" id="confirm-cancel-btn">Cancel request</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+</body>
+</html>
