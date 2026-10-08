@@ -48,6 +48,9 @@ function createRequest(data = {}) {
     photoCount: photos.length,
     staffed: timeWindow.staffed,
     status: 'Pending',
+    customerId: data.customerId || null,
+    technician: null,
+    scheduledWindow: null,
     submittedAt: new Date().toISOString(),
   };
   requests.set(record.id, record);
@@ -62,4 +65,68 @@ function getRequest(id) {
   return requests.get(id) || null;
 }
 
-module.exports = { RepairRequestValidationError, createRequest, listRequests, getRequest };
+// Internal 'Pending' is shown to customers as 'Submitted'; the other statuses pass through.
+const CUSTOMER_STATUS_MAP = {
+  Pending: 'Submitted',
+  Assigned: 'Assigned',
+  'In Progress': 'In Progress',
+  Completed: 'Completed',
+  Cancelled: 'Cancelled',
+};
+
+function toCustomerView(record) {
+  return {
+    id: record.id,
+    category: record.categoryName,
+    description: record.description,
+    address: record.address,
+    submittedAt: record.submittedAt,
+    status: CUSTOMER_STATUS_MAP[record.status] || record.status,
+    technician: record.technician,
+    scheduledWindow: record.scheduledWindow,
+    completedAt: record.completedAt || null,
+    cancelledAt: record.cancelledAt || null,
+    cancelReason: record.cancelReason || null,
+  };
+}
+
+function listRequestsForCustomer(customerId) {
+  return listRequests().filter((r) => r.customerId === customerId).map(toCustomerView);
+}
+
+function getRequestForCustomer(id, customerId) {
+  const record = getRequest(id);
+  return record && record.customerId === customerId ? toCustomerView(record) : null;
+}
+
+const SETTABLE_STATUSES = ['Assigned', 'In Progress', 'Completed', 'Cancelled'];
+
+// Hook for Scheduling & Dispatch / Technician Job Management; never reachable by customers.
+function updateRequestStatus(id, { status, technician, scheduledWindow, cancelReason } = {}) {
+  const record = getRequest(id);
+  if (!record) return null;
+  if (!SETTABLE_STATUSES.includes(status)) {
+    throw new RepairRequestValidationError({ status: `Status must be one of: ${SETTABLE_STATUSES.join(', ')}.` });
+  }
+  record.status = status;
+  if (technician !== undefined) record.technician = technician;
+  if (scheduledWindow !== undefined) record.scheduledWindow = scheduledWindow;
+  const now = new Date().toISOString();
+  if (status === 'Completed') record.completedAt = now;
+  if (status === 'Cancelled') {
+    record.cancelledAt = now;
+    record.cancelReason = cancelReason || null;
+  }
+  return record;
+}
+
+module.exports = {
+  RepairRequestValidationError,
+  createRequest,
+  listRequests,
+  getRequest,
+  toCustomerView,
+  listRequestsForCustomer,
+  getRequestForCustomer,
+  updateRequestStatus,
+};
