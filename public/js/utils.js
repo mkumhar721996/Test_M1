@@ -11,6 +11,12 @@
     return `${m}/${d}/${y}`;
   }
 
+  function statusBadgeMarkup(status) {
+    return status === 'deactivated'
+      ? '<span class="status-chip status-chip--inactive"><span aria-hidden="true">⏸</span> Inactive</span>'
+      : '<span class="status-chip status-chip--active"><span aria-hidden="true">✓</span> Active</span>';
+  }
+
   function getFocusableElements(container) {
     return Array.from(
       container.querySelectorAll(
@@ -37,7 +43,7 @@
   }
 
   const utilsExports = {
-    escapeHtml, formatDateDisplay, getFocusableElements, trapTab,
+    escapeHtml, formatDateDisplay, statusBadgeMarkup, getFocusableElements, trapTab,
   };
 
   if (typeof module !== 'undefined' && module.exports) {
