@@ -1,0 +1,165 @@
+/*
+  Auth screens (sign-in, forgot-password). .field is already defined in
+  design-system/prototype-utils.css — not duplicated here.
+*/
+
+.auth-topbar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.auth-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.auth-wrap {
+  min-height: calc(100dvh - 53px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin-top: var(--space-4);
+}
+.auth-card h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+.auth-card > p.lede {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0 0 var(--space-4) 0;
+}
+.field .hint {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.field-error-text {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: var(--space-1) 0 0 0;
+}
+.input.has-error {
+  border: 2px solid var(--color-fg);
+}
+.btn-block { width: 100%; }
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.form-footer {
+  margin-top: var(--space-4);
+  text-align: center;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+}
+
+/* Status icon blocks — meaning conveyed by icon + label text, never color alone */
+.status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--color-border);
+}
+.status-icon.is-success { background: var(--color-primary); color: var(--color-primary-fg); }
+.status-icon.is-error { background: var(--color-surface); color: var(--color-fg); border: 2px solid var(--color-fg); }
+.status-icon.is-info { background: var(--color-surface); color: var(--color-fg); }
+
+.otp-input {
+  letter-spacing: 0.4em;
+  font-size: var(--font-size-lg);
+  text-align: center;
+  font-family: var(--font-family-base);
+}
+
+.checklist { list-style: none; margin: var(--space-2) 0 0 0; padding: 0; }
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  padding: 2px 0;
+}
+.checklist li .mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.checklist li.met { color: var(--color-fg); }
+.checklist li.met .mark { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+
+.channel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin-top: var(--space-1);
+}
+.channel-chip { text-transform: uppercase; letter-spacing: 0.04em; font-weight: var(--font-weight-bold); }
+
+.reset-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+}
+.reset-banner-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}

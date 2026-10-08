@@ -1,0 +1,247 @@
+summary: |
+  TEST-M1-STORY-095 (forgot password via email/SMS, set new password) is **already implemented
+  and tested** on this branch: `src/auth/store.js`, `src/auth/routes.js`,
+  `src/auth/notifyClient.js`, `public/forgot-password.html` + `public/js/forgot-password.js`,
+  `public/sign-in.html` + `public/js/sign-in.js`, `public/css/auth.css`, wired into
+  `src/server.js` at `/auth`. Every one of AC1-AC10 has an existing passing test
+  (`test/auth.test.js`, `test/auth-store.test.js`, `test/forgot-password.test.js`,
+  `test/sign-in.test.js`) and the screens/flow match the approved prototype at
+  `.arc/designs/TEST-M1-STORY-095-design.html` (request -> generic confirm -> OTP-or-link ->
+  set-new-password -> success -> sign-in banner). While verifying that implementation against
+  the design and the AC text, one real functional defect was found: the "one-time code" sent for
+  the SMS/phone channel is not actually a short code at all, so the SMS path as built can never
+  work end-to-end outside of tests that bypass the UI. This plan's only new work is a test-first
+  fix for that defect; everything else is verification that the existing tests/code still satisfy
+  each AC, not new build-out.
+scope:
+  - description: |
+      Fix the SMS/phone "one-time code" so it is actually a short, user-typeable code, not a
+      full UUID token.
+
+      Today `requestPasswordReset` in `src/auth/store.js` always does
+      `const credential = crypto.randomUUID();` regardless of channel, then for the phone branch
+      calls `notifyClient.sendResetSms({ to: contact, credential, ttlMinutes })` — i.e. the
+      "SMS code" the user is told to enter is a 36-character UUID like
+      `3fa85f64-5717-4562-b3fc-2c963f66afa6`. But the approved design's OTP screen
+      (`.arc/designs/TEST-M1-STORY-095-design.html`, screen `data-name="Enter reset code"`,
+      element `#otp-input`) and the already-built `public/forgot-password.html` /
+      `public/js/forgot-password.js` OTP screen (`data-name="otp"`, `#otp-input`) both
+      hard-restrict entry to 6 digits:
+      `<input ... id="otp-input" type="text" inputmode="numeric" maxlength="6" .../>` plus
+      `otpInput.addEventListener('input', () => { otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 6); })`.
+      A 6-digit numeric string typed into that field can never equal the stored UUID credential,
+      so `POST /auth/reset/verify` / `/auth/reset/confirm` will always report
+      `invalid_or_expired` for a real phone-channel reset. This currently goes unnoticed because
+      the backend tests for the phone channel in `test/auth.test.js` only assert that
+      `notifyClient.sendResetSms` was called (AC2) — none of them simulate the user actually
+      typing the delivered code back in — and the frontend tests in `test/forgot-password.test.js`
+      use a `fakeApi` that never touches the real credential format.
+
+      Fix: generate a channel-appropriate credential in `requestPasswordReset(contact)` —
+      keep `crypto.randomUUID()` for the `email` channel (used as an opaque link token), and for
+      the `phone` channel generate a 6-digit numeric string with
+      `String(crypto.randomInt(0, 1_000_000)).padStart(6, '0')`. Both are stored under the same
+      `resetCredentials` map keyed by the credential string, so `verifyResetCredential` /
+      `resetPassword` need no changes — only the value generated and sent for the phone branch
+      changes.
+    files:
+      - src/auth/store.js
+    rationale: |
+      This is the one place the already-approved design's OTP screen (6-digit, numeric-only
+      entry) and the already-built backend diverge: the design and the built UI both commit to a
+      6-digit code, but the store never produces one for the phone channel. Without this fix,
+      AC2/AC3 are only true for the email channel in practice, not for SMS, even though existing
+      tests pass (because they stop short of the real end-to-end boundary).
+  - description: |
+      Add a regression/characterization test proving the existing phone-channel tests in
+      `test/auth.test.js` keep passing unchanged (they assert on `sendResetSms` call args, not
+      credential shape, so no edits needed there) and add one new test next to them asserting the
+      generated code is realistically typeable.
+    files:
+      - test/auth.test.js
+    rationale: |
+      Keeps the regression coverage colocated with the existing AC2/AC3/AC4 phone-channel tests
+      in the same file/style (supertest against `src/server.js`, `notifyClient` spied via
+      `jest.spyOn`), rather than introducing a new test file for a one-function fix.
+  - description: |
+      Add a focused unit test in `test/auth-store.test.js` (same file/style as the existing AC6
+      `passwordMeetsComplexity` test) asserting `requestPasswordReset` produces a 6-digit numeric
+      string for the phone channel and leaves the email channel's UUID format untouched.
+    files:
+      - test/auth-store.test.js
+    rationale: |
+      `test/auth-store.test.js` already imports directly from `src/auth/store.js` and resets
+      state via `_resetForTests()` in `beforeEach` — the natural home for a store-level unit test
+      of credential generation, as opposed to the HTTP-level test in `test/auth.test.js`.
+tests:
+  - |
+    AC1 (already covered, no new test needed): `test/auth.test.js` — `'AC1: unknown contact
+    returns the same generic message as a known contact'` already asserts
+    `expect(unknown.body.message).toBe(known.body.message)` for `/auth/forgot-password`, and
+    `test/forgot-password.test.js` AC1 already asserts the unknown-contact UI path reaches
+    `.screen[data-name="confirm"]`. Verified these still pass against the current
+    `src/auth/routes.js` / `src/auth/store.js` / `public/js/forgot-password.js` — no changes.
+  - |
+    AC2 email path (already covered): `test/auth.test.js` `'AC2: a verified email contact
+    triggers a reset email send'` asserts
+    `expect(spy).toHaveBeenCalledWith(expect.objectContaining({ to: 'works@example.com', ttlMinutes: 15 }))`.
+    No changes needed.
+  - |
+    AC2 phone path — NEW failing test first (the actual gap this plan fixes), added to
+    `test/auth.test.js` near the existing `'AC2: a verified phone contact triggers a reset SMS
+    send'` test:
+    ```js
+    test('AC2: the SMS one-time code is a 6-digit numeric string the user can type into the OTP screen', async () => {
+      const notifyClient = require('../src/auth/notifyClient');
+      let captured;
+      jest.spyOn(notifyClient, 'sendResetSms').mockImplementation(async (args) => { captured = args; return args; });
+      await request(app).post('/auth/forgot-password').send({ contact: '+1 555 010 0100' });
+      expect(captured.credential).toMatch(/^[0-9]{6}$/);
+      notifyClient.sendResetSms.mockRestore();
+    });
+    ```
+    This fails today because `captured.credential` is a UUID, not 6 digits. Minimal fix: in
+    `requestPasswordReset`, branch the credential generator by `channel`:
+    ```js
+    const credential = channel === 'email'
+      ? crypto.randomUUID()
+      : String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
+    ```
+  - |
+    AC2 phone path — companion unit test in `test/auth-store.test.js`:
+    ```js
+    test('AC2: requestPasswordReset generates a 6-digit code for phone and a UUID for email', async () => {
+      const notifyClient = require('../src/auth/notifyClient');
+      let smsArgs, emailArgs;
+      jest.spyOn(notifyClient, 'sendResetSms').mockImplementation(async (a) => { smsArgs = a; return a; });
+      jest.spyOn(notifyClient, 'sendResetEmail').mockImplementation(async (a) => { emailArgs = a; return a; });
+      const { requestPasswordReset } = require('../src/auth/store');
+      await requestPasswordReset('+1 555 010 0100');
+      await requestPasswordReset('works@example.com');
+      expect(smsArgs.credential).toMatch(/^[0-9]{6}$/);
+      expect(emailArgs.credential).toMatch(/^[0-9a-f-]{36}$/);
+      notifyClient.sendResetSms.mockRestore();
+      notifyClient.sendResetEmail.mockRestore();
+    });
+    ```
+  - |
+    AC3 (already covered): `test/auth.test.js` `'AC3: a valid unused unexpired credential
+    verifies'` posts the captured email credential to `/auth/reset/verify` and asserts
+    `expect(res.body.valid).toBe(true)`; `test/forgot-password.test.js` AC3 asserts a `?token=`
+    in the URL drives the UI straight to `.screen[data-name="set-password"]`. After this plan's
+    fix, the phone-channel equivalent (6-digit code -> `/auth/reset/verify` -> valid) is also now
+    true in practice, though no new end-to-end UI test is added for it since the existing
+    `forgot-password.test.js` fakes the API boundary deliberately (per its own comments) and a
+    real browser-level test of SMS delivery is out of scope for this stack.
+  - |
+    AC4 (already covered, no changes): `test/auth.test.js` has three AC4 cases — unknown
+    credential (`expect(res.status).toBe(400)`), expired via `jest.spyOn(Date, 'now')`, and
+    already-used (confirm then re-verify) — and `test/forgot-password.test.js` AC4 asserts a
+    rejected `verifyCredential` routes the UI to `.screen[data-name="error"]`.
+  - |
+    AC5 (already covered, no changes): `test/forgot-password.test.js` `'AC5: the error screen
+    offers "Request a new reset link" back to the request screen'` clicks `#error-retry-btn` and
+    asserts `.screen[data-name="request"]` is shown, matching `error-retry-btn` wiring in
+    `public/js/forgot-password.js` (`showScreen('request')`) and the design's error screen
+    (`data-name="Reset link/code error"`, button "Request a new reset link").
+  - |
+    AC6 (already covered, no changes): `test/auth-store.test.js` AC6 asserts
+    `passwordMeetsComplexity` behavior directly; `test/forgot-password.test.js` AC6 asserts a weak
+    password leaves `#pw-new-error` visible, `#pw-new` value preserved (`'weak'`), and
+    `expect(api.resetPassword).not.toHaveBeenCalled()`.
+  - |
+    AC7 (already covered, no changes): `test/forgot-password.test.js` AC7 and `test/auth.test.js`
+    `'AC7: resetPassword rejects a mismatched confirmation'`
+    (`expect(res.status).toBe(422); expect(res.body.error).toBe('password_mismatch')`).
+  - |
+    AC8 (already covered, no changes): `test/auth.test.js` `'AC8: the new password works for
+    subsequent login; the old one no longer does'` asserts both
+    `expect(verifyLogin('works@example.com', 'BrandNew1!')).toBe(true)` and
+    `expect(verifyLogin('works@example.com', 'OldPassw0rd!')).toBe(false)`.
+  - |
+    AC9 (already covered, no changes): `test/auth.test.js` AC9
+    (`expect(res.body.success).toBe(true)`) and `test/forgot-password.test.js` AC9 asserting
+    `.screen[data-name="success"]` becomes visible.
+  - |
+    AC10 (already covered, no changes): `test/forgot-password.test.js` AC10 asserts, after
+    `jest.advanceTimersByTime(3000)`,
+    `expect(navigate).toHaveBeenCalledWith('./sign-in.html?resetSuccess=1')`, and
+    `test/sign-in.test.js` AC10 asserts `initSignInApp(document, '?resetSuccess=1')` makes
+    `#signin-banner` visible, matching the design's sign-in screen banner
+    (`.status-icon.is-success` + "Password updated. Sign in with your new password.").
+assumptions_or_open_questions:
+  - |
+    This story's own "open question for planning" (confirm the auth/account system's status) is
+    resolved by observation: an auth/account system already exists in this codebase
+    (`src/auth/store.js`'s in-memory `users` Map with a seeded `user_4410` / scrypt password
+    hashing / `verifyLogin`), and this story's implementation already builds directly on it. No
+    separate "build the account system" story was needed or blocking.
+  - |
+    The in-memory `users` / `resetCredentials` Maps in `src/auth/store.js` (reset on process
+    restart, no persistence layer) match this project's existing conventions elsewhere (e.g.
+    `src/workflows/store.js`, `src/hires/store.js` use the same in-memory-Map-plus-`_resetForTests`
+    pattern) — treated as an accepted project convention, not a gap to fix here.
+  - |
+    `notifyClient.js`'s `sendResetEmail` / `sendResetSms` are no-op stubs (they don't actually
+    send anything, just resolve with an object) — treated as intentionally out of scope: wiring a
+    real email/SMS provider is not implied by any AC and isn't part of this fix.
+  - |
+    Did not add a browser-level end-to-end test that drives the phone/OTP flow through the real
+    `/auth` routes with the `maxlength="6"` input, because the existing frontend test suite for
+    this screen (`test/forgot-password.test.js`) deliberately mocks the API boundary (see its own
+    `fakeApi` helper) rather than hitting `src/server.js`; the new `test/auth.test.js` /
+    `test/auth-store.test.js` tests cover the credential-format contract the UI depends on
+    instead. Flagging this as a boundary worth a reviewer's judgment call rather than silently
+    picking a side.
+  - |
+    Did not treat the small timing difference in `requestPasswordReset` (it `await`s
+    `notifyClient.send*` only when a user is found, returning immediately otherwise) as an AC1
+    defect, since the current `notifyClient` stubs resolve synchronously with no real latency, so
+    there is no observable timing side-channel today. Flagging it here in case a reviewer wants it
+    addressed proactively before a real provider is wired in, but it is not part of this plan's
+    scope since no AC calls for it and fixing it well (constant-time response) is nontrivial.
+package_dependencies: []
+notes: |
+  Design verification: read `.arc/designs/TEST-M1-STORY-095-design.html` in full. It defines 7
+  screens (`Sign in`, `Forgot password – Request`, `Check your email or phone`, `Enter reset
+  code`, `Reset link/code error`, `Set new password`, `Password updated`) using the shared dark
+  purple/violet token set (`--color-primary: #a855f7`, `--color-bg: #181021`, etc.), `.auth-card`
+  / `.field` / `.checklist` / `.status-icon` / `.otp-input` components, and an inline demo script
+  that is explicitly prototype-only (`.demo-panel`, "not part of the real product"). The already
+  built `public/forgot-password.html`, `public/sign-in.html`, and `public/css/auth.css` reproduce
+  every one of those real (non-demo-panel) screens, ids, and classes faithfully — same `data-name`
+  screen labels (minus the demo panel), same `#otp-input` 6-digit numeric constraint, same
+  checklist rule set (`len`/`upper`/`lower`/`num`/`special`), same TTL copy (15 min email / 10 min
+  SMS) backed by `EMAIL_TTL_MINUTES` / `SMS_TTL_MINUTES` in `src/auth/store.js`, and the same
+  sign-in success banner. No UI work remains; this plan does not add or touch any screen markup.
+
+  The only real engineering gap found versus both the design and the stated ACs is the SMS
+  credential-format bug described in `scope` above. Call flow for the fix:
+
+  ```mermaid
+  flowchart TD
+    routes["src/auth/routes.js\nPOST /auth/forgot-password"] --> store["src/auth/store.js\nrequestPasswordReset(contact)"]
+    store --> notify["src/auth/notifyClient.js\nsendResetSms / sendResetEmail"]
+    ui["public/js/forgot-password.js\n#otp-input (maxlength=6, digits only)"] -->|POST credential| verify["src/auth/routes.js\nPOST /auth/reset/verify"]
+    verify --> store
+    classDef touched fill:#f96,color:#000
+    class store touched
+  ```
+
+  `store` is the only touched node — it is the single place that both produces the SMS credential
+  (consumed by `notify`) and later checks whatever the OTP UI submits (via `verify`), which is why
+  fixing the generator there alone closes the gap without touching `routes.js`, `notifyClient.js`,
+  or the frontend.
+review_focus: |
+  Scope is intentionally narrow: this plan does NOT re-build or re-test anything already covered
+  by `test/auth.test.js`, `test/auth-store.test.js`, `test/forgot-password.test.js`, or
+  `test/sign-in.test.js` — those already pass and already satisfy AC1, AC3-AC10. The only in-scope
+  change is making `requestPasswordReset`'s phone-channel credential a 6-digit numeric string
+  instead of a UUID, so the SMS "one-time code" the design and built OTP screen promise is
+  actually satisfiable. Riskiest spot: `resetCredentials` is still a single `Map` keyed by
+  whatever string is generated, so a reviewer should confirm the 6-digit phone code and the UUID
+  email token can't collide in a way that matters (they can't in practice — formats are
+  disjoint-enough and this is a single-process in-memory store — but it's worth a second look
+  since both now share one keyspace). Do not flag the lack of a real email/SMS provider or the
+  in-memory store as bugs — both are pre-existing, deliberate conventions in this codebase, not
+  introduced or left unfinished by this plan.
