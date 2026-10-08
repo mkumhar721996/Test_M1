@@ -39,6 +39,7 @@ test('AC1: validation rejects a bad leave type, bad dates, and end before start'
   expect((await create(employeeId, { leaveTypeId: 'bogus', start: '2026-12-22', end: '2026-12-23' })).status).toBe(400);
   expect((await create(employeeId, { leaveTypeId: 'annual', start: 'nope', end: '2026-12-23' })).status).toBe(400);
   expect((await create(employeeId, { leaveTypeId: 'annual', start: '2026-12-24', end: '2026-12-22' })).status).toBe(400);
+  expect((await create(employeeId, { leaveTypeId: 'annual', start: '2026-02-31', end: '2026-03-02' })).status).toBe(400);
 });
 
 test('actor safe-default: creating without x-employee-id is unauthorized; unknown employee is 404', async () => {

@@ -16,7 +16,10 @@ class TimeOffRequestError extends Error {
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 function isValidDate(value) {
-  return typeof value === 'string' && ISO_DATE.test(value) && !Number.isNaN(Date.parse(value));
+  if (typeof value !== 'string' || !ISO_DATE.test(value)) return false;
+  const parsed = new Date(value);
+  // Round-trip so impossible calendar dates (e.g. 2026-02-31) don't roll over silently.
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }
 
 function createRequest({
