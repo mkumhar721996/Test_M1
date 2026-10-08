@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-200 — Track Repair Request Status</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json defines one brand hue (color-primary, purple) and no
+    semantic success/warning/danger colors, and there is no existing component-scoped alias for
+    a 5-value "repair request status" chip or a lifecycle progress tracker. As in the related
+    customer/dispatch stories (199, 205), status is never color-coded alone — each of the five
+    statuses pairs a distinct icon glyph AND a distinct chip treatment (fill / outline / dashed)
+    with its text label, so the difference survives grayscale and color-blind viewing. Every rule
+    below composes existing tokens only; no literal colors are introduced anywhere.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .session-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .page { max-width: 720px; }
+  .page-header-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .request-count { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .input:focus-visible, .retry-link:focus-visible,
+  .link-btn:focus-visible, .demo-note-actions button:focus-visible, .request-card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Status chip (shape + icon + label, never color alone) ---------- */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+  }
+  .status-chip.status-submitted { background: transparent; border: 1px solid var(--color-border); color: var(--color-fg-muted); }
+  .status-chip.status-assigned { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-in-progress { background: var(--color-primary); border: 1px solid var(--color-primary); color: var(--color-primary-fg); }
+  .status-chip.status-completed { background: var(--color-surface); border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-cancelled { background: transparent; border: 1px dashed var(--color-border); color: var(--color-fg-muted); }
+
+  /* ---------- Request list ---------- */
+  .section-heading {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.04em;
+    margin: var(--space-4) 0 var(--space-2) 0;
+  }
+  .section-heading:first-of-type { margin-top: 0; }
+  #request-list, #past-request-list { display: flex; flex-direction: column; gap: var(--space-3); }
+
+  .request-card {
+    display: block; width: 100%; text-align: left; font-family: var(--font-family-base);
+    background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius); padding: var(--space-4); cursor: pointer;
+  }
+  .request-card:hover { border-color: var(--color-primary); }
+  .request-card-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-2);
+  }
+  .request-card-title { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .request-card-id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 2px 0 0 0; }
+  .request-card-desc { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-2) 0; }
+  .request-card-meta { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .request-card.is-past { opacity: 0.88; }
+
+  .tech-line { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--color-fg); }
+  .tech-line .icon { color: var(--color-fg-muted); }
+  .no-tech-line { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--color-fg-muted); }
+
+  /* ---------- Empty state ---------- */
+  .empty-state { text-align: center; padding: var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Error / partial banners ---------- */
+  .state-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-primary); border-left-width: var(--space-1);
+    border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: var(--space-4);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner-actions { margin-top: var(--space-2); }
+  .inline-unavailable {
+    display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .inline-unavailable .icon { color: var(--color-primary); }
+  .retry-link {
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-card {
+    background: var(--card-default-background); border: 1px solid var(--card-default-border);
+    border-radius: var(--card-default-radius); padding: var(--space-4); margin-bottom: var(--space-3);
+  }
+  .skeleton-block {
+    background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 37%, var(--color-surface) 63%);
+    background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; border-radius: var(--radius-sm);
+  }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Detail screen ---------- */
+  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-1); }
+  .detail-id { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+
+  /* Lifecycle progress tracker (never shown for Cancelled — see .cancelled-banner instead) */
+  .status-track { display: flex; align-items: center; margin: var(--space-4) 0; }
+  .status-track-step { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); flex: 0 0 auto; width: 84px; }
+  .status-track-dot {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); color: var(--color-fg-muted); font-size: 13px; background: var(--color-bg);
+  }
+  .status-track-step.done .status-track-dot { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+  .status-track-step.current .status-track-dot { border-color: var(--color-primary); border-width: 2px; color: var(--color-fg); }
+  .status-track-label { font-family: var(--font-family-base); font-size: 11px; color: var(--color-fg-muted); text-align: center; }
+  .status-track-step.done .status-track-label, .status-track-step.current .status-track-label { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .status-track-connector { flex: 1 1 auto; height: 2px; background: var(--color-border); margin: 0 var(--space-1); margin-bottom: 18px; }
+  .status-track-connector.done { background: var(--color-primary); }
+
+  .cancelled-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2); background: var(--color-surface);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin: var(--space-4) 0;
+  }
+  .cancelled-banner .icon { color: var(--color-fg-muted); font-size: 1.1rem; }
+
+  .detail-section { margin-bottom: var(--space-4); }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-label {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 var(--space-1) 0;
+  }
+  .detail-value { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; }
+
+  .tech-card {
+    display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3);
+    background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  }
+  .tech-avatar {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--color-surface); border: 1px solid var(--color-border);
+    display: flex; align-items: center; justify-content: center; font-weight: var(--font-weight-bold); color: var(--color-fg);
+    flex: 0 0 40px; font-size: var(--font-size-sm);
+  }
+  .tech-name { font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .tech-role { font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 2px 0 0 0; }
+
+  .no-tech-card {
+    display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3);
+    background: var(--color-bg); border: 1px dashed var(--color-border); border-radius: var(--radius-md);
+    color: var(--color-fg-muted); font-size: var(--font-size-sm);
+  }
+  .no-tech-card .icon { color: var(--color-fg-muted); }
+
+  .readonly-note {
+    display: flex; align-items: flex-start; gap: var(--space-2); margin-top: var(--space-4);
+    padding-top: var(--space-3); border-top: 1px solid var(--color-border);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note {
+    display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-surface);
+    border: 1px solid var(--color-primary); border-left-width: var(--space-1); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg);
+    margin-top: var(--space-4);
+  }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-group { display: flex; flex-direction: column; gap: var(--space-1); }
+  .demo-note-group-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-muted); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button {
+    min-height: 36px; padding: var(--space-1) var(--space-3); background: var(--color-bg); color: var(--color-fg-muted);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-family: var(--font-family-base);
+    font-size: var(--font-size-sm); cursor: pointer;
+  }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+  .demo-note-actions button[aria-pressed="true"] { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+</style>
+</head>
+<!-- App nav: top bar — "Fixly" (same customer-facing product as TEST-M1-STORY-199), single
+     destination "My requests". This story is read-only status tracking: no "browse services" /
+     "new request" entry point is duplicated here since that flow is owned by story 199.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - AC1/AC2: "My requests" is split into an "Open requests" section (Submitted, Assigned,
+         In Progress) and a "Past requests" section (Completed, Cancelled). Both sections render
+         together on one page — nothing is hidden behind a tab — satisfying AC2 directly. A
+         section with zero items simply doesn't render its heading.
+       - AC3/AC4/AC5: list cards and the detail view both show an "Assigned to <name>" line only
+         when `technician` is set on the fixture record; when it's null, nothing resembling a
+         technician renders and a neutral "Not yet assigned" line takes its place instead. The
+         Submitted status chip itself also reads as pending assignment (icon + label), so the
+         status and the missing-technician line reinforce each other rather than relying on
+         either alone.
+       - AC6/AC9: the "Reviewer tooling" panel's "Simulate dispatch update" buttons mutate a
+         single fixture request's status/technician and re-render — exactly what happens when
+         Scheduling & Dispatch or Technician Job Management changes a request elsewhere and the
+         customer opens this view again. Watch the other request cards while you click them:
+         nothing else on the list changes, demonstrating concurrent open requests are tracked
+         independently.
+       - AC7: detail view always shows current status + technician (or the "not yet assigned"
+         line) together, plus a 4-step lifecycle tracker (Submitted → Assigned → In Progress →
+         Completed). Cancelled requests replace the tracker with a neutral dashed "Cancelled"
+         banner instead of showing a broken/partial progress bar.
+       - AC8: a "Preview as" toggle in the reviewer panel switches the signed-in customer between
+         two fixture accounts (Jordan Ellis / Riley Chen) with separate request lists, to make the
+         per-customer filtering visible. In the shipped app there is exactly one signed-in
+         customer per session — this toggle is reviewer-only scaffolding, not a real account
+         switcher.
+       - AC10: the customer-facing list and detail screens contain zero controls that change a
+         request's status — no "Cancel", "Reassign", "Mark complete", etc. The only status-
+         changing controls anywhere in this file live inside the clearly separated "Reviewer
+         tooling" boxes, which are explicitly labeled as not part of the shipped app.
+       - Baseline UX states: loading (skeleton), empty (customer with zero requests), error (list
+         failed to load, with Retry), partial (list loaded but one request's live status
+         temporarily failed to sync — shown as an inline "Status unavailable" notice on just that
+         card, with Retry, while the rest of the list displays normally), and success are all
+         designed for the list screen.
+-->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;font-family:var(--font-sans)">
+    <span style="font-family:var(--font-mono);color:var(--muted)">TEST-M1-STORY-200</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:600;color:var(--fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Inline fixture data: two customers, each with their own repair requests spanning every
+       status. Jordan Ellis (default signed-in customer) has concurrent open requests in three
+       different statuses plus past requests, to exercise AC1/AC2/AC6 at once. Riley Chen's
+       requests exist to prove AC8 (per-customer isolation) via the reviewer "Preview as" toggle. -->
+  <script id="fixture-data" type="application/json">
+  {
+    "customers": {
+      "cust_jordan": { "name": "Jordan Ellis" },
+      "cust_riley": { "name": "Riley Chen" }
+    },
+    "requests": [
+      {
+        "id": "REQ-2041", "customerId": "cust_jordan", "category": "Heating & cooling",
+        "description": "AC has been blowing warm air since this morning, and there's a faint burning smell when it kicks on.",
+        "address": "48 Lindengrove Way, Rosedale", "submittedAt": "2026-10-07T16:40:00",
+        "status": "Submitted", "technician": null, "scheduledWindow": null
+      },
+      {
+        "id": "REQ-2038", "customerId": "cust_jordan", "category": "Plumbing",
+        "description": "Upstairs bathroom sink drains slowly and backs up after about a minute of running water.",
+        "address": "48 Lindengrove Way, Rosedale", "submittedAt": "2026-10-06T09:15:00",
+        "status": "Assigned", "technician": "Marcus Webb", "scheduledWindow": "Oct 9, Morning (8am–11am)"
+      },
+      {
+        "id": "REQ-2032", "customerId": "cust_jordan", "category": "Appliance repair",
+        "description": "Dryer now takes two to three cycles to fully dry a normal load of towels.",
+        "address": "48 Lindengrove Way, Rosedale", "submittedAt": "2026-10-04T11:00:00",
+        "status": "In Progress", "technician": "Dana Whitfield", "scheduledWindow": "Today, 1:00pm – 2:00pm"
+      },
+      {
+        "id": "REQ-2015", "customerId": "cust_jordan", "category": "Electrical",
+        "description": "Living room outlet sparked briefly when plugging in the vacuum cleaner.",
+        "address": "48 Lindengrove Way, Rosedale", "submittedAt": "2026-09-28T08:30:00",
+        "status": "Completed", "technician": "Priya Chandran", "completedAt": "2026-09-29T14:10:00"
+      },
+      {
+        "id": "REQ-2009", "customerId": "cust_jordan", "category": "General handyman",
+        "description": "Front door won't latch properly — wanted the strike plate adjusted.",
+        "address": "48 Lindengrove Way, Rosedale", "submittedAt": "2026-09-20T13:00:00",
+        "status": "Cancelled", "technician": null, "cancelledAt": "2026-09-20T15:45:00",
+        "cancelReason": "Customer rescheduled with a different provider."
+      },
+      {
+        "id": "REQ-3102", "customerId": "cust_riley", "category": "Plumbing",
+        "description": "Water heater pilot light won't stay lit — no hot water since last night.",
+        "address": "19 Harrow St, Millbrook", "submittedAt": "2026-10-07T10:00:00",
+        "status": "Assigned", "technician": "Marcus Webb", "scheduledWindow": "Oct 9, Afternoon (2pm–5pm)"
+      },
+      {
+        "id": "REQ-3098", "customerId": "cust_riley", "category": "Heating & cooling",
+        "description": "Thermostat screen was blank and the furnace wouldn't turn on at all.",
+        "address": "19 Harrow St, Millbrook", "submittedAt": "2026-10-05T09:00:00",
+        "status": "Completed", "technician": "Priya Chandran", "completedAt": "2026-10-05T12:30:00"
+      }
+    ]
+  }
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: My Requests
+         Notes:
+           - Default state on load is a brief loading skeleton, then the populated list.
+           - "Open requests" (Submitted / Assigned / In Progress) and "Past requests" (Completed /
+             Cancelled) render as two sections on one page (AC2).
+           - Clicking any card opens the detail screen for that request (AC7).
+           - Reviewer tooling below the list previews Empty / Error / Partial, the "Preview as"
+             customer toggle (AC8), and "Simulate dispatch update" controls (AC6/AC9).
+    -->
+    <div class="screen" data-name="My Requests">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line"></span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1>My requests</h1>
+            <span class="request-count" id="request-count"></span>
+          </div>
+          <p>Track every repair request you've submitted, from the moment it's sent to a dispatcher through completion.</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+        <!-- State: loading -->
+        <div id="list-loading">
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:55%;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:80%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:40%;height:24px;"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:45%;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:35%;height:24px;"></div>
+          </div>
+        </div>
+
+        <!-- State: error -->
+        <div class="state-banner" id="list-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your requests right now. Check your connection and try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+          </div>
+        </div>
+
+        <!-- State: partial -->
+        <div class="state-banner" id="list-partial-banner" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div><p style="margin:0;">Your requests loaded, but one status couldn't sync with dispatch just now. Look for "Retry" below.</p></div>
+        </div>
+
+        <!-- State: empty -->
+        <div class="empty-state" id="list-empty" hidden>
+          <span class="icon" aria-hidden="true">🗒️</span>
+          <p>You haven't submitted any repair requests yet. Once you do, you'll be able to track their status here.</p>
+        </div>
+
+        <!-- State: success (and partial, same markup, one card flagged unavailable) -->
+        <div id="list-success">
+          <div id="open-section">
+            <p class="section-heading" id="open-heading">Open requests</p>
+            <div id="request-list"></div>
+          </div>
+          <div id="past-section">
+            <p class="section-heading" id="past-heading">Past requests</p>
+            <div id="past-request-list"></div>
+          </div>
+        </div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+
+          <div class="demo-note-group">
+            <span class="demo-note-group-label">List state</span>
+            <div class="demo-note-actions">
+              <button type="button" data-list-state="loading">Preview: loading</button>
+              <button type="button" data-list-state="success">Preview: populated (success)</button>
+              <button type="button" data-list-state="partial">Preview: partial (1 status unavailable)</button>
+              <button type="button" data-list-state="empty">Preview: empty</button>
+              <button type="button" data-list-state="error">Preview: error</button>
+            </div>
+          </div>
+
+          <div class="demo-note-group">
+            <span class="demo-note-group-label">Preview as customer (AC8)</span>
+            <div class="demo-note-actions">
+              <button type="button" data-customer="cust_jordan" id="btn-customer-jordan" aria-pressed="true">Jordan Ellis (5 requests)</button>
+              <button type="button" data-customer="cust_riley" id="btn-customer-riley" aria-pressed="false">Riley Chen (2 requests)</button>
+            </div>
+          </div>
+
+          <div class="demo-note-group">
+            <span class="demo-note-group-label">Simulate Scheduling &amp; Dispatch (AC6 / AC9)</span>
+            <div class="demo-note-actions">
+              <button type="button" id="btn-sim-assign">Assign a technician to REQ-2041</button>
+              <button type="button" id="btn-sim-progress">Start REQ-2038 (Assigned → In progress)</button>
+              <button type="button" id="btn-sim-reset">Reset demo data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Request Detail
+         Notes:
+           - Shows the selected request's current status, a 4-step lifecycle tracker, and the
+             assigned technician if one has been set (AC3/AC4/AC5/AC7).
+           - Cancelled requests show a neutral "Cancelled" banner in place of the tracker rather
+             than a broken/partial progress bar.
+           - No button anywhere on this screen can change the request's status (AC10) — a short
+             note at the bottom makes that explicit to the reviewer.
+    -->
+    <div class="screen" data-name="Request Detail">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-list">← My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line" id="session-line-detail"></span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="card">
+          <div class="detail-head">
+            <h1 class="card-title" id="detail-category" style="margin-bottom:0;"></h1>
+            <span id="detail-status-chip"></span>
+          </div>
+          <p class="detail-id" id="detail-id"></p>
+
+          <div id="detail-tracker"></div>
+          <div id="detail-cancelled-banner"></div>
+
+          <div class="detail-section">
+            <p class="detail-label">Assigned technician</p>
+            <div id="detail-tech-slot"></div>
+          </div>
+
+          <div class="detail-section" id="detail-window-section">
+            <p class="detail-label">Scheduled window</p>
+            <p class="detail-value" id="detail-window"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">What you reported</p>
+            <p class="detail-value" id="detail-description"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">Service address</p>
+            <p class="detail-value" id="detail-address"></p>
+          </div>
+
+          <div class="detail-section">
+            <p class="detail-label">Submitted</p>
+            <p class="detail-value" id="detail-submitted"></p>
+          </div>
+
+          <p class="readonly-note"><span aria-hidden="true">ℹ</span><span>This is a status overview only — status changes are made by your dispatcher and technician, not from here.</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Fixture data ----------
+  const FIXTURES = JSON.parse(document.getElementById('fixture-data').textContent);
+  const CUSTOMERS = FIXTURES.customers;
+  const REQUESTS = FIXTURES.requests;
+
+  const OPEN_STATUSES = ['Submitted', 'Assigned', 'In Progress'];
+  const PAST_STATUSES = ['Completed', 'Cancelled'];
+  const TRACK_STEPS = ['Submitted', 'Assigned', 'In Progress', 'Completed'];
+
+  const STATUS_META = {
+    'Submitted': { icon: '○', className: 'status-submitted' },
+    'Assigned': { icon: '◐', className: 'status-assigned' },
+    'In Progress': { icon: '◉', className: 'status-in-progress' },
+    'Completed': { icon: '✓', className: 'status-completed' },
+    'Cancelled': { icon: '✕', className: 'status-cancelled' }
+  };
+
+  let currentCustomerId = 'cust_jordan';
+  let unavailableRequestId = null; // used by the "partial" demo state
+  let selectedRequestId = null;
+
+  // ---------- Helpers ----------
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+
+  function formatDate(iso) {
+    return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+      ' at ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function requestsForCustomer(customerId) {
+    return REQUESTS.filter((r) => r.customerId === customerId);
+  }
+
+  function statusChipHTML(status) {
+    const meta = STATUS_META[status];
+    return '<span class="status-chip ' + meta.className + '"><span aria-hidden="true">' + meta.icon + '</span>' + status + '</span>';
+  }
+
+  function techLineHTML(request) {
+    if (request.technician) {
+      return '<span class="tech-line"><span class="icon" aria-hidden="true">👤</span>Assigned to ' + escapeHTML(request.technician) + '</span>';
+    }
+    return '<span class="no-tech-line"><span class="icon" aria-hidden="true">–</span>Not yet assigned</span>';
+  }
+
+  // ---------- List rendering (AC1, AC2, AC3, AC4, AC5, AC6) ----------
+  function requestCardHTML(request, isPast) {
+    const unavailable = request.id === unavailableRequestId;
+    const statusArea = unavailable
+      ? '<div class="inline-unavailable"><span class="icon" aria-hidden="true">⚠</span><span>Status unavailable — couldn\'t sync with dispatch.</span><button type="button" class="retry-link" data-retry-status="' + request.id + '">Retry</button></div>'
+      : statusChipHTML(request.status);
+
+    return (
+      '<button type="button" class="request-card' + (isPast ? ' is-past' : '') + '" data-view-request="' + request.id + '">' +
+        '<div class="request-card-head">' +
+          '<div><p class="request-card-title">' + escapeHTML(request.category) + '</p>' +
+          '<p class="request-card-id">' + request.id + '</p></div>' +
+          '<span>' + statusArea + '</span>' +
+        '</div>' +
+        '<p class="request-card-desc">' + escapeHTML(request.description) + '</p>' +
+        '<div class="request-card-meta">' + techLineHTML(request) + '<span aria-hidden="true">·</span><span>Submitted ' + formatDate(request.submittedAt) + '</span></div>' +
+      '</button>'
+    );
+  }
+
+  function renderRequestLists() {
+    const all = requestsForCustomer(currentCustomerId);
+    const open = all.filter((r) => OPEN_STATUSES.includes(r.status));
+    const past = all.filter((r) => PAST_STATUSES.includes(r.status));
+
+    document.getElementById('open-heading').hidden = open.length === 0;
+    document.getElementById('request-list').innerHTML = open.map((r) => requestCardHTML(r, false)).join('');
+
+    document.getElementById('past-heading').hidden = past.length === 0;
+    document.getElementById('past-request-list').innerHTML = past.map((r) => requestCardHTML(r, true)).join('');
+
+    document.getElementById('request-count').textContent = all.length + (all.length === 1 ? ' request' : ' requests');
+
+    document.querySelectorAll('[data-view-request]').forEach((btn) => {
+      btn.addEventListener('click', () => openDetail(btn.dataset.viewRequest));
+    });
+    document.querySelectorAll('[data-retry-status]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        unavailableRequestId = null;
+        document.getElementById('list-partial-banner').hidden = true;
+        renderRequestLists();
+        document.getElementById('list-live-region').textContent = 'Status synced.';
+      });
+    });
+  }
+
+  function updateSessionLine() {
+    const name = CUSTOMERS[currentCustomerId].name;
+    document.getElementById('session-line').textContent = 'Signed in as ' + name;
+    document.getElementById('session-line-detail').textContent = 'Signed in as ' + name;
+  }
+
+  // ---------- List state machine (loading / empty / error / partial / success) ----------
+  const listLoadingEl = document.getElementById('list-loading');
+  const listErrorEl = document.getElementById('list-error');
+  const listPartialBannerEl = document.getElementById('list-partial-banner');
+  const listEmptyEl = document.getElementById('list-empty');
+  const listSuccessEl = document.getElementById('list-success');
+
+  function setListState(next) {
+    [listLoadingEl, listErrorEl, listPartialBannerEl, listEmptyEl, listSuccessEl].forEach((el) => { el.hidden = true; });
+    document.getElementById('request-count').textContent = '';
+
+    if (next === 'loading') { listLoadingEl.hidden = false; return; }
+    if (next === 'error') { listErrorEl.hidden = false; return; }
+
+    if (next === 'empty') {
+      listEmptyEl.hidden = false;
+      document.getElementById('request-count').textContent = '0 requests';
+      return;
+    }
+
+    if (next === 'partial') {
+      const candidates = requestsForCustomer(currentCustomerId).filter((r) => OPEN_STATUSES.includes(r.status));
+      unavailableRequestId = candidates.length ? candidates[0].id : null;
+      listPartialBannerEl.hidden = false;
+      listSuccessEl.hidden = false;
+      renderRequestLists();
+      document.getElementById('list-live-region').textContent = 'Requests loaded. One status could not sync.';
+      return;
+    }
+
+    // success
+    unavailableRequestId = null;
+    listSuccessEl.hidden = false;
+    renderRequestLists();
+    document.getElementById('list-live-region').textContent = 'Requests loaded.';
+  }
+
+  document.querySelectorAll('[data-list-state]').forEach((btn) => {
+    btn.addEventListener('click', () => setListState(btn.dataset.listState));
+  });
+  document.getElementById('list-retry').addEventListener('click', () => {
+    setListState('loading');
+    setTimeout(() => setListState('success'), 300);
+  });
+
+  // ---------- Preview as customer (AC8) ----------
+  function setCustomer(customerId) {
+    currentCustomerId = customerId;
+    document.getElementById('btn-customer-jordan').setAttribute('aria-pressed', String(customerId === 'cust_jordan'));
+    document.getElementById('btn-customer-riley').setAttribute('aria-pressed', String(customerId === 'cust_riley'));
+    updateSessionLine();
+    unavailableRequestId = null;
+    listPartialBannerEl.hidden = true;
+    renderRequestLists();
+  }
+  document.getElementById('btn-customer-jordan').addEventListener('click', () => setCustomer('cust_jordan'));
+  document.getElementById('btn-customer-riley').addEventListener('click', () => setCustomer('cust_riley'));
+
+  // ---------- Simulate Scheduling & Dispatch updates (AC6, AC9) ----------
+  document.getElementById('btn-sim-assign').addEventListener('click', () => {
+    const r = REQUESTS.find((x) => x.id === 'REQ-2041');
+    if (r) { r.status = 'Assigned'; r.technician = 'Theo Ramirez'; r.scheduledWindow = 'Oct 10, Afternoon (2pm–5pm)'; }
+    renderRequestLists();
+    document.getElementById('list-live-region').textContent = 'REQ-2041 is now Assigned.';
+  });
+  document.getElementById('btn-sim-progress').addEventListener('click', () => {
+    const r = REQUESTS.find((x) => x.id === 'REQ-2038');
+    if (r) { r.status = 'In Progress'; r.scheduledWindow = 'Today, 3:00pm – 4:00pm'; }
+    renderRequestLists();
+    document.getElementById('list-live-region').textContent = 'REQ-2038 is now In Progress.';
+  });
+  document.getElementById('btn-sim-reset').addEventListener('click', () => {
+    const r1 = REQUESTS.find((x) => x.id === 'REQ-2041');
+    if (r1) { r1.status = 'Submitted'; r1.technician = null; r1.scheduledWindow = null; }
+    const r2 = REQUESTS.find((x) => x.id === 'REQ-2038');
+    if (r2) { r2.status = 'Assigned'; r2.scheduledWindow = 'Oct 9, Morning (8am–11am)'; }
+    unavailableRequestId = null;
+    listPartialBannerEl.hidden = true;
+    renderRequestLists();
+    document.getElementById('list-live-region').textContent = 'Demo data reset.';
+  });
+
+  // ---------- Detail screen (AC3, AC4, AC5, AC7, AC10) ----------
+  function renderTracker(status) {
+    const trackerEl = document.getElementById('detail-tracker');
+    const cancelledEl = document.getElementById('detail-cancelled-banner');
+
+    if (status === 'Cancelled') {
+      trackerEl.innerHTML = '';
+      cancelledEl.innerHTML =
+        '<div class="cancelled-banner"><span class="icon" aria-hidden="true">✕</span>' +
+        '<span><strong>This request was cancelled.</strong> It will not move further through dispatch or job assignment.</span></div>';
+      return;
+    }
+    cancelledEl.innerHTML = '';
+
+    const currentIndex = TRACK_STEPS.indexOf(status);
+    trackerEl.innerHTML = '<div class="status-track">' + TRACK_STEPS.map((step, i) => {
+      const stepClass = i < currentIndex ? 'done' : (i === currentIndex ? 'current' : '');
+      const dotContent = i < currentIndex ? '✓' : String(i + 1);
+      const connector = i < TRACK_STEPS.length - 1
+        ? '<div class="status-track-connector' + (i < currentIndex ? ' done' : '') + '"></div>'
+        : '';
+      return (
+        '<div class="status-track-step ' + stepClass + '">' +
+          '<div class="status-track-dot" aria-hidden="true">' + dotContent + '</div>' +
+          '<span class="status-track-label">' + step + '</span>' +
+        '</div>' + connector
+      );
+    }).join('') + '</div>';
+  }
+
+  function renderDetail(requestId) {
+    const request = REQUESTS.find((r) => r.id === requestId);
+    if (!request) return;
+
+    document.getElementById('detail-category').textContent = request.category;
+    document.getElementById('detail-id').textContent = request.id;
+    document.getElementById('detail-status-chip').innerHTML = statusChipHTML(request.status);
+    renderTracker(request.status);
+
+    const techSlot = document.getElementById('detail-tech-slot');
+    techSlot.innerHTML = request.technician
+      ? ('<div class="tech-card"><div class="tech-avatar" aria-hidden="true">' + request.technician.split(' ').map((p) => p[0]).join('') + '</div>' +
+          '<div><p class="tech-name">' + escapeHTML(request.technician) + '</p><p class="tech-role">Assigned technician</p></div></div>')
+      : '<div class="no-tech-card"><span class="icon" aria-hidden="true">–</span><span>Not yet assigned to a technician. You\'ll see their name here as soon as dispatch assigns one.</span></div>';
+
+    const windowSection = document.getElementById('detail-window-section');
+    if (request.scheduledWindow) {
+      windowSection.hidden = false;
+      document.getElementById('detail-window').textContent = request.scheduledWindow;
+    } else {
+      windowSection.hidden = true;
+    }
+
+    document.getElementById('detail-description').textContent = request.description;
+    document.getElementById('detail-address').textContent = request.address;
+
+    let submittedText = formatDateTime(request.submittedAt);
+    if (request.status === 'Completed' && request.completedAt) {
+      submittedText += ' · Completed ' + formatDateTime(request.completedAt);
+    }
+    if (request.status === 'Cancelled' && request.cancelledAt) {
+      submittedText += ' · Cancelled ' + formatDateTime(request.cancelledAt) + (request.cancelReason ? ' — ' + request.cancelReason : '');
+    }
+    document.getElementById('detail-submitted').textContent = submittedText;
+  }
+
+  function openDetail(requestId) {
+    selectedRequestId = requestId;
+    renderDetail(requestId);
+    show(1);
+  }
+
+  document.getElementById('back-to-list').addEventListener('click', (e) => { e.preventDefault(); show(0); });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+
+  // ---------- Initial load simulation ----------
+  updateSessionLine();
+  show(0);
+  setListState('loading');
+  setTimeout(() => setListState('success'), 350);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
