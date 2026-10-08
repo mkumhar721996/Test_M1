@@ -24,7 +24,7 @@ test('AC2: a run started after a definition update pins to the latest version at
 });
 
 test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', async () => {
-  const createRes = await request(app).post('/workflows').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
+  const createRes = await request(app).post('/workflows').set('x-staff-role', 'hr_coordinator').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
   const workflowId = createRes.body.id;
 
   const runRes = await request(app).post(`/workflows/${workflowId}/runs`).set('x-staff-role', 'manager').send();
@@ -33,6 +33,7 @@ test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', 
 
   await request(app)
     .post(`/workflows/${workflowId}/versions`)
+    .set('x-staff-role', 'hr_coordinator')
     .send({ taskGraph: { tasks: [{ id: 't1', next: ['t2'] }, { id: 't2', next: [] }] } });
 
   const getRes = await request(app).get(`/runs/${runRes.body.id}`);
@@ -41,11 +42,12 @@ test('AC1 (HTTP): an in-flight run is unaffected by a later definition update', 
 });
 
 test('AC2 (HTTP): a run created after an update is pinned to the new latest version', async () => {
-  const createRes = await request(app).post('/workflows').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
+  const createRes = await request(app).post('/workflows').set('x-staff-role', 'hr_coordinator').send({ taskGraph: { tasks: [{ id: 't1', next: [] }] } });
   const workflowId = createRes.body.id;
 
   const updateRes = await request(app)
     .post(`/workflows/${workflowId}/versions`)
+    .set('x-staff-role', 'hr_coordinator')
     .send({ taskGraph: { tasks: [{ id: 't1', next: ['t2'] }, { id: 't2', next: [] }] } });
   expect(updateRes.body.version).toBe(2);
 
