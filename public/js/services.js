@@ -7,6 +7,8 @@
   const SCREEN_QUEUE = 3;
   const QUEUE_HASH = '#/admin/queue';
   const MAX_PHOTOS = 6;
+  // No real sign-in exists yet; every request identifies as this customer (see my-requests.js).
+  const DEMO_CUSTOMER_ID = 'cust-204';
 
   const FIELD_ERROR_KEYS = { categoryId: 'category', description: 'description', timeWindow: 'time-window', address: 'address' };
   const FIELD_LABELS = {
@@ -401,8 +403,8 @@
   }
 
   function createDefaultApi() {
-    function request(url, method, body) {
-      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    function request(url, method, body, extraHeaders) {
+      const opts = { method, headers: { 'Content-Type': 'application/json', ...extraHeaders } };
       if (body !== undefined) opts.body = JSON.stringify(body);
       return fetch(url, opts)
         .then((res) => res.json().catch(() => ({})).then((data) => (
@@ -412,7 +414,7 @@
 
     return {
       getCatalog: () => request('/service-catalog', 'GET'),
-      createRequest: (payload) => request('/repair-requests', 'POST', payload),
+      createRequest: (payload) => request('/repair-requests', 'POST', payload, { 'x-user-id': DEMO_CUSTOMER_ID }),
       // Deliberately does NOT send an 'x-staff-role' header: whatever value this public client
       // bundle asserted would be readable by anyone, so it would be a cosmetic, bypassable gate
       // on an endpoint that returns real customer PII (see src/repairRequests/auth.js). Until a

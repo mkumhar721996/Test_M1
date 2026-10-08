@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TEST-M1-STORY-203 — Cancel or Edit a Submitted Repair Request</title>
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #f5f2fb; /** Default body text color on dark backgrounds. Paired with color-bg it clears WCAG AA (16.7:1). */
+  --color-fg-muted: #b0a2ce; /** Secondary/muted text, e.g. helper copy and captions. */
+  --color-bg: #181021; /** Default page background. Deep purple/violet ink. */
+  --color-surface: #291c3d; /** Slightly raised surface used behind cards and chips. Purple-tinted, lighter than color-bg. */
+  --color-primary: #a855f7; /** Brand/primary action color. Purple/violet. High relative luminance, so color-primary-fg switches to a dark ink to keep contrast against it at least 4.5:1 (white text would fail). */
+  --color-primary-fg: #000000; /** Text/icon color used on top of color-primary. Black, since color-primary is a light violet/purple and white text would not clear WCAG AA against it. */
+  --color-border: #40325c; /** Default hairline border for cards, inputs, and dividers. Purple-tinted grey. */
+  --space-1: 4px; /** Smallest spacing increment. */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --shadow-sm: 0px 1px 3px 0px rgb(0% 0% 0% / 0.4); /** Resting elevation shadow for cards. Darker/heavier than the light-theme value so it still reads against a dark page background. */
+  --button-primary-background: var(--color-primary);
+  --button-primary-foreground: var(--color-primary-fg);
+  --button-primary-radius: var(--radius-md);
+  --button-secondary-background: var(--color-bg);
+  --button-secondary-foreground: var(--color-primary);
+  --button-secondary-border: var(--color-primary);
+  --card-default-background: var(--color-surface);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --chip-default-background: var(--color-surface);
+  --chip-default-foreground: var(--color-fg);
+  --input-default-border: var(--color-border);
+  --input-default-radius: var(--radius-sm);
+}
+
+</style>
+<style>
+/* Utility and component classes built exclusively from design tokens. */
+
+/* Layout / spacing utilities */
+.u-stack > * + * {
+  margin-top: var(--space-3);
+}
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+/* Typography utilities */
+.u-text-sm {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-base);
+}
+
+.u-text-md {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-base);
+}
+
+.u-text-lg {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+
+.u-text-muted {
+  color: var(--color-fg-muted);
+}
+
+/* Base body styling */
+.u-surface {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Button component */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+  border-radius: var(--button-primary-radius);
+}
+
+.btn-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+  border-radius: var(--button-primary-radius);
+}
+
+/* Card component */
+.card {
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+}
+
+.card-title {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* Chip component */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--chip-default-background);
+  color: var(--chip-default-foreground);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form controls */
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--input-default-border);
+  border-radius: var(--input-default-radius);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+/* ---------- App shell (top bar + page frame) ---------- */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+.app-topbar .brand {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+.app-nav { display: flex; gap: var(--space-3); flex: 1; flex-wrap: wrap; }
+.app-nav a {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid transparent;
+}
+.app-nav a.active { color: var(--color-fg); border-bottom-color: var(--color-primary); }
+.app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible, select.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+.page-header { margin-bottom: var(--space-4); }
+.page-header h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-1) 0;
+}
+.page-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg-muted);
+  margin: 0;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 100;
+}
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.modal-wrap[hidden], .modal-overlay[hidden] { display: none; }
+.modal-panel {
+  width: min(92vw, 440px);
+  margin-top: var(--space-4);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.modal-header h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0;
+}
+.modal-header p {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg-muted);
+  margin: var(--space-1) 0 0 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--color-fg); }
+
+.field { margin-bottom: var(--space-4); }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-default-background);
+  border: 1px solid var(--card-default-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-fg);
+  max-width: min(90vw, 320px);
+}
+.toast[hidden] { display: none; }
+
+</style>
+<style>
+  /*
+    Design-system gap note: tokens.json has one brand hue (color-primary) and no semantic
+    danger/destructive color, so "Cancel request" uses the same primary button as every other
+    story in this project rather than inventing a red — the consequence is named in the
+    confirmation copy instead of color. No literal colors are introduced below; every rule
+    composes existing tokens (and the .notice / .state-banner / .confirm-grid / .status-chip
+    / .demo-note patterns already established by sibling stories 199 and 205) only.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .session-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  .page { max-width: 720px; }
+  .page-header-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .request-count { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); white-space: nowrap; }
+
+  /* ---------- Status chip (shape + icon + label, never color alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); white-space: nowrap;
+  }
+  .status-chip.status-submitted { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg); }
+  .status-chip.status-assigned { background: transparent; border: 1px solid var(--color-primary); color: var(--color-fg); }
+  .status-chip.status-cancelled { background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-fg-muted); }
+  .status-chip.status-stale { background: none; border: 1px dashed var(--color-border); color: var(--color-fg-muted); font-weight: var(--font-weight-regular); }
+
+  /* ---------- Request list ---------- */
+  #request-list { display: flex; flex-direction: column; gap: var(--space-4); }
+  .request-card.is-cancelled { opacity: 0.78; }
+  .request-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-2); }
+  .request-card-title { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); margin: 0; }
+  .request-submitted-line { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 2px 0 0 0; }
+  .request-meta { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-2) 0; }
+  .request-description { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0 0 var(--space-3) 0; }
+  .request-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .request-actions .btn { min-height: 44px; }
+  .stale-note { display: flex; align-items: center; gap: var(--space-1); margin: var(--space-1) 0 var(--space-2) 0; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+
+  /* ---------- Detail screen ---------- */
+  .confirm-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-4) 0; }
+  @media (min-width: 560px) { .confirm-grid { grid-template-columns: 1fr 1fr; } }
+  .confirm-field { margin: 0; }
+  .confirm-field dt { font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em; }
+  .confirm-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+
+  /* ---------- Neutral "notice" box (informational, never styled as an error) ---------- */
+  .notice {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+    margin-top: var(--space-2);
+  }
+  .notice .icon {
+    display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 20px;
+    border: 1px solid var(--color-fg-muted); border-radius: 50%; font-weight: var(--font-weight-bold); color: var(--color-fg-muted); font-size: 12px;
+  }
+  .notice strong { color: var(--color-fg); }
+
+  /* ---------- Blocking state banner (an attempt was actually rejected) ---------- */
+  .state-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-primary); border-left-width: var(--space-1);
+    border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: var(--space-4);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner-actions { margin-top: var(--space-2); }
+
+  /* ---------- Access denied / empty state ---------- */
+  .empty-state { text-align: center; padding: var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
+
+  /* ---------- Skeleton loading ---------- */
+  .skeleton-card { background: var(--card-default-background); border: 1px solid var(--card-default-border); border-radius: var(--card-default-radius); padding: var(--space-4); margin-bottom: var(--space-4); }
+  .skeleton-block { background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 37%, var(--color-surface) 63%); background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; border-radius: var(--radius-sm); }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Form layout (shared with Edit screen) ---------- */
+  .form-section { margin-bottom: var(--space-4); border: none; padding: 0; min-width: 0; }
+  .form-section legend, .form-section .legend { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); padding: 0; margin: 0 0 var(--space-3) 0; width: 100%; }
+  .form-row { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-3); }
+  @media (min-width: 560px) { .form-row.two-col { grid-template-columns: 1fr 1fr; } }
+  .form-row:last-child { margin-bottom: 0; }
+  .required-mark { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .input.invalid, select.input.invalid, textarea.input.invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error { display: flex; align-items: flex-start; gap: var(--space-1); margin-top: var(--space-1); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .field-error .icon { color: var(--color-primary); }
+  textarea.input { resize: vertical; min-height: 96px; font-family: var(--font-family-base); }
+  .submit-bar { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+  .submit-bar .btn[disabled] { opacity: 0.7; cursor: not-allowed; }
+
+  /* ---------- Reviewer demo-note ---------- */
+  .demo-note { display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-surface); border: 1px solid var(--color-primary); border-left-width: var(--space-1); border-radius: var(--radius-md); padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-top: var(--space-4); }
+  .demo-note-title { display: flex; align-items: center; gap: var(--space-2); font-weight: var(--font-weight-bold); }
+  .demo-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .demo-note-actions button { min-height: 36px; padding: var(--space-1) var(--space-3); background: var(--color-bg); color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-family: var(--font-family-base); font-size: var(--font-size-sm); cursor: pointer; }
+  .demo-note-actions button:hover { color: var(--color-fg); border-color: var(--color-primary); }
+
+  /* Reviewer bar buttons */
+  #review-bar button { background: none; border: none; color: var(--color-primary); font-family: var(--font-family-base); font-size: 13px; cursor: pointer; padding: var(--space-2) var(--space-3); }
+
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .link-btn:focus-visible, .demo-note-actions button:focus-visible,
+  [data-view]:focus-visible, [data-edit]:focus-visible, [data-cancel]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .link-btn { background: none; border: none; padding: 0; cursor: pointer; font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary); text-decoration: underline; }
+</style>
+</head>
+<!-- App nav: top bar — "Fixly" (customer-facing), single destination "My requests". Scope is
+     intentionally narrow: this story only covers cancel/edit on a request a customer already
+     submitted, so "Browse services" (story TEST-M1-STORY-199) isn't re-offered as a live nav
+     destination here — adding it would imply browsing is part of this build.
+     Theme: single dark theme only — tokens.json defines one color set with no light-mode
+     alternative, so no theme toggle is offered.
+
+     Design decisions worth flagging for the reviewer:
+       - AC1/AC2 scope: "Edit" and "Cancel request" only ever render on a card/detail view when
+         the request's live status is Submitted. This is the primary defense against AC3 — the
+         UI simply never *offers* an action that would be rejected, which is better UX than
+         letting a customer click something that then fails.
+       - AC3, demonstrated as a real attempt-and-rejection (not just hidden buttons): open
+         REQ-2044 (Submitted) on the Request Detail screen, then use the reviewer tooling button
+         "Simulate: technician assigned just now." That flips the request's status behind the
+         scenes without refreshing the page — exactly like another device/tab assigning a
+         technician while this page sits open. The Edit/Cancel buttons are still visible (stale);
+         clicking either now shows a blocking rejection banner ("Can't cancel/update — a
+         technician has already been assigned...") and the screen immediately re-renders to the
+         true, locked state. Viewing REQ-2038 directly shows that same locked state on arrival,
+         with no attempt needed.
+       - AC4, privacy-conscious rejection: the "My requests" list only ever queries the signed-in
+         customer's own requests (customerId match), so another customer's request never appears
+         as a card to click. To prove the rejection still fires if a customer reaches a request
+         they don't own some other way (e.g. a guessed/shared URL), the list's reviewer tooling
+         includes "Preview: open a request that belongs to another customer." That routes to the
+         same Request Detail screen in a denied state, which never reveals that request's
+         category, address, or description — only "This repair request isn't associated with
+         your account."
+       - Baseline states: the list designs loading (brief skeleton), error (retry), empty
+         (invites submitting a request, worded only — no dead "Browse services" button since that
+         flow isn't part of this prototype), partial (status for one request couldn't be
+         refreshed; shown with a dashed "stale" chip + inline retry, independent of the other
+         cards), and success. All are reachable via the reviewer tooling panel.
+       - Editing (AC2) reuses the booking form's field set (category, description, preferred time
+         window, service address) pre-filled with the request's current values; this story
+         doesn't re-demonstrate the per-category dynamic sub-questions from story 199, since that
+         mechanic is already covered there and isn't the focus of this story.
+       - Cancelling (AC1) is confirmed via a modal naming the consequence ("This can't be
+         undone...") before the status flips to Cancelled; a toast confirms success in the
+         customer's own words ("Request cancelled"). There is no destructive-red token in
+         tokens.json, so the confirm button stays on the shared primary style, same as every
+         other story in this project.
+-->
+<body class="u-surface">
+
+  <!-- Reviewer bar -->
+  <div id="review-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;
+    display:flex;align-items:center;gap:10px;padding:8px 16px;
+    background:var(--color-surface);border-bottom:1px solid var(--color-border);font-size:13px;font-family:var(--font-family-base)">
+    <span style="font-family:var(--font-family-base);color:var(--color-fg-muted)">TEST-M1-STORY-203</span>
+    <button id="prev-btn">← Prev</button>
+    <span id="screen-label" style="flex:1;text-align:center;font-weight:700;color:var(--color-fg)"></span>
+    <button id="next-btn">Next →</button>
+  </div>
+  <div style="height:46px"></div><!-- spacer -->
+
+  <!-- Inline fixture data: four requests owned by the signed-in customer (Jordan Avery) spanning
+       Submitted / Assigned / Cancelled, plus one request owned by a different customer used only
+       to demonstrate AC4's rejection. -->
+  <script id="fixture-requests" type="application/json">
+  [
+    {
+      "id": "REQ-2044", "customerId": "cust-204", "customerName": "Jordan Avery",
+      "categoryId": "plumbing", "categoryName": "Plumbing", "categoryIcon": "🚰",
+      "description": "Kitchen sink has been dripping steadily under the cabinet for two days and the cabinet floor is starting to warp.",
+      "date": "2026-10-10", "windowId": "morning", "windowLabel": "Morning (8am–11am)",
+      "addrStreet": "221 Sunridge Dr", "addrUnit": "", "addrCity": "Austin", "addrState": "TX", "addrZip": "78704",
+      "submittedAt": "2026-10-08T07:40:00", "status": "Submitted", "statusStale": false
+    },
+    {
+      "id": "REQ-2042", "customerId": "cust-204", "customerName": "Jordan Avery",
+      "categoryId": "electrical", "categoryName": "Electrical", "categoryIcon": "💡",
+      "description": "The outlet behind the TV stand stopped working and the breaker trips whenever we try to reset it.",
+      "date": "2026-10-09", "windowId": "afternoon", "windowLabel": "Afternoon (2pm–5pm)",
+      "addrStreet": "221 Sunridge Dr", "addrUnit": "", "addrCity": "Austin", "addrState": "TX", "addrZip": "78704",
+      "submittedAt": "2026-10-07T18:05:00", "status": "Submitted", "statusStale": true
+    },
+    {
+      "id": "REQ-2038", "customerId": "cust-204", "customerName": "Jordan Avery",
+      "categoryId": "hvac", "categoryName": "Heating & cooling", "categoryIcon": "🌡️",
+      "description": "Furnace turns on but only blows cold air. Thermostat is set to 70 and hasn't changed in two days.",
+      "date": "2026-10-08", "windowId": "morning", "windowLabel": "Morning (8am–11am)",
+      "addrStreet": "221 Sunridge Dr", "addrUnit": "", "addrCity": "Austin", "addrState": "TX", "addrZip": "78704",
+      "submittedAt": "2026-10-05T11:15:00", "status": "Assigned", "statusStale": false,
+      "technicianName": "Marcus Webb", "assignedAt": "2026-10-06T09:00:00"
+    },
+    {
+      "id": "REQ-2030", "customerId": "cust-204", "customerName": "Jordan Avery",
+      "categoryId": "appliance", "categoryName": "Appliance repair", "categoryIcon": "🧺",
+      "description": "Washer leaks from the bottom during the spin cycle.",
+      "date": "2026-10-05", "windowId": "midday", "windowLabel": "Midday (11am–2pm)",
+      "addrStreet": "221 Sunridge Dr", "addrUnit": "", "addrCity": "Austin", "addrState": "TX", "addrZip": "78704",
+      "submittedAt": "2026-10-02T10:00:00", "status": "Cancelled", "statusStale": false,
+      "cancelledAt": "2026-10-03T08:30:00"
+    },
+    {
+      "id": "REQ-9001", "customerId": "cust-317", "customerName": "Priya Chandran",
+      "categoryId": "plumbing", "categoryName": "Plumbing", "categoryIcon": "🚰",
+      "description": "Water heater pilot light won't stay lit.",
+      "date": "2026-10-11", "windowId": "morning", "windowLabel": "Morning (8am–11am)",
+      "addrStreet": "560 Maple Grove Dr", "addrUnit": "", "addrCity": "Austin", "addrState": "TX", "addrZip": "78702",
+      "submittedAt": "2026-10-08T06:10:00", "status": "Submitted", "statusStale": false
+    }
+  ]
+  </script>
+
+  <div id="screens">
+
+    <!-- Screen: My Requests
+         Notes:
+           - Default state on load is a brief loading skeleton, then the populated list (newest
+             submitted first).
+           - Only Submitted requests ever show "Edit" / "Cancel request" (AC1, AC2, and the
+             preventive half of AC3).
+           - Reviewer tooling below the list previews Loading / Empty / Error / Partial, jumps
+             back to Success, and opens a request belonging to a different customer (AC4).
+    -->
+    <div class="screen" data-name="My Requests">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">My requests</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line">Signed in as Jordan Avery</span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <div class="page-header-row">
+            <h1>My requests</h1>
+            <span class="request-count" id="request-count"></span>
+          </div>
+          <p>Track a request's status, or edit and cancel it while it's still waiting to be assigned.</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="list-live-region"></div>
+
+        <!-- State: loading -->
+        <div id="list-loading">
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:60%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:80%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-block" style="width:140px;height:18px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:50%;height:16px;margin-bottom:var(--space-1);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:100%;height:36px;"></div>
+          </div>
+        </div>
+
+        <!-- State: error -->
+        <div class="state-banner" id="list-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your requests right now. Check your connection and try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="list-retry">Retry</button></div>
+          </div>
+        </div>
+
+        <!-- State: partial -->
+        <div class="state-banner" id="list-partial-banner" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div><p style="margin:0;">Your requests loaded, but we couldn't refresh the live status for one of them. Look for "Refresh status" below.</p></div>
+        </div>
+
+        <!-- State: empty -->
+        <div class="empty-state" id="request-list-empty" hidden>
+          <span class="icon" aria-hidden="true">🗒️</span>
+          <p>You haven't submitted any repair requests yet. Once you do, it'll show up here so you can track, edit, or cancel it.</p>
+        </div>
+
+        <!-- State: success (and partial, same markup, one stale status chip) -->
+        <div id="request-list"></div>
+
+        <div class="demo-note">
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Preview every list state, or jump straight to AC4's rejection.</p>
+          <div class="demo-note-actions">
+            <button type="button" data-list-state="loading">Preview: loading</button>
+            <button type="button" data-list-state="success">Preview: populated (success)</button>
+            <button type="button" data-list-state="partial">Preview: partial (1 status stale)</button>
+            <button type="button" data-list-state="empty">Preview: empty</button>
+            <button type="button" data-list-state="error">Preview: error</button>
+            <button type="button" id="demo-open-other-customer">Preview: open a request belonging to another customer (AC4)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Request Detail
+         Notes:
+           - Renders one of four ways depending on the request's live status: Submitted (Edit +
+             Cancel available), Assigned (locked notice, AC3), Cancelled (read-only), or Denied
+             (AC4 — another customer's request, no details revealed).
+           - Open REQ-2044 and use "Simulate: technician assigned just now" in the reviewer panel,
+             then click Edit or Cancel to see AC3's rejection fire on a real attempt.
+    -->
+    <div class="screen" data-name="Request Detail">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-list">← My requests</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div id="detail-rejection-banner"></div>
+
+        <!-- State: denied (AC4) -->
+        <div class="empty-state" id="detail-denied" hidden>
+          <span class="icon" aria-hidden="true">🔒</span>
+          <p><strong>This repair request isn't associated with your account.</strong><br />Double-check the link, or go back to your own requests.</p>
+          <button type="button" class="btn btn-secondary" id="denied-back-btn">Back to my requests</button>
+        </div>
+
+        <!-- State: owned request (Submitted / Assigned / Cancelled) -->
+        <div class="card" id="detail-content" hidden>
+          <div class="request-card-head">
+            <h1 class="card-title" id="detail-category" style="margin-bottom:0;"></h1>
+            <span id="detail-status-chip"></span>
+          </div>
+          <dl class="confirm-grid">
+            <div class="confirm-field"><dt>Request ID</dt><dd id="detail-id"></dd></div>
+            <div class="confirm-field"><dt>Submitted</dt><dd id="detail-submitted"></dd></div>
+            <div class="confirm-field"><dt>Preferred time</dt><dd id="detail-time"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Service address</dt><dd id="detail-address"></dd></div>
+            <div class="confirm-field" style="grid-column: 1 / -1;"><dt>Description</dt><dd id="detail-description"></dd></div>
+          </dl>
+
+          <div id="detail-locked-notice"></div>
+          <div id="detail-cancelled-notice"></div>
+
+          <div class="submit-bar" id="detail-actions"></div>
+        </div>
+
+        <div class="demo-note" id="detail-demo-note" hidden>
+          <div class="demo-note-title">Reviewer tooling — not part of the shipped app</div>
+          <p style="margin:0;">Demonstrate AC3: assign a technician behind the scenes, then try Edit or Cancel above anyway.</p>
+          <div class="demo-note-actions">
+            <button type="button" id="demo-race-condition">Simulate: technician assigned just now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Edit Request
+         Notes:
+           - Only reachable from a Submitted request's "Edit" button (AC2). Pre-fills every field
+             with the request's current values.
+           - Required fields match the original booking form (story 199): service category,
+             description, preferred date + time window, and service address.
+           - Saving re-validates, then updates the request in place and returns to its Request
+             Detail view with a confirmation toast; "Discard changes" returns without saving.
+    -->
+    <div class="screen" data-name="Edit Request">
+      <div class="app-topbar">
+        <span class="brand">Fixly</span>
+        <nav class="app-nav">
+          <a href="#" id="back-to-detail">← Back to request</a>
+        </nav>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Edit repair request</h1>
+          <p>Fields marked <span class="required-mark">*</span> are required. Editing <strong id="edit-request-id"></strong>.</p>
+        </div>
+
+        <div class="card">
+          <form id="edit-form" novalidate>
+            <div id="edit-error-summary" tabindex="-1"></div>
+
+            <div class="form-section">
+              <label class="label" for="edit-category">Service category <span class="required-mark">*</span></label>
+              <select class="input" id="edit-category"></select>
+            </div>
+
+            <div class="form-section">
+              <label class="label" for="edit-description">What's going on? <span class="required-mark">*</span></label>
+              <textarea class="input" id="edit-description" aria-required="true"></textarea>
+              <p class="field-error" id="edit-description-error" hidden><span class="icon" aria-hidden="true">!</span> Describe the problem so the technician knows what to expect.</p>
+            </div>
+
+            <fieldset class="form-section">
+              <legend class="legend">Preferred time window <span class="required-mark">*</span></legend>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-date">Date</label>
+                  <input class="input" type="date" id="edit-date" aria-required="true" />
+                </div>
+                <div>
+                  <label class="label" for="edit-window">Time window</label>
+                  <select class="input" id="edit-window" aria-required="true"></select>
+                </div>
+              </div>
+              <p class="field-error" id="edit-time-error" hidden><span class="icon" aria-hidden="true">!</span> Choose a date and a preferred time window.</p>
+            </fieldset>
+
+            <fieldset class="form-section">
+              <legend class="legend">Service address <span class="required-mark">*</span></legend>
+              <div class="form-row">
+                <div>
+                  <label class="label" for="edit-addr-street">Street address</label>
+                  <input class="input" type="text" id="edit-addr-street" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-addr-unit">Apt / unit <span class="u-text-muted">(optional)</span></label>
+                  <input class="input" type="text" id="edit-addr-unit" />
+                </div>
+                <div>
+                  <label class="label" for="edit-addr-city">City</label>
+                  <input class="input" type="text" id="edit-addr-city" />
+                </div>
+              </div>
+              <div class="form-row two-col">
+                <div>
+                  <label class="label" for="edit-addr-state">State</label>
+                  <input class="input" type="text" id="edit-addr-state" maxlength="2" placeholder="e.g. TX" />
+                </div>
+                <div>
+                  <label class="label" for="edit-addr-zip">ZIP code</label>
+                  <input class="input" type="text" id="edit-addr-zip" inputmode="numeric" />
+                </div>
+              </div>
+              <p class="field-error" id="edit-address-error" hidden><span class="icon" aria-hidden="true">!</span> Enter the street address, city, state, and ZIP code.</p>
+            </fieldset>
+
+            <div class="submit-bar">
+              <button type="submit" class="btn btn-primary" id="edit-submit-btn">Save changes</button>
+              <button type="button" class="btn btn-secondary" id="edit-discard-btn">Discard changes</button>
+              <span class="u-text-sm u-text-muted" id="edit-submit-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cancel confirmation modal (AC1) -->
+  <div class="modal-overlay" id="cancel-modal-overlay" hidden></div>
+  <div class="modal-wrap" id="cancel-modal-wrap" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+      <div class="modal-header">
+        <div>
+          <h2 id="cancel-modal-title">Cancel this repair request?</h2>
+          <p>This can't be undone. You'll need to submit a new request if you still need service.</p>
+        </div>
+        <button type="button" class="icon-btn" id="cancel-modal-close" aria-label="Close dialog">✕</button>
+      </div>
+      <p class="u-text-md" id="cancel-modal-summary" style="margin:0;"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-modal-keep">Keep request</button>
+        <button type="button" class="btn btn-primary" id="cancel-modal-confirm">Cancel request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast feedback -->
+  <div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+  // ---------- Fixture data ----------
+  const REQUESTS = JSON.parse(document.getElementById('fixture-requests').textContent);
+  const CURRENT_CUSTOMER_ID = 'cust-204';
+  const CURRENT_CUSTOMER_NAME = 'Jordan Avery';
+
+  const CATEGORIES = [
+    { id: 'plumbing', name: 'Plumbing', icon: '🚰' },
+    { id: 'electrical', name: 'Electrical', icon: '💡' },
+    { id: 'hvac', name: 'Heating & cooling', icon: '🌡️' },
+    { id: 'appliance', name: 'Appliance repair', icon: '🧺' },
+    { id: 'handyman', name: 'General handyman', icon: '🛠️' }
+  ];
+  const TIME_WINDOWS = [
+    { id: 'morning', label: 'Morning (8am–11am)' },
+    { id: 'midday', label: 'Midday (11am–2pm)' },
+    { id: 'afternoon', label: 'Afternoon (2pm–5pm)' },
+    { id: 'evening', label: 'Evening (5pm–8pm)' }
+  ];
+
+  function categoryById(id) { return CATEGORIES.find((c) => c.id === id); }
+  function windowById(id) { return TIME_WINDOWS.find((w) => w.id === id); }
+  function requestById(id) { return REQUESTS.find((r) => r.id === id); }
+
+  // ---------- Helpers ----------
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  }
+  function formatShortDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+  function formatDateTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+      ' at ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+  function addressLine(r) {
+    return [r.addrStreet, r.addrUnit, r.addrCity + ', ' + r.addrState + ' ' + r.addrZip].filter(Boolean).join(', ');
+  }
+  function timeLabel(r) {
+    return formatShortDate(r.date) + ', ' + (windowById(r.windowId) || {}).label;
+  }
+  function statusChipHTML(status) {
+    const meta = { 'Submitted': { icon: '○', cls: 'status-submitted' }, 'Assigned': { icon: '✓', cls: 'status-assigned' }, 'Cancelled': { icon: '✕', cls: 'status-cancelled' } }[status];
+    return '<span class="status-chip ' + meta.cls + '"><span aria-hidden="true">' + meta.icon + '</span>' + status + '</span>';
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.hidden = false;
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { toast.hidden = true; }, 3200);
+  }
+
+  // ========================================================================
+  // My Requests list
+  // ========================================================================
+  const requestListEl = document.getElementById('request-list');
+  const requestCountEl = document.getElementById('request-count');
+
+  function myRequestsSorted() {
+    return REQUESTS.filter((r) => r.customerId === CURRENT_CUSTOMER_ID)
+      .slice().sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  }
+
+  function requestCardHTML(r) {
+    const actions = r.status === 'Submitted'
+      ? '<div class="request-actions">' +
+          '<button type="button" class="btn btn-secondary" data-view="' + r.id + '">View details</button>' +
+          '<button type="button" class="btn btn-secondary" data-edit="' + r.id + '">Edit</button>' +
+          '<button type="button" class="btn btn-secondary" data-cancel="' + r.id + '">Cancel request</button>' +
+        '</div>'
+      : '<div class="request-actions"><button type="button" class="btn btn-secondary" data-view="' + r.id + '">View details</button></div>';
+
+    const staleNote = r.statusStale
+      ? '<p class="stale-note"><span class="status-chip status-stale"><span aria-hidden="true">?</span> Status may be out of date</span> <button type="button" class="link-btn" data-refresh-status="' + r.id + '">Refresh status</button></p>'
+      : '';
+
+    return (
+      '<div class="card request-card' + (r.status === 'Cancelled' ? ' is-cancelled' : '') + '" data-request-card="' + r.id + '">' +
+        '<div class="request-card-head">' +
+          '<div><p class="request-card-title">' + r.categoryIcon + ' ' + escapeHTML(r.categoryName) + '</p>' +
+          '<p class="request-submitted-line">Submitted ' + formatShortDate(r.submittedAt.slice(0, 10)) + '</p></div>' +
+          statusChipHTML(r.status) +
+        '</div>' +
+        staleNote +
+        '<p class="request-meta">' + timeLabel(r) + ' · ' + escapeHTML(addressLine(r)) + '</p>' +
+        '<p class="request-description">' + escapeHTML(r.description) + '</p>' +
+        actions +
+      '</div>'
+    );
+  }
+
+  function renderRequestList(list) {
+    requestListEl.innerHTML = list.map(requestCardHTML).join('');
+    requestListEl.querySelectorAll('[data-view]').forEach((btn) => btn.addEventListener('click', () => openDetail(btn.dataset.view)));
+    requestListEl.querySelectorAll('[data-edit]').forEach((btn) => btn.addEventListener('click', () => attemptAction(btn.dataset.edit, 'edit')));
+    requestListEl.querySelectorAll('[data-cancel]').forEach((btn) => btn.addEventListener('click', () => attemptAction(btn.dataset.cancel, 'cancel')));
+    requestListEl.querySelectorAll('[data-refresh-status]').forEach((btn) => btn.addEventListener('click', () => {
+      const r = requestById(btn.dataset.refreshStatus);
+      if (r) r.statusStale = false;
+      renderRequestList(myRequestsSorted());
+      document.getElementById('list-live-region').textContent = 'Status refreshed for ' + r.categoryName + ' request.';
+    }));
+    requestCountEl.textContent = list.length + (list.length === 1 ? ' request' : ' requests');
+  }
+
+  // ---------- List state machine ----------
+  const listLoadingEl = document.getElementById('list-loading');
+  const listErrorEl = document.getElementById('list-error');
+  const listPartialBannerEl = document.getElementById('list-partial-banner');
+  const listEmptyEl = document.getElementById('request-list-empty');
+  const listLiveRegion = document.getElementById('list-live-region');
+
+  function setListState(next) {
+    [listLoadingEl, listErrorEl, listPartialBannerEl, listEmptyEl, requestListEl].forEach((el) => { el.hidden = true; });
+    requestCountEl.textContent = '';
+
+    if (next === 'loading') { listLoadingEl.hidden = false; return; }
+    if (next === 'error') { listErrorEl.hidden = false; return; }
+
+    if (next === 'empty') {
+      listEmptyEl.hidden = false;
+      requestCountEl.textContent = '0 requests';
+      return;
+    }
+
+    if (next === 'partial') {
+      listPartialBannerEl.hidden = false;
+      const stale = REQUESTS.find((r) => r.id === 'REQ-2042');
+      if (stale) stale.statusStale = true;
+      requestListEl.hidden = false;
+      renderRequestList(myRequestsSorted());
+      listLiveRegion.textContent = 'Requests loaded. One status could not be refreshed.';
+      return;
+    }
+
+    // success
+    const stale = REQUESTS.find((r) => r.id === 'REQ-2042');
+    if (stale) stale.statusStale = false;
+    requestListEl.hidden = false;
+    renderRequestList(myRequestsSorted());
+    listLiveRegion.textContent = 'Requests loaded.';
+  }
+
+  document.querySelectorAll('[data-list-state]').forEach((btn) => btn.addEventListener('click', () => setListState(btn.dataset.listState)));
+  document.getElementById('list-retry').addEventListener('click', () => {
+    setListState('loading');
+    setTimeout(() => setListState('success'), 350);
+  });
+  document.getElementById('demo-open-other-customer').addEventListener('click', () => openDetail('REQ-9001'));
+
+  // ========================================================================
+  // Request Detail
+  // ========================================================================
+  let currentDetailId = null;
+  const detailDeniedEl = document.getElementById('detail-denied');
+  const detailContentEl = document.getElementById('detail-content');
+  const detailDemoNoteEl = document.getElementById('detail-demo-note');
+  const detailRejectionBannerEl = document.getElementById('detail-rejection-banner');
+
+  function openDetail(id) {
+    currentDetailId = id;
+    detailRejectionBannerEl.innerHTML = '';
+    renderDetail();
+    show(1);
+  }
+
+  function renderDetail() {
+    const r = requestById(currentDetailId);
+    const owned = r && r.customerId === CURRENT_CUSTOMER_ID;
+
+    detailDeniedEl.hidden = owned;
+    detailContentEl.hidden = !owned;
+    detailDemoNoteEl.hidden = !(owned && r.status === 'Submitted');
+
+    if (!owned) return;
+
+    document.getElementById('detail-category').textContent = r.categoryIcon + ' ' + r.categoryName;
+    document.getElementById('detail-status-chip').innerHTML = statusChipHTML(r.status);
+    document.getElementById('detail-id').textContent = r.id;
+    document.getElementById('detail-submitted').textContent = formatDateTime(r.submittedAt);
+    document.getElementById('detail-time').textContent = timeLabel(r);
+    document.getElementById('detail-address').textContent = addressLine(r);
+    document.getElementById('detail-description').textContent = r.description;
+
+    const lockedEl = document.getElementById('detail-locked-notice');
+    const cancelledEl = document.getElementById('detail-cancelled-notice');
+    const actionsEl = document.getElementById('detail-actions');
+    lockedEl.innerHTML = '';
+    cancelledEl.innerHTML = '';
+    actionsEl.innerHTML = '';
+
+    if (r.status === 'Submitted') {
+      actionsEl.innerHTML =
+        '<button type="button" class="btn btn-primary" data-edit="' + r.id + '">Edit</button>' +
+        '<button type="button" class="btn btn-secondary" data-cancel="' + r.id + '">Cancel request</button>';
+      actionsEl.querySelector('[data-edit]').addEventListener('click', () => attemptAction(r.id, 'edit'));
+      actionsEl.querySelector('[data-cancel]').addEventListener('click', () => attemptAction(r.id, 'cancel'));
+    } else if (r.status === 'Assigned') {
+      lockedEl.innerHTML =
+        '<div class="notice"><span class="icon" aria-hidden="true">i</span>' +
+        '<span><strong>' + escapeHTML(r.technicianName) + '</strong> has been assigned to this request, so it can no longer be edited or cancelled here. Contact support if you need to make a change.</span></div>';
+    } else if (r.status === 'Cancelled') {
+      cancelledEl.innerHTML =
+        '<div class="notice"><span class="icon" aria-hidden="true">i</span>' +
+        '<span>This request was cancelled on ' + formatDateTime(r.cancelledAt) + '. Submit a new request if you still need service.</span></div>';
+    }
+  }
+
+  function showRejectionBanner(action, r) {
+    const verb = action === 'edit' ? 'update' : 'cancel';
+    detailRejectionBannerEl.innerHTML =
+      '<div class="state-banner" role="alert">' +
+        '<span class="icon" aria-hidden="true">!</span>' +
+        '<div><strong>Can\'t ' + verb + ' this request.</strong> A technician has already been assigned, so changes now go through support.</div>' +
+      '</div>';
+    detailRejectionBannerEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---------- Shared guard for Edit / Cancel (AC3) ----------
+  function attemptAction(id, action) {
+    const r = requestById(id);
+    if (!r) return;
+    if (r.status !== 'Submitted') {
+      if (currentDetailId !== id) { currentDetailId = id; }
+      showRejectionBanner(action, r);
+      renderDetail();
+      show(1);
+      renderRequestList(myRequestsSorted());
+      return;
+    }
+    if (action === 'edit') openEdit(id);
+    else openCancelModal(id);
+  }
+
+  document.getElementById('demo-race-condition').addEventListener('click', () => {
+    const r = requestById(currentDetailId);
+    if (!r) return;
+    r.status = 'Assigned';
+    r.technicianName = 'Priya Chandran';
+    r.assignedAt = new Date().toISOString();
+    showToast('(Demo) A technician was just assigned behind the scenes. Try Edit or Cancel above.');
+  });
+
+  document.getElementById('back-to-list').addEventListener('click', (e) => { e.preventDefault(); show(0); });
+  document.getElementById('denied-back-btn').addEventListener('click', () => show(0));
+
+  // ========================================================================
+  // Cancel modal (AC1)
+  // ========================================================================
+  let cancelTargetId = null;
+  let cancelModalTrigger = null;
+  const cancelOverlay = document.getElementById('cancel-modal-overlay');
+  const cancelWrap = document.getElementById('cancel-modal-wrap');
+
+  function openCancelModal(id) {
+    const r = requestById(id);
+    if (!r) return;
+    cancelTargetId = id;
+    cancelModalTrigger = document.activeElement;
+    document.getElementById('cancel-modal-summary').textContent =
+      r.categoryName + ' request for ' + timeLabel(r) + ' at ' + addressLine(r) + '.';
+    cancelOverlay.hidden = false;
+    cancelWrap.hidden = false;
+    document.getElementById('cancel-modal-keep').focus();
+  }
+  function closeCancelModal() {
+    cancelOverlay.hidden = true;
+    cancelWrap.hidden = true;
+    if (cancelModalTrigger) cancelModalTrigger.focus();
+  }
+  document.getElementById('cancel-modal-close').addEventListener('click', closeCancelModal);
+  document.getElementById('cancel-modal-keep').addEventListener('click', closeCancelModal);
+  cancelOverlay.addEventListener('click', closeCancelModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !cancelWrap.hidden) closeCancelModal();
+  });
+
+  document.getElementById('cancel-modal-confirm').addEventListener('click', () => {
+    const r = requestById(cancelTargetId);
+    closeCancelModal();
+    if (!r) return;
+    if (r.status !== 'Submitted') {
+      showRejectionBanner('cancel', r);
+      currentDetailId = r.id;
+      renderDetail();
+      show(1);
+      renderRequestList(myRequestsSorted());
+      return;
+    }
+    r.status = 'Cancelled';
+    r.cancelledAt = new Date().toISOString();
+    showToast('Request cancelled.');
+    renderRequestList(myRequestsSorted());
+    if (currentDetailId === r.id) renderDetail();
+  });
+
+  // ========================================================================
+  // Edit Request (AC2)
+  // ========================================================================
+  let editingId = null;
+  const editCategorySelect = document.getElementById('edit-category');
+  const editWindowSelect = document.getElementById('edit-window');
+  CATEGORIES.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c.id; opt.textContent = c.icon + ' ' + c.name;
+    editCategorySelect.appendChild(opt);
+  });
+  TIME_WINDOWS.forEach((w) => {
+    const opt = document.createElement('option');
+    opt.value = w.id; opt.textContent = w.label;
+    editWindowSelect.appendChild(opt);
+  });
+
+  function openEdit(id) {
+    const r = requestById(id);
+    if (!r) return;
+    editingId = id;
+    document.getElementById('edit-request-id').textContent = r.id;
+    editCategorySelect.value = r.categoryId;
+    document.getElementById('edit-description').value = r.description;
+    document.getElementById('edit-date').value = r.date;
+    editWindowSelect.value = r.windowId;
+    document.getElementById('edit-addr-street').value = r.addrStreet;
+    document.getElementById('edit-addr-unit').value = r.addrUnit;
+    document.getElementById('edit-addr-city').value = r.addrCity;
+    document.getElementById('edit-addr-state').value = r.addrState;
+    document.getElementById('edit-addr-zip').value = r.addrZip;
+    document.getElementById('edit-error-summary').innerHTML = '';
+    document.querySelectorAll('#edit-form .input').forEach((el) => el.classList.remove('invalid'));
+    document.querySelectorAll('#edit-form .field-error').forEach((el) => { el.hidden = true; });
+    show(2);
+  }
+
+  function setEditFieldError(key, show) {
+    const errEl = document.getElementById('edit-' + key + '-error');
+    const inputIds = {
+      'description': ['edit-description'],
+      'time': ['edit-date', 'edit-window'],
+      'address': ['edit-addr-street', 'edit-addr-city', 'edit-addr-state', 'edit-addr-zip']
+    };
+    if (errEl) errEl.hidden = !show;
+    (inputIds[key] || []).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.toggle('invalid', show); el.setAttribute('aria-invalid', show ? 'true' : 'false'); }
+    });
+  }
+  ['edit-description'].forEach((id) => document.getElementById(id).addEventListener('input', () => setEditFieldError('description', false)));
+  ['edit-date', 'edit-window'].forEach((id) => document.getElementById(id).addEventListener('input', () => setEditFieldError('time', false)));
+  ['edit-addr-street', 'edit-addr-city', 'edit-addr-state', 'edit-addr-zip'].forEach((id) => document.getElementById(id).addEventListener('input', () => setEditFieldError('address', false)));
+
+  function validateEditForm() {
+    const missing = [];
+    const description = document.getElementById('edit-description').value.trim();
+    setEditFieldError('description', !description);
+    if (!description) missing.push({ label: "What's going on?", focusId: 'edit-description' });
+
+    const date = document.getElementById('edit-date').value;
+    const windowVal = editWindowSelect.value;
+    const timeMissing = !date || !windowVal;
+    setEditFieldError('time', timeMissing);
+    if (timeMissing) missing.push({ label: 'Preferred time window', focusId: date ? 'edit-window' : 'edit-date' });
+
+    const street = document.getElementById('edit-addr-street').value.trim();
+    const city = document.getElementById('edit-addr-city').value.trim();
+    const state = document.getElementById('edit-addr-state').value.trim();
+    const zip = document.getElementById('edit-addr-zip').value.trim();
+    const addressMissing = !street || !city || !state || !zip;
+    setEditFieldError('address', addressMissing);
+    if (addressMissing) missing.push({ label: 'Service address', focusId: !street ? 'edit-addr-street' : (!city ? 'edit-addr-city' : (!state ? 'edit-addr-state' : 'edit-addr-zip')) });
+
+    return missing;
+  }
+
+  const editErrorSummaryEl = document.getElementById('edit-error-summary');
+  function renderEditErrorSummary(missing) {
+    if (missing.length === 0) { editErrorSummaryEl.innerHTML = ''; return; }
+    editErrorSummaryEl.innerHTML =
+      '<div class="state-banner" role="alert">' +
+        '<span class="icon" aria-hidden="true">!</span>' +
+        '<div><p style="margin:0;font-weight:700;">We couldn\'t save your changes — please fix the following:</p>' +
+          '<ul style="margin:var(--space-2) 0 0 0;padding-left:1.1em;">' + missing.map((m) => '<li><button type="button" class="link-btn" data-jump-to="' + m.focusId + '">' + escapeHTML(m.label) + '</button></li>').join('') + '</ul>' +
+        '</div>' +
+      '</div>';
+    editErrorSummaryEl.querySelectorAll('[data-jump-to]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const el = document.getElementById(btn.dataset.jumpTo);
+        if (el) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      });
+    });
+    editErrorSummaryEl.focus();
+  }
+
+  const editForm = document.getElementById('edit-form');
+  const editSubmitBtn = document.getElementById('edit-submit-btn');
+  const editSubmitStatus = document.getElementById('edit-submit-status');
+
+  editForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const missing = validateEditForm();
+    renderEditErrorSummary(missing);
+    if (missing.length > 0) { editSubmitStatus.textContent = ''; return; }
+
+    editSubmitBtn.disabled = true;
+    editSubmitBtn.textContent = 'Saving…';
+    editSubmitStatus.textContent = '';
+
+    setTimeout(() => {
+      const r = requestById(editingId);
+      if (r.status !== 'Submitted') {
+        editSubmitBtn.disabled = false;
+        editSubmitBtn.textContent = 'Save changes';
+        showRejectionBanner('edit', r);
+        currentDetailId = r.id;
+        renderDetail();
+        show(1);
+        renderRequestList(myRequestsSorted());
+        return;
+      }
+
+      const category = categoryById(editCategorySelect.value);
+      r.categoryId = category.id;
+      r.categoryName = category.name;
+      r.categoryIcon = category.icon;
+      r.description = document.getElementById('edit-description').value.trim();
+      r.date = document.getElementById('edit-date').value;
+      r.windowId = editWindowSelect.value;
+      r.addrStreet = document.getElementById('edit-addr-street').value.trim();
+      r.addrUnit = document.getElementById('edit-addr-unit').value.trim();
+      r.addrCity = document.getElementById('edit-addr-city').value.trim();
+      r.addrState = document.getElementById('edit-addr-state').value.trim().toUpperCase();
+      r.addrZip = document.getElementById('edit-addr-zip').value.trim();
+
+      editSubmitBtn.disabled = false;
+      editSubmitBtn.textContent = 'Save changes';
+      showToast('Request updated.');
+      renderRequestList(myRequestsSorted());
+      currentDetailId = r.id;
+      renderDetail();
+      show(1);
+    }, 350);
+  });
+
+  document.getElementById('edit-discard-btn').addEventListener('click', () => { show(1); });
+  document.getElementById('back-to-detail').addEventListener('click', (e) => { e.preventDefault(); show(1); });
+
+  // ---------- Reviewer bar ----------
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  let cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach((s, j) => s.style.display = j === cur ? 'block' : 'none');
+    document.getElementById('screen-label').textContent =
+      `${cur + 1} / ${screens.length}: ${screens[cur].dataset.name}`;
+  }
+  document.getElementById('prev-btn').onclick = () => show(cur - 1);
+  document.getElementById('next-btn').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes((document.activeElement || {}).tagName)) return;
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+
+  // Initial load simulation.
+  setListState('loading');
+  setTimeout(() => setListState('success'), 350);
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->

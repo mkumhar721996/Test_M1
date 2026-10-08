@@ -17,4 +17,15 @@ function requireDispatcherRole(req, res, next) {
   return next();
 }
 
-module.exports = { requireDispatcherRole };
+// Client-asserted dev identity (same convention as src/jobs/auth.js and src/defects/auth.js):
+// fails closed in production until a server-verified credential exists.
+function requireAuthenticatedUser(req, res, next) {
+  const userId = req.headers['x-user-id'];
+  if (process.env.NODE_ENV === 'production' || !userId) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  req.userId = userId;
+  return next();
+}
+
+module.exports = { requireDispatcherRole, requireAuthenticatedUser };
