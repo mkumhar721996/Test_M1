@@ -10,7 +10,8 @@ function requireAuthenticatedUser(req, res, next) {
   next();
 }
 
-// Client-asserted `x-staff-role`; fails closed in production like requireAuthenticatedUser.
+// Client-asserted `x-staff-role` is not a real boundary either: fail closed in production
+// (reject regardless of header) until a server-verified credential replaces it.
 function requireDispatcherRole(req, res, next) {
   const role = req.headers['x-staff-role'];
   if (process.env.NODE_ENV === 'production' || !role) {

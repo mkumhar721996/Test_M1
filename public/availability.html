@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FieldOps — My Availability</title>
+<link rel="stylesheet" href="../design-system/tokens.css" />
+<link rel="stylesheet" href="../design-system/prototype-utils.css" />
+<link rel="stylesheet" href="./css/availability.css" />
+<script src="./js/utils.js" defer></script>
+<script src="./js/availability.js" defer></script>
+</head>
+<body class="u-surface">
+
+  <div id="screens">
+    <div class="screen" data-name="My Availability">
+      <div class="app-topbar">
+        <span class="brand">FieldOps</span>
+        <nav class="app-nav">
+          <a href="#" class="active" aria-current="page">Availability</a>
+        </nav>
+        <div class="app-topbar-right">
+          <span class="session-line">Signed in as Marcus Webb</span>
+        </div>
+      </div>
+      <div class="page">
+        <div class="page-header">
+          <h1>Your availability</h1>
+          <p>Let dispatch know when you can't take new jobs. This never changes jobs you're already assigned.</p>
+        </div>
+
+        <div aria-live="polite" class="u-sr-only" id="avail-live-region"></div>
+
+        <div id="status-loading">
+          <div class="card" style="margin-bottom:var(--space-4);">
+            <div class="skeleton-block" style="width:44px;height:44px;border-radius:50%;margin-bottom:var(--space-3);"></div>
+            <div class="skeleton-block" style="width:60%;height:20px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:85%;height:14px;"></div>
+          </div>
+        </div>
+
+        <div class="card" id="status-card-wrap" hidden>
+          <div class="status-card" id="status-card">
+            <div class="status-card-main">
+              <span class="status-icon" aria-hidden="true" id="status-icon">✓</span>
+              <div>
+                <h2 class="status-heading" id="status-heading">You're available for new jobs</h2>
+                <p class="status-sub" id="status-sub">Dispatch can assign you new jobs right now.</p>
+              </div>
+            </div>
+            <div class="avail-switch-wrap">
+              <button type="button" class="avail-switch" id="avail-switch" role="switch" aria-checked="true" aria-label="Available for new jobs">
+                <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+                <span id="switch-text-label">On</span>
+              </button>
+              <span class="switch-status-line" id="switch-status-line"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-banner" id="save-error-banner" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't update your availability. Your status is still what it was before — try again.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="save-retry-btn">Try again</button></div>
+          </div>
+        </div>
+
+        <div class="page-header" style="margin-top:var(--space-4);">
+          <h2 class="section-heading">Your upcoming assignments</h2>
+          <p class="section-sub">These stay on your schedule no matter what you set above.</p>
+        </div>
+
+        <div id="assignments-loading">
+          <div class="card">
+            <div class="skeleton-block" style="width:40%;height:16px;margin-bottom:var(--space-2);"></div>
+            <div class="skeleton-block" style="width:70%;height:14px;"></div>
+          </div>
+        </div>
+
+        <div class="state-banner" id="assignments-error" role="alert" hidden>
+          <span class="icon" aria-hidden="true">⚠</span>
+          <div>
+            <p style="margin:0;">Couldn't load your upcoming assignments. Your availability switch above still works.</p>
+            <div class="state-banner-actions"><button type="button" class="btn btn-secondary" id="assignments-retry-btn">Retry</button></div>
+          </div>
+        </div>
+
+        <div class="empty-state card" id="assignments-empty" hidden>
+          <span class="icon" aria-hidden="true">🗓️</span>
+          <p>No upcoming assignments scheduled.</p>
+        </div>
+
+        <div class="card" id="assignments-list-wrap" hidden>
+          <div id="assignments-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="avail-toast" role="status" hidden></div>
+
+</body>
+</html>

@@ -72,4 +72,13 @@ function listAssignedJobs(technicianId) {
     .sort((a, b) => new Date(a.scheduledStart) - new Date(b.scheduledStart));
 }
 
-module.exports = { listAssignedJobs };
+// Deliberately no availability check: a dispatcher may assign to an unavailable technician.
+function assignJob(id, technicianId) {
+  const job = jobs.get(id);
+  if (!job) return undefined;
+  job.technicianId = technicianId;
+  job.status = 'Assigned';
+  return job;
+}
+
+module.exports = { listAssignedJobs, assignJob };
