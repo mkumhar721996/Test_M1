@@ -1,0 +1,173 @@
+  /*
+    Design-system gap note: tokens.json has one brand hue (color-primary, purple) and no
+    semantic success/warning/danger colors. Validation errors never rely on color alone — every
+    invalid field pairs a "!" icon with text, and the summary banner reuses the same
+    icon+border treatment as other stories in this project (primary-colored left border, not a
+    new red). The "no technician available yet" notice is intentionally NOT styled as an error
+    (per AC7 it must not read as a rejection): it reuses the neutral card/border tokens instead
+    of the primary-colored error treatment, with an "i" icon + label so the distinction doesn't
+    depend on color. No literal colors are introduced anywhere below; every rule composes
+    existing tokens only.
+  */
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .u-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-topbar-right { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; flex-wrap: wrap; }
+  .app-topbar.internal { background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+  .internal-tag {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: 2px var(--space-2); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .link-btn {
+    background: none; border: none; padding: var(--space-1) var(--space-2); cursor: pointer;
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .app-nav a:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .input:focus-visible,
+  select.input:focus-visible, .link-btn:focus-visible, .photo-add-btn:focus-visible,
+  .category-card button:focus-visible, .photo-remove:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Category browse grid (AC1) ---------- */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-4);
+  }
+  .category-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .category-card .cat-icon { font-size: 1.75rem; line-height: 1; }
+  .category-card .cat-meta {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+  }
+  .category-card .btn { margin-top: auto; align-self: flex-start; }
+
+  /* ---------- Form layout ---------- */
+  .form-section { margin-bottom: var(--space-4); border: none; padding: 0; min-width: 0; }
+  .form-section legend, .form-section .legend {
+    font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold);
+    color: var(--color-fg); padding: 0; margin: 0 0 var(--space-3) 0; width: 100%;
+  }
+  .form-section .hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: 0 0 var(--space-3) 0; }
+  .form-row { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin-bottom: var(--space-3); }
+  @media (min-width: 560px) { .form-row.two-col { grid-template-columns: 1fr 1fr; } }
+  .form-row:last-child { margin-bottom: 0; }
+  .required-mark { color: var(--color-fg); font-weight: var(--font-weight-bold); }
+  .optional-tag { color: var(--color-fg-muted); font-weight: var(--font-weight-regular); font-size: var(--font-size-sm); }
+
+  .input.invalid, select.input.invalid, textarea.input.invalid { border-color: var(--color-primary); border-width: 2px; }
+  .field-error {
+    display: flex; align-items: flex-start; gap: var(--space-1); margin-top: var(--space-1);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); font-weight: var(--font-weight-bold);
+  }
+  .field-error .icon { color: var(--color-primary); }
+
+  textarea.input { resize: vertical; min-height: 96px; font-family: var(--font-family-base); }
+
+  /* ---------- Neutral "notice" box (never styled as an error) ---------- */
+  .notice {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    padding: var(--space-3); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted);
+    margin-top: var(--space-2);
+  }
+  .notice .icon {
+    display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 20px;
+    border: 1px solid var(--color-fg-muted); border-radius: 50%; font-weight: var(--font-weight-bold); color: var(--color-fg-muted); font-size: 12px;
+  }
+  .notice strong { color: var(--color-fg); }
+
+  /* ---------- Error summary banner ---------- */
+  .state-banner {
+    display: flex; align-items: flex-start; gap: var(--space-2);
+    background: var(--color-surface); border: 1px solid var(--color-primary); border-left-width: var(--space-1);
+    border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg); margin-bottom: var(--space-4);
+  }
+  .state-banner .icon { color: var(--color-primary); font-weight: var(--font-weight-bold); }
+  .state-banner ul { margin: var(--space-2) 0 0 0; padding-left: 1.1em; }
+  .state-banner li + li { margin-top: var(--space-1); }
+  .state-banner button.link-btn { padding: 0; font-size: inherit; }
+
+  /* ---------- Photos ---------- */
+  .photo-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+  .photo-thumb {
+    position: relative; width: 88px; height: 88px; border-radius: var(--radius-md); overflow: hidden;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-remove {
+    position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; min-width: 0; min-height: 0;
+    display: flex; align-items: center; justify-content: center; border-radius: 50%;
+    background: var(--color-bg); color: var(--color-fg); border: 1px solid var(--color-border);
+    cursor: pointer; font-size: 13px; line-height: 1; padding: 0;
+  }
+  /* Extends the tappable area to ~44px without growing the visible 22px badge. */
+  .photo-remove::after { content: ''; position: absolute; inset: -11px; }
+  .photo-remove:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .photo-add-btn {
+    width: 88px; height: 88px; border-radius: var(--radius-md); border: 2px dashed var(--color-border);
+    background: none; color: var(--color-fg-muted); cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+  }
+  .photo-add-btn:hover { border-color: var(--color-primary); color: var(--color-fg); }
+  .photo-add-btn .icon { font-size: 1.25rem; }
+  .photo-empty-hint { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); margin: var(--space-2) 0 0 0; }
+
+  /* ---------- Submit bar ---------- */
+  .submit-bar { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); flex-wrap: wrap; }
+  .submit-bar .btn[disabled] { opacity: 0.7; cursor: not-allowed; }
+
+  /* ---------- Status chip (shape + icon + label, never color alone) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg); font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold); white-space: nowrap; background: var(--color-surface);
+    border: 1px solid var(--color-primary); color: var(--color-fg);
+  }
+
+  /* ---------- Confirmation screen ---------- */
+  .confirm-icon { font-size: 2.25rem; display: block; margin-bottom: var(--space-2); }
+  .confirm-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-4) 0; }
+  @media (min-width: 560px) { .confirm-grid { grid-template-columns: 1fr 1fr; } }
+  .confirm-field dt {
+    font-family: var(--font-family-base); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    color: var(--color-fg-muted); margin: 0 0 var(--space-1) 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .confirm-field dd { font-family: var(--font-family-base); font-size: var(--font-size-md); color: var(--color-fg); margin: 0; white-space: pre-wrap; }
+  .confirm-field { margin: 0; }
+
+  /* ---------- Admin dispatch queue ---------- */
+  .queue-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
+  }
+  .queue-row:last-child { border-bottom: none; }
+  .queue-row.just-added { animation: row-flash 1.8s ease-out; }
+  @keyframes row-flash { 0% { background: var(--color-surface); } 100% { background: transparent; } }
+  .queue-row-main { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; flex: 1 1 260px; }
+  .queue-row-title { font-family: var(--font-family-base); font-size: var(--font-size-md); font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .queue-row-meta { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .queue-row-sub { font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-fg-muted); }
+  .queue-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); flex: 0 0 auto; }
+  .unstaffed-badge {
+    display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-family-base); font-size: var(--font-size-sm);
+    color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 2px var(--space-2);
+  }
+
+  /* ---------- Empty state ---------- */
+  .empty-state { text-align: center; padding: var(--space-4); color: var(--color-fg-muted); font-family: var(--font-family-base); }
+  .empty-state .icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+  .empty-state p { margin: 0 0 var(--space-3) 0; }
