@@ -52,3 +52,19 @@ test('POST /hires/:id/deactivate then /reactivate starts a fresh Run', async () 
   expect(reactivateRes.status).toBe(200);
   expect(reactivateRes.body.run).toMatchObject({ status: 'active', freshStart: true });
 });
+
+test('PATCH /hires/:id with hireStage offer_accepted triggers a run over HTTP', async () => {
+  const created = await request(app).post('/hires').send({ name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Sales', role: 'AE', hireStage: 'draft' });
+  const res = await request(app).patch(`/hires/${created.body.id}`).send({ hireStage: 'offer_accepted' });
+  expect(res.status).toBe(200);
+  expect(res.body.run).toMatchObject({ status: 'active', department: 'Sales', role: 'AE' });
+});
+
+test('PATCH /hires/:id changing department/role cancels and restarts the run over HTTP', async () => {
+  const created = await request(app).post('/hires').send({ name: 'A', email: 'a@x.com', phone: '1', startDate: '2026-10-05', department: 'Engineering', role: 'Engineer II', hireStage: 'offer_accepted' });
+  const originalRunId = created.body.run.id;
+  const res = await request(app).patch(`/hires/${created.body.id}`).send({ department: 'Product', role: 'Product Manager' });
+  expect(res.status).toBe(200);
+  expect(res.body.run.id).not.toBe(originalRunId);
+  expect(res.body.runHistory).toContainEqual(expect.objectContaining({ id: originalRunId, status: 'cancelled' }));
+});
